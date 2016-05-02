@@ -1,0 +1,7 @@
+.RData
+.Rbuildignore
+.Rhistory
+.Rproj.user
+node_modules
+browser
+*.Rproj

@@ -1,0 +1,11 @@
+Package: rhtmlPictographs
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Kyle Zeeuwen
+Maintainer: Kyle Zeeuwen <kyle.zeeuwen@gmail.com>
+Description: An R HTMLWidget that can generate single image graphics, mutli
+    image graphics, or a table of single/multi image graphics
+License: What license is it under?
+LazyData: TRUE
+RoxygenNote: 5.0.1

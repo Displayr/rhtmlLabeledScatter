@@ -1,0 +1,71 @@
+{
+  "features": [
+    {
+      "name": "Feature 1",
+      "scenarios": [
+        {
+          "name": "Scenario 1 - On",
+          "description" : [
+            "This demonstrates a common scenario for your widget "
+          ],
+          "settings": {
+            "initialState": true
+          },
+          "width": 400,
+          "height": 400
+        },
+        {
+          "name": "Scenario 1 - Off",
+          "description" : [
+            "This demonstrates a common scenario for your widget "
+          ],
+          "settings": {
+            "initialState": false
+          },
+          "width": 400,
+          "height": 400
+        }
+      ]
+    },
+    {
+      "name": "Feature 2 - typically this is different from Feature 1",
+      "scenarios": [
+        {
+          "name": "Scenario 1 - On",
+          "description" : [
+            "This demonstrates a common scenario for your widget "
+          ],
+          "settings": {
+            "initialState": true
+          },
+          "width": 400,
+          "height": 400
+        },
+        {
+          "name": "Scenario 1 - Off",
+          "description" : [
+            "This demonstrates a common scenario for your widget "
+          ],
+          "settings": {
+            "initialState": false
+          },
+          "width": 400,
+          "height": 400
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "scenarios": [
+        {
+          "name": "Bad JSON",
+          "description" : [ "EXPECTED: visually displayed, human readable error. Caused by Bad JSON." ],
+          "width": 400,
+          "height": 400,
+          "settingsString" : "{ json is fun? }",
+          "settings" : {}
+        }
+      ]
+    }
+  ]
+}
