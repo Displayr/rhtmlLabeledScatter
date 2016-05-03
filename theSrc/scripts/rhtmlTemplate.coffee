@@ -8,20 +8,15 @@ HTMLWidgets.widget
     instance.resize width, height
 
   initialize: (el, width, height) ->
+    console.log "width: #{width}"
+    console.log "height: #{height}"
     return new Template el, width, height
 
-  renderValue: (el, params, instance) ->
+  renderValue: (el, config, instance) ->
 
-    config = null
     try
-      if _.isString params.settingsJsonString
-        config = JSON.parse params.settingsJsonString
-      else
-        config = params.settingsJsonString
-
-      #@TODO: update docs so that percentage is not a top level param any more
-      if params.percentage?
-        config.percentage = params.percentage
+      if _.isString config
+        config = JSON.parse config
 
     catch err
       readableError = new Error "Template error : Cannot parse 'settingsJsonString': #{err}"
@@ -30,6 +25,11 @@ HTMLWidgets.widget
       errorHandler.draw()
 
       throw new Error err
+
+    #@TODO for now ignore the width height that come through from config and use the ones passed to constructor
+    delete config['width']
+    delete config['height']
+    console.log "config: #{JSON.stringify(config)}"
 
     try
       instance.setConfig config

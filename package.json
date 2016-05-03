@@ -43,7 +43,6 @@
   },
   "dependencies": {
     "d3": "3.5.16",
-    "d3-grid": "git+https://github.com/NumbersInternational/d3-grid.git",
     "jquery": "2.2.2",
     "lodash": "4.6.1"
   }

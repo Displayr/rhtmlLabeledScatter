@@ -4,26 +4,34 @@
       "name": "Feature 1",
       "scenarios": [
         {
-          "name": "Scenario 1 - On",
+          "name": "Scenario 1 - Initial State Green",
           "description" : [
-            "This demonstrates a common scenario for your widget "
+            "This demonstrates a common scenario for your widget.",
+            "In this case the initialState is set to green.",
+            "In this case try clicking the squares and watching the stateListener get fired."
           ],
-          "settings": {
-            "initialState": true
+          "config": {
+            "width": 400,
+            "height": 400
           },
-          "width": 400,
-          "height": 400
+          "initialState": {
+            "selected": "green"
+          }
         },
         {
-          "name": "Scenario 1 - Off",
+          "name": "Scenario 1 - Initial State Blue",
           "description" : [
-            "This demonstrates a common scenario for your widget "
+            "This demonstrates a common scenario for your widget ",
+            "In this case the initialState is set to blue.",
+            "In this case try clicking the squares and watching the stateListener get fired."
           ],
-          "settings": {
-            "initialState": false
+          "config": {
+            "width": 400,
+            "height": 400
           },
-          "width": 400,
-          "height": 400
+          "initialState": {
+            "selected": "blue"
+          }
         }
       ]
     },
@@ -31,26 +39,15 @@
       "name": "Feature 2 - typically this is different from Feature 1",
       "scenarios": [
         {
-          "name": "Scenario 1 - On",
+          "name": "Scenario 1 - No initial state",
           "description" : [
-            "This demonstrates a common scenario for your widget "
+            "This demonstrates a common scenario for your widget ",
+            "In this case nothing has been done for this example, it just shows how to setup a second feature in the feature.json"
           ],
-          "settings": {
-            "initialState": true
-          },
-          "width": 400,
-          "height": 400
-        },
-        {
-          "name": "Scenario 1 - Off",
-          "description" : [
-            "This demonstrates a common scenario for your widget "
-          ],
-          "settings": {
-            "initialState": false
-          },
-          "width": 400,
-          "height": 400
+          "config": {
+            "width": 400,
+            "height": 400
+          }
         }
       ]
     },
@@ -60,10 +57,7 @@
         {
           "name": "Bad JSON",
           "description" : [ "EXPECTED: visually displayed, human readable error. Caused by Bad JSON." ],
-          "width": 400,
-          "height": 400,
-          "settingsString" : "{ json is fun? }",
-          "settings" : {}
+          "config" : "{ json is fun? }"
         }
       ]
     }

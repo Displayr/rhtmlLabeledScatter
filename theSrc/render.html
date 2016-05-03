@@ -2,6 +2,20 @@
 <html>
   <head>
     <link rel="stylesheet" href="styles/main.css">
+    <style type="text/css">
+
+      .state-update-container {
+        width: 800px;
+      }
+
+      .state-log-item {
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        padding-left: 5px;
+        background-color: lightblue;
+
+      }
+    </style>
   </head>
   <body>
     <!-- TEMPLATE These are specific for your project and must be updated -->
@@ -20,13 +34,6 @@
       <div class="content-window"></div>
     </div>
 
-    <h3 style="font-family:verdana">Settings:</h2>
-    <div class="settings-container">
-      <div style="padding-left:20px">Width: <span class="width"></span></div>
-      <div style="padding-left:20px">Height: <span class="height"></span></div>
-      <pre style="padding-left:20px" class="settings"></pre>
-    </div>
-
     <form id="resize-form" style="padding-top:10px" >
       <label for="width-input">New Width:</label>
       <input type="text" id="width-input" class="width-input" value="200"></input>
@@ -35,8 +42,27 @@
       <button class="resize-button">Resize</button>
     </form>
 
+    <form id="set-state-form" style="padding-top:10px" >
+      <label for="state-input">New State:</label>
+      <input type="text" id="state-input" class="state-input" value=""></input>
+      <button class="set-state-button">Set State</button>
+    </form>
+
+    <h3 style="font-family:verdana">Settings:</h2>
+    <div class="config-container">
+      <pre style="padding-left:20px" class="config"></pre>
+    </div>
+
+    <h3 style="font-family:verdana">State Updates:</h2>
+    <div class="state-update-container">
+    </div>
+
+
     <!-- NB This script should be defined before rhtmlTemplate.js is loaded-->
     <script>
+    var DEFAULT_WIDTH = 600;
+    var DEFAULT_HEIGHT = 600;
+
       function getQueryVariable(variable) {
         var query = window.location.search.substring(1);
         var vars = query.split('&');
@@ -78,6 +104,18 @@
           container = $('.content-window')
 
           myWidgetDefinition.resize(container, width, height, myWidgetInstance);
+
+          return false;
+        });
+
+        $('#set-state-form').bind('submit', function(event) {
+          event.preventDefault();
+          console.log("set state submit");
+
+          newState = $('#state-input').val();
+
+          //@TODO check if prototype has setState
+          myWidgetInstance.setState(newState);
 
           return false;
         });
@@ -186,28 +224,28 @@
           });
 
           $('.name').text(scenario.name);
-          $('.width').text(scenario.width);
-          $('.height').text(scenario.height);
           _.forEach(scenario.description, function(descriptionLine) {
             textLine = $('<p>').text(descriptionLine);
             $('.scenario').append(textLine);
           });
-          $('.settings').text(JSON.stringify(scenario.settings, {}, 2));
+          $('.config').text(JSON.stringify(scenario.config, {}, 2));
 
           outerWrapper = $('.outer-wrapper')
           container = $('.content-window')
 
-          myWidgetInstance = myWidgetDefinition.initialize(container,scenario.width,scenario.height);
-          params = {
-            // favour the json string if specified (used primarily for error testing)
-            settingsJsonString: scenario.settingsString || scenario.settings
-          };
-
           outerWrapper
-            .css('width', scenario.width)
-            .css('height', scenario.height)
+            .css('width', scenario.config.width || DEFAULT_WIDTH)
+            .css('height', scenario.config.height || DEFAULT_HEIGHT)
 
-          myWidgetDefinition.renderValue(container, params, myWidgetInstance);
+          myWidgetInstance = myWidgetDefinition.initialize(container, scenario.config.width, scenario.config.height);
+          myWidgetInstance.registerStateListener(function(newState) {
+            var logMessage = $('<div class="state-log-item">').html(JSON.stringify(newState, {}, 2));
+            $('.state-update-container').append(logMessage);
+          });
+
+          myWidgetDefinition.renderValue(container, scenario.config, myWidgetInstance);
+
+          if (scenario.initialState) { myWidgetInstance.setState(scenario.initialState); }
 
         }).fail( function(error) {
           console.error("Download of ./resources/data/scenarios.json failed. Probably invalid JSON.");
