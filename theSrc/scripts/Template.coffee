@@ -2,10 +2,10 @@
  #  -You will need to update most of this file, as this is where all the specific widget stuff goes
  #  -In order for your class to work with the existing rhtmlTemplate.coffee file your widget class must define the following methods:
  #  --constructor, setConfig, draw, resize* - resize needs to be present but its typically a no op
- #  -In order for your class to work with the Numbers get/set state interface you should reuse but not modify the following methods:
+ #  -In order for your class to work with the Numbers get/set state interface you should extend StatefulHtmlWidget and call these methods when necessary:
  #  --_initializeState, _putState, _updateState, getState, setState, registerStateListener, _updateStateListeners
 
-class Template
+class Template extends StatefulHtmlWidget
 
   #NB Coffeescript class syntax note:
   # @ in front of method / variable def: static class method
@@ -90,50 +90,11 @@ class Template
         return 0
       .on 'click', @_onClick
 
-
   resize: (width, height) ->
     #NB delberately not implemented - not needed
 
   _onClick: (d) =>
     @_updateState 'selected', d.name
-
-  _initializeState: (newState) ->
-    @state = newState
-
-  _putState: (newState) ->
-    @state = newState
-    @_updateStateListeners()
-    @_redraw()
-
-  _updateState: (k,v) ->
-    @state[k] = v
-    @_updateStateListeners()
-    @_redraw()
-
-  getState: () ->
-    @state
-
-  setState: (newState) ->
-    if _.isString newState
-      try
-        @state = JSON.parse newState
-      catch err
-        throw new Error 'json parse error in setState(#newState): ' + err
-
-    else
-      @state = newState
-
-    @_updateStateListeners()
-    @_redraw()
-
-  registerStateListener: (listener) ->
-    unless _.isArray @stateListeners
-      @stateListeners = []
-    @stateListeners.push listener
-
-  _updateStateListeners: () ->
-    _.forEach @stateListeners, (listener) =>
-      listener(@state)
 
   _manipulateRootElementSize: () ->
 

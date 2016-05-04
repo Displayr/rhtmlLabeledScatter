@@ -12,6 +12,12 @@ dependencies:
    script:
      - Template.js
 
+ - name: StatefulHtmlWidget
+   version: 0.0.1
+   src: htmlwidgets/
+   script:
+     - StatefulHtmlWidget.js
+
  - name: jquery
    version: 2.2.2
    src: htmlwidgets/lib/jquery-2.2.2
