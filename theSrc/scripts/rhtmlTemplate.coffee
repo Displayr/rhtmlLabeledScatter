@@ -1,5 +1,8 @@
 'use strict'
 
+# TEMPLATE! - update the template name below. Rename this file to match your widget name.
+#  -Update the yaml file to reference the new name of this file.
+#  -In theory you dont ned to change anything else, but do so at your own discretion
 HTMLWidgets.widget
   name: 'rhtmlTemplate'
   type: 'output'

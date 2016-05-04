@@ -57,7 +57,6 @@
     <div class="state-update-container">
     </div>
 
-
     <!-- NB This script should be defined before rhtmlTemplate.js is loaded-->
     <script>
     var DEFAULT_WIDTH = 600;
@@ -115,7 +114,12 @@
           newState = $('#state-input').val();
 
           //@TODO check if prototype has setState
-          myWidgetInstance.setState(newState);
+          if (myWidgetInstance.setState) {
+            myWidgetInstance.setState(newState);
+          }
+          else {
+            console.log("this widget does not have a setState method");
+          }
 
           return false;
         });
@@ -237,6 +241,7 @@
             .css('width', scenario.config.width || DEFAULT_WIDTH)
             .css('height', scenario.config.height || DEFAULT_HEIGHT)
 
+          // TEMPLATE! - interaction with myWidgetInstance may need updating depending on what you do with your widget
           myWidgetInstance = myWidgetDefinition.initialize(container, scenario.config.width, scenario.config.height);
           myWidgetInstance.registerStateListener(function(newState) {
             var logMessage = $('<div class="state-log-item">').html(JSON.stringify(newState, {}, 2));
@@ -248,14 +253,14 @@
           if (scenario.initialState) { myWidgetInstance.setState(scenario.initialState); }
 
         }).fail( function(error) {
-          console.error("Download of ./resources/data/scenarios.json failed. Probably invalid JSON.");
+          console.error("Download of ./resources/data/features.json failed. Probably invalid JSON.");
           console.error(error);
-          $('body').append($('<div>').text("Failure to download/parse ./resources/data/scenarios.json (probably invalid JSON). See dev tools console for error logging."));
+          $('body').append($('<div>').text("Failure to download/parse ./resources/data/features.json (probably invalid JSON). See dev tools console for error logging."));
         });
       });
     </script>
 
-    <!-- TEMPLATE These are specific for your project and must be updated -->
+    <!-- TEMPLATE! These files are specific for your project and must be updated -->
     <script src="scripts/DisplayError.js"></script>
     <script src="scripts/Template.js"></script>
     <script src="scripts/rhtmlTemplate.js"></script>

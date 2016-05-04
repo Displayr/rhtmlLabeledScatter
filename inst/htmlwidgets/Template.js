@@ -85,7 +85,7 @@ Template = (function() {
     })(this)).style('font-size', (function(_this) {
       return function(d) {
         if (d.name === _this.state.selected) {
-          return 36;
+          return 60;
         }
         return 18;
       };
@@ -124,13 +124,13 @@ Template = (function() {
 
   Template.prototype._putState = function(newState) {
     this.state = newState;
-    this.updateStateListeners();
+    this._updateStateListeners();
     return this._redraw();
   };
 
   Template.prototype._updateState = function(k, v) {
     this.state[k] = v;
-    this.updateStateListeners();
+    this._updateStateListeners();
     return this._redraw();
   };
 
@@ -150,7 +150,7 @@ Template = (function() {
     } else {
       this.state = newState;
     }
-    this.updateStateListeners();
+    this._updateStateListeners();
     return this._redraw();
   };
 
@@ -161,7 +161,7 @@ Template = (function() {
     return this.stateListeners.push(listener);
   };
 
-  Template.prototype.updateStateListeners = function() {
+  Template.prototype._updateStateListeners = function() {
     return _.forEach(this.stateListeners, (function(_this) {
       return function(listener) {
         return listener(_this.state);

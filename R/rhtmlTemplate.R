@@ -1,3 +1,5 @@
+# TEMPLATE! - update the method descriptions. Most of this file will need to be rewritten
+
 #' rhtmlTemplate HTML Widget
 #'
 #' @description A HTMLWidget that ...
@@ -22,6 +24,7 @@
 #' @export
 #'
 
+# TEMPLATE! - update the function name
 template <- function(settingsJsonString = '{}') {
 
   DEFAULT_WIDGET_WIDTH <- 600
@@ -52,6 +55,7 @@ template <- function(settingsJsonString = '{}') {
     height <- as.numeric(unlist(parsedInput['height']))
   }
 
+  # TEMPLATE! - update the names here
   # create widget
   htmlwidgets::createWidget(
     name = 'rhtmlTemplate',

@@ -13,7 +13,6 @@ gulp.task('default', function () {
   gulp.start('build');
 });
 
-//@TODO clean doesn't finish before next task so I have left it out for now ..
 gulp.task('core', ['compile-coffee', 'less', 'copy']);
 gulp.task('build', ['core', 'makeDocs', 'makeExample']);
 
@@ -21,19 +20,18 @@ gulp.task('serve', ['connect', 'watch'], function () {
   require('opn')('http://localhost:9000');
 });
 
+//@TODO clean doesn't finish before next task so I have left it out of build pipeline for now ..
 gulp.task('clean', function(done) {
-  var locationsToDelete = ['inst', 'man', 'R', 'examples'];
-  var deletePromises = locationsToDelete.map( function(location) { return fs.removeAsync(location); })
+  var locationsToDelete = ['browser', 'inst', 'man', 'R', 'examples'];
+  var deletePromises = locationsToDelete.map(function(location) { return fs.removeAsync(location); });
   Promise.all(deletePromises).then(done);
   return true;
 });
 
 gulp.task('makeDocs', function () {
   var shell = require('gulp-shell');
-  return gulp.src('resources/build/makeDoc.r', {read: false})
-    .pipe(shell([
-      'r --no-save < <%= file.path %>',
-    ], {}))
+  return gulp.src('./resources/build/makeDoc.r', {read: false})
+    .pipe(shell(['r --no-save < <%= file.path %>', ], {}))
 });
 
 gulp.task('makeExample', function (done) {

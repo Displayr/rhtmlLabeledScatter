@@ -1,3 +1,9 @@
+ # TEMPLATE! - update the method signature here
+ #  -You will need to update most of this file, as this is where all the specific widget stuff goes
+ #  -In order for your class to work with the existing rhtmlTemplate.coffee file your widget class must define the following methods:
+ #  --constructor, setConfig, draw, resize* - resize needs to be present but its typically a no op
+ #  -In order for your class to work with the Numbers get/set state interface you should reuse but not modify the following methods:
+ #  --_initializeState, _putState, _updateState, getState, setState, registerStateListener, _updateStateListeners
 
 class Template
 
@@ -69,7 +75,7 @@ class Template
         return 900 if d.name == @state.selected
         return 200
       .style 'font-size', (d) =>
-        return 36 if d.name == @state.selected
+        return 60 if d.name == @state.selected
         return 18
 
       .text (d) -> d.name
@@ -96,12 +102,12 @@ class Template
 
   _putState: (newState) ->
     @state = newState
-    @updateStateListeners()
+    @_updateStateListeners()
     @_redraw()
 
   _updateState: (k,v) ->
     @state[k] = v
-    @updateStateListeners()
+    @_updateStateListeners()
     @_redraw()
 
   getState: () ->
@@ -117,7 +123,7 @@ class Template
     else
       @state = newState
 
-    @updateStateListeners()
+    @_updateStateListeners()
     @_redraw()
 
   registerStateListener: (listener) ->
@@ -125,7 +131,7 @@ class Template
       @stateListeners = []
     @stateListeners.push listener
 
-  updateStateListeners: () ->
+  _updateStateListeners: () ->
     _.forEach @stateListeners, (listener) =>
       listener(@state)
 
