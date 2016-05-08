@@ -91,46 +91,9 @@ gulp.task('copy', function () {
     'node_modules/d3/d3.min.js'
   ]
 
-
   gulp.src(extLibs)
     .pipe(gulp.dest('inst/htmlwidgets/lib/'))
     .pipe(gulp.dest('browser/external/'))
-
-  // _.forEach(extLibs, function(extLib) {
-  //   var gulpSrc = gulp.src([
-  //     extLib.src
-  //   ], {
-  //     dot: true
-  //   })
-
-  //   _.forEach(extLib.dest, function(dest) {
-  //     gulpSrc.pipe(gulp.dest(dest));
-  //   });
-  // });
-
-
-  //   {
-  //     src: 'node_modules/lodash/lodash.min.js',
-  //     dest: [
-  //       'inst/htmlwidgets/lib/lodash-4.6.1/',
-  //       'browser/external/'
-  //     ]
-  //   },
-  //   {
-  //     src: 'node_modules/jquery/dist/jquery.min.js',
-  //     dest: [
-  //       'inst/htmlwidgets/lib/jquery-2.2.2/',
-  //       'browser/external/'
-  //     ]
-  //   },
-  //   {
-  //     src: 'node_modules/d3/d3.min.js',
-  //     dest: [
-  //       'inst/htmlwidgets/lib/d3-3.5.16/',
-  //       'browser/external/'
-  //     ]
-  //   }
-  // ]
 
 });
 
