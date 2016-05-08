@@ -2,17 +2,16 @@
 
 # TEMPLATE! - update the template name below. Rename this file to match your widget name.
 #  -Update the yaml file to reference the new name of this file.
-#  -In theory you dont ned to change anything else, but do so at your own discretion
+#  -In theory you dont ned to change anything else, but you can at your own discretion
 HTMLWidgets.widget
   name: 'rhtmlTemplate'
   type: 'output'
 
   resize: (el, width, height, instance) ->
+    #@TODO check if instance has resize before calling it
     instance.resize width, height
 
   initialize: (el, width, height) ->
-    console.log "width: #{width}"
-    console.log "height: #{height}"
     return new Template el, width, height
 
   renderValue: (el, config, instance) ->
@@ -32,7 +31,6 @@ HTMLWidgets.widget
     #@TODO for now ignore the width height that come through from config and use the ones passed to constructor
     delete config['width']
     delete config['height']
-    console.log "config: #{JSON.stringify(config)}"
 
     try
       instance.setConfig config

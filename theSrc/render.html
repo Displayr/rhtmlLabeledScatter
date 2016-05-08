@@ -113,7 +113,6 @@
 
           newState = $('#state-input').val();
 
-          //@TODO check if prototype has setState
           if (myWidgetInstance.setState) {
             myWidgetInstance.setState(newState);
           }
@@ -124,7 +123,7 @@
           return false;
         });
 
-        var featureFileLocation = './resources/data/';
+        var featureFileLocation = './features/';
         var featureFile = getQueryVariable('featureFile') || 'features.json';
 
         $.ajax(featureFileLocation + featureFile).done(function (response) {
@@ -253,16 +252,17 @@
           if (scenario.initialState) { myWidgetInstance.setState(scenario.initialState); }
 
         }).fail( function(error) {
-          console.error("Download of ./resources/data/features.json failed. Probably invalid JSON.");
+          console.error("Download of ./features/features.json failed. Probably invalid JSON.");
           console.error(error);
-          $('body').append($('<div>').text("Failure to download/parse ./resources/data/features.json (probably invalid JSON). See dev tools console for error logging."));
+          $('body').append($('<div>').text("Failure to download/parse ./features/features.json (probably invalid JSON). See dev tools console for error logging."));
         });
       });
     </script>
 
     <!-- TEMPLATE! These files are specific for your project and must be updated -->
     <script src="scripts/DisplayError.js"></script>
-    <script src="scripts/StatefulHtmlWidget.js"></script>
+    <script src="scripts/RhtmlStatefulWidget.js"></script>
+    <script src="scripts/RhtmlSvgWidget.js"></script>
     <script src="scripts/Template.js"></script>
     <script src="scripts/rhtmlTemplate.js"></script>
   </body>

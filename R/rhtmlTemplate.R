@@ -1,4 +1,4 @@
-# TEMPLATE! - update the method descriptions. Most of this file will need to be rewritten
+# TEMPLATE! - update the method descriptions.
 
 #' rhtmlTemplate HTML Widget
 #'
@@ -12,8 +12,7 @@
 #'
 #' @examples
 #'
-#'
-#' rhtmlTemplate::template(0.66, 400, 400, '{}')
+#' rhtmlTemplate::template('{}')
 #'
 #' @author First Last <first.last@gmail.com>
 #'
@@ -40,9 +39,7 @@ template <- function(settingsJsonString = '{}') {
     print("error while parsing JSON:")
     print(e)
     stop(e)
-  }, finally = {
-    print("finally block called")
-  })
+  }, finally = {})
 
   width <- DEFAULT_WIDGET_WIDTH
   height <- DEFAULT_WIDGET_HEIGHT
