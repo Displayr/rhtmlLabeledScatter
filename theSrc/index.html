@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../styles/main.css">
+  </head>
+  <body>
+    <script src="../bower_components/lodash/dist/lodash.compat.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/d3/d3.min.js"></script>
+    <script src="../bower_components/victor/build/victor.min.js"></script>
+    <script src="../bower_components/random/lib/random.min.js"></script>
+    <script src="../bower_components/d3-extended/d3-extended.min.js"></script>
+
+
+    <div class="content-window"></div>
+
+  </body>
+  <script>
+    myWidgetDefinition = null;
+    widgetInstance = null;
+
+    // This is a stub that will capture the widget definition,
+    // so that we can use it once the page finishes loading
+    HTMLWidgets = {
+      widget: function(widgetDefinition) {
+        console.log("Widget create called!");
+        myWidgetDefinition = widgetDefinition;
+      }
+    };
+
+    $(document).ready( function() {
+      console.log("Document ready call. Instantiating captured widget");
+      var params = []
+      widgetInstance = myWidgetDefinition.initialize($('.content-window'),window.innerWidth,window.innerHeight);
+      myWidgetDefinition.renderValue($('.content-window')[0], params, widgetInstance);
+    });
+  </script>
+  <script src="scripts/testData.js"></script>
+  <script src="scripts/rhtmlLabeledScatter.js"></script>
+  <script src="scripts/labeler.js"></script>
+</html>

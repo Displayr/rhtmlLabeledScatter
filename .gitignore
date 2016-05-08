@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.DSStore
+.idea
+bower_components
+node_modules
+browser
+src-i386/
+tags
+.tags_swap
+.tags
