@@ -1,7 +1,7 @@
 {
   "private": true,
   "engines": {
-    "node": ">=5.0.0"
+    "node": ">=5.8.0"
   },
   "devDependencies": {
     "bluebird": "^3.3.5",

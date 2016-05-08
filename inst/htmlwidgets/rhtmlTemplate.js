@@ -7,8 +7,6 @@ HTMLWidgets.widget({
     return instance.resize(width, height);
   },
   initialize: function(el, width, height) {
-    console.log("width: " + width);
-    console.log("height: " + height);
     return new Template(el, width, height);
   },
   renderValue: function(el, config, instance) {
@@ -27,7 +25,6 @@ HTMLWidgets.widget({
     }
     delete config['width'];
     delete config['height'];
-    console.log("config: " + (JSON.stringify(config)));
     try {
       instance.setConfig(config);
       return instance.draw();

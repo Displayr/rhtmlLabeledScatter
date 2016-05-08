@@ -22,8 +22,7 @@ Scenario 1: Blah blah
 }
 \examples{
 
-
-rhtmlTemplate::template(0.66, 400, 400, '{}')
+rhtmlTemplate::template('{}')
 
 }
 \author{

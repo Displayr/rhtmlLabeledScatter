@@ -5,6 +5,6 @@ Version: 0.1.0
 Author: Kyle Zeeuwen
 Maintainer: Kyle Zeeuwen <kyle.zeeuwen@gmail.com>
 Description: An opinionated template for the creation of html widget repositories using coffeescript
-License: MIT
+License: Numbers International Pty Ltd
 LazyData: TRUE
 RoxygenNote: 5.0.1

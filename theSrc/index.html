@@ -7,7 +7,7 @@
     <h2>Examples</h2>
     <ul class='example-list'></ul>
     <br/>
-    <a href="/scenarios.r.html">Examples in an R Script</a>
+    <a href="/features.r.html">Examples in an R Script</a>
     <br/>
     <a href="/experiments">Single page test/experiments</a>
   </body>
@@ -16,7 +16,7 @@
     generateExampleLinks = function() {
       var exampleList = $('.example-list');
 
-      $.ajax('./resources/data/features.json').done(function (response) {
+      $.ajax('./features/features.json').done(function (response) {
         _.forEach(response.features, function (feature, featureIndex) {
           var feature = response.features[featureIndex];
           var featureItem = $('<li>');
@@ -41,9 +41,9 @@
 
         });
       }).fail( function(error) {
-        console.error("Download of ./resources/data/features.json failed. Probably invalid JSON.");
+        console.error("Download of ./features/features.json failed. Probably invalid JSON.");
         console.error(error);
-        $('body').append($('<div>').text("Failure to download/parse ./resources/data/features.json (probably invalid JSON). See dev tools console for error logging."));
+        $('body').append($('<div>').text("Failure to download/parse ./features/features.json (probably invalid JSON). See dev tools console for error logging."));
       });
     }
 
