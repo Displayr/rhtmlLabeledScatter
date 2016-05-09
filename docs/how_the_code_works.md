@@ -65,12 +65,13 @@ Must be implemented by your class:
   _redraw: Put most of the logic for drawing the widget in here.
 
 To be used by your class:
-* _initializeState: set the initial state without notifying watchers. Typically called from your constructor
-* _updateStateListeners: - Invoke the callbacks of each of the registered state watchers. You should not need to call this, as it is called automatically when `_putState`, `_updateState`, and `setState` are called. However, it can be called if you need.
+* **_initializeState**: set the initial state without notifying watchers. Typically called from your constructor
+* **_updateStateListeners**: - Invoke the callbacks of each of the registered state watchers. You should not need to call this, as it is called automatically when `_putState`, `_updateState`, and `setState` are called. However, it can be called if you need.
 
 To be called externally by users of your class or called internall by child classes:
-* getState: Get the current state of the widget
-* setState: Set the current state of the widget. Note that this will notify all state watchers
-* partialStateUpdate: Partially repalce the widget state, and notify all state watchers
-* registerStateListener: Provide a callback function that will be executed every time the state updates. The callback will be invoked with the current state provided as the first and only parameter to the callback.
+* **getState**: Get the current state of the widget
+* **setState**: Set the current state of the widget. Note that this will notify all state watchers
+* **partialStateUpdate**: Partially repalce the widget state, and notify all state watchers
+* **registerStateListener**: Provide a callback function that will be executed every time the state updates. The callback will be invoked with the current state provided as the first and only parameter to the callback.
 
+The [render.html](/theSrc/render.html) provides an example of how an external agent would register as a listener, and how to manually setState during load. Have a read through that source if you are considering hooking into widget state.

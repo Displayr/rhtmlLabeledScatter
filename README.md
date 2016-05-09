@@ -99,3 +99,4 @@ Time permitting here is what I would do next to the template next:
 * Auto gen the htmlwidget.yaml file, and in general make it easier to add a new dependency
 * rename rhtmlTemplate.coffee to rhtmlWidget.coffee and change the name in the build process
 * Produce a script that automates as much as possible of the [extending the template](docs/extending_the_template.md) steps, including creating the git repo.
+* Extract the base classes into their own repo
