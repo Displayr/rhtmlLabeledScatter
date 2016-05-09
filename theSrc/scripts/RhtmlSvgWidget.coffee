@@ -4,9 +4,9 @@ class RhtmlSvgWidget extends RhtmlStatefulWidget
   #NB Coffeescript class syntax note:
   # @ in front of method / variable def: static class method
   # @ within method body : short hand for this / self / instance context
-  # e.g @templateIndex is a static variable, @rootElement is an instance variable
+  # e.g @widgetIndex is a static variable, @rootElement is an instance variable
 
-  @templateIndex = -1
+  @widgetIndex = -1
 
   constructor: (el, width, height) ->
     super el, width, height
@@ -15,10 +15,10 @@ class RhtmlSvgWidget extends RhtmlStatefulWidget
     @initialWidth = width
     @initialHeight = height
 
-    RhtmlSvgWidget.templateIndex++
+    RhtmlSvgWidget.widgetIndex++
 
   setConfig: (@config) ->
-    @config['table-id'] = "rhtmlwidget-#{Template.templateIndex}" unless @config['table-id']
+    @config['table-id'] = "rhtmlwidget-#{RhtmlSvgWidget.widgetIndex}" unless @config['table-id']
     @_processConfig()
 
   draw: () ->

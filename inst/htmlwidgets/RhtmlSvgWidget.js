@@ -6,20 +6,20 @@ var RhtmlSvgWidget,
 RhtmlSvgWidget = (function(_super) {
   __extends(RhtmlSvgWidget, _super);
 
-  RhtmlSvgWidget.templateIndex = -1;
+  RhtmlSvgWidget.widgetIndex = -1;
 
   function RhtmlSvgWidget(el, width, height) {
     RhtmlSvgWidget.__super__.constructor.call(this, el, width, height);
     this.rootElement = _.has(el, 'length') ? el[0] : el;
     this.initialWidth = width;
     this.initialHeight = height;
-    RhtmlSvgWidget.templateIndex++;
+    RhtmlSvgWidget.widgetIndex++;
   }
 
   RhtmlSvgWidget.prototype.setConfig = function(config) {
     this.config = config;
     if (!this.config['table-id']) {
-      this.config['table-id'] = "rhtmlwidget-" + Template.templateIndex;
+      this.config['table-id'] = "rhtmlwidget-" + RhtmlSvgWidget.widgetIndex;
     }
     return this._processConfig();
   };
