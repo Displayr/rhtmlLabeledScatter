@@ -74,7 +74,7 @@ There are lots of files. This is what they do:
 * **theSrc/images** - put your images here, you can use them in the browser but at present we dont know how to package images in htmlwidgets !
 * **theSrc/index.html** - dev file only. This is the first page you see in the browser when you run `gulp serve`. It loads `features.json` and generates a list of examples.
 * **theSrc/render.html** - dev file only. This file is a bit magic. It mocks out the htmlwidget framework, intercepts your widget definition, then renders your widget in the browser. _**You may need to make small changes to this file. Tread lightly**_ There are instructions in the file for what is likely to need changing.
-* **theSrc/scenarios.r.html** - dev file only. This file reads `features.json` and generates R commands. The user can copy/paste these in to try the widget out in R.
+* **theSrc/features.r.html** - dev file only. This file reads `features.json` and generates R commands. The user can copy/paste these in to try the widget out in R.
 * **theSrc/R/htmlwidget.R** - this is copied to R/WIDGETNAME.R and contains the R function definitions used to invoke your widget. _**You do not need to rename this file.**_
 * **theSrc/R/htmlwidget.yaml** - this is copied to inst/htmlwidget/WIDGETNAME.yaml and contains a manifest the htmlwidget framework uses. See [http://www.htmlwidgets.orghttp://www.htmlwidgets.org/develop_intro.html](http://www.htmlwidgets.org/develop_intro.html) for details. _**You do not need to rename this file.**_. You will have to update it to match the js files and dependencies you add.
 * **theSrc/styles/main.less** - this is your CSS in a less file. It is used to generate `inst/htmlwidgets/lib/style/main.css`

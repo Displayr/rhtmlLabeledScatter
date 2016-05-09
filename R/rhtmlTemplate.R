@@ -52,9 +52,8 @@ template <- function(settingsJsonString = '{}') {
     height <- as.numeric(unlist(parsedInput['height']))
   }
 
-  # TEMPLATE! - update the names here
-  # create widget
   htmlwidgets::createWidget(
+    # TEMPLATE! - update the name here
     name = 'rhtmlTemplate',
     settingsJsonString,
     width = width,
@@ -66,6 +65,7 @@ template <- function(settingsJsonString = '{}') {
       viewer.fill = TRUE,
       padding = 0
     ),
+    # TEMPLATE! - update the name here
     package = 'rhtmlTemplate'
   )
 }

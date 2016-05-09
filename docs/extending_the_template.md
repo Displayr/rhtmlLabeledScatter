@@ -23,19 +23,26 @@ New widget time, excellent. It would be great if we had a [yeoman](http://yeoman
 
 ## Project Customization
 
+Remember you still need to follow the [Local Installation to Develop/Contribute](../README.md) to get your new widget working locally (basically just run `npm install`).
+ To make sure you are starting from a good base go make sure rhtmlTemplate is working (i.e., follow the linked install instructions above) when you run `gulp serve` before proceeding.
+
+Next delete the auto generated directories, so that no old files get carried over. Run `gulp clean` to delete all the auto generated content, i.e., [`browser`, `inst`, `man`, `R`, `examples`] (ignore the error report, it worked - but go check that they are deleted to be sure)
+
 You will need to modify some files before you get to the coding part. Everything that needs to be changed should have a comment starting with `TEMPLATE`. These locations are listed below:
 
+* ./DESCRIPTION - update the widget name
 * ./build/generateExamplesInR.js - update the widget name and R function name
 * ./gulpfile.js - update the widget name and keep the list of dependencies up to date
 * ./theSrc/R/htmlwidget.R - update the widget name and keep the R docs up to date
 * ./theSrc/R/htmlwidget.yaml - keep the list of dependencies up to date
 * ./theSrc/render.html - keep the list of JS files up to date
-* ./theSrc/scenarios.r.html - update the widget name and R function name
+* ./theSrc/features.r.html - update the widget name and R function name
 * ./theSrc/scripts/rhtmlTemplate.coffee - rename file to match your widget name, update the widget name in the file. Note the file name (without the .coffee extension) must match the widget name specified in the createWidget call in `htmlwidget.R`
 * ./theSrc/scripts/Template.coffee - this is the top level class that encapsulates the business logic of the widget. You will need to rename the file to something the makes sense for your widget (e.g., Pictograph), and update most of the file. There are instructions in the file for what needs to stay the same and what should be changed. It is worth reading [how the code works](./how_the_code_works.md) before starting.
 
 That should be it. If you follow the instructions above you shouldn't have to change anything else, but you are free to structure things how you like, it will just require some modifications to `gulpfile.js`.
 
+Final note you should delete the template docs out of the `docs/` folder and you are responsible for keeping the `README.md` of your new project up to date!
 Happy coding :)
 
 ## Adding a new JS dependency

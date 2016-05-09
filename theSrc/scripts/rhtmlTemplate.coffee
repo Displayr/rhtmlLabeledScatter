@@ -1,7 +1,6 @@
 'use strict'
 
 # TEMPLATE! - update the template name below. Rename this file to match your widget name.
-#  -Update the yaml file to reference the new name of this file.
 #  -In theory you dont ned to change anything else, but you can at your own discretion
 HTMLWidgets.widget
   name: 'rhtmlTemplate'
@@ -12,6 +11,7 @@ HTMLWidgets.widget
     instance.resize width, height
 
   initialize: (el, width, height) ->
+    #TEMPLATE! - update the class name below to the name of your main class
     return new Template el, width, height
 
   renderValue: (el, config, instance) ->
