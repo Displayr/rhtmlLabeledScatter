@@ -29,7 +29,7 @@ gulp.task('less', function () {
 gulp.task('compile-coffee', function () {
   var gulp_coffee = require("gulp-coffee");
 
-  gulp.src('theSrc/scripts/rhtmlMoonPlot.coffee')
+  gulp.src('theSrc/scripts/rhtmlLabeledScatter.coffee')
     .pipe(gulp_coffee({ bare: true }))
     .pipe(gulp.dest('browser/scripts'))
     .pipe(gulp.dest('inst/htmlwidgets/'));
@@ -37,7 +37,7 @@ gulp.task('compile-coffee', function () {
   gulp.src('theSrc/scripts/lib/*.coffee')
     .pipe(gulp_coffee({ bare: true }))
     .pipe(gulp.dest('browser/scripts'))
-    .pipe(gulp.dest('inst/htmlwidgets/lib/rhtmlMoonPlot/'));
+    .pipe(gulp.dest('inst/htmlwidgets/lib/rhtmlLabeledScatter/'));
 });
 
 gulp.task('copy', function () {
@@ -52,7 +52,7 @@ gulp.task('copy', function () {
   ], {
     dot: true
   }).pipe(gulp.dest('browser/scripts'))
-  .pipe(gulp.dest('inst/htmlwidgets/lib/rhtmlMoonPlot'));
+  .pipe(gulp.dest('inst/htmlwidgets/lib/rhtmlLabeledScatter'));
 
   gulp.src([
     'bower_components/**/*'
@@ -153,7 +153,7 @@ gulp.task('watch', ['connect'], function () {
     'browser/**/*',
   ]).on('change', $.livereload.changed);
 
-  gulp.watch('theSrc/R/rhtmlMoonPlot.R', ['copy']);
+  gulp.watch('theSrc/R/rhtmlLabeledScatter.R', ['copy']);
   gulp.watch('htmlwidget.yaml', ['copy']);
   gulp.watch('theSrc/**/*.html', ['copy']);
   gulp.watch('theSrc/scripts/**/*.js', ['copy']);
