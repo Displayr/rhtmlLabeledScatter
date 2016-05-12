@@ -88,7 +88,9 @@ gulp.task('copy', function () {
   var extLibs = [
     'node_modules/lodash/lodash.min.js',
     'node_modules/jquery/dist/jquery.min.js',
-    'node_modules/d3/d3.min.js'
+    'node_modules/d3/d3.min.js',
+    'node_modules/rhtmlBaseClasses/dist/rHtmlSvgWidget.js',
+    'node_modules/rhtmlBaseClasses/dist/rHtmlStatefulWidget.js'
   ]
 
   gulp.src(extLibs)
