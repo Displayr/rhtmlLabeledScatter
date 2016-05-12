@@ -10,8 +10,8 @@ There are several relevant files:
 1. `theSrc/R/htmlwidget.r` : defines the R function signature and does some input formatting before invoking the HTML Widget
 1. `theSrc/scripts/rhtmlTemplate.coffee` : registers the `rhtmlWidget` with the HTMLWidget framework. This file is deliberately very light on details and just calls methods on the Template class
 1. `theSrc/scripts/Template.coffee` : defines a class that does all of the work creating the htmlwidget.
-1. `theSrc/scripts/RhtmlStatefulWidget.coffee` : defines an interface for setting and getting state from a html widget. This class is meant to be extended by the main widget class using class inheritance.
-1. `theSrc/scripts/RhtmlSvgWidget.coffee` : provides scaffolding for modifying the outer DOM element and adding a SVG container to the outer DOM. This class is meant to be extended by the main widget class using class inheritance.
+1. `rHtmlStatefulWidget.coffee` : defines the `RhtmlStatefulWidget` class, which provides an interface for setting and getting state from a html widget. This class is meant to be extended by the main widget class using class inheritance.
+1. `rHtmlSvgWidget.coffee` : defines the `RhtmlSvgWidget` class, which provides scaffolding for modifying the outer DOM element and adding a SVG container to the outer DOM. This class is meant to be extended by the main widget class using class inheritance.
 
 ## `theSrc/R/htmlwidget.r`
 
@@ -51,15 +51,17 @@ If your widget has any state that needs to be persisted, you can extend the `Rht
 
 If your widget is SVG based, you can extend the `RhtmlSvgWidget` class. This is detailed in the RhtmlSvgWidget section. Note that if you extend RhtmlSvgWidget, then you also get RhtmlStatefulWidget, so you dont need to (in fact you cannot in JS) extend both directly.
 
-## `theSrc/scripts/RhtmlSvgWidget.coffee`
+## `RhtmlSvgWidget` - from [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses)
+
+**Important Note** - the docs below are just a (potentially out of date) mirror of the docs in the [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses) repo. You should check the docs in that repo.
 
 This just does some basic formatting of the initial DOM and creates the outerSvg with a viewbox set to the initial width and height. If you extend this class you must define `_redraw` and `_processConfig`, as outlined above.
 
-## `theSrc/scripts/RhtmlStatefulWidget.coffee`
+## `RhtmlStatefulWidget` - from [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses)
+
+**Important Note** - the docs below are just a (potentially out of date) mirror of the docs in the [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses) repo. You should check the docs in that repo.
 
 If your widget has any state that needs to be persisted, you can extend the `RhtmlStatefulWidget` class. The `RhtmlStatefulWidget` defines an external API that users of your class can call to get and set state. It also defines internal methods that you can call to maintain widget state. Finally it requires that your class implement the function _redraw() to draw and redraw your widget.
-
-You need to copy the `theSrc/scripts/RhtmlStatefulWidget.coffee` into your new widget repo. You should not have to modify it. To use it , make sure your widget "extends" the `RhtmlStatefulWidget`. In coffeescript this is a one-liner. It is a bit more work in plain JS. Look it up.
 
 Must be implemented by your class:
   _redraw: Put most of the logic for drawing the widget in here.

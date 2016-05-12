@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "d3": "3.5.16",
+    "rhtmlBaseClasses": "git+https://github.com/NumbersInternational/rhtmlBaseClasses.git#v1.0.0",
     "jquery": "2.2.2",
     "lodash": "4.6.1"
   }
