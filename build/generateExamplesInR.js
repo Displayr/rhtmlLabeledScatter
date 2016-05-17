@@ -8,7 +8,7 @@ module.exports = function (parsedFileContents) {
     content += '\n'
     content += 'library(devtools)\n'
     // TEMPLATE! - this reponame needs to be updated to match your widget
-    content += 'install_github("NumbersInternational/rhtmlTemplate")\n'
+    content += 'install_github("NumbersInternational/rhtmlLabeledScatter")\n'
 
     _.forEach(parsedFileContents.features, function(feature) {
       content += '#' + feature.name + "\n";
@@ -20,7 +20,7 @@ module.exports = function (parsedFileContents) {
         content += "\n";
 
         // TEMPLATE! - this reponame needs to be updated to match your widget
-        var rCommand = 'rhtmlTemplate::template(' +
+        var rCommand = 'rhtmlLabeledScatter::LabeledScatter(' +
           "'" + (JSON.stringify(scenario.config)) + "'" +
         ')';
 

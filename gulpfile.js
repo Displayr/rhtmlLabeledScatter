@@ -83,7 +83,6 @@ gulp.task('copy', function () {
     .pipe(rename(widgetName + '.R'))
     .pipe(gulp.dest('R/'));
 
-  // TEMPLATE! - this list of dependencies may need to be updated to match your widget
   var extLibs = [
     'node_modules/lodash/lodash.min.js',
     'node_modules/jquery/dist/jquery.min.js',
