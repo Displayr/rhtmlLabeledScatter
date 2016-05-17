@@ -1,4 +1,5 @@
-An R HTMLWidget project template.
+# rhtmlLabeledScatter
+An HTML widget that creates a labeled scatter plot
 
 # Installation in R
 

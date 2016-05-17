@@ -1,7 +1,6 @@
 'use strict';
 
-// TEMPLATE! - this widgetName needs to be updated to match your widget
-var widgetName = 'rhtmlTemplate';
+var widgetName = 'rhtmlLabeledScatter';
 
 var _ = require('lodash');
 var gulp = require('gulp');
