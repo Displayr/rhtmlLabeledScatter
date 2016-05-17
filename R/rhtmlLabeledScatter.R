@@ -1,39 +1,67 @@
-#' LabeledScatter
+#' rhtmlLabeledScatter HTML Widget
 #'
-#' An HTML widget that creates a labeled scatter plot
+#' @description A HTMLWidget that creates a labeled scatter plot.
+#'
+#' @section Usage Scenarios:
+#'
+#' Scenario 1: Blah blah
+#'
+#' @param param1 is a good param
+#'
+#' @examples
+#'
+#' rhtmlLabeledScatter::template('{}')
+#'
+#' @author Po Liu <pliu0771@uni.sydney.edu.au>
+#'
+#' @source https://github.com/NumbersInternational/rhtmlLabeledScatter
 #'
 #' @import htmlwidgets
 #'
 #' @export
-moonplot <- function(
-  coreNodes=NULL,surfaceNodes=NULL,
-  width = NULL,
-  height = NULL) {
+#'
 
-  data.lunarCoreNodes <- jsonlite::toJSON(coreNodes)
-  data.lunarCoreLabels <- jsonlite::toJSON(labels(coreNodes)[[1]])
-  data.lunarSurfaceNodes <- jsonlite::toJSON(surfaceNodes)
-  data.lunarSurfaceLabels <- jsonlite::toJSON(labels(surfaceNodes)[[1]])
+# TEMPLATE! - update the function name
+LabeledScatter <- function(settingsJsonString = '{}') {
 
-  # forward options using x
-  x = list(
-    lunarCoreNodes = data.lunarCoreNodes,
-    lunarCoreLabels = data.lunarCoreLabels,
-    lunarSurfaceNodes = data.lunarSurfaceNodes,
-    lunarSurfaceLabels = data.lunarSurfaceLabels
-  )
+  DEFAULT_WIDGET_WIDTH <- 600
+  DEFAULT_WIDGET_HEIGHT <- 600
 
-  # create widget
+  parsedInput <- NULL
+  parsedInput = tryCatch({
+    jsonlite::fromJSON(settingsJsonString)
+  }, warning = function(w) {
+    print("warning while parsing JSON:")
+    print(w)
+  }, error = function(e) {
+    print("error while parsing JSON:")
+    print(e)
+    stop(e)
+  }, finally = {})
+
+  width <- DEFAULT_WIDGET_WIDTH
+  height <- DEFAULT_WIDGET_HEIGHT
+
+  if('width' %in% names(parsedInput)) {
+    width <- as.numeric(unlist(parsedInput['width']))
+  }
+
+  if('height' %in% names(parsedInput)) {
+    height <- as.numeric(unlist(parsedInput['height']))
+  }
+
   htmlwidgets::createWidget(
-    name = "rhtmlLabeledScatter",
-    x,
+    name = 'rhtmlLabeledScatter',
+    settingsJsonString,
     width = width,
     height = height,
     sizingPolicy = htmlwidgets::sizingPolicy(
-            padding = 5,
-            browser.fill = TRUE, # resizing will not work if FALSE
-            viewer.fill = TRUE
-        ),
-    package = "rhtmlLabeledScatter"
+      defaultWidth = width,
+      defaultHeight = height,
+      browser.fill = TRUE,
+      viewer.fill = TRUE,
+      padding = 0
+    ),
+    package = 'rhtmlLabeledScatter'
   )
 }
