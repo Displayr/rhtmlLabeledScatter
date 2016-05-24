@@ -20,96 +20,10 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var allCells, data, enteringCells;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
-    data = [
-      {
-        color: 'red',
-        name: 'red',
-        x: 0,
-        y: 0
-      }, {
-        color: 'blue',
-        name: 'blue',
-        x: this.initialWidth / 2,
-        y: 0
-      }, {
-        color: 'green',
-        name: 'green',
-        x: 0,
-        y: this.initialHeight / 2
-      }, {
-        color: 'orange',
-        name: 'orange',
-        x: this.initialWidth / 2,
-        y: this.initialHeight / 2
-      }
-    ];
-    allCells = this.outerSvg.selectAll('.node').data(data);
-    enteringCells = allCells.enter().append('g').attr('class', 'node').attr('transform', function(d) {
-      return "translate(" + d.x + "," + d.y + ")";
-    });
-    enteringCells.append('rect').attr('width', this.initialWidth / 2).attr('height', this.initialHeight / 2).attr('class', 'rect');
-    enteringCells.append('text').attr('class', 'text');
-    this._updateText();
-    return this._updateRectangles();
-  };
-
-  LabeledScatter.prototype._updateText = function() {
-    var allTexts;
-    return allTexts = this.outerSvg.selectAll('.text').attr('x', (function(_this) {
-      return function(d) {
-        return _this.initialWidth / 4;
-      };
-    })(this)).attr('y', (function(_this) {
-      return function(d) {
-        return _this.initialHeight / 4;
-      };
-    })(this)).style('text-anchor', 'middle').style('alignment-baseline', 'central').style('dominant-baseline', 'central').style('fill', 'white').style('font-weight', (function(_this) {
-      return function(d) {
-        if (d.name === _this.state.selected) {
-          return 900;
-        }
-        return 200;
-      };
-    })(this)).style('font-size', (function(_this) {
-      return function(d) {
-        if (d.name === _this.state.selected) {
-          return 60;
-        }
-        return 18;
-      };
-    })(this)).text(function(d) {
-      return d.name;
-    }).on('click', (function(_this) {
-      return function(d) {
-        return _this.partialStateUpdate('selected', d.name);
-      };
-    })(this));
-  };
-
-  LabeledScatter.prototype._updateRectangles = function() {
-    var allRects;
-    return allRects = this.outerSvg.selectAll('.rect').attr('class', function(d) {
-      return "rect " + d.name;
-    }).attr('fill', (function(_this) {
-      return function(d) {
-        return d.color;
-      };
-    })(this)).attr('stroke', 'black').attr('stroke-width', (function(_this) {
-      return function(d) {
-        if (d.name === _this.state.selected) {
-          return 6;
-        }
-        return 0;
-      };
-    })(this)).on('click', (function(_this) {
-      return function(d) {
-        return _this.partialStateUpdate('selected', d.name);
-      };
-    })(this));
+    return console.log(testData);
   };
 
   return LabeledScatter;

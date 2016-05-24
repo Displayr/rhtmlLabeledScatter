@@ -67,6 +67,10 @@ gulp.task('copy', function () {
   ], {}).pipe(gulp.dest('browser'));
 
   gulp.src([
+    'theSrc/scripts/lib/*.js'
+  ], {}).pipe(gulp.dest('browser/scripts/lib'));
+
+  gulp.src([
     'theSrc/images/**/*'
   ], {}).pipe(gulp.dest('browser/images'));
 
