@@ -4,12 +4,12 @@ An HTML widget that creates a labeled scatter plot
 # Installation in R
 
 1. `library(devtools)`
-1. `install_github('NumbersInternational/rhtmlTemplate')`
+1. `install_github('NumbersInternational/rhtmlLabeledScatter')`
 
 Simplest Example to verify installation:
 
 ```
-rhtmlTemplate::template()
+rhtmlLabeledScatter::template()
 ```
 
 
@@ -20,14 +20,14 @@ rhtmlTemplate::template()
 1. nodejs >= 5.0
 1. python 2.7 - one of the nodejs libraries needs python during the installation process
 
-## Installing the rhtmlTemplate code
+## Installing the rhtmlLabeledScatter code
 
 1. On windows open git shell (or install it first). On OSX open terminal
     1. Tim note : Type enter when prompted for a passphrase when opening git shell
 1. Change directory to the place where you put git projects
     1. Tim note : Do not use a Dropbox synced directory. There will be 1000's of files created by `npm install` and your computer will catch fire
-1. type `git clone git@github.com:NumbersInternational/rhtmlTemplate.git` ENTER
-1. type `cd rhtmlTemplate` ENTER
+1. type `git clone git@github.com:NumbersInternational/rhtmlLabeledScatter.git` ENTER
+1. type `cd rhtmlLabeledScatter` ENTER
 1. type `npm install` ENTER
     1. `npm install` is noisy and will print several warnings about `UNMET` and `DEPRECATED`. Ignore these and only make note of errors. If it fails, try running it again.
 1. type `gulp serve` ENTER
