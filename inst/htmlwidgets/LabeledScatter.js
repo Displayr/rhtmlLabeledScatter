@@ -4,14 +4,24 @@ var LabeledScatter,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 LabeledScatter = (function(_super) {
+  var calcViewBoxDim;
+
   __extends(LabeledScatter, _super);
 
   function LabeledScatter(el, width, height) {
     LabeledScatter.__super__.constructor.call(this, el, width, height);
+    this.width = width;
+    this.height = height;
     this._initializeState({
       selected: null
     });
   }
+
+  LabeledScatter.prototype.resize = function(width, height) {
+    this.width = width;
+    this.height = height;
+    return _redraw();
+  };
 
   LabeledScatter.prototype._processConfig = function() {
     console.log('_processConfig. Change this function in your rhtmlWidget');
@@ -20,10 +30,22 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
+    var viewBoxDim;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
-    return console.log(testData);
+    console.log(testData);
+    viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
+    return this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', this.width / 5).attr('y', this.height / 5).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
+  };
+
+  calcViewBoxDim = function(X, Y, width, height) {
+    return {
+      width: width / 2,
+      height: height / 2,
+      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
+      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+    };
   };
 
   return LabeledScatter;

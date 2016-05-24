@@ -7,8 +7,14 @@ class LabeledScatter extends RhtmlSvgWidget
 
   constructor: (el, width, height) ->
     super el, width, height
-
+    @width = width
+    @height = height
     @_initializeState { selected: null }
+
+  resize: (width, height) ->
+    @width = width
+    @height = height
+    _redraw()
 
   _processConfig: () ->
     console.log '_processConfig. Change this function in your rhtmlWidget'
@@ -19,6 +25,25 @@ class LabeledScatter extends RhtmlSvgWidget
     console.log '_redraw. Change this function in your rhtmlWidget'
     console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
     console.log @outerSvg
-
-
     console.log testData
+
+
+    viewBoxDim = calcViewBoxDim(testData.X, testData.Y, @width, @height)
+
+    @outerSvg.append('rect')
+             .attr('class', 'plot-viewbox')
+             .attr('x', @width / 5)
+             .attr('y', @height / 5)
+             .attr('width', viewBoxDim.width)
+             .attr('height', viewBoxDim.height)
+             .attr('fill', 'none')
+             .attr('stroke', 'black')
+             .attr('stroke-width', '1px')
+
+  calcViewBoxDim = (X, Y, width, height) ->
+    return {
+      width: width /2
+      height: height / 2
+      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
+      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+    }
