@@ -30,7 +30,7 @@ gulp.task('clean', function(done) {
 gulp.task('makeDocs', function () {
   var shell = require('gulp-shell');
   return gulp.src('./build/makeDoc.r', {read: false})
-    .pipe(shell(['r --no-save < <%= file.path %>', ], {}))
+    .pipe(shell(['R --no-save < <%= file.path %>', ], {}))
 });
 
 gulp.task('makeExample', function (done) {

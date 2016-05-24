@@ -1,8 +1,6 @@
-# TEMPLATE! - update the method descriptions.
-
-#' rhtmlTemplate HTML Widget
+#' rhtmlLabeledScatter HTML Widget
 #'
-#' @description A HTMLWidget that ...
+#' @description A HTMLWidget that creates a labeled scatter plot.
 #'
 #' @section Usage Scenarios:
 #'
@@ -12,11 +10,11 @@
 #'
 #' @examples
 #'
-#' rhtmlTemplate::template('{}')
+#' rhtmlLabeledScatter::template('{}')
 #'
-#' @author First Last <first.last@gmail.com>
+#' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
-#' @source https://github.com/NumbersInternational/rhtmlTemplate
+#' @source https://github.com/NumbersInternational/rhtmlLabeledScatter
 #'
 #' @import htmlwidgets
 #'
@@ -24,7 +22,7 @@
 #'
 
 # TEMPLATE! - update the function name
-template <- function(settingsJsonString = '{}') {
+LabeledScatter <- function(settingsJsonString = '{}') {
 
   DEFAULT_WIDGET_WIDTH <- 600
   DEFAULT_WIDGET_HEIGHT <- 600
@@ -53,8 +51,7 @@ template <- function(settingsJsonString = '{}') {
   }
 
   htmlwidgets::createWidget(
-    # TEMPLATE! - update the name here
-    name = 'rhtmlTemplate',
+    name = 'rhtmlLabeledScatter',
     settingsJsonString,
     width = width,
     height = height,
@@ -65,7 +62,6 @@ template <- function(settingsJsonString = '{}') {
       viewer.fill = TRUE,
       padding = 0
     ),
-    # TEMPLATE! - update the name here
-    package = 'rhtmlTemplate'
+    package = 'rhtmlLabeledScatter'
   )
 }

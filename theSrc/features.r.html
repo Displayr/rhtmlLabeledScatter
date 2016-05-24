@@ -11,7 +11,7 @@
       $('.pre-content').append($('<span>').html('library("devtools")'));
       $('.pre-content').append($('<br>'));
       // TEMPLATE! - update the repo name here
-      $('.pre-content').append($('<span>').html('install_github("NumbersInternational/rhtmlTemplate")'));
+      $('.pre-content').append($('<span>').html('install_github("NumbersInternational/rhtmlLabeledScatter")'));
       $('.pre-content').append($('<br>'));
       $('.pre-content').append($('<br>'));
 
@@ -34,7 +34,7 @@
 
 
               // TEMPLATE! - this code is specific for your widget and may need to be updated
-              rCommand = "rhtmlTemplate::template('" + JSON.stringify(scenario.config) + "')";
+              rCommand = "rhtmlLabeledScatter::template('" + JSON.stringify(scenario.config) + "')";
 
               $('.pre-content').append($('<span>').html(rCommand));
               $('.pre-content').append($('<br>'));
