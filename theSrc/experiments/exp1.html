@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="content-window"></div>
+    <script src="../external/lodash.min.js"></script>
+    <script src="../external/jquery.min.js"></script>
+    <script src="../external/d3.min.js"></script>
+    <script src="../external/rHtmlStatefulWidget.js"></script>
+    <script src="../external/rHtmlSvgWidget.js"></script>
+  </body>
+
+  <script>
+    var DEFAULT_WIDTH = 600;
+    var DEFAULT_HEIGHT = 600;
+    myWidgetDefinition = null;
+    myWidgetInstance = null;
+    var container = $('.content-window');
+
+    // This is a stub that will capture the widget definition,
+    // so that we can use it once the page finishes loading
+    HTMLWidgets = {
+      widget: function(widgetDefinition) {
+        console.log("widget create called!");
+        myWidgetDefinition = widgetDefinition;
+      }
+    };
+
+    $(document).ready( function() {
+      console.log("Document ready.")
+
+      myWidgetInstance = myWidgetDefinition.initialize(container, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+      // myWidgetDefinition.renderValue(container, {}, myWidgetInstance);
+
+    });
+
+  </script>
+  <script src="../scripts/rhtmlLabeledScatter.js"></script>
+  <script src="../scripts/LabeledScatter.js"></script>
+  <script src="../scripts/DisplayError.js"></script>
+  <script src="../scripts/lib/LabeledScatterClass.js"></script>
+</html>
