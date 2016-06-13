@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var data, i, maxX, maxY, minX, minY, pts, threshold, viewBoxDim, viewBoxX, viewBoxY;
+    var data, i, maxX, maxY, minX, minY, originX, originY, pts, threshold, viewBoxDim, viewBoxX, viewBoxY;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
@@ -67,6 +67,8 @@ LabeledScatter = (function(_super) {
       data.Y[i] = threshold + (data.Y[i] - minY) / (maxY - minY) * (1 - 2 * threshold);
       i++;
     }
+    originX = (-minX) / (maxX - minX) * viewBoxDim.width + viewBoxX;
+    originY = (-minY) / (maxY - minY) * viewBoxDim.height + viewBoxY;
     pts = [];
     i = 0;
     while (i < data.X.length) {
@@ -77,13 +79,15 @@ LabeledScatter = (function(_super) {
       });
       i++;
     }
-    return this.outerSvg.selectAll('.anc').data(pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+    this.outerSvg.selectAll('.anc').data(pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
     }).attr('r', function(d) {
       return d.r;
     });
+    this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxX).attr('y1', originY).attr('x2', viewBoxX + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    return this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxY).attr('x2', originX).attr('y2', viewBoxY + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
   };
 
   calcViewBoxDim = function(X, Y, width, height) {

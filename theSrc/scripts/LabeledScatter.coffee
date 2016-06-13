@@ -62,6 +62,8 @@ class LabeledScatter extends RhtmlSvgWidget
       data.X[i] = threshold + (data.X[i] - minX)/(maxX - minX)*(1-2*threshold)
       data.Y[i] = threshold + (data.Y[i] - minY)/(maxY - minY)*(1-2*threshold)
       i++
+    originX = (-minX)/(maxX - minX)*viewBoxDim.width + viewBoxX
+    originY = (-minY)/(maxY - minY)*viewBoxDim.height + viewBoxY
 
     pts = []
     i = 0
@@ -81,6 +83,26 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('cx', (d) -> d.x)
              .attr('cy', (d) -> d.y)
              .attr('r', (d) -> d.r)
+
+    @outerSvg.append('line')
+             .attr('class', 'origin')
+             .attr('x1', viewBoxX)
+             .attr('y1', originY)
+             .attr('x2', viewBoxX + viewBoxDim.width)
+             .attr('y2', originY)
+             .attr('stroke-width', 1)
+             .attr('stroke', 'black')
+             .style("stroke-dasharray", ("3, 3"))
+    @outerSvg.append('line')
+             .attr('class', 'origin')
+             .attr('x1', originX)
+             .attr('y1', viewBoxY)
+             .attr('x2', originX)
+             .attr('y2', viewBoxY + viewBoxDim.height)
+             .attr('stroke-width', 1)
+             .attr('stroke', 'black')
+             .style("stroke-dasharray", ("3, 3"))
+
 
   calcViewBoxDim = (X, Y, width, height) ->
     return {
