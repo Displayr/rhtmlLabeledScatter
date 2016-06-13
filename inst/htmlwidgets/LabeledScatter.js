@@ -112,21 +112,13 @@ LabeledScatter = (function(_super) {
       return d.y;
     }).attr('font-family', 'Arial Narrow').text(function(d) {
       return d.text;
-    });
+    }).attr('text-anchor', 'middle');
     i = 0;
     while (i < data.X.length) {
       lab[i].width = labels_svg[0][i].getBBox().width;
       lab[i].height = labels_svg[0][i].getBBox().height;
       i++;
     }
-    labels_svg.remove();
-    labels_svg = this.outerSvg.selectAll('.label').data(lab).enter().append('text').attr('x', function(d) {
-      return d.x - d.width / 2;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
-      return d.text;
-    });
     labeler = d3.labeler().svg(this.outerSvg).w1(viewBoxDim.x).w2(viewBoxDim.x + viewBoxDim.width).h1(viewBoxDim.y).h2(viewBoxDim.y + viewBoxDim.height).anchor(anc).label(lab).start(500);
     labels_svg.transition().duration(800).attr('x', function(d) {
       return d.x;

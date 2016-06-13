@@ -26,7 +26,6 @@
             w_lablink = 2.0, // leader line-label intersection
             w_lab2 = 12.0, // label-label overlap
             w_lab_anc = 8; // label-anchor overlap
-        // w_orient = 0.5; // orientation bias
 
         // booleans for user defined functions
         var user_energy = false,
@@ -48,9 +47,9 @@
             var m = lab.length,
                 ener = 0,
                 dx = lab[index].x + lab[index].width/2 - anc[index].x,
-                dx2 = lab[index].x - anc[index].x - 4,
+                dx2 = lab[index].x - 4 - anc[index].x,
                 dx3 = lab[index].x + lab[index].width + 4 - anc[index].x,
-                dy = anc[index].y - lab[index].y,
+                dy = lab[index].y - anc[index].y - 4,
                 dy2 = anc[index].y - (lab[index].y - lab[index].height - 2),
                 dy3 = anc[index].y - (lab[index].y - lab[index].height/2),
                 dist = Math.sqrt(dx * dx + dy * dy),
@@ -61,45 +60,44 @@
                 dist6 = Math.sqrt(dx3 * dx3 + dy * dy),
                 dist7 = Math.sqrt(dx3 * dx3 + dy2 * dy2),
                 dist8 = Math.sqrt(dx2 * dx2 + dy * dy),
-                overlap = true,
-                amount = 0,
-                theta = 0;
+                overlap = true;
 
             // penalty for length of leader line
-            minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7);
-            secondaryPerfectPenalty = 1.2;
-            tertiaryPerfectPenalty = 4;
+            perfect2penalty = 1.8;
+            perfect3penalty = 5;
+            minDist = Math.min(dist,
+                dist2,
+                dist3,
+                dist4,
+                dist5,
+                dist6,
+                dist7,
+                dist8);
             switch(minDist) {
                 case dist:
                     ener += dist * w_len;
                     break;
                 case dist2:
-                    ener += dist2 * w_len * secondaryPerfectPenalty;
+                    ener += dist2 * w_len * perfect2penalty;
                     break;
                 case dist3:
-                    ener += dist3 * w_len * tertiaryPerfectPenalty;
+                    ener += dist3 * w_len * perfect3penalty;
                     break;
                 case dist4:
-                    ener += dist4 * w_len * tertiaryPerfectPenalty;
+                    ener += dist4 * w_len * perfect3penalty;
                     break;
                 case dist5:
-                    ener += dist5 * w_len * tertiaryPerfectPenalty;
+                    ener += dist5 * w_len * perfect3penalty;
                     break;
                 case dist6:
-                    ener += dist6 * w_len * tertiaryPerfectPenalty;
+                    ener += dist6 * w_len * perfect3penalty;
                     break;
                 case dist7:
-                    ener += dist7 * w_len * tertiaryPerfectPenalty;
+                    ener += dist7 * w_len * perfect3penalty;
                     break;
+                case dist8:
+                    ener += dist8 * w_len * perfect3penalty;
             }
-
-            // label orientation bias
-            // dx /= dist;
-            // dy /= dist;
-            // if (dx > 0 && dy > 0) { ener += 0 * w_orient; }
-            // else if (dx < 0 && dy > 0) { ener += 1 * w_orient; }
-            // else if (dx < 0 && dy < 0) { ener += 2 * w_orient; }
-            // else { ener += 3 * w_orient; }
 
             var x21 = lab[index].x,
                 y21 = lab[index].y - lab[index].height,
@@ -147,6 +145,7 @@
                 if (intersecBottom) ener += w_lablink;
                 if (intersecTop) ener += w_lablink;
             }
+            if (investigate == index) console.log(ener);
             return ener;
         };
 
@@ -170,10 +169,10 @@
             lab[i].y += (random.real(0,1) - 0.5) * max_move;
 
             // hard wall boundaries
-            if (lab[i].x + lab[i].width > w2) lab[i].x = x_old;
-            if (lab[i].x < w1) lab[i].x = x_old;
-            if (lab[i].y > h2) lab[i].y = y_old;
-            if (lab[i].y - lab[i].height < h1) lab[i].y = y_old;
+            if (lab[i].x + lab[i].width > w2) lab[i].x = w2 - lab[i].width;
+            if (lab[i].x < w1) lab[i].x = w1;
+            if (lab[i].y > h2) lab[i].y = h2;
+            if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
 
             // new energy
             var new_energy;
@@ -186,7 +185,7 @@
             if (random.real(0,1) < Math.exp(-delta_energy / currT)) {
                 acc += 1;
                 //if (i == investigate)
-                //svg.append('rect').attr('x', lab[i].x)
+                //    svg.append('rect').attr('x', lab[i].x)
                 //                  .attr('y', lab[i].y - lab[i].height)
                 //                  .attr('width', lab[i].width)
                 //                  .attr('height', lab[i].height)
@@ -230,7 +229,7 @@
             var c = Math.cos(angle);
 
             // translate label (relative to anchor at origin):
-            lab[i].x -= anc[i].x;
+            lab[i].x -= anc[i].x + lab[i].width/2;
             lab[i].y -= anc[i].y;
 
             // rotate label
@@ -238,14 +237,22 @@
                 y_new = lab[i].x * s + lab[i].y * c;
 
             // translate label back
-            lab[i].x = x_new + anc[i].x;
+            lab[i].x = x_new + anc[i].x - lab[i].width/2;
             lab[i].y = y_new + anc[i].y;
 
             // hard wall boundaries
-            if (lab[i].x + lab[i].width > w2) lab[i].x = x_old;
-            if (lab[i].x < w1) lab[i].x = x_old;
-            if (lab[i].y > h2) lab[i].y = y_old;
-            if (lab[i].y - lab[i].height < h1) lab[i].y = y_old;
+            if (lab[i].x + lab[i].width > w2) lab[i].x = w2 - lab[i].width;
+            if (lab[i].x < w1) lab[i].x = w1;
+            if (lab[i].y > h2) lab[i].y = h2;
+            if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
+
+            //if (i == investigate)
+                //svg.append('rect').attr('x', lab[i].x)
+                //    .attr('y', lab[i].y - lab[i].height)
+                //    .attr('width', lab[i].width)
+                //    .attr('height', lab[i].height)
+                //    .attr('fill', 'green')
+                //    .attr('fill-opacity', 0.1);
 
             // new energy
             var new_energy;
@@ -263,7 +270,7 @@
                 //                   .attr('y', lab[i].y - lab[i].height)
                 //                   .attr('width', lab[i].width)
                 //                   .attr('height', lab[i].height)
-                //                   .attr('fill', 'yellow')
+                //                   .attr('fill', 'red')
                 //                   .attr('fill-opacity', 0.1);
             } else {
                 // move back to old coordinates
@@ -299,12 +306,12 @@
                 return true;
             }
             return false;
-        }
+        };
 
         cooling_schedule = function(currT, initialT, nsweeps) {
             // linear cooling
             return (currT - (initialT / nsweeps));
-        }
+        };
 
         labeler.start = function(nsweeps) {
             for (var i = 0; i < lab.length; i++) {
@@ -315,45 +322,45 @@
                 currT = 1.0,
                 initialT = 1.0;
 
-            for (var i = 0; i < nsweeps; i++) {
+            for (i = 0; i < nsweeps; i++) {
                 for (var j = 0; j < m; j++) {
                     if (random.real(0,1) < 0.5) { mcmove(currT); }
                     else { mcrotate(currT); }
                 }
                 currT = cooling_schedule(currT, initialT, nsweeps);
             }
-            //for(var i=0; i<lab.length;i++) {
-            //    lab[i].x += lab[i].width/2;
-            //}
+            for(i=0; i<lab.length;i++) {
+                lab[i].x += lab[i].width/2;
+            }
         };
 
         labeler.svg = function(x) {
             svg = x;
             return labeler;
-        }
+        };
 
         labeler.w1 = function(x) {
             if(!arguments.length) return w;
             w1 = x;
             return labeler;
-        }
+        };
         labeler.w2 = function(x) {
             if(!arguments.length) return w;
             w2 = x;
             return labeler;
-        }
+        };
 
         labeler.h1 = function(x) {
             if(!arguments.length) return h;
             h1 = x;
             return labeler;
-        }
+        };
 
         labeler.h2 = function(x) {
             if(!arguments.length) return h;
             h2 = x;
             return labeler;
-        }
+        };
 
         labeler.label = function(x) {
             // users insert label positions
@@ -362,13 +369,14 @@
             for(var i=0; i<lab.length;i++) {
                 lab[i].x -= lab[i].width/2;
                 lab[i].y -= 5;
-                //svg.append('rect').attr('x', lab[i].x)
-                //    .attr('y', lab[i].y - lab[i].height)
-                //    .attr('width', lab[i].width)
-                //    .attr('height', lab[i].height)
-                //    .attr('fill', 'yellow')
-                //    .attr('stroke', 'blue')
-                //    .attr('opacity', 0.1);
+                svg.append('rect')
+                    .attr('x', lab[i].x)
+                    .attr('y', lab[i].y - lab[i].height)
+                    .attr('width', lab[i].width)
+                    .attr('height', lab[i].height)
+                    .attr('fill', 'yellow')
+                    .attr('stroke', 'blue')
+                    .attr('opacity', 0.1);
             }
             return labeler;
         };
