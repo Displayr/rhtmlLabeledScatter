@@ -26,23 +26,65 @@ class LabeledScatter extends RhtmlSvgWidget
     console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
     console.log @outerSvg
     console.log testData
+    data = testData
 
 
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, @width, @height)
+    viewBoxX = @width / 5
+    viewBoxY = @height / 5
 
     @outerSvg.append('rect')
              .attr('class', 'plot-viewbox')
-             .attr('x', @width / 5)
-             .attr('y', @height / 5)
+             .attr('x', viewBoxX)
+             .attr('y', viewBoxY)
              .attr('width', viewBoxDim.width)
              .attr('height', viewBoxDim.height)
              .attr('fill', 'none')
              .attr('stroke', 'black')
              .attr('stroke-width', '1px')
 
+    #normalize
+    minX = Infinity
+    maxX = -Infinity
+    minY = Infinity
+    maxY = -Infinity
+    i = 0
+    while i < data.X.length
+      minX = data.X[i] if minX > data.X[i]
+      maxX = data.X[i] if maxX < data.X[i]
+      minY = data.Y[i] if minY > data.Y[i]
+      maxY = data.Y[i] if maxY < data.Y[i]
+      i++
+
+    threshold = 0.05
+    i = 0
+    while i < data.X.length
+      data.X[i] = threshold + (data.X[i] - minX)/(maxX - minX)*(1-2*threshold)
+      data.Y[i] = threshold + (data.Y[i] - minY)/(maxY - minY)*(1-2*threshold)
+      i++
+
+    pts = []
+    i = 0
+    while i < data.X.length
+      pts.push({
+        x: data.X[i]*viewBoxDim.width + viewBoxX
+        y: data.Y[i]*viewBoxDim.height + viewBoxY
+        r: 2
+      })
+      i++
+
+    @outerSvg.selectAll('.anc')
+             .data(pts)
+             .enter()
+             .append('circle')
+             .attr('class', 'anc')
+             .attr('cx', (d) -> d.x)
+             .attr('cy', (d) -> d.y)
+             .attr('r', (d) -> d.r)
+
   calcViewBoxDim = (X, Y, width, height) ->
     return {
-      width: width /2
+      width: width / 2
       height: height / 2
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)

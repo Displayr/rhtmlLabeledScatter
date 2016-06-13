@@ -30,13 +30,60 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var viewBoxDim;
+    var data, i, maxX, maxY, minX, minY, pts, threshold, viewBoxDim, viewBoxX, viewBoxY;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
     console.log(testData);
+    data = testData;
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
-    return this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', this.width / 5).attr('y', this.height / 5).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
+    viewBoxX = this.width / 5;
+    viewBoxY = this.height / 5;
+    this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', viewBoxX).attr('y', viewBoxY).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
+    minX = Infinity;
+    maxX = -Infinity;
+    minY = Infinity;
+    maxY = -Infinity;
+    i = 0;
+    while (i < data.X.length) {
+      if (minX > data.X[i]) {
+        minX = data.X[i];
+      }
+      if (maxX < data.X[i]) {
+        maxX = data.X[i];
+      }
+      if (minY > data.Y[i]) {
+        minY = data.Y[i];
+      }
+      if (maxY < data.Y[i]) {
+        maxY = data.Y[i];
+      }
+      i++;
+    }
+    threshold = 0.05;
+    i = 0;
+    while (i < data.X.length) {
+      data.X[i] = threshold + (data.X[i] - minX) / (maxX - minX) * (1 - 2 * threshold);
+      data.Y[i] = threshold + (data.Y[i] - minY) / (maxY - minY) * (1 - 2 * threshold);
+      i++;
+    }
+    pts = [];
+    i = 0;
+    while (i < data.X.length) {
+      pts.push({
+        x: data.X[i] * viewBoxDim.width + viewBoxX,
+        y: data.Y[i] * viewBoxDim.height + viewBoxY,
+        r: 2
+      });
+      i++;
+    }
+    return this.outerSvg.selectAll('.anc').data(pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+      return d.x;
+    }).attr('cy', function(d) {
+      return d.y;
+    }).attr('r', function(d) {
+      return d.r;
+    });
   };
 
   calcViewBoxDim = function(X, Y, width, height) {

@@ -7,3 +7,4 @@ browser
 *.Rproj
 .tags
 bower_components
+.idea/
