@@ -30,16 +30,16 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var data, i, maxX, maxY, minX, minY, originX, originY, pts, threshold, viewBoxDim, viewBoxX, viewBoxY;
+    var anc, data, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, originX, originY, pts, threshold, viewBoxDim;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
     console.log(testData);
     data = testData;
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
-    viewBoxX = this.width / 5;
-    viewBoxY = this.height / 5;
-    this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', viewBoxX).attr('y', viewBoxY).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
+    viewBoxDim['x'] = this.width / 5;
+    viewBoxDim['y'] = this.height / 5;
+    this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', viewBoxDim.x).attr('y', viewBoxDim.y).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
     minX = Infinity;
     maxX = -Infinity;
     minY = Infinity;
@@ -67,14 +67,34 @@ LabeledScatter = (function(_super) {
       data.Y[i] = threshold + (data.Y[i] - minY) / (maxY - minY) * (1 - 2 * threshold);
       i++;
     }
-    originX = (-minX) / (maxX - minX) * viewBoxDim.width + viewBoxX;
-    originY = (-minY) / (maxY - minY) * viewBoxDim.height + viewBoxY;
+    originX = (-minX) / (maxX - minX) * viewBoxDim.width + viewBoxDim.x;
+    originY = (-minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
     pts = [];
     i = 0;
     while (i < data.X.length) {
       pts.push({
-        x: data.X[i] * viewBoxDim.width + viewBoxX,
-        y: data.Y[i] * viewBoxDim.height + viewBoxY,
+        x: data.X[i] * viewBoxDim.width + viewBoxDim.x,
+        y: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
+        r: 2,
+        label: data.label[i],
+        labelX: data.X[i] * viewBoxDim.width + viewBoxDim.x,
+        labelY: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
+        group: data.group[i]
+      });
+      i++;
+    }
+    lab = [];
+    anc = [];
+    i = 0;
+    while (i < data.X.length) {
+      lab.push({
+        x: data.X[i] * viewBoxDim.width + viewBoxDim.x,
+        y: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
+        text: data.label[i]
+      });
+      anc.push({
+        x: data.X[i] * viewBoxDim.width + viewBoxDim.x,
+        y: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
         r: 2
       });
       i++;
@@ -86,8 +106,35 @@ LabeledScatter = (function(_super) {
     }).attr('r', function(d) {
       return d.r;
     });
-    this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxX).attr('y1', originY).attr('x2', viewBoxX + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
-    return this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxY).attr('x2', originX).attr('y2', viewBoxY + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    labels_svg = this.outerSvg.selectAll('.label').data(lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.text;
+    });
+    i = 0;
+    while (i < data.X.length) {
+      lab[i].width = labels_svg[0][i].getBBox().width;
+      lab[i].height = labels_svg[0][i].getBBox().height;
+      i++;
+    }
+    labels_svg.remove();
+    labels_svg = this.outerSvg.selectAll('.label').data(lab).enter().append('text').attr('x', function(d) {
+      return d.x - d.width / 2;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.text;
+    });
+    labeler = d3.labeler().svg(this.outerSvg).w1(viewBoxDim.x).w2(viewBoxDim.x + viewBoxDim.width).h1(viewBoxDim.y).h2(viewBoxDim.y + viewBoxDim.height).anchor(anc).label(lab).start(500);
+    labels_svg.transition().duration(800).attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    });
+    this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxDim.x).attr('y1', originY).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    return this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxDim.y).attr('x2', originX).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
   };
 
   calcViewBoxDim = function(X, Y, width, height) {

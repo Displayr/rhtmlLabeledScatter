@@ -30,13 +30,13 @@ class LabeledScatter extends RhtmlSvgWidget
 
 
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, @width, @height)
-    viewBoxX = @width / 5
-    viewBoxY = @height / 5
+    viewBoxDim['x'] = @width / 5
+    viewBoxDim['y'] = @height / 5
 
     @outerSvg.append('rect')
              .attr('class', 'plot-viewbox')
-             .attr('x', viewBoxX)
-             .attr('y', viewBoxY)
+             .attr('x', viewBoxDim.x)
+             .attr('y', viewBoxDim.y)
              .attr('width', viewBoxDim.width)
              .attr('height', viewBoxDim.height)
              .attr('fill', 'none')
@@ -62,15 +62,35 @@ class LabeledScatter extends RhtmlSvgWidget
       data.X[i] = threshold + (data.X[i] - minX)/(maxX - minX)*(1-2*threshold)
       data.Y[i] = threshold + (data.Y[i] - minY)/(maxY - minY)*(1-2*threshold)
       i++
-    originX = (-minX)/(maxX - minX)*viewBoxDim.width + viewBoxX
-    originY = (-minY)/(maxY - minY)*viewBoxDim.height + viewBoxY
+    originX = (-minX)/(maxX - minX)*viewBoxDim.width + viewBoxDim.x
+    originY = (-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
 
     pts = []
     i = 0
     while i < data.X.length
       pts.push({
-        x: data.X[i]*viewBoxDim.width + viewBoxX
-        y: data.Y[i]*viewBoxDim.height + viewBoxY
+        x: data.X[i]*viewBoxDim.width + viewBoxDim.x
+        y: data.Y[i]*viewBoxDim.height + viewBoxDim.y
+        r: 2
+        label: data.label[i]
+        labelX: data.X[i]*viewBoxDim.width + viewBoxDim.x
+        labelY: data.Y[i]*viewBoxDim.height + viewBoxDim.y
+        group: data.group[i]
+      })
+      i++
+
+    lab = []
+    anc = []
+    i = 0
+    while i < data.X.length
+      lab.push({
+        x: data.X[i]*viewBoxDim.width + viewBoxDim.x
+        y: data.Y[i]*viewBoxDim.height + viewBoxDim.y
+        text: data.label[i]
+      })
+      anc.push({
+        x: data.X[i]*viewBoxDim.width + viewBoxDim.x
+        y: data.Y[i]*viewBoxDim.height + viewBoxDim.y
         r: 2
       })
       i++
@@ -84,11 +104,55 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('cy', (d) -> d.y)
              .attr('r', (d) -> d.r)
 
+    labels_svg = @outerSvg.selectAll('.label')
+             .data(lab)
+             .enter()
+             .append('text')
+             .attr('class', 'init-labs')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial Narrow')
+             .text((d) -> d.text)
+
+    i = 0
+    while i < data.X.length
+      lab[i].width = labels_svg[0][i].getBBox().width
+      lab[i].height = labels_svg[0][i].getBBox().height
+      i++
+
+    labels_svg.remove()
+
+    labels_svg = @outerSvg.selectAll('.label')
+                          .data(lab)
+                          .enter()
+                          .append('text')
+                          .attr('x', (d) -> d.x - d.width/2)
+                          .attr('y', (d) -> d.y)
+                          .attr('font-family', 'Arial Narrow')
+                          .text((d) -> d.text)
+
+
+    labeler = d3.labeler()
+                .svg(@outerSvg)
+                .w1(viewBoxDim.x)
+                .w2(viewBoxDim.x + viewBoxDim.width)
+                .h1(viewBoxDim.y)
+                .h2(viewBoxDim.y + viewBoxDim.height)
+                .anchor(anc)
+                .label(lab)
+                .start(500)
+
+    labels_svg.transition()
+              .duration(800)
+              .attr('x', (d) -> d.x)
+              .attr('y', (d) -> d.y)
+
+
     @outerSvg.append('line')
              .attr('class', 'origin')
-             .attr('x1', viewBoxX)
+             .attr('x1', viewBoxDim.x)
              .attr('y1', originY)
-             .attr('x2', viewBoxX + viewBoxDim.width)
+             .attr('x2', viewBoxDim.x + viewBoxDim.width)
              .attr('y2', originY)
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
@@ -96,9 +160,9 @@ class LabeledScatter extends RhtmlSvgWidget
     @outerSvg.append('line')
              .attr('class', 'origin')
              .attr('x1', originX)
-             .attr('y1', viewBoxY)
+             .attr('y1', viewBoxDim.y)
              .attr('x2', originX)
-             .attr('y2', viewBoxY + viewBoxDim.height)
+             .attr('y2', viewBoxDim.y + viewBoxDim.height)
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
              .style("stroke-dasharray", ("3, 3"))

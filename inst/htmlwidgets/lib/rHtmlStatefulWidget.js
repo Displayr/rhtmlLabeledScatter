@@ -4,32 +4,75 @@ var RhtmlStatefulWidget;
 RhtmlStatefulWidget = (function() {
   function RhtmlStatefulWidget(el, width, height) {
     this.stateListeners = [];
+    if (!(_.has(this, 'state'))) {
+      this.state = {};
+    }
+    if (!_.has(this, 'stateVersion')) {
+      this._setStateVersion(1);
+    }
   }
 
+  RhtmlStatefulWidget.prototype._setStateVersion = function(input) {
+    var newVersion;
+    if (!("" + input).match(new RegExp(/^\d$/))) {
+      throw new Error("Invalid version '" + input + "' : must be integer");
+    }
+    newVersion = parseInt(input);
+    if (_.isNaN(newVersion)) {
+      throw new Error("Invalid version '" + input + "' : must be integer");
+    }
+    return this.stateVersion = newVersion;
+  };
+
   RhtmlStatefulWidget.prototype.partialStateUpdate = function(k, v) {
+    if (k === 'version') {
+      throw new Error("Cannot update version via partialStateUpdate");
+    }
     this.state[k] = v;
     this._updateStateListeners();
     return this._redraw();
   };
 
   RhtmlStatefulWidget.prototype.getState = function() {
-    return this.state;
+    return _.clone(_.extend(this.state, {
+      version: this.stateVersion
+    }));
   };
 
-  RhtmlStatefulWidget.prototype.setState = function(newState) {
-    var err;
-    if (_.isString(newState)) {
+  RhtmlStatefulWidget.prototype.setState = function(input) {
+    var err, newState, newVersion;
+    newState = null;
+    if (_.isString(input)) {
       try {
-        this.state = JSON.parse(newState);
+        newState = JSON.parse(input);
       } catch (_error) {
         err = _error;
-        throw new Error('json parse error in setState(#newState): ' + err);
+        throw new Error("json parse error in setState(" + input + "): " + err);
       }
     } else {
-      this.state = _.clone(newState);
+      newState = _.clone(input);
     }
+    newVersion = null;
+    if (_.has(newState, 'version')) {
+      newVersion = parseInt(newState.version);
+      if (_.isNaN(newVersion)) {
+        throw new Error("setState error : Invalid version '" + newState.version + "' : must be integer");
+      }
+      delete newState.version;
+    } else {
+      newVersion = this.stateVersion;
+    }
+    if (newVersion !== this.stateVersion) {
+      newState = this._upgradeState(newState, newVersion);
+      this._setStateVersion(newVersion);
+    }
+    this.state = newState;
     this._updateStateListeners();
     return this._redraw();
+  };
+
+  RhtmlStatefulWidget.prototype._upgradeState = function(newState, newVersion) {
+    throw new Error("_upgradeState must be implemented by child class");
   };
 
   RhtmlStatefulWidget.prototype.registerStateListener = function(listener) {
@@ -49,7 +92,7 @@ RhtmlStatefulWidget = (function() {
     }
     return _.forEach(this.stateListeners, (function(_this) {
       return function(listener) {
-        return listener(_.clone(_this.state));
+        return listener(_this.getState());
       };
     })(this));
   };
@@ -57,3 +100,7 @@ RhtmlStatefulWidget = (function() {
   return RhtmlStatefulWidget;
 
 })();
+
+if (typeof module !== 'undefined') {
+  module.exports = RhtmlStatefulWidget;
+}

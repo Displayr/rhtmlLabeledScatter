@@ -90,12 +90,8 @@ There are example widget use in R in the [features.R file](examples/features.R),
 
 ## TODO
 - Determine the sizing of different elements on the padding-left
-- Draw the viewBox
 - X Y axis labels
 - Legend box and sizing
-- Origin markers in the plot
 - Dimensional increment lines
-- Inner anchor points
-- Inner text labels
 - Label placement algorithm
 - Fix yaml file when it is time to test in RStudio

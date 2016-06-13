@@ -92,7 +92,8 @@ gulp.task('copy', function () {
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/d3/d3.min.js',
     'node_modules/rhtmlBaseClasses/dist/rHtmlSvgWidget.js',
-    'node_modules/rhtmlBaseClasses/dist/rHtmlStatefulWidget.js'
+    'node_modules/rhtmlBaseClasses/dist/rHtmlStatefulWidget.js',
+    'node_modules/random-js/lib/random.min.js'
   ]
 
   gulp.src(extLibs)
@@ -131,4 +132,5 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('theSrc/images/**/*', ['copy']);
   gulp.watch('theSrc/styles/**/*.less', ['less']);
   gulp.watch('theSrc/scripts/**/*.coffee', ['compile-coffee']);
+  gulp.watch('theSrc/scripts/lib/*.js', ['copy']);
 });
