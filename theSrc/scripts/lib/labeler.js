@@ -14,14 +14,14 @@
             labeler = {},
             svg = {};
 
-        var investigate = 2;
+        var investigate = 13;
         var max_move = 5.0,
             max_angle = 2*3.1415,
             acc = 0,
             rej = 0;
 
         // weights
-        var w_len = 5.0, // leader line length
+        var w_len = 10.0, // leader line length
             w_inter = 1.0, // leader line intersection
             w_lablink = 2.0, // leader line-label intersection
             w_lab2 = 12.0, // label-label overlap
@@ -50,7 +50,7 @@
                 dx2 = lab[index].x - 4 - anc[index].x,
                 dx3 = lab[index].x + lab[index].width + 4 - anc[index].x,
                 dy = lab[index].y - anc[index].y - 4,
-                dy2 = anc[index].y - (lab[index].y - lab[index].height - 2),
+                dy2 = anc[index].y - (lab[index].y - lab[index].height),
                 dy3 = anc[index].y - (lab[index].y - lab[index].height/2),
                 dist = Math.sqrt(dx * dx + dy * dy),
                 dist2 = Math.sqrt(dx * dx + dy2 * dy2),
@@ -63,16 +63,9 @@
                 overlap = true;
 
             // penalty for length of leader line
-            perfect2penalty = 1.8;
-            perfect3penalty = 5;
-            minDist = Math.min(dist,
-                dist2,
-                dist3,
-                dist4,
-                dist5,
-                dist6,
-                dist7,
-                dist8);
+            perfect2penalty = 2;
+            perfect3penalty = 8;
+            minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
             switch(minDist) {
                 case dist:
                     ener += dist * w_len;
@@ -145,7 +138,6 @@
                 if (intersecBottom) ener += w_lablink;
                 if (intersecTop) ener += w_lablink;
             }
-            if (investigate == index) console.log(ener);
             return ener;
         };
 
@@ -369,14 +361,14 @@
             for(var i=0; i<lab.length;i++) {
                 lab[i].x -= lab[i].width/2;
                 lab[i].y -= 5;
-                svg.append('rect')
-                    .attr('x', lab[i].x)
-                    .attr('y', lab[i].y - lab[i].height)
-                    .attr('width', lab[i].width)
-                    .attr('height', lab[i].height)
-                    .attr('fill', 'yellow')
-                    .attr('stroke', 'blue')
-                    .attr('opacity', 0.1);
+                //svg.append('rect')
+                //    .attr('x', lab[i].x)
+                //    .attr('y', lab[i].y - lab[i].height)
+                //    .attr('width', lab[i].width)
+                //    .attr('height', lab[i].height)
+                //    .attr('fill', 'yellow')
+                //    .attr('stroke', 'blue')
+                //    .attr('opacity', 0.1);
             }
             return labeler;
         };
