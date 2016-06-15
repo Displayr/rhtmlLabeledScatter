@@ -263,7 +263,7 @@ class LabeledScatter extends RhtmlSvgWidget
     ]
 
     legendPtRad = 6
-    legendLeftPadding = 40
+    legendLeftPadding = 30
     heightOfRow = 25
     legendStartY = Math.max((viewBoxDim.y + viewBoxDim.height/2 - heightOfRow*(legend.length)/2 + legendPtRad), viewBoxDim.y + legendPtRad)
     i = 0

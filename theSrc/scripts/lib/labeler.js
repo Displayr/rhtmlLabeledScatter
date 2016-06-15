@@ -49,9 +49,9 @@
                 dx = lab[index].x + lab[index].width/2 - anc[index].x,
                 dx2 = lab[index].x - 4 - anc[index].x,
                 dx3 = lab[index].x + lab[index].width + 4 - anc[index].x,
-                dy = lab[index].y - anc[index].y - 4,
-                dy2 = anc[index].y - (lab[index].y - lab[index].height),
-                dy3 = anc[index].y - (lab[index].y - lab[index].height/2),
+                dy = lab[index].y - (anc[index].y - 5),
+                dy2 = (lab[index].y - lab[index].height) - anc[index].y,
+                dy3 = (lab[index].y - lab[index].height/2) - anc[index].y,
                 dist = Math.sqrt(dx * dx + dy * dy),
                 dist2 = Math.sqrt(dx * dx + dy2 * dy2),
                 dist3 = Math.sqrt(dx2 * dx2 + dy3 * dy3),
@@ -362,7 +362,7 @@
             for(var i=0; i<lab.length;i++) {
                 lab[i].x -= lab[i].width/2;
                 lab[i].y -= 5;
-                //svg.append('rect')
+                // svg.append('rect')
                 //    .attr('x', lab[i].x)
                 //    .attr('y', lab[i].y - lab[i].height)
                 //    .attr('width', lab[i].width)
