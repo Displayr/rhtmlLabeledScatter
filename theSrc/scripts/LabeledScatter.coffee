@@ -179,7 +179,7 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('y2', (d) -> d.y2)
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
-             .style("stroke-dasharray", ("3, 3"))
+             .style('stroke-dasharray', ('3, 3'))
 
     dimensionMarkerStack = []
     dimensionMarkerLeaderStack = []

@@ -187,7 +187,7 @@ LabeledScatter = (function(_super) {
       return d.x2;
     }).attr('y2', function(d) {
       return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '3, 3');
     dimensionMarkerStack = [];
     dimensionMarkerLeaderStack = [];
     dimensionMarkerLabelStack = [];

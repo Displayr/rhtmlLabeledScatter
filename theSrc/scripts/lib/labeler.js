@@ -15,6 +15,7 @@
             svg = {};
 
         var investigate = 13;
+        var labelTopPadding = 5;
         var max_move = 5.0,
             max_angle = 2*3.1415,
             acc = 0,
@@ -50,7 +51,7 @@
                 dx2 = lab[index].x - 4 - anc[index].x,
                 dx3 = lab[index].x + lab[index].width + 4 - anc[index].x,
                 dy = lab[index].y - (anc[index].y - 5),
-                dy2 = (lab[index].y - lab[index].height) - anc[index].y,
+                dy2 = (lab[index].y - (lab[index].height - labelTopPadding)) - anc[index].y,
                 dy3 = (lab[index].y - lab[index].height/2) - anc[index].y,
                 dist = Math.sqrt(dx * dx + dy * dy),
                 dist2 = Math.sqrt(dx * dx + dy2 * dy2),
@@ -94,7 +95,7 @@
             }
 
             var x21 = lab[index].x,
-                y21 = lab[index].y - lab[index].height,
+                y21 = lab[index].y - (lab[index].height - labelTopPadding),
                 x22 = lab[index].x + lab[index].width,
                 y22 = lab[index].y;
             var x11, x12, y11, y12, x_overlap, y_overlap, overlap_area;
