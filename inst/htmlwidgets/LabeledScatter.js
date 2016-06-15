@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, axisLabels, between, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, legend, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
+    var anc, axisLabels, between, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     data = testData;
@@ -317,12 +317,16 @@ LabeledScatter = (function(_super) {
         transform: 'rotate(270,' + (viewBoxDim.x - yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height / 2) + ')'
       }
     ];
+    legendPtRad = 6;
+    legendLeftPadding = 40;
+    heightOfRow = 25;
+    legendStartY = Math.max(viewBoxDim.y + viewBoxDim.height / 2 - heightOfRow * legend.length / 2 + legendPtRad, viewBoxDim.y + legendPtRad);
     i = 0;
     while (i < legend.length) {
       li = legend[i];
-      li['r'] = 6;
-      li['cx'] = viewBoxDim.x + viewBoxDim.width + 40;
-      li['cy'] = viewBoxDim.y + viewBoxDim.height / 3 + i * 30;
+      li['r'] = legendPtRad;
+      li['cx'] = viewBoxDim.x + viewBoxDim.width + legendLeftPadding;
+      li['cy'] = legendStartY + i * heightOfRow;
       li['x'] = li['cx'] + 15;
       li['y'] = li['cy'] + li['r'];
       li['anchor'] = 'start';

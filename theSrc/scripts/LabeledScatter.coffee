@@ -262,12 +262,16 @@ class LabeledScatter extends RhtmlSvgWidget
       }
     ]
 
+    legendPtRad = 6
+    legendLeftPadding = 40
+    heightOfRow = 25
+    legendStartY = Math.max((viewBoxDim.y + viewBoxDim.height/2 - heightOfRow*(legend.length)/2 + legendPtRad), viewBoxDim.y + legendPtRad)
     i = 0
     while i < legend.length
       li = legend[i]
-      li['r'] = 6
-      li['cx'] = viewBoxDim.x + viewBoxDim.width + 40
-      li['cy'] = viewBoxDim.y + viewBoxDim.height/3 + i*30
+      li['r'] = legendPtRad
+      li['cx'] = viewBoxDim.x + viewBoxDim.width + legendLeftPadding
+      li['cy'] = legendStartY + i*heightOfRow
       li['x'] = li['cx'] + 15
       li['y'] = li['cy'] + li['r']
       li['anchor'] = 'start'
