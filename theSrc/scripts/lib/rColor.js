@@ -15,8 +15,9 @@
     }
 }(this, function () {
 
+  var random = new Random(Random.engines.mt19937().seed(1));
 	var RColor = function() {
-		this.hue			= Math.random(),
+		this.hue			= random.real(0,1),
 		this.goldenRatio 	= 0.618033988749895;
 		this.hexwidth		= 2;
 	};
