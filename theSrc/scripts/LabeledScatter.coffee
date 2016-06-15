@@ -120,19 +120,6 @@ class LabeledScatter extends RhtmlSvgWidget
       lab[i].width = labels_svg[0][i].getBBox().width
       lab[i].height = labels_svg[0][i].getBBox().height
       i++
-#
-#    labels_svg.remove()
-#
-#    labels_svg = @outerSvg.selectAll('.label')
-#                          .data(lab)
-#                          .enter()
-#                          .append('text')
-#                          .attr('x', (d) -> d.x)
-#                          .attr('y', (d) -> d.y)
-#                          .attr('font-family', 'Arial Narrow')
-#                          .text((d) -> d.text)
-#                          .attr('text-anchor', 'middle')
-
 
     labeler = d3.labeler()
                 .svg(@outerSvg)

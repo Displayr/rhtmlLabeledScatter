@@ -63,8 +63,9 @@
                 overlap = true;
 
             // penalty for length of leader line
-            perfect2penalty = 2;
+            perfect2penalty = 1.5;
             perfect3penalty = 8;
+            perfect4penalty = 9;
             minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
             switch(minDist) {
                 case dist:
@@ -80,16 +81,16 @@
                     ener += dist4 * w_len * perfect3penalty;
                     break;
                 case dist5:
-                    ener += dist5 * w_len * perfect3penalty;
+                    ener += dist5 * w_len * perfect4penalty;
                     break;
                 case dist6:
-                    ener += dist6 * w_len * perfect3penalty;
+                    ener += dist6 * w_len * perfect4penalty;
                     break;
                 case dist7:
-                    ener += dist7 * w_len * perfect3penalty;
+                    ener += dist7 * w_len * perfect4penalty;
                     break;
                 case dist8:
-                    ener += dist8 * w_len * perfect3penalty;
+                    ener += dist8 * w_len * perfect4penalty;
             }
 
             var x21 = lab[index].x,
