@@ -66,8 +66,6 @@ class LabeledScatter extends RhtmlSvgWidget
     normalizeYCoords = (Ycoord) ->
       (Ycoord-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
 
-
-
     #calculate number of dimension markers
     between = (num, min, max) ->
       num > min and num < max
@@ -88,9 +86,9 @@ class LabeledScatter extends RhtmlSvgWidget
       rowsPositive++ if between(-i, minY, maxY)
       i += 0.25
 
-
-
     pts = []
+    lab = []
+    anc = []
     i = 0
     while i < data.X.length
       pts.push({
@@ -102,12 +100,6 @@ class LabeledScatter extends RhtmlSvgWidget
         labelY: data.Y[i]*viewBoxDim.height + viewBoxDim.y
         group: data.group[i]
       })
-      i++
-
-    lab = []
-    anc = []
-    i = 0
-    while i < data.X.length
       lab.push({
         x: data.X[i]*viewBoxDim.width + viewBoxDim.x
         y: data.Y[i]*viewBoxDim.height + viewBoxDim.y
