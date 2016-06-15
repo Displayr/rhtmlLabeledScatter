@@ -243,6 +243,25 @@ class LabeledScatter extends RhtmlSvgWidget
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
+    yAxisPadding = 30
+    xAxisPadding = 40
+    axisLabels = [
+      { # x axis label
+        x: viewBoxDim.x + viewBoxDim.width/2
+        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding
+        text: 'Dimension 1 (64%)'
+        anchor: 'middle'
+        transform: 'rotate(0)'
+      },
+      { # y axis label
+        x: viewBoxDim.x - yAxisPadding
+        y: viewBoxDim.y + viewBoxDim.height/2
+        text: 'Dimension 2 (24%)'
+        anchor: 'middle'
+        transform: 'rotate(270,'+(viewBoxDim.x-yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height/2)+ ')'
+      }
+    ]
+
     @outerSvg.selectAll('.dim-marker')
              .data(dimensionMarkerStack)
              .enter()
@@ -276,6 +295,18 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('font-family', 'Arial Narrow')
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
+
+    @outerSvg.selectAll('.axis-label')
+             .data(axisLabels)
+             .enter()
+             .append('text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial')
+             .attr('text-anchor', (d) -> d.anchor)
+             .attr('transform', (d) -> d.transform)
+             .text((d) -> d.text)
+             .style('font-weight', 'bold')
 
 
   calcViewBoxDim = (X, Y, width, height) ->

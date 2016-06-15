@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, y1, y2;
+    var anc, axisLabels, between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     data = testData;
@@ -290,6 +290,23 @@ LabeledScatter = (function(_super) {
       }
       i++;
     }
+    yAxisPadding = 30;
+    xAxisPadding = 40;
+    axisLabels = [
+      {
+        x: viewBoxDim.x + viewBoxDim.width / 2,
+        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding,
+        text: 'Dimension 1 (64%)',
+        anchor: 'middle',
+        transform: 'rotate(0)'
+      }, {
+        x: viewBoxDim.x - yAxisPadding,
+        y: viewBoxDim.y + viewBoxDim.height / 2,
+        text: 'Dimension 2 (24%)',
+        anchor: 'middle',
+        transform: 'rotate(270,' + (viewBoxDim.x - yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height / 2) + ')'
+      }
+    ];
     this.outerSvg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
@@ -308,7 +325,7 @@ LabeledScatter = (function(_super) {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 1).attr('stroke', 'black');
-    return this.outerSvg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
+    this.outerSvg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -317,6 +334,17 @@ LabeledScatter = (function(_super) {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
+    return this.outerSvg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
+      return d.anchor;
+    }).attr('transform', function(d) {
+      return d.transform;
+    }).text(function(d) {
+      return d.text;
+    }).style('font-weight', 'bold');
   };
 
   calcViewBoxDim = function(X, Y, width, height) {
