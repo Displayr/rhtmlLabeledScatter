@@ -62,8 +62,38 @@ class LabeledScatter extends RhtmlSvgWidget
       data.X[i] = threshold + (data.X[i] - minX)/(maxX - minX)*(1-2*threshold)
       data.Y[i] = threshold + (data.Y[i] - minY)/(maxY - minY)*(1-2*threshold)
       i++
-    originX = (-minX)/(maxX - minX)*viewBoxDim.width + viewBoxDim.x
-    originY = (-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
+
+    normalizeXCoords = (Xcoord) ->
+      (Xcoord-minX)/(maxX - minX)*viewBoxDim.width + viewBoxDim.x
+    normalizeYCoords = (Ycoord) ->
+      (Ycoord-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
+    originX = normalizeXCoords 0
+    originY = normalizeYCoords 0
+
+    #calculate number of dimension markers
+    between = (num, min, max) ->
+      num > min and num < max
+
+    colsPositive = 0
+    colsNegative = 0
+    i = 0.25
+    while between(i, minX, maxX) or between(-i, minX, maxX)
+      colsPositive++ if between(i, minX, maxX)
+      colsNegative++ if between(-i, minX, maxX)
+      i += 0.25
+
+    rowsPositive = 0
+    rowsNegative = 0
+    i = 0.25
+    while between(i, minY, maxY) or between(-i, minY, maxY)
+      rowsNegative++ if between(i, minY, maxY) # y axis inversed svg
+      rowsPositive++ if between(-i, minY, maxY)
+      i += 0.25
+
+
+
+    console.log maxY
+    console.log minY
 
     pts = []
     i = 0
@@ -156,6 +186,53 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('stroke', 'black')
              .style("stroke-dasharray", ("3, 3"))
 
+
+    i = 0
+    while i < colsPositive
+      @outerSvg.append('line')
+               .attr('class', 'dim-marker')
+               .attr('x1', normalizeXCoords (i+1)*0.25)
+               .attr('y1', viewBoxDim.y)
+               .attr('x2', normalizeXCoords (i+1)*0.25)
+               .attr('y2', viewBoxDim.y + viewBoxDim.height)
+               .attr('stroke-width', 0.2)
+               .attr('stroke', 'grey')
+      i++
+    i = 0
+    while i < colsNegative
+      @outerSvg.append('line')
+               .attr('class', 'dim-marker')
+               .attr('x1', normalizeXCoords -(i+1)*0.25)
+               .attr('y1', viewBoxDim.y)
+               .attr('x2', normalizeXCoords -(i+1)*0.25)
+               .attr('y2', viewBoxDim.y + viewBoxDim.height)
+               .attr('stroke-width', 0.2)
+               .attr('stroke', 'grey')
+      i++
+
+    i = 0
+    while i < rowsPositive
+      @outerSvg.append('line')
+               .attr('class', 'dim-marker')
+               .attr('x1', viewBoxDim.x)
+               .attr('y1', normalizeYCoords -(i+1)*0.25)
+               .attr('x2', viewBoxDim.x + viewBoxDim.width)
+               .attr('y2', normalizeYCoords -(i+1)*0.25)
+               .attr('stroke-width', 0.2)
+               .attr('stroke', 'grey')
+      i++
+
+    i = 0
+    while i < rowsNegative
+      @outerSvg.append('line')
+               .attr('class', 'dim-marker')
+               .attr('x1', viewBoxDim.x)
+               .attr('y1', normalizeYCoords (i+1)*0.25)
+               .attr('x2', viewBoxDim.x + viewBoxDim.width)
+               .attr('y2', normalizeYCoords (i+1)*0.25)
+               .attr('stroke-width', 0.2)
+               .attr('stroke', 'grey')
+      i++
 
   calcViewBoxDim = (X, Y, width, height) ->
     return {

@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, data, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, originX, originY, pts, threshold, viewBoxDim;
+    var anc, between, colsNegative, colsPositive, data, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originX, originY, pts, rowsNegative, rowsPositive, threshold, viewBoxDim, _results;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
@@ -67,8 +67,43 @@ LabeledScatter = (function(_super) {
       data.Y[i] = threshold + (data.Y[i] - minY) / (maxY - minY) * (1 - 2 * threshold);
       i++;
     }
-    originX = (-minX) / (maxX - minX) * viewBoxDim.width + viewBoxDim.x;
-    originY = (-minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
+    normalizeXCoords = function(Xcoord) {
+      return (Xcoord - minX) / (maxX - minX) * viewBoxDim.width + viewBoxDim.x;
+    };
+    normalizeYCoords = function(Ycoord) {
+      return (Ycoord - minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
+    };
+    originX = normalizeXCoords(0);
+    originY = normalizeYCoords(0);
+    between = function(num, min, max) {
+      return num > min && num < max;
+    };
+    colsPositive = 0;
+    colsNegative = 0;
+    i = 0.25;
+    while (between(i, minX, maxX) || between(-i, minX, maxX)) {
+      if (between(i, minX, maxX)) {
+        colsPositive++;
+      }
+      if (between(-i, minX, maxX)) {
+        colsNegative++;
+      }
+      i += 0.25;
+    }
+    rowsPositive = 0;
+    rowsNegative = 0;
+    i = 0.25;
+    while (between(i, minY, maxY) || between(-i, minY, maxY)) {
+      if (between(i, minY, maxY)) {
+        rowsNegative++;
+      }
+      if (between(-i, minY, maxY)) {
+        rowsPositive++;
+      }
+      i += 0.25;
+    }
+    console.log(maxY);
+    console.log(minY);
     pts = [];
     i = 0;
     while (i < data.X.length) {
@@ -126,7 +161,29 @@ LabeledScatter = (function(_super) {
       return d.y;
     });
     this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxDim.x).attr('y1', originY).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
-    return this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxDim.y).attr('x2', originX).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxDim.y).attr('x2', originX).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    i = 0;
+    while (i < colsPositive) {
+      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', normalizeXCoords((i + 1) * 0.25)).attr('y1', viewBoxDim.y).attr('x2', normalizeXCoords((i + 1) * 0.25)).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 0.2).attr('stroke', 'grey');
+      i++;
+    }
+    i = 0;
+    while (i < colsNegative) {
+      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', normalizeXCoords(-(i + 1) * 0.25)).attr('y1', viewBoxDim.y).attr('x2', normalizeXCoords(-(i + 1) * 0.25)).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 0.2).attr('stroke', 'grey');
+      i++;
+    }
+    i = 0;
+    while (i < rowsPositive) {
+      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', viewBoxDim.x).attr('y1', normalizeYCoords(-(i + 1) * 0.25)).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', normalizeYCoords(-(i + 1) * 0.25)).attr('stroke-width', 0.2).attr('stroke', 'grey');
+      i++;
+    }
+    i = 0;
+    _results = [];
+    while (i < rowsNegative) {
+      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', viewBoxDim.x).attr('y1', normalizeYCoords((i + 1) * 0.25)).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', normalizeYCoords((i + 1) * 0.25)).attr('stroke-width', 0.2).attr('stroke', 'grey');
+      _results.push(i++);
+    }
+    return _results;
   };
 
   calcViewBoxDim = function(X, Y, width, height) {
