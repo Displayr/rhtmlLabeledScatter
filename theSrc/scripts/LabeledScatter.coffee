@@ -89,8 +89,13 @@ class LabeledScatter extends RhtmlSvgWidget
     pts = []
     lab = []
     anc = []
+    legend = []
+    color = new RColor #using rColor library
     i = 0
     while i < data.X.length
+      unless (_.some legend, (e) -> e.text is data.group[i])
+        newColor = color.get(true, 0.9, 0.9)
+        legend.push {text: data.group[i], color: newColor}
       pts.push({
         x: data.X[i]*viewBoxDim.width + viewBoxDim.x
         y: data.Y[i]*viewBoxDim.height + viewBoxDim.y
@@ -99,6 +104,7 @@ class LabeledScatter extends RhtmlSvgWidget
         labelX: data.X[i]*viewBoxDim.width + viewBoxDim.x
         labelY: data.Y[i]*viewBoxDim.height + viewBoxDim.y
         group: data.group[i]
+        color: newColor
       })
       lab.push({
         x: data.X[i]*viewBoxDim.width + viewBoxDim.x
@@ -112,6 +118,7 @@ class LabeledScatter extends RhtmlSvgWidget
       })
       i++
 
+
     @outerSvg.selectAll('.anc')
              .data(pts)
              .enter()
@@ -120,6 +127,7 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('cx', (d) -> d.x)
              .attr('cy', (d) -> d.y)
              .attr('r', (d) -> d.r)
+             .attr('fill', (d) -> d.color)
 
     labels_svg = @outerSvg.selectAll('.label')
              .data(lab)
@@ -254,6 +262,17 @@ class LabeledScatter extends RhtmlSvgWidget
       }
     ]
 
+    i = 0
+    while i < legend.length
+      li = legend[i]
+      li['r'] = 6
+      li['cx'] = viewBoxDim.x + viewBoxDim.width + 40
+      li['cy'] = viewBoxDim.y + viewBoxDim.height/3 + i*30
+      li['x'] = li['cx'] + 15
+      li['y'] = li['cy'] + li['r']
+      li['anchor'] = 'start'
+      i++
+
     @outerSvg.selectAll('.dim-marker')
              .data(dimensionMarkerStack)
              .enter()
@@ -300,6 +319,24 @@ class LabeledScatter extends RhtmlSvgWidget
              .text((d) -> d.text)
              .style('font-weight', 'bold')
 
+    @outerSvg.selectAll('.legend-pts')
+             .data(legend)
+             .enter()
+             .append('circle')
+             .attr('cx', (d) -> d.cx)
+             .attr('cy', (d) -> d.cy)
+             .attr('r', (d) -> d.r)
+             .attr('fill', (d) -> d.color)
+
+    @outerSvg.selectAll('.legend-text')
+             .data(legend)
+             .enter()
+             .append('text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial Narrow')
+             .text((d) -> d.text)
+             .attr('text-anchor', (d) -> d.anchor)
 
   calcViewBoxDim = (X, Y, width, height) ->
     return {

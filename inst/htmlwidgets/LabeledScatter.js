@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, axisLabels, between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
+    var anc, axisLabels, between, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, legend, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     data = testData;
@@ -101,8 +101,19 @@ LabeledScatter = (function(_super) {
     pts = [];
     lab = [];
     anc = [];
+    legend = [];
+    color = new RColor;
     i = 0;
     while (i < data.X.length) {
+      if (!(_.some(legend, function(e) {
+        return e.text === data.group[i];
+      }))) {
+        newColor = color.get(true, 0.9, 0.9);
+        legend.push({
+          text: data.group[i],
+          color: newColor
+        });
+      }
       pts.push({
         x: data.X[i] * viewBoxDim.width + viewBoxDim.x,
         y: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
@@ -110,7 +121,8 @@ LabeledScatter = (function(_super) {
         label: data.label[i],
         labelX: data.X[i] * viewBoxDim.width + viewBoxDim.x,
         labelY: data.Y[i] * viewBoxDim.height + viewBoxDim.y,
-        group: data.group[i]
+        group: data.group[i],
+        color: newColor
       });
       lab.push({
         x: data.X[i] * viewBoxDim.width + viewBoxDim.x,
@@ -130,6 +142,8 @@ LabeledScatter = (function(_super) {
       return d.y;
     }).attr('r', function(d) {
       return d.r;
+    }).attr('fill', function(d) {
+      return d.color;
     });
     labels_svg = this.outerSvg.selectAll('.label').data(lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
       return d.x;
@@ -303,6 +317,17 @@ LabeledScatter = (function(_super) {
         transform: 'rotate(270,' + (viewBoxDim.x - yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height / 2) + ')'
       }
     ];
+    i = 0;
+    while (i < legend.length) {
+      li = legend[i];
+      li['r'] = 6;
+      li['cx'] = viewBoxDim.x + viewBoxDim.width + 40;
+      li['cy'] = viewBoxDim.y + viewBoxDim.height / 3 + i * 30;
+      li['x'] = li['cx'] + 15;
+      li['y'] = li['cy'] + li['r'];
+      li['anchor'] = 'start';
+      i++;
+    }
     this.outerSvg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
@@ -330,7 +355,7 @@ LabeledScatter = (function(_super) {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
-    return this.outerSvg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
+    this.outerSvg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -341,6 +366,24 @@ LabeledScatter = (function(_super) {
     }).text(function(d) {
       return d.text;
     }).style('font-weight', 'bold');
+    this.outerSvg.selectAll('.legend-pts').data(legend).enter().append('circle').attr('cx', function(d) {
+      return d.cx;
+    }).attr('cy', function(d) {
+      return d.cy;
+    }).attr('r', function(d) {
+      return d.r;
+    }).attr('fill', function(d) {
+      return d.color;
+    });
+    return this.outerSvg.selectAll('.legend-text').data(legend).enter().append('text').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.text;
+    }).attr('text-anchor', function(d) {
+      return d.anchor;
+    });
   };
 
   calcViewBoxDim = function(X, Y, width, height) {
