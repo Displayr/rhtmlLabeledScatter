@@ -181,10 +181,11 @@ LabeledScatter = (function(_super) {
     dimensionMarkerStack = [];
     dimensionMarkerLeaderStack = [];
     dimensionMarkerLabelStack = [];
-    pushDimensionMarker = function(type, x1, y1, x2, y2) {
-      var labelHeight, leaderLineLen;
+    pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
+      var labelHeight, leaderLineLen, numShown;
       leaderLineLen = 5;
       labelHeight = 15;
+      numShown = label.toFixed(1);
       if (type === 'c') {
         dimensionMarkerLeaderStack.push({
           x1: x1,
@@ -194,7 +195,9 @@ LabeledScatter = (function(_super) {
         });
         dimensionMarkerLabelStack.push({
           x: x1,
-          y: y2 + leaderLineLen + labelHeight
+          y: y2 + leaderLineLen + labelHeight,
+          label: numShown,
+          anchor: 'middle'
         });
       }
       if (type === 'r') {
@@ -206,10 +209,14 @@ LabeledScatter = (function(_super) {
         });
         return dimensionMarkerLabelStack.push({
           x: x1 - leaderLineLen,
-          y: y2
+          y: y2 + labelHeight / 3,
+          label: numShown,
+          anchor: 'end'
         });
       }
     };
+    pushDimensionMarker('r', originAxis[0].x1, originAxis[0].y1, originAxis[0].x2, originAxis[0].y2, 0);
+    pushDimensionMarker('c', originAxis[1].x1, originAxis[1].y1, originAxis[1].x2, originAxis[1].y2, 0);
     i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
       if (i < colsPositive) {
@@ -225,7 +232,7 @@ LabeledScatter = (function(_super) {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2);
+          pushDimensionMarker('c', x1, y1, x2, y2, val);
         }
       }
       if (i < colsNegative) {
@@ -241,7 +248,7 @@ LabeledScatter = (function(_super) {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2);
+          pushDimensionMarker('c', x1, y1, x2, y2, val);
         }
       }
       i++;
@@ -262,7 +269,7 @@ LabeledScatter = (function(_super) {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2);
+          pushDimensionMarker('r', x1, y1, x2, y2, val);
         }
       }
       if (i < rowsNegative) {
@@ -278,7 +285,7 @@ LabeledScatter = (function(_super) {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2);
+          pushDimensionMarker('r', x1, y1, x2, y2, val);
         }
       }
       i++;
@@ -292,7 +299,7 @@ LabeledScatter = (function(_super) {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-    return this.outerSvg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
+    this.outerSvg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -301,6 +308,15 @@ LabeledScatter = (function(_super) {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 1).attr('stroke', 'black');
+    return this.outerSvg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.label;
+    }).attr('text-anchor', function(d) {
+      return d.anchor;
+    });
   };
 
   calcViewBoxDim = function(X, Y, width, height) {

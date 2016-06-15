@@ -184,15 +184,18 @@ class LabeledScatter extends RhtmlSvgWidget
     dimensionMarkerStack = []
     dimensionMarkerLeaderStack = []
     dimensionMarkerLabelStack = []
-    pushDimensionMarker = (type, x1, y1, x2, y2) ->
+    pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
       leaderLineLen = 5
       labelHeight = 15
+      numShown = label.toFixed(1)
       if type == 'c'
         dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
-        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight})
+        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: numShown, anchor: 'middle'})
       if type == 'r'
         dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
-        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2})
+        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: numShown, anchor: 'end'})
+    pushDimensionMarker 'r', originAxis[0].x1, originAxis[0].y1, originAxis[0].x2, originAxis[0].y2, 0
+    pushDimensionMarker 'c', originAxis[1].x1, originAxis[1].y1, originAxis[1].x2, originAxis[1].y2, 0
 
     i = 0
     while i < Math.max(colsPositive, colsNegative)
@@ -204,7 +207,7 @@ class LabeledScatter extends RhtmlSvgWidget
         y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2
+          pushDimensionMarker 'c', x1, y1, x2, y2, val
 
       if i < colsNegative
         val = -(i+1)*0.25
@@ -214,7 +217,7 @@ class LabeledScatter extends RhtmlSvgWidget
         y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2
+          pushDimensionMarker 'c', x1, y1, x2, y2, val
       i++
 
     i = 0
@@ -228,7 +231,7 @@ class LabeledScatter extends RhtmlSvgWidget
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2
+          pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
         val = (i+1)*0.25
         x1 = viewBoxDim.x
@@ -237,7 +240,7 @@ class LabeledScatter extends RhtmlSvgWidget
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2
+          pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
     @outerSvg.selectAll('.dim-marker')
@@ -263,6 +266,16 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('y2', (d) -> d.y2)
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
+
+    @outerSvg.selectAll('.dim-marker-label')
+             .data(dimensionMarkerLabelStack)
+             .enter()
+             .append('text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial Narrow')
+             .text((d) -> d.label)
+             .attr('text-anchor', (d) -> d.anchor)
 
 
   calcViewBoxDim = (X, Y, width, height) ->
