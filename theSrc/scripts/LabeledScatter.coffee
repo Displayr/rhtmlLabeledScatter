@@ -26,6 +26,13 @@ class LabeledScatter extends RhtmlSvgWidget
     console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
     data = testData
 
+    calcViewBoxDim = (X, Y, width, height) ->
+      return {
+        width: width / 2
+        height: height / 2
+        rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
+        rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+      }
 
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, @width, @height)
     viewBoxDim['x'] = @width / 5
@@ -341,11 +348,3 @@ class LabeledScatter extends RhtmlSvgWidget
              .attr('font-family', 'Arial Narrow')
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
-
-  calcViewBoxDim = (X, Y, width, height) ->
-    return {
-      width: width / 2
-      height: height / 2
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    }

@@ -4,8 +4,6 @@ var LabeledScatter,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 LabeledScatter = (function(_super) {
-  var calcViewBoxDim;
-
   __extends(LabeledScatter, _super);
 
   function LabeledScatter(el, width, height) {
@@ -30,10 +28,18 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, axisLabels, between, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
+    var anc, axisLabels, between, calcViewBoxDim, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     data = testData;
+    calcViewBoxDim = function(X, Y, width, height) {
+      return {
+        width: width / 2,
+        height: height / 2,
+        rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
+        rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+      };
+    };
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
     viewBoxDim['x'] = this.width / 5;
     viewBoxDim['y'] = this.height / 5;
@@ -388,15 +394,6 @@ LabeledScatter = (function(_super) {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
-  };
-
-  calcViewBoxDim = function(X, Y, width, height) {
-    return {
-      width: width / 2,
-      height: height / 2,
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    };
   };
 
   return LabeledScatter;
