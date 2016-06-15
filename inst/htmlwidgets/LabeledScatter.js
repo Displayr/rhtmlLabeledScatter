@@ -30,7 +30,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, between, colsNegative, colsPositive, data, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originX, originY, pts, rowsNegative, rowsPositive, threshold, viewBoxDim, _results;
+    var anc, between, colsNegative, colsPositive, data, dimensionMarkerStack, i, lab, labeler, labels_svg, marker, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originX, originY, pts, rowsNegative, rowsPositive, threshold, viewBoxDim, x1, x2, y1, y2, _results;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     console.log(this.outerSvg);
@@ -162,26 +162,68 @@ LabeledScatter = (function(_super) {
     });
     this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxDim.x).attr('y1', originY).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
     this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxDim.y).attr('x2', originX).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    dimensionMarkerStack = [];
     i = 0;
-    while (i < colsPositive) {
-      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', normalizeXCoords((i + 1) * 0.25)).attr('y1', viewBoxDim.y).attr('x2', normalizeXCoords((i + 1) * 0.25)).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    while (i < Math.max(colsPositive, colsNegative)) {
+      if (i < colsPositive) {
+        x1 = normalizeXCoords((i + 1) * 0.25);
+        y1 = viewBoxDim.y;
+        x2 = normalizeXCoords((i + 1) * 0.25);
+        y2 = viewBoxDim.y + viewBoxDim.height;
+        dimensionMarkerStack.push({
+          x1: x1,
+          y1: y1,
+          x2: x2,
+          y2: y2
+        });
+      }
+      if (i < colsNegative) {
+        x1 = normalizeXCoords(-(i + 1) * 0.25);
+        y1 = viewBoxDim.y;
+        x2 = normalizeXCoords(-(i + 1) * 0.25);
+        y2 = viewBoxDim.y + viewBoxDim.height;
+        dimensionMarkerStack.push({
+          x1: x1,
+          y1: y1,
+          x2: x2,
+          y2: y2
+        });
+      }
       i++;
     }
     i = 0;
-    while (i < colsNegative) {
-      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', normalizeXCoords(-(i + 1) * 0.25)).attr('y1', viewBoxDim.y).attr('x2', normalizeXCoords(-(i + 1) * 0.25)).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    while (i < Math.max(rowsPositive, rowsNegative)) {
+      x1 = y1 = x2 = y2 = 0;
+      if (i < rowsPositive) {
+        x1 = viewBoxDim.x;
+        y1 = normalizeYCoords(-(i + 1) * 0.25);
+        x2 = viewBoxDim.x + viewBoxDim.width;
+        y2 = normalizeYCoords(-(i + 1) * 0.25);
+        dimensionMarkerStack.push({
+          x1: x1,
+          y1: y1,
+          x2: x2,
+          y2: y2
+        });
+      }
+      if (i < rowsNegative) {
+        x1 = viewBoxDim.x;
+        y1 = normalizeYCoords((i + 1) * 0.25);
+        x2 = viewBoxDim.x + viewBoxDim.width;
+        y2 = normalizeYCoords((i + 1) * 0.25);
+        dimensionMarkerStack.push({
+          x1: x1,
+          y1: y1,
+          x2: x2,
+          y2: y2
+        });
+      }
       i++;
     }
-    i = 0;
-    while (i < rowsPositive) {
-      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', viewBoxDim.x).attr('y1', normalizeYCoords(-(i + 1) * 0.25)).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', normalizeYCoords(-(i + 1) * 0.25)).attr('stroke-width', 0.2).attr('stroke', 'grey');
-      i++;
-    }
-    i = 0;
     _results = [];
-    while (i < rowsNegative) {
-      this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', viewBoxDim.x).attr('y1', normalizeYCoords((i + 1) * 0.25)).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', normalizeYCoords((i + 1) * 0.25)).attr('stroke-width', 0.2).attr('stroke', 'grey');
-      _results.push(i++);
+    while (dimensionMarkerStack.length > 0) {
+      marker = dimensionMarkerStack.pop();
+      _results.push(this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', marker.x1).attr('y1', marker.y1).attr('x2', marker.x2).attr('y2', marker.y2).attr('stroke-width', 0.2).attr('stroke', 'grey'));
     }
     return _results;
   };
