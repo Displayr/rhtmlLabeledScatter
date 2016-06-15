@@ -64,8 +64,8 @@
 
             // penalty for length of leader line
             perfect2penalty = 1.5;
-            perfect3penalty = 4;
-            perfect4penalty = 6;
+            perfect3penalty = 8;
+            perfect4penalty = 9;
             minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
             switch(minDist) {
                 case dist:

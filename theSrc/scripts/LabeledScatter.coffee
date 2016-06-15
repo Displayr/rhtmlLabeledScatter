@@ -24,8 +24,6 @@ class LabeledScatter extends RhtmlSvgWidget
   _redraw: () ->
     console.log '_redraw. Change this function in your rhtmlWidget'
     console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
-    console.log @outerSvg
-    console.log testData
     data = testData
 
 
@@ -67,8 +65,8 @@ class LabeledScatter extends RhtmlSvgWidget
       (Xcoord-minX)/(maxX - minX)*viewBoxDim.width + viewBoxDim.x
     normalizeYCoords = (Ycoord) ->
       (Ycoord-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
-    originX = normalizeXCoords 0
-    originY = normalizeYCoords 0
+
+
 
     #calculate number of dimension markers
     between = (num, min, max) ->
@@ -91,9 +89,6 @@ class LabeledScatter extends RhtmlSvgWidget
       i += 0.25
 
 
-
-    console.log maxY
-    console.log minY
 
     pts = []
     i = 0
@@ -166,71 +161,108 @@ class LabeledScatter extends RhtmlSvgWidget
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
 
+    originX = normalizeXCoords 0
+    originY = normalizeYCoords 0
+    originAxis = [
+      {x1: viewBoxDim.x, y1: originY, x2: viewBoxDim.x + viewBoxDim.width, y2: originY},
+      {x1: originX, y1: viewBoxDim.y, x2: originX, y2: viewBoxDim.y + viewBoxDim.height}
+    ]
 
-    @outerSvg.append('line')
+    @outerSvg.selectAll('.origin')
+             .data(originAxis)
+             .enter()
+             .append('line')
              .attr('class', 'origin')
-             .attr('x1', viewBoxDim.x)
-             .attr('y1', originY)
-             .attr('x2', viewBoxDim.x + viewBoxDim.width)
-             .attr('y2', originY)
+             .attr('x1', (d) -> d.x1)
+             .attr('y1', (d) -> d.y1)
+             .attr('x2', (d) -> d.x2)
+             .attr('y2', (d) -> d.y2)
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
              .style("stroke-dasharray", ("3, 3"))
-    @outerSvg.append('line')
-             .attr('class', 'origin')
-             .attr('x1', originX)
-             .attr('y1', viewBoxDim.y)
-             .attr('x2', originX)
-             .attr('y2', viewBoxDim.y + viewBoxDim.height)
-             .attr('stroke-width', 1)
-             .attr('stroke', 'black')
-             .style("stroke-dasharray", ("3, 3"))
-
 
     dimensionMarkerStack = []
+    dimensionMarkerLeaderStack = []
+    dimensionMarkerLabelStack = []
+    pushDimensionMarker = (type, x1, y1, x2, y2) ->
+      leaderLineLen = 5
+      labelHeight = 15
+      if type == 'c'
+        dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
+        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight})
+      if type == 'r'
+        dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
+        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2})
+
     i = 0
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
-        x1 = normalizeXCoords (i+1)*0.25
+        val = (i+1)*0.25
+        x1 = normalizeXCoords val
         y1 = viewBoxDim.y
-        x2 = normalizeXCoords (i+1)*0.25
+        x2 = normalizeXCoords val
         y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
+        if i % 2
+          pushDimensionMarker 'c', x1, y1, x2, y2
+
       if i < colsNegative
-        x1 = normalizeXCoords -(i+1)*0.25
+        val = -(i+1)*0.25
+        x1 = normalizeXCoords val
         y1 = viewBoxDim.y
-        x2 = normalizeXCoords -(i+1)*0.25
+        x2 = normalizeXCoords val
         y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
+        if i % 2
+          pushDimensionMarker 'c', x1, y1, x2, y2
       i++
 
     i = 0
     while i < Math.max(rowsPositive, rowsNegative)
       x1 = y1 = x2 = y2 = 0
       if i < rowsPositive
+        val = -(i+1)*0.25
         x1 = viewBoxDim.x
-        y1 = normalizeYCoords -(i+1)*0.25
+        y1 = normalizeYCoords val
         x2 = viewBoxDim.x + viewBoxDim.width
-        y2 = normalizeYCoords -(i+1)*0.25
+        y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
+        if i % 2
+          pushDimensionMarker 'r', x1, y1, x2, y2
       if i < rowsNegative
+        val = (i+1)*0.25
         x1 = viewBoxDim.x
-        y1 = normalizeYCoords (i+1)*0.25
+        y1 = normalizeYCoords val
         x2 = viewBoxDim.x + viewBoxDim.width
-        y2 = normalizeYCoords (i+1)*0.25
+        y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
+        if i % 2
+          pushDimensionMarker 'r', x1, y1, x2, y2
       i++
 
-    while dimensionMarkerStack.length > 0
-      marker = dimensionMarkerStack.pop()
-      @outerSvg.append('line')
-               .attr('class', 'dim-marker')
-               .attr('x1', marker.x1)
-               .attr('y1', marker.y1)
-               .attr('x2', marker.x2)
-               .attr('y2', marker.y2)
-               .attr('stroke-width', 0.2)
-               .attr('stroke', 'grey')
+    @outerSvg.selectAll('.dim-marker')
+             .data(dimensionMarkerStack)
+             .enter()
+             .append('line')
+             .attr('class', 'dim-marker')
+             .attr('x1', (d) -> d.x1)
+             .attr('y1', (d) -> d.y1)
+             .attr('x2', (d) -> d.x2)
+             .attr('y2', (d) -> d.y2)
+             .attr('stroke-width', 0.2)
+             .attr('stroke', 'grey')
+
+    @outerSvg.selectAll('.dim-marker-leader')
+             .data(dimensionMarkerLeaderStack)
+             .enter()
+             .append('line')
+             .attr('class', 'dim-marker-leader')
+             .attr('x1', (d) -> d.x1)
+             .attr('y1', (d) -> d.y1)
+             .attr('x2', (d) -> d.x2)
+             .attr('y2', (d) -> d.y2)
+             .attr('stroke-width', 1)
+             .attr('stroke', 'black')
 
 
   calcViewBoxDim = (X, Y, width, height) ->

@@ -30,11 +30,9 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, between, colsNegative, colsPositive, data, dimensionMarkerStack, i, lab, labeler, labels_svg, marker, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originX, originY, pts, rowsNegative, rowsPositive, threshold, viewBoxDim, x1, x2, y1, y2, _results;
+    var anc, between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, lab, labeler, labels_svg, maxX, maxY, minX, minY, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, y1, y2;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
-    console.log(this.outerSvg);
-    console.log(testData);
     data = testData;
     viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
     viewBoxDim['x'] = this.width / 5;
@@ -73,8 +71,6 @@ LabeledScatter = (function(_super) {
     normalizeYCoords = function(Ycoord) {
       return (Ycoord - minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
     };
-    originX = normalizeXCoords(0);
-    originY = normalizeYCoords(0);
     between = function(num, min, max) {
       return num > min && num < max;
     };
@@ -102,8 +98,6 @@ LabeledScatter = (function(_super) {
       }
       i += 0.25;
     }
-    console.log(maxY);
-    console.log(minY);
     pts = [];
     i = 0;
     while (i < data.X.length) {
@@ -160,15 +154,69 @@ LabeledScatter = (function(_super) {
     }).attr('y', function(d) {
       return d.y;
     });
-    this.outerSvg.append('line').attr('class', 'origin').attr('x1', viewBoxDim.x).attr('y1', originY).attr('x2', viewBoxDim.x + viewBoxDim.width).attr('y2', originY).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
-    this.outerSvg.append('line').attr('class', 'origin').attr('x1', originX).attr('y1', viewBoxDim.y).attr('x2', originX).attr('y2', viewBoxDim.y + viewBoxDim.height).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
+    originX = normalizeXCoords(0);
+    originY = normalizeYCoords(0);
+    originAxis = [
+      {
+        x1: viewBoxDim.x,
+        y1: originY,
+        x2: viewBoxDim.x + viewBoxDim.width,
+        y2: originY
+      }, {
+        x1: originX,
+        y1: viewBoxDim.y,
+        x2: originX,
+        y2: viewBoxDim.y + viewBoxDim.height
+      }
+    ];
+    this.outerSvg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', 1).attr('stroke', 'black').style("stroke-dasharray", "3, 3");
     dimensionMarkerStack = [];
+    dimensionMarkerLeaderStack = [];
+    dimensionMarkerLabelStack = [];
+    pushDimensionMarker = function(type, x1, y1, x2, y2) {
+      var labelHeight, leaderLineLen;
+      leaderLineLen = 5;
+      labelHeight = 15;
+      if (type === 'c') {
+        dimensionMarkerLeaderStack.push({
+          x1: x1,
+          y1: y2,
+          x2: x1,
+          y2: y2 + leaderLineLen
+        });
+        dimensionMarkerLabelStack.push({
+          x: x1,
+          y: y2 + leaderLineLen + labelHeight
+        });
+      }
+      if (type === 'r') {
+        dimensionMarkerLeaderStack.push({
+          x1: x1 - leaderLineLen,
+          y1: y1,
+          x2: x1,
+          y2: y2
+        });
+        return dimensionMarkerLabelStack.push({
+          x: x1 - leaderLineLen,
+          y: y2
+        });
+      }
+    };
     i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
       if (i < colsPositive) {
-        x1 = normalizeXCoords((i + 1) * 0.25);
+        val = (i + 1) * 0.25;
+        x1 = normalizeXCoords(val);
         y1 = viewBoxDim.y;
-        x2 = normalizeXCoords((i + 1) * 0.25);
+        x2 = normalizeXCoords(val);
         y2 = viewBoxDim.y + viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
@@ -176,11 +224,15 @@ LabeledScatter = (function(_super) {
           x2: x2,
           y2: y2
         });
+        if (i % 2) {
+          pushDimensionMarker('c', x1, y1, x2, y2);
+        }
       }
       if (i < colsNegative) {
-        x1 = normalizeXCoords(-(i + 1) * 0.25);
+        val = -(i + 1) * 0.25;
+        x1 = normalizeXCoords(val);
         y1 = viewBoxDim.y;
-        x2 = normalizeXCoords(-(i + 1) * 0.25);
+        x2 = normalizeXCoords(val);
         y2 = viewBoxDim.y + viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
@@ -188,6 +240,9 @@ LabeledScatter = (function(_super) {
           x2: x2,
           y2: y2
         });
+        if (i % 2) {
+          pushDimensionMarker('c', x1, y1, x2, y2);
+        }
       }
       i++;
     }
@@ -195,37 +250,57 @@ LabeledScatter = (function(_super) {
     while (i < Math.max(rowsPositive, rowsNegative)) {
       x1 = y1 = x2 = y2 = 0;
       if (i < rowsPositive) {
+        val = -(i + 1) * 0.25;
         x1 = viewBoxDim.x;
-        y1 = normalizeYCoords(-(i + 1) * 0.25);
+        y1 = normalizeYCoords(val);
         x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = normalizeYCoords(-(i + 1) * 0.25);
+        y2 = normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
           x2: x2,
           y2: y2
         });
+        if (i % 2) {
+          pushDimensionMarker('r', x1, y1, x2, y2);
+        }
       }
       if (i < rowsNegative) {
+        val = (i + 1) * 0.25;
         x1 = viewBoxDim.x;
-        y1 = normalizeYCoords((i + 1) * 0.25);
+        y1 = normalizeYCoords(val);
         x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = normalizeYCoords((i + 1) * 0.25);
+        y2 = normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
           x2: x2,
           y2: y2
         });
+        if (i % 2) {
+          pushDimensionMarker('r', x1, y1, x2, y2);
+        }
       }
       i++;
     }
-    _results = [];
-    while (dimensionMarkerStack.length > 0) {
-      marker = dimensionMarkerStack.pop();
-      _results.push(this.outerSvg.append('line').attr('class', 'dim-marker').attr('x1', marker.x1).attr('y1', marker.y1).attr('x2', marker.x2).attr('y2', marker.y2).attr('stroke-width', 0.2).attr('stroke', 'grey'));
-    }
-    return _results;
+    this.outerSvg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    return this.outerSvg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', 1).attr('stroke', 'black');
   };
 
   calcViewBoxDim = function(X, Y, width, height) {
