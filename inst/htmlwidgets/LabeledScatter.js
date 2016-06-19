@@ -31,7 +31,7 @@ LabeledScatter = (function(_super) {
     var anc, axisLabels, between, calcViewBoxDim, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, maxX, maxY, minX, minY, newColor, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
-    data = testData;
+    data = testData2;
     calcViewBoxDim = function(X, Y, width, height) {
       return {
         width: width / 2,
@@ -40,7 +40,7 @@ LabeledScatter = (function(_super) {
         rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
       };
     };
-    viewBoxDim = calcViewBoxDim(testData.X, testData.Y, this.width, this.height);
+    viewBoxDim = calcViewBoxDim(data.X, data.Y, this.width, this.height);
     viewBoxDim['x'] = this.width / 5;
     viewBoxDim['y'] = this.height / 5;
     this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', viewBoxDim.x).attr('y', viewBoxDim.y).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
@@ -306,7 +306,7 @@ LabeledScatter = (function(_super) {
       }
       i++;
     }
-    yAxisPadding = 30;
+    yAxisPadding = 35;
     xAxisPadding = 40;
     axisLabels = [
       {

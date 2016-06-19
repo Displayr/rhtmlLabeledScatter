@@ -24,7 +24,7 @@ class LabeledScatter extends RhtmlSvgWidget
   _redraw: () ->
     console.log '_redraw. Change this function in your rhtmlWidget'
     console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
-    data = testData
+    data = testData2
 
     calcViewBoxDim = (X, Y, width, height) ->
       return {
@@ -34,7 +34,7 @@ class LabeledScatter extends RhtmlSvgWidget
         rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
       }
 
-    viewBoxDim = calcViewBoxDim(testData.X, testData.Y, @width, @height)
+    viewBoxDim = calcViewBoxDim(data.X, data.Y, @width, @height)
     viewBoxDim['x'] = @width / 5
     viewBoxDim['y'] = @height / 5
 
@@ -250,7 +250,7 @@ class LabeledScatter extends RhtmlSvgWidget
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
-    yAxisPadding = 30
+    yAxisPadding = 35
     xAxisPadding = 40
     axisLabels = [
       { # x axis label
