@@ -2,11 +2,14 @@
 var RectPlot;
 
 RectPlot = (function() {
-  var drawDimensionMarkers, _calcViewBoxDim, _normalizeXCoords, _normalizeYCoords;
-
   function RectPlot(width, height, X, Y, svg) {
     this.svg = svg;
-    this.viewBoxDim = _calcViewBoxDim(X, Y, width, height);
+    this.viewBoxDim = {
+      width: width / 2,
+      height: height / 2,
+      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
+      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+    };
     this.viewBoxDim['x'] = width / 5;
     this.viewBoxDim['y'] = height / 5;
   }
@@ -16,28 +19,33 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.draw = function(minX, maxX, minY, maxY) {
+    this.minX = minX;
+    this.maxX = maxX;
+    this.minY = minY;
+    this.maxY = maxY;
     this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
-    return drawDimensionMarkers(minX, maxX, minY, maxY, this.viewBoxDim, this.svg);
+    this.drawDimensionMarkers();
+    return this.drawAxisLabels();
   };
 
-  drawDimensionMarkers = function(minX, maxX, minY, maxY, viewBoxDim, svg) {
+  RectPlot.prototype.drawDimensionMarkers = function() {
     var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, originAxis, originX, originY, pushDimensionMarker, rowsNegative, rowsPositive, val, x1, x2, y1, y2;
-    originX = _normalizeXCoords(0, minX, maxX, viewBoxDim);
-    originY = _normalizeYCoords(0, minY, maxY, viewBoxDim);
+    originX = this._normalizeXCoords(0);
+    originY = this._normalizeYCoords(0);
     originAxis = [
       {
-        x1: viewBoxDim.x,
+        x1: this.viewBoxDim.x,
         y1: originY,
-        x2: viewBoxDim.x + viewBoxDim.width,
+        x2: this.viewBoxDim.x + this.viewBoxDim.width,
         y2: originY
       }, {
         x1: originX,
-        y1: viewBoxDim.y,
+        y1: this.viewBoxDim.y,
         x2: originX,
-        y2: viewBoxDim.y + viewBoxDim.height
+        y2: this.viewBoxDim.y + this.viewBoxDim.height
       }
     ];
-    svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+    this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -52,11 +60,11 @@ RectPlot = (function() {
     colsPositive = 0;
     colsNegative = 0;
     i = 0.25;
-    while (between(i, minX, maxX) || between(-i, minX, maxX)) {
-      if (between(i, minX, maxX)) {
+    while (between(i, this.minX, this.maxX) || between(-i, this.minX, this.maxX)) {
+      if (between(i, this.minX, this.maxX)) {
         colsPositive++;
       }
-      if (between(-i, minX, maxX)) {
+      if (between(-i, this.minX, this.maxX)) {
         colsNegative++;
       }
       i += 0.25;
@@ -64,11 +72,11 @@ RectPlot = (function() {
     rowsPositive = 0;
     rowsNegative = 0;
     i = 0.25;
-    while (between(i, minY, maxY) || between(-i, minY, maxY)) {
-      if (between(i, minY, maxY)) {
+    while (between(i, this.minY, this.maxY) || between(-i, this.minY, this.maxY)) {
+      if (between(i, this.minY, this.maxY)) {
         rowsNegative++;
       }
-      if (between(-i, minY, maxY)) {
+      if (between(-i, this.minY, this.maxY)) {
         rowsPositive++;
       }
       i += 0.25;
@@ -116,10 +124,10 @@ RectPlot = (function() {
     while (i < Math.max(colsPositive, colsNegative)) {
       if (i < colsPositive) {
         val = (i + 1) * 0.25;
-        x1 = _normalizeXCoords(val, minX, maxX, viewBoxDim);
-        y1 = viewBoxDim.y;
-        x2 = _normalizeXCoords(val, minX, maxX, viewBoxDim);
-        y2 = viewBoxDim.y + viewBoxDim.height;
+        x1 = this._normalizeXCoords(val);
+        y1 = this.viewBoxDim.y;
+        x2 = this._normalizeXCoords(val);
+        y2 = this.viewBoxDim.y + this.viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -132,10 +140,10 @@ RectPlot = (function() {
       }
       if (i < colsNegative) {
         val = -(i + 1) * 0.25;
-        x1 = _normalizeXCoords(val, minX, maxX, viewBoxDim);
-        y1 = viewBoxDim.y;
-        x2 = _normalizeXCoords(val, minX, maxX, viewBoxDim);
-        y2 = viewBoxDim.y + viewBoxDim.height;
+        x1 = this._normalizeXCoords(val);
+        y1 = this.viewBoxDim.y;
+        x2 = this._normalizeXCoords(val);
+        y2 = this.viewBoxDim.y + this.viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -153,10 +161,10 @@ RectPlot = (function() {
       x1 = y1 = x2 = y2 = 0;
       if (i < rowsPositive) {
         val = -(i + 1) * 0.25;
-        x1 = viewBoxDim.x;
-        y1 = _normalizeYCoords(val, minY, maxY, viewBoxDim);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = _normalizeYCoords(val, minY, maxY, viewBoxDim);
+        x1 = this.viewBoxDim.x;
+        y1 = this._normalizeYCoords(val);
+        x2 = this.viewBoxDim.x + this.viewBoxDim.width;
+        y2 = this._normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -169,10 +177,10 @@ RectPlot = (function() {
       }
       if (i < rowsNegative) {
         val = (i + 1) * 0.25;
-        x1 = viewBoxDim.x;
-        y1 = _normalizeYCoords(val, minY, maxY, viewBoxDim);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = _normalizeYCoords(val, minY, maxY, viewBoxDim);
+        x1 = this.viewBoxDim.x;
+        y1 = this._normalizeYCoords(val);
+        x2 = this.viewBoxDim.x + this.viewBoxDim.width;
+        y2 = this._normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -185,7 +193,7 @@ RectPlot = (function() {
       }
       i++;
     }
-    svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
+    this.svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -194,7 +202,7 @@ RectPlot = (function() {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-    svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
+    this.svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -203,7 +211,7 @@ RectPlot = (function() {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 1).attr('stroke', 'black');
-    return svg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
+    return this.svg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -214,21 +222,81 @@ RectPlot = (function() {
     });
   };
 
-  _calcViewBoxDim = function(X, Y, width, height) {
-    return {
-      width: width / 2,
-      height: height / 2,
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    };
+  RectPlot.prototype.drawAxisLabels = function() {
+    var axisLabels, xAxisPadding, yAxisPadding;
+    yAxisPadding = 35;
+    xAxisPadding = 40;
+    axisLabels = [
+      {
+        x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + xAxisPadding,
+        text: 'Dimension 1 (64%)',
+        anchor: 'middle',
+        transform: 'rotate(0)'
+      }, {
+        x: this.viewBoxDim.x - yAxisPadding,
+        y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
+        text: 'Dimension 2 (24%)',
+        anchor: 'middle',
+        transform: 'rotate(270,' + (this.viewBoxDim.x - yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
+      }
+    ];
+    return this.svg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
+      return d.anchor;
+    }).attr('transform', function(d) {
+      return d.transform;
+    }).text(function(d) {
+      return d.text;
+    }).style('font-weight', 'bold');
   };
 
-  _normalizeXCoords = function(Xcoord, minX, maxX, viewBoxDim) {
-    return (Xcoord - minX) / (maxX - minX) * viewBoxDim.width + viewBoxDim.x;
+  RectPlot.prototype.drawLegend = function(legend) {
+    var heightOfRow, i, legendLeftPadding, legendPtRad, legendStartY, li;
+    legendPtRad = 6;
+    legendLeftPadding = 30;
+    heightOfRow = 25;
+    legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - heightOfRow * legend.length / 2 + legendPtRad, this.viewBoxDim.y + legendPtRad);
+    i = 0;
+    while (i < legend.length) {
+      li = legend[i];
+      li['r'] = legendPtRad;
+      li['cx'] = this.viewBoxDim.x + this.viewBoxDim.width + legendLeftPadding;
+      li['cy'] = legendStartY + i * heightOfRow;
+      li['x'] = li['cx'] + 15;
+      li['y'] = li['cy'] + li['r'];
+      li['anchor'] = 'start';
+      i++;
+    }
+    this.svg.selectAll('.legend-pts').data(legend).enter().append('circle').attr('cx', function(d) {
+      return d.cx;
+    }).attr('cy', function(d) {
+      return d.cy;
+    }).attr('r', function(d) {
+      return d.r;
+    }).attr('fill', function(d) {
+      return d.color;
+    });
+    return this.svg.selectAll('.legend-text').data(legend).enter().append('text').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.text;
+    }).attr('text-anchor', function(d) {
+      return d.anchor;
+    });
   };
 
-  _normalizeYCoords = function(Ycoord, minY, maxY, viewBoxDim) {
-    return (Ycoord - minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
+  RectPlot.prototype._normalizeXCoords = function(Xcoord) {
+    return (Xcoord - this.minX) / (this.maxX - this.minX) * this.viewBoxDim.width + this.viewBoxDim.x;
+  };
+
+  RectPlot.prototype._normalizeYCoords = function(Ycoord) {
+    return (Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y;
   };
 
   return RectPlot;

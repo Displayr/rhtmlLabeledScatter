@@ -1,13 +1,21 @@
 class RectPlot
   constructor: (width, height, X, Y, svg) ->
     @svg = svg
-    @viewBoxDim = _calcViewBoxDim X, Y, width, height
+    @viewBoxDim =
+      width: width / 2
+      height: height / 2
+      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
+      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
     @viewBoxDim['x'] = width / 5
     @viewBoxDim['y'] = height / 5
 
   getViewBoxDim: -> @viewBoxDim
 
   draw: (minX, maxX, minY, maxY) ->
+    @minX = minX
+    @maxX = maxX
+    @minY = minY
+    @maxY = maxY
     @svg.append('rect')
         .attr('class', 'plot-viewbox')
         .attr('x', @viewBoxDim.x)
@@ -18,17 +26,18 @@ class RectPlot
         .attr('stroke', 'black')
         .attr('stroke-width', '1px')
 
-    drawDimensionMarkers(minX, maxX, minY, maxY, @viewBoxDim, @svg)
+    @drawDimensionMarkers()
+    @drawAxisLabels()
 
-  drawDimensionMarkers = (minX, maxX, minY, maxY, viewBoxDim, svg)->
-    originX = _normalizeXCoords 0, minX, maxX, viewBoxDim
-    originY = _normalizeYCoords 0, minY, maxY, viewBoxDim
+  drawDimensionMarkers: ->
+    originX = @_normalizeXCoords 0
+    originY = @_normalizeYCoords 0
     originAxis = [
-      {x1: viewBoxDim.x, y1: originY, x2: viewBoxDim.x + viewBoxDim.width, y2: originY},
-      {x1: originX, y1: viewBoxDim.y, x2: originX, y2: viewBoxDim.y + viewBoxDim.height}
+      {x1: @viewBoxDim.x, y1: originY, x2: @viewBoxDim.x + @viewBoxDim.width, y2: originY},
+      {x1: originX, y1: @viewBoxDim.y, x2: originX, y2: @viewBoxDim.y + @viewBoxDim.height}
     ]
 
-    svg.selectAll('.origin')
+    @svg.selectAll('.origin')
         .data(originAxis)
         .enter()
         .append('line')
@@ -48,17 +57,17 @@ class RectPlot
     colsPositive = 0
     colsNegative = 0
     i = 0.25
-    while between(i, minX, maxX) or between(-i, minX, maxX)
-      colsPositive++ if between(i, minX, maxX)
-      colsNegative++ if between(-i, minX, maxX)
+    while between(i, @minX, @maxX) or between(-i, @minX, @maxX)
+      colsPositive++ if between(i, @minX, @maxX)
+      colsNegative++ if between(-i, @minX, @maxX)
       i += 0.25
 
     rowsPositive = 0
     rowsNegative = 0
     i = 0.25
-    while between(i, minY, maxY) or between(-i, minY, maxY)
-      rowsNegative++ if between(i, minY, maxY) # y axis inversed svg
-      rowsPositive++ if between(-i, minY, maxY)
+    while between(i, @minY, @maxY) or between(-i, @minY, @maxY)
+      rowsNegative++ if between(i, @minY, @maxY) # y axis inversed svg
+      rowsPositive++ if between(-i, @minY, @maxY)
       i += 0.25
 
     dimensionMarkerStack = []
@@ -80,20 +89,20 @@ class RectPlot
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
         val = (i+1)*0.25
-        x1 = _normalizeXCoords val, minX, maxX, viewBoxDim
-        y1 = viewBoxDim.y
-        x2 = _normalizeXCoords val, minX, maxX, viewBoxDim
-        y2 = viewBoxDim.y + viewBoxDim.height
+        x1 = @_normalizeXCoords val
+        y1 = @viewBoxDim.y
+        x2 = @_normalizeXCoords val
+        y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
 
       if i < colsNegative
         val = -(i+1)*0.25
-        x1 = _normalizeXCoords val, minX, maxX, viewBoxDim
-        y1 = viewBoxDim.y
-        x2 = _normalizeXCoords val, minX, maxX, viewBoxDim
-        y2 = viewBoxDim.y + viewBoxDim.height
+        x1 = @_normalizeXCoords val
+        y1 = @viewBoxDim.y
+        x2 = @_normalizeXCoords val
+        y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
@@ -104,25 +113,25 @@ class RectPlot
       x1 = y1 = x2 = y2 = 0
       if i < rowsPositive
         val = -(i+1)*0.25
-        x1 = viewBoxDim.x
-        y1 = _normalizeYCoords val, minY, maxY, viewBoxDim
-        x2 = viewBoxDim.x + viewBoxDim.width
-        y2 = _normalizeYCoords val, minY, maxY, viewBoxDim
+        x1 = @viewBoxDim.x
+        y1 = @_normalizeYCoords val
+        x2 = @viewBoxDim.x + @viewBoxDim.width
+        y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
         val = (i+1)*0.25
-        x1 = viewBoxDim.x
-        y1 = _normalizeYCoords val, minY, maxY, viewBoxDim
-        x2 = viewBoxDim.x + viewBoxDim.width
-        y2 = _normalizeYCoords val, minY, maxY, viewBoxDim
+        x1 = @viewBoxDim.x
+        y1 = @_normalizeYCoords val
+        x2 = @viewBoxDim.x + @viewBoxDim.width
+        y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
-    svg.selectAll('.dim-marker')
+    @svg.selectAll('.dim-marker')
              .data(dimensionMarkerStack)
              .enter()
              .append('line')
@@ -134,7 +143,7 @@ class RectPlot
              .attr('stroke-width', 0.2)
              .attr('stroke', 'grey')
 
-    svg.selectAll('.dim-marker-leader')
+    @svg.selectAll('.dim-marker-leader')
              .data(dimensionMarkerLeaderStack)
              .enter()
              .append('line')
@@ -146,7 +155,7 @@ class RectPlot
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
 
-    svg.selectAll('.dim-marker-label')
+    @svg.selectAll('.dim-marker-label')
              .data(dimensionMarkerLabelStack)
              .enter()
              .append('text')
@@ -156,16 +165,75 @@ class RectPlot
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
-  _calcViewBoxDim = (X, Y, width, height) ->
-    return {
-      width: width / 2
-      height: height / 2
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    }
+  drawAxisLabels: () ->
+    yAxisPadding = 35
+    xAxisPadding = 40
+    axisLabels = [
+      { # x axis label
+        x: @viewBoxDim.x + @viewBoxDim.width/2
+        y: @viewBoxDim.y + @viewBoxDim.height + xAxisPadding
+        text: 'Dimension 1 (64%)'
+        anchor: 'middle'
+        transform: 'rotate(0)'
+      },
+      { # y axis label
+        x: @viewBoxDim.x - yAxisPadding
+        y: @viewBoxDim.y + @viewBoxDim.height/2
+        text: 'Dimension 2 (24%)'
+        anchor: 'middle'
+        transform: 'rotate(270,'+(@viewBoxDim.x-yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+      }
+    ]
 
-  _normalizeXCoords = (Xcoord, minX, maxX, viewBoxDim) ->
-    (Xcoord-minX)/(maxX - minX)*viewBoxDim.width + viewBoxDim.x
+    @svg.selectAll('.axis-label')
+             .data(axisLabels)
+             .enter()
+             .append('text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial')
+             .attr('text-anchor', (d) -> d.anchor)
+             .attr('transform', (d) -> d.transform)
+             .text((d) -> d.text)
+             .style('font-weight', 'bold')
 
-  _normalizeYCoords = (Ycoord, minY, maxY, viewBoxDim) ->
-    (Ycoord-minY)/(maxY - minY)*viewBoxDim.height + viewBoxDim.y
+  drawLegend: (legend) ->
+    legendPtRad = 6
+    legendLeftPadding = 30
+    heightOfRow = 25
+    legendStartY = Math.max((@viewBoxDim.y + @viewBoxDim.height/2 - heightOfRow*(legend.length)/2 + legendPtRad), @viewBoxDim.y + legendPtRad)
+    i = 0
+    while i < legend.length
+      li = legend[i]
+      li['r'] = legendPtRad
+      li['cx'] = @viewBoxDim.x + @viewBoxDim.width + legendLeftPadding
+      li['cy'] = legendStartY + i*heightOfRow
+      li['x'] = li['cx'] + 15
+      li['y'] = li['cy'] + li['r']
+      li['anchor'] = 'start'
+      i++
+
+    @svg.selectAll('.legend-pts')
+             .data(legend)
+             .enter()
+             .append('circle')
+             .attr('cx', (d) -> d.cx)
+             .attr('cy', (d) -> d.cy)
+             .attr('r', (d) -> d.r)
+             .attr('fill', (d) -> d.color)
+
+    @svg.selectAll('.legend-text')
+             .data(legend)
+             .enter()
+             .append('text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial Narrow')
+             .text((d) -> d.text)
+             .attr('text-anchor', (d) -> d.anchor)
+
+  _normalizeXCoords: (Xcoord) ->
+    (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x
+
+  _normalizeYCoords: (Ycoord) ->
+    (Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y

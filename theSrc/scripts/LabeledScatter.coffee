@@ -32,10 +32,6 @@ class LabeledScatter extends RhtmlSvgWidget
     #normalize
     plotData = new PlotData(data.X, data.Y)
     plotData.normalizeData()
-    minX = plotData.getMinX()
-    maxX = plotData.getMaxX()
-    minY = plotData.getMinY()
-    maxY = plotData.getMaxY()
     plot.draw(plotData.getMinX(), plotData.getMaxX(), plotData.getMinY(), plotData.getMaxY())
 
     pts = []
@@ -212,68 +208,4 @@ class LabeledScatter extends RhtmlSvgWidget
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
 
-    yAxisPadding = 35
-    xAxisPadding = 40
-    axisLabels = [
-      { # x axis label
-        x: viewBoxDim.x + viewBoxDim.width/2
-        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding
-        text: 'Dimension 1 (64%)'
-        anchor: 'middle'
-        transform: 'rotate(0)'
-      },
-      { # y axis label
-        x: viewBoxDim.x - yAxisPadding
-        y: viewBoxDim.y + viewBoxDim.height/2
-        text: 'Dimension 2 (24%)'
-        anchor: 'middle'
-        transform: 'rotate(270,'+(viewBoxDim.x-yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height/2)+ ')'
-      }
-    ]
-
-    legendPtRad = 6
-    legendLeftPadding = 30
-    heightOfRow = 25
-    legendStartY = Math.max((viewBoxDim.y + viewBoxDim.height/2 - heightOfRow*(legend.length)/2 + legendPtRad), viewBoxDim.y + legendPtRad)
-    i = 0
-    while i < legend.length
-      li = legend[i]
-      li['r'] = legendPtRad
-      li['cx'] = viewBoxDim.x + viewBoxDim.width + legendLeftPadding
-      li['cy'] = legendStartY + i*heightOfRow
-      li['x'] = li['cx'] + 15
-      li['y'] = li['cy'] + li['r']
-      li['anchor'] = 'start'
-      i++
-
-
-    @outerSvg.selectAll('.axis-label')
-             .data(axisLabels)
-             .enter()
-             .append('text')
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
-             .attr('text-anchor', (d) -> d.anchor)
-             .attr('transform', (d) -> d.transform)
-             .text((d) -> d.text)
-             .style('font-weight', 'bold')
-
-    @outerSvg.selectAll('.legend-pts')
-             .data(legend)
-             .enter()
-             .append('circle')
-             .attr('cx', (d) -> d.cx)
-             .attr('cy', (d) -> d.cy)
-             .attr('r', (d) -> d.r)
-             .attr('fill', (d) -> d.color)
-
-    @outerSvg.selectAll('.legend-text')
-             .data(legend)
-             .enter()
-             .append('text')
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial Narrow')
-             .text((d) -> d.text)
-             .attr('text-anchor', (d) -> d.anchor)
+    plot.drawLegend(legend)

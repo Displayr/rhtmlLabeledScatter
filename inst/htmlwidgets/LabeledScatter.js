@@ -28,7 +28,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, axisLabels, color, data, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, links, maxX, maxY, minX, minY, newColor, newLinkPt, newPtOnLabelBorder, plot, plotData, pts, viewBoxDim, xAxisPadding, yAxisPadding;
+    var anc, color, data, i, lab, labeler, labels_svg, legend, links, newColor, newLinkPt, newPtOnLabelBorder, plot, plotData, pts, viewBoxDim;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
     data = testData;
@@ -36,10 +36,6 @@ LabeledScatter = (function(_super) {
     viewBoxDim = plot.getViewBoxDim();
     plotData = new PlotData(data.X, data.Y);
     plotData.normalizeData();
-    minX = plotData.getMinX();
-    maxX = plotData.getMaxX();
-    minY = plotData.getMinY();
-    maxY = plotData.getMaxY();
     plot.draw(plotData.getMinX(), plotData.getMaxX(), plotData.getMinY(), plotData.getMaxY());
     pts = [];
     lab = [];
@@ -210,67 +206,7 @@ LabeledScatter = (function(_super) {
     }).attr('y', function(d) {
       return d.y;
     });
-    yAxisPadding = 35;
-    xAxisPadding = 40;
-    axisLabels = [
-      {
-        x: viewBoxDim.x + viewBoxDim.width / 2,
-        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding,
-        text: 'Dimension 1 (64%)',
-        anchor: 'middle',
-        transform: 'rotate(0)'
-      }, {
-        x: viewBoxDim.x - yAxisPadding,
-        y: viewBoxDim.y + viewBoxDim.height / 2,
-        text: 'Dimension 2 (24%)',
-        anchor: 'middle',
-        transform: 'rotate(270,' + (viewBoxDim.x - yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height / 2) + ')'
-      }
-    ];
-    legendPtRad = 6;
-    legendLeftPadding = 30;
-    heightOfRow = 25;
-    legendStartY = Math.max(viewBoxDim.y + viewBoxDim.height / 2 - heightOfRow * legend.length / 2 + legendPtRad, viewBoxDim.y + legendPtRad);
-    i = 0;
-    while (i < legend.length) {
-      li = legend[i];
-      li['r'] = legendPtRad;
-      li['cx'] = viewBoxDim.x + viewBoxDim.width + legendLeftPadding;
-      li['cy'] = legendStartY + i * heightOfRow;
-      li['x'] = li['cx'] + 15;
-      li['y'] = li['cy'] + li['r'];
-      li['anchor'] = 'start';
-      i++;
-    }
-    this.outerSvg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
-      return d.anchor;
-    }).attr('transform', function(d) {
-      return d.transform;
-    }).text(function(d) {
-      return d.text;
-    }).style('font-weight', 'bold');
-    this.outerSvg.selectAll('.legend-pts').data(legend).enter().append('circle').attr('cx', function(d) {
-      return d.cx;
-    }).attr('cy', function(d) {
-      return d.cy;
-    }).attr('r', function(d) {
-      return d.r;
-    }).attr('fill', function(d) {
-      return d.color;
-    });
-    return this.outerSvg.selectAll('.legend-text').data(legend).enter().append('text').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
-      return d.text;
-    }).attr('text-anchor', function(d) {
-      return d.anchor;
-    });
+    return plot.drawLegend(legend);
   };
 
   return LabeledScatter;
