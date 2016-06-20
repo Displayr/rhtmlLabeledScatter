@@ -24,7 +24,8 @@ RectPlot = (function() {
     this.drawDimensionMarkers();
     this.drawAxisLabels();
     this.drawAnc();
-    return this.drawLabs();
+    this.drawLabs();
+    return this.drawLegend();
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
@@ -253,15 +254,15 @@ RectPlot = (function() {
     }).style('font-weight', 'bold');
   };
 
-  RectPlot.prototype.drawLegend = function(legend) {
+  RectPlot.prototype.drawLegend = function() {
     var heightOfRow, i, legendLeftPadding, legendPtRad, legendStartY, li;
     legendPtRad = 6;
     legendLeftPadding = 30;
     heightOfRow = 25;
-    legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - heightOfRow * legend.length / 2 + legendPtRad, this.viewBoxDim.y + legendPtRad);
+    legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - heightOfRow * this.data.legend.length / 2 + legendPtRad, this.viewBoxDim.y + legendPtRad);
     i = 0;
-    while (i < legend.length) {
-      li = legend[i];
+    while (i < this.data.legend.length) {
+      li = this.data.legend[i];
       li['r'] = legendPtRad;
       li['cx'] = this.viewBoxDim.x + this.viewBoxDim.width + legendLeftPadding;
       li['cy'] = legendStartY + i * heightOfRow;
@@ -270,7 +271,7 @@ RectPlot = (function() {
       li['anchor'] = 'start';
       i++;
     }
-    this.svg.selectAll('.legend-pts').data(legend).enter().append('circle').attr('cx', function(d) {
+    this.svg.selectAll('.legend-pts').data(this.data.legend).enter().append('circle').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
       return d.cy;
@@ -279,7 +280,7 @@ RectPlot = (function() {
     }).attr('fill', function(d) {
       return d.color;
     });
-    return this.svg.selectAll('.legend-text').data(legend).enter().append('text').attr('x', function(d) {
+    return this.svg.selectAll('.legend-text').data(this.data.legend).enter().append('text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;

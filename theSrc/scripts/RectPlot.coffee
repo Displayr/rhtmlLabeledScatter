@@ -30,6 +30,7 @@ class RectPlot
     @drawAxisLabels()
     @drawAnc()
     @drawLabs()
+    @drawLegend()
 
   drawDimensionMarkers: ->
     originX = @_normalizeXCoords 0
@@ -199,14 +200,14 @@ class RectPlot
              .text((d) -> d.text)
              .style('font-weight', 'bold')
 
-  drawLegend: (legend) ->
+  drawLegend: ->
     legendPtRad = 6
     legendLeftPadding = 30
     heightOfRow = 25
-    legendStartY = Math.max((@viewBoxDim.y + @viewBoxDim.height/2 - heightOfRow*(legend.length)/2 + legendPtRad), @viewBoxDim.y + legendPtRad)
+    legendStartY = Math.max((@viewBoxDim.y + @viewBoxDim.height/2 - heightOfRow*(@data.legend.length)/2 + legendPtRad), @viewBoxDim.y + legendPtRad)
     i = 0
-    while i < legend.length
-      li = legend[i]
+    while i < @data.legend.length
+      li = @data.legend[i]
       li['r'] = legendPtRad
       li['cx'] = @viewBoxDim.x + @viewBoxDim.width + legendLeftPadding
       li['cy'] = legendStartY + i*heightOfRow
@@ -216,7 +217,7 @@ class RectPlot
       i++
 
     @svg.selectAll('.legend-pts')
-             .data(legend)
+             .data(@data.legend)
              .enter()
              .append('circle')
              .attr('cx', (d) -> d.cx)
@@ -225,7 +226,7 @@ class RectPlot
              .attr('fill', (d) -> d.color)
 
     @svg.selectAll('.legend-text')
-             .data(legend)
+             .data(@data.legend)
              .enter()
              .append('text')
              .attr('x', (d) -> d.x)
