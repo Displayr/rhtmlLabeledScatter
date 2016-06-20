@@ -8,7 +8,7 @@ PlotData = (function() {
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
-    this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FFFFFF', '#FF2323'];
+    this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
     if (this.X.length === this.Y.length) {
       this.len = X.length;
@@ -84,7 +84,8 @@ PlotData = (function() {
       this.lab.push({
         x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
         y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
-        text: this.label[i]
+        text: this.label[i],
+        color: newColor
       });
       this.anc.push({
         x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,

@@ -279,6 +279,10 @@ RectPlot = (function() {
       return d.r;
     }).attr('fill', function(d) {
       return d.color;
+    }).attr('stroke', function(d) {
+      return d.stroke;
+    }).attr('stroke-opacity', function(d) {
+      return d['stroke-opacity'];
     });
     return this.svg.selectAll('.legend-text').data(this.data.legend).enter().append('text').attr('x', function(d) {
       return d.x;
@@ -319,7 +323,9 @@ RectPlot = (function() {
       return d.y;
     }).attr('font-family', 'Arial Narrow').text(function(d) {
       return d.text;
-    }).attr('text-anchor', 'middle');
+    }).attr('text-anchor', 'middle').attr('fill', function(d) {
+      return d.color;
+    });
     i = 0;
     while (i < this.data.len) {
       this.data.lab[i].width = labels_svg[0][i].getBBox().width;

@@ -19,7 +19,7 @@ class PlotData
       '#997300'
       '#264478'
       '#43682B'
-      '#FFFFFF'
+      # '#FFFFFF' was in original color wheel but removed
       '#FF2323'
     ]
     @cIndex = 0
@@ -65,7 +65,12 @@ class PlotData
       unless (_.some @legend, (e) -> e.text is group[i])
         # newColor = color.get(true, 0.9, 0.9)
         newColor = @getDefaultColor()
-        @legend.push {text: @group[i], color: newColor}
+        @legend.push {
+          text: @group[i]
+          color: newColor
+          # stroke: 'gray'
+          # 'stroke-opacity': 0.3
+        }
       @pts.push({
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
         y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
@@ -80,6 +85,7 @@ class PlotData
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
         y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
         text: @label[i]
+        color: newColor
       })
       @anc.push({
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x

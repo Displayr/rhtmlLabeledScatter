@@ -224,6 +224,8 @@ class RectPlot
              .attr('cy', (d) -> d.cy)
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
+             .attr('stroke', (d) -> d.stroke)
+             .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
     @svg.selectAll('.legend-text')
              .data(@data.legend)
@@ -263,6 +265,7 @@ class RectPlot
              .attr('font-family', 'Arial Narrow')
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
+             .attr('fill', (d) -> d.color)
 
     i = 0
     while i < @data.len
