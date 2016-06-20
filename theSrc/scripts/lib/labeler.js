@@ -22,11 +22,11 @@
             rej = 0;
 
         // weights
-        var w_len = 10.0, // leader line length
+        var w_len = 12.0, // leader line length
             w_inter = 1.0, // leader line intersection
             w_lablink = 2.0, // leader line-label intersection
-            w_lab2 = 12.0, // label-label overlap
-            w_lab_anc = 8; // label-anchor overlap
+            w_lab2 = 10.0, // label-label overlap
+            w_lab_anc = 6; // label-anchor overlap
 
         // booleans for user defined functions
         var user_energy = false,
@@ -65,8 +65,8 @@
 
             // penalty for length of leader line
             perfect2penalty = 1.5;
-            perfect3penalty = 8;
-            perfect4penalty = 15;
+            perfect3penalty = 3;
+            perfect4penalty = 6;
             minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
             switch(minDist) {
                 case dist:
