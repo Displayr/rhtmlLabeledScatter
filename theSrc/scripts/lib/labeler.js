@@ -22,11 +22,11 @@
             rej = 0;
 
         // weights
-        var w_len = 12.0, // leader line length
+        var w_len = 10.0, // leader line length
             w_inter = 1.0, // leader line intersection
             w_lablink = 2.0, // leader line-label intersection
-            w_lab2 = 10.0, // label-label overlap
-            w_lab_anc = 6; // label-anchor overlap
+            w_lab2 = 12.0, // label-label overlap
+            w_lab_anc = 8; // label-anchor overlap
 
         // booleans for user defined functions
         var user_energy = false,
@@ -36,8 +36,8 @@
             user_defined_schedule;
 
         initLabBoundaries = function(lab, anc, i) {
-            if (lab[i].x + lab[i].width > w2) lab[i].x = w2 - lab[i].width;
-            if (lab[i].x < w1) lab[i].x = w1;
+            if (lab[i].x + lab[i].width/2 > w2) lab[i].x = w2 - lab[i].width/2;
+            if (lab[i].x - lab[i].width/2 < w1) lab[i].x = w1 + lab[i].width/2;
             if (lab[i].y > h2) lab[i].y = h2;
             if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
         };
@@ -47,9 +47,9 @@
 
             var m = lab.length,
                 ener = 0,
-                dx = lab[index].x + lab[index].width/2 - anc[index].x,
-                dx2 = lab[index].x - 4 - anc[index].x,
-                dx3 = lab[index].x + lab[index].width + 4 - anc[index].x,
+                dx = lab[index].x - anc[index].x,
+                dx2 = lab[index].x - 4 - lab[index].width/2 - anc[index].x,
+                dx3 = lab[index].x + lab[index].width/2 + 4 - anc[index].x,
                 dy = lab[index].y - (anc[index].y - 5),
                 dy2 = (lab[index].y - (lab[index].height - labelTopPadding)) - anc[index].y,
                 dy3 = (lab[index].y - lab[index].height/2) - anc[index].y,
@@ -65,8 +65,8 @@
 
             // penalty for length of leader line
             perfect2penalty = 1.5;
-            perfect3penalty = 3;
-            perfect4penalty = 6;
+            perfect3penalty = 8;
+            perfect4penalty = 15;
             minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
             switch(minDist) {
                 case dist:
@@ -94,9 +94,9 @@
                     ener += dist8 * w_len * perfect4penalty;
             }
 
-            var x21 = lab[index].x,
+            var x21 = lab[index].x - lab[index].width/2,
                 y21 = lab[index].y - (lab[index].height - labelTopPadding),
-                x22 = lab[index].x + lab[index].width,
+                x22 = lab[index].x + lab[index].width/2,
                 y22 = lab[index].y;
             var x11, x12, y11, y12, x_overlap, y_overlap, overlap_area;
 
@@ -109,9 +109,9 @@
                     if (overlap) ener += w_inter;
 
                     // penalty for label-label overlap
-                    x11 = lab[i].x;
+                    x11 = lab[i].x - lab[i].width/2;
                     y11 = lab[i].y - lab[i].height;
-                    x12 = lab[i].x + lab[i].width;
+                    x12 = lab[i].x + lab[i].width/2;
                     y12 = lab[i].y;
                     x_overlap = Math.max(0, Math.min(x12,x22) - Math.max(x11,x21));
                     y_overlap = Math.max(0, Math.min(y12,y22) - Math.max(y11,y21));
@@ -130,11 +130,11 @@
                 ener += (overlap_area * w_lab_anc);
 
                 // penalty for label-leader line intersection
-                var intersecBottom = intersect(lab[index].x, lab[index].x + lab[index].width, anc[i].x, lab[i].x + lab[i].width,
+                var intersecBottom = intersect(lab[index].x - lab[index].width/2, lab[index].x + lab[index].width/2, anc[i].x, lab[i].x + lab[i].width/2,
                     lab[index].y, lab[index].y, anc[i].y, lab[i].y
                 );
 
-                var intersecTop = intersect(lab[index].x, lab[index].x + lab[index].width, anc[i].x, lab[i].x + lab[i].width,
+                var intersecTop = intersect(lab[index].x - lab[index].width/2, lab[index].x + lab[index].width/2, anc[i].x, lab[i].x + lab[i].width/2,
                     lab[index].y-lab[index].height, lab[index].y-lab[index].height, anc[i].y, lab[i].y
                 );
                 if (intersecBottom) ener += w_lablink;
@@ -163,8 +163,8 @@
             lab[i].y += (random.real(0,1) - 0.5) * max_move;
 
             // hard wall boundaries
-            if (lab[i].x + lab[i].width > w2) lab[i].x = w2 - lab[i].width;
-            if (lab[i].x < w1) lab[i].x = w1;
+            if (lab[i].x + lab[i].width/2 > w2) lab[i].x = w2 - lab[i].width/2;
+            if (lab[i].x - lab[i].width/2 < w1) lab[i].x = w1 + lab[i].width/2;
             if (lab[i].y > h2) lab[i].y = h2;
             if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
 
@@ -178,11 +178,12 @@
 
             if (random.real(0,1) < Math.exp(-delta_energy / currT)) {
                 acc += 1;
-                //if (i == investigate)
-                //    svg.append('rect').attr('x', lab[i].x)
+                // if (i == investigate)
+                //    svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
                 //                  .attr('y', lab[i].y - lab[i].height)
                 //                  .attr('width', lab[i].width)
                 //                  .attr('height', lab[i].height)
+                //                  .attr('text-anchor', 'middle')
                 //                  .attr('fill', 'blue')
                 //                  .attr('fill-opacity', 0.1);
             } else {
@@ -190,13 +191,14 @@
                 lab[i].x = x_old;
                 lab[i].y = y_old;
                 rej += 1;
-                //if (i == investigate)
-                //svg.append('rect').attr('x', lab[i].x)
-                //                  .attr('y', lab[i].y - lab[i].height)
-                //                  .attr('width', lab[i].width)
-                //                  .attr('height', lab[i].height)
-                //                  .attr('fill', 'red')
-                //                  .attr('fill-opacity', 0.1);
+                // if (i == investigate)
+                //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
+                //                    .attr('y', lab[i].y - lab[i].height)
+                //                    .attr('width', lab[i].width)
+                //                    .attr('height', lab[i].height)
+                //                    .attr('text-anchor', 'middle')
+                //                    .attr('fill', 'red')
+                //                    .attr('fill-opacity', 0.1);
             }
 
         };
@@ -235,8 +237,8 @@
             lab[i].y = y_new + anc[i].y;
 
             // hard wall boundaries
-            if (lab[i].x + lab[i].width > w2) lab[i].x = w2 - lab[i].width;
-            if (lab[i].x < w1) lab[i].x = w1;
+            if (lab[i].x + lab[i].width/2 > w2) lab[i].x = w2 - lab[i].width/2;
+            if (lab[i].x - lab[i].width/2 < w1) lab[i].x = w1 + lab[i].width/2;
             if (lab[i].y > h2) lab[i].y = h2;
             if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
 
@@ -323,9 +325,6 @@
                 }
                 currT = cooling_schedule(currT, initialT, nsweeps);
             }
-            for(i=0; i<lab.length;i++) {
-                lab[i].x += lab[i].width/2;
-            }
         };
 
         labeler.svg = function(x) {
@@ -361,10 +360,9 @@
             if (!arguments.length) return lab;
             lab = x;
             for(var i=0; i<lab.length;i++) {
-                lab[i].x -= lab[i].width/2;
                 lab[i].y -= 5;
                 // svg.append('rect')
-                //    .attr('x', lab[i].x)
+                //    .attr('x', lab[i].x - lab[i].width/2)
                 //    .attr('y', lab[i].y - lab[i].height)
                 //    .attr('width', lab[i].width)
                 //    .attr('height', lab[i].height)
