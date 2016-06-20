@@ -1,5 +1,5 @@
 class RectPlot
-  constructor: (width, height, X, Y, svg) ->
+  constructor: (width, height, X, Y, group, label, svg) ->
     @svg = svg
     @viewBoxDim =
       width: width / 2
@@ -9,13 +9,13 @@ class RectPlot
     @viewBoxDim['x'] = width / 5
     @viewBoxDim['y'] = height / 5
 
-  getViewBoxDim: -> @viewBoxDim
+    @data = new PlotData(X, Y, group, label, @viewBoxDim)
+    @minX = @data.minX
+    @maxX = @data.maxX
+    @minY = @data.minY
+    @maxY = @data.maxY
 
-  draw: (minX, maxX, minY, maxY) ->
-    @minX = minX
-    @maxX = maxX
-    @minY = minY
-    @maxY = maxY
+  draw: ->
     @svg.append('rect')
         .attr('class', 'plot-viewbox')
         .attr('x', @viewBoxDim.x)
@@ -28,6 +28,8 @@ class RectPlot
 
     @drawDimensionMarkers()
     @drawAxisLabels()
+    @drawAnc()
+    @drawLabs()
 
   drawDimensionMarkers: ->
     originX = @_normalizeXCoords 0
@@ -238,9 +240,9 @@ class RectPlot
   _normalizeYCoords: (Ycoord) ->
     (Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y
 
-  drawAnc: (anc) ->
+  drawAnc: ->
     @svg.selectAll('.anc')
-             .data(anc)
+             .data(@data.pts)
              .enter()
              .append('circle')
              .attr('class', 'anc')
@@ -249,9 +251,9 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
 
-  drawLabs: (lab, anc, len) ->
+  drawLabs: ->
     labels_svg = @svg.selectAll('.label')
-             .data(lab)
+             .data(@data.lab)
              .enter()
              .append('text')
              .attr('class', 'init-labs')
@@ -262,28 +264,30 @@ class RectPlot
              .attr('text-anchor', 'middle')
 
     i = 0
-    while i < len
-      lab[i].width = labels_svg[0][i].getBBox().width
-      lab[i].height = labels_svg[0][i].getBBox().height
+    while i < @data.len
+      @data.lab[i].width = labels_svg[0][i].getBBox().width
+      @data.lab[i].height = labels_svg[0][i].getBBox().height
       i++
 
+
     labeler = d3.labeler()
-                .svg(@outerSvg)
+                .svg(@svg)
                 .w1(@viewBoxDim.x)
                 .w2(@viewBoxDim.x + @viewBoxDim.width)
                 .h1(@viewBoxDim.y)
                 .h2(@viewBoxDim.y + @viewBoxDim.height)
-                .anchor(anc)
-                .label(lab)
+                .anchor(@data.anc)
+                .label(@data.lab)
                 .start(500)
 
     labels_svg.transition()
               .duration(800)
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
-    @drawLinks(lab, anc, len)
 
-  drawLinks: (lab, anc, len) ->
+    @drawLinks()
+
+  drawLinks: ->
     # calc the links from anc to label text if ambiguous
     newPtOnLabelBorder = (label, anchor) ->
       labelBorder =
@@ -334,7 +338,7 @@ class RectPlot
         padT = labelBorder.topL[1] - ambiguityFactor
         padB = labelBorder.botR[1] + ambiguityFactor
         ancNearby = 0
-        for a in anc
+        for a in anchor
           if (a.x > padL and a.x < padR) and (a.y > padT and a.y < padB)
             ancNearby++
         if ancNearby > 1
@@ -359,12 +363,12 @@ class RectPlot
 
     @links = []
     i = 0
-    while i < len
-      newLinkPt = newPtOnLabelBorder lab[i], anc[i]
+    while i < @data.len
+      newLinkPt = newPtOnLabelBorder @data.lab[i], @data.anc[i]
       if newLinkPt?
         @links.push {
-          x1: anc[i].x
-          y1: anc[i].y
+          x1: @data.anc[i].x
+          y1: @data.anc[i].y
           x2: newLinkPt[0]
           y2: newLinkPt[1]
           width: 0.8

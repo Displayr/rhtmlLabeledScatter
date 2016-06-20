@@ -17,18 +17,12 @@ class LabeledScatter extends RhtmlSvgWidget
     _redraw()
 
   _processConfig: () ->
-    console.log '_processConfig. Change this function in your rhtmlWidget'
+    console.log '_processConfig'
     console.log 'the config has already been added to the context at @config, you must now "process" it'
     console.log @config
 
   _redraw: () ->
-    console.log '_redraw. Change this function in your rhtmlWidget'
-    console.log 'the outer SVG has already been created and added to the DOM. You should do things with it'
+    console.log '_redraw'
     data = testData
-
-    plot = new RectPlot(@width, @height, data.X, data.Y, @outerSvg)
-    plotData = new PlotData(data.X, data.Y, data.group, data.label, plot.viewBoxDim)
-    plot.draw(plotData.minX, plotData.maxX, plotData.minY, plotData.maxY)
-    plot.drawAnc(plotData.pts)
-    plot.drawLabs(plotData.lab, plotData.anc, plotData.len)
-    plot.drawLegend(plotData.legend)
+    plot = new RectPlot(@width, @height, data.X, data.Y, data.group, data.label, @outerSvg)
+    plot.draw()

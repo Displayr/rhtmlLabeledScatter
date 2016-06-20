@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, svg) {
+  function RectPlot(width, height, X, Y, group, label, svg) {
     this.svg = svg;
     this.viewBoxDim = {
       width: width / 2,
@@ -12,20 +12,19 @@ RectPlot = (function() {
     };
     this.viewBoxDim['x'] = width / 5;
     this.viewBoxDim['y'] = height / 5;
+    this.data = new PlotData(X, Y, group, label, this.viewBoxDim);
+    this.minX = this.data.minX;
+    this.maxX = this.data.maxX;
+    this.minY = this.data.minY;
+    this.maxY = this.data.maxY;
   }
 
-  RectPlot.prototype.getViewBoxDim = function() {
-    return this.viewBoxDim;
-  };
-
-  RectPlot.prototype.draw = function(minX, maxX, minY, maxY) {
-    this.minX = minX;
-    this.maxX = maxX;
-    this.minY = minY;
-    this.maxY = maxY;
+  RectPlot.prototype.draw = function() {
     this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
     this.drawDimensionMarkers();
-    return this.drawAxisLabels();
+    this.drawAxisLabels();
+    this.drawAnc();
+    return this.drawLabs();
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
@@ -299,8 +298,8 @@ RectPlot = (function() {
     return (Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y;
   };
 
-  RectPlot.prototype.drawAnc = function(anc) {
-    return this.svg.selectAll('.anc').data(anc).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+  RectPlot.prototype.drawAnc = function() {
+    return this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -311,9 +310,9 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.drawLabs = function(lab, anc, len) {
+  RectPlot.prototype.drawLabs = function() {
     var i, labeler, labels_svg;
-    labels_svg = this.svg.selectAll('.label').data(lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
+    labels_svg = this.svg.selectAll('.label').data(this.data.lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -321,21 +320,21 @@ RectPlot = (function() {
       return d.text;
     }).attr('text-anchor', 'middle');
     i = 0;
-    while (i < len) {
-      lab[i].width = labels_svg[0][i].getBBox().width;
-      lab[i].height = labels_svg[0][i].getBBox().height;
+    while (i < this.data.len) {
+      this.data.lab[i].width = labels_svg[0][i].getBBox().width;
+      this.data.lab[i].height = labels_svg[0][i].getBBox().height;
       i++;
     }
-    labeler = d3.labeler().svg(this.outerSvg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(anc).label(lab).start(500);
+    labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.anc).label(this.data.lab).start(500);
     labels_svg.transition().duration(800).attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
     });
-    return this.drawLinks(lab, anc, len);
+    return this.drawLinks();
   };
 
-  RectPlot.prototype.drawLinks = function(lab, anc, len) {
+  RectPlot.prototype.drawLinks = function() {
     var i, newLinkPt, newPtOnLabelBorder;
     newPtOnLabelBorder = function(label, anchor) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
@@ -385,8 +384,8 @@ RectPlot = (function() {
         padT = labelBorder.topL[1] - ambiguityFactor;
         padB = labelBorder.botR[1] + ambiguityFactor;
         ancNearby = 0;
-        for (_i = 0, _len = anc.length; _i < _len; _i++) {
-          a = anc[_i];
+        for (_i = 0, _len = anchor.length; _i < _len; _i++) {
+          a = anchor[_i];
           if ((a.x > padL && a.x < padR) && (a.y > padT && a.y < padB)) {
             ancNearby++;
           }
@@ -416,12 +415,12 @@ RectPlot = (function() {
     };
     this.links = [];
     i = 0;
-    while (i < len) {
-      newLinkPt = newPtOnLabelBorder(lab[i], anc[i]);
+    while (i < this.data.len) {
+      newLinkPt = newPtOnLabelBorder(this.data.lab[i], this.data.anc[i]);
       if (newLinkPt != null) {
         this.links.push({
-          x1: anc[i].x,
-          y1: anc[i].y,
+          x1: this.data.anc[i].x,
+          y1: this.data.anc[i].y,
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 0.8

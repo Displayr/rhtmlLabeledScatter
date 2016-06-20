@@ -22,22 +22,17 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._processConfig = function() {
-    console.log('_processConfig. Change this function in your rhtmlWidget');
+    console.log('_processConfig');
     console.log('the config has already been added to the context at @config, you must now "process" it');
     return console.log(this.config);
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var data, plot, plotData;
-    console.log('_redraw. Change this function in your rhtmlWidget');
-    console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
+    var data, plot;
+    console.log('_redraw');
     data = testData;
-    plot = new RectPlot(this.width, this.height, data.X, data.Y, this.outerSvg);
-    plotData = new PlotData(data.X, data.Y, data.group, data.label, plot.viewBoxDim);
-    plot.draw(plotData.minX, plotData.maxX, plotData.minY, plotData.maxY);
-    plot.drawAnc(plotData.pts);
-    plot.drawLabs(plotData.lab, plotData.anc, plotData.len);
-    return plot.drawLegend(plotData.legend);
+    plot = new RectPlot(this.width, this.height, data.X, data.Y, data.group, data.label, this.outerSvg);
+    return plot.draw();
   };
 
   return LabeledScatter;
