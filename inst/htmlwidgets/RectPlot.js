@@ -336,15 +336,15 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawLinks = function() {
     var i, newLinkPt, newPtOnLabelBorder;
-    newPtOnLabelBorder = function(label, anchor) {
+    newPtOnLabelBorder = function(label, anchor, anchor_array) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
       labelBorder = {
         botL: [label.x - label.width / 2, label.y],
         botC: [label.x, label.y],
         botR: [label.x + label.width / 2, label.y],
-        topL: [label.x - label.width / 2, label.y - label.height + 2],
-        topC: [label.x, label.y - label.height + 2],
-        topR: [label.x + label.width / 2, label.y - label.height + 2],
+        topL: [label.x - label.width / 2, label.y - label.height + 8],
+        topC: [label.x, label.y - label.height + 8],
+        topR: [label.x + label.width / 2, label.y - label.height + 8],
         midL: [label.x - label.width / 2, label.y - label.height / 2],
         midR: [label.x + label.width / 2, label.y - label.height / 2]
       };
@@ -384,8 +384,8 @@ RectPlot = (function() {
         padT = labelBorder.topL[1] - ambiguityFactor;
         padB = labelBorder.botR[1] + ambiguityFactor;
         ancNearby = 0;
-        for (_i = 0, _len = anchor.length; _i < _len; _i++) {
-          a = anchor[_i];
+        for (_i = 0, _len = anchor_array.length; _i < _len; _i++) {
+          a = anchor_array[_i];
           if ((a.x > padL && a.x < padR) && (a.y > padT && a.y < padB)) {
             ancNearby++;
           }
@@ -416,14 +416,14 @@ RectPlot = (function() {
     this.links = [];
     i = 0;
     while (i < this.data.len) {
-      newLinkPt = newPtOnLabelBorder(this.data.lab[i], this.data.anc[i]);
+      newLinkPt = newPtOnLabelBorder(this.data.lab[i], this.data.anc[i], this.data.pts);
       if (newLinkPt != null) {
         this.links.push({
           x1: this.data.anc[i].x,
           y1: this.data.anc[i].y,
           x2: newLinkPt[0],
           y2: newLinkPt[1],
-          width: 0.8
+          width: 1
         });
       }
       i++;

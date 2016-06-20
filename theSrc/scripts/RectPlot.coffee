@@ -289,16 +289,16 @@ class RectPlot
 
   drawLinks: ->
     # calc the links from anc to label text if ambiguous
-    newPtOnLabelBorder = (label, anchor) ->
+    newPtOnLabelBorder = (label, anchor, anchor_array) ->
       labelBorder =
-        botL: [label.x - label.width/2,     label.y]                   # botL - 0
-        botC: [label.x,                     label.y]                   # botC - 1
-        botR: [label.x + label.width/2,     label.y]                   # botR - 2
-        topL: [label.x - label.width/2,     label.y - label.height + 2]  # topL - 3
-        topC: [label.x,                     label.y - label.height + 2]  # topC - 4
-        topR: [label.x + label.width/2,     label.y - label.height + 2]  # topR - 5
-        midL: [label.x - label.width/2,     label.y - label.height/2]    # midL - 6
-        midR: [label.x + label.width/2,     label.y - label.height/2]    # midR - 7
+        botL: [label.x - label.width/2,     label.y]
+        botC: [label.x,                     label.y]
+        botR: [label.x + label.width/2,     label.y]
+        topL: [label.x - label.width/2,     label.y - label.height + 8]
+        topC: [label.x,                     label.y - label.height + 8]
+        topR: [label.x + label.width/2,     label.y - label.height + 8]
+        midL: [label.x - label.width/2,     label.y - label.height/2]
+        midR: [label.x + label.width/2,     label.y - label.height/2]
 
       padding = 10
       centered = (anchor.x > label.x - label.width/2) and (anchor.x < label.x + label.width/2)
@@ -338,7 +338,7 @@ class RectPlot
         padT = labelBorder.topL[1] - ambiguityFactor
         padB = labelBorder.botR[1] + ambiguityFactor
         ancNearby = 0
-        for a in anchor
+        for a in anchor_array
           if (a.x > padL and a.x < padR) and (a.y > padT and a.y < padB)
             ancNearby++
         if ancNearby > 1
@@ -364,15 +364,14 @@ class RectPlot
     @links = []
     i = 0
     while i < @data.len
-      newLinkPt = newPtOnLabelBorder @data.lab[i], @data.anc[i]
-      if newLinkPt?
-        @links.push {
-          x1: @data.anc[i].x
-          y1: @data.anc[i].y
-          x2: newLinkPt[0]
-          y2: newLinkPt[1]
-          width: 0.8
-        }
+      newLinkPt = newPtOnLabelBorder @data.lab[i], @data.anc[i], @data.pts
+      @links.push({
+        x1: @data.anc[i].x
+        y1: @data.anc[i].y
+        x2: newLinkPt[0]
+        y2: newLinkPt[1]
+        width: 1
+      }) if newLinkPt?
       i++
 
     @svg.selectAll('.link')
