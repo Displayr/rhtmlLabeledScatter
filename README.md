@@ -90,5 +90,37 @@ There are example widget use in R in the [features.R file](examples/features.R),
 
 ## TODO
 - Draggable labels
-- Fix links going to bottom
+- Hover effect - should display label name, group, coords over point
+- Find rule from ggplot for axis tick spacing
+- Apply color for the labels as well
+- Apply color vector from qColors
+[1]
+#5B9BD5FF
+[2]
+#ED7D31FF
+[3]
+#A5A5A5FF
+[4]
+#1EC000FF
+[5]
+#4472C4FF
+[6]
+#70AD47FF
+[7]
+#255E91FF
+[8]
+#9E480EFF
+[9]
+#636363FF
+[10]
+#997300FF
+[11]
+#264478FF
+[12]
+#43682BFF
+[13]
+#FFFFFFFF
+[14]
+#FF2323FF
+- Fix links going to bottom?
 - Fix yaml file when it is time to test in RStudio
