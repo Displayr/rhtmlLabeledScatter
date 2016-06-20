@@ -237,3 +237,147 @@ class RectPlot
 
   _normalizeYCoords: (Ycoord) ->
     (Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y
+
+  drawAnc: (anc) ->
+    @svg.selectAll('.anc')
+             .data(anc)
+             .enter()
+             .append('circle')
+             .attr('class', 'anc')
+             .attr('cx', (d) -> d.x)
+             .attr('cy', (d) -> d.y)
+             .attr('r', (d) -> d.r)
+             .attr('fill', (d) -> d.color)
+
+  drawLabs: (lab, anc, len) ->
+    labels_svg = @svg.selectAll('.label')
+             .data(lab)
+             .enter()
+             .append('text')
+             .attr('class', 'init-labs')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial Narrow')
+             .text((d) -> d.text)
+             .attr('text-anchor', 'middle')
+
+    i = 0
+    while i < len
+      lab[i].width = labels_svg[0][i].getBBox().width
+      lab[i].height = labels_svg[0][i].getBBox().height
+      i++
+
+    labeler = d3.labeler()
+                .svg(@outerSvg)
+                .w1(@viewBoxDim.x)
+                .w2(@viewBoxDim.x + @viewBoxDim.width)
+                .h1(@viewBoxDim.y)
+                .h2(@viewBoxDim.y + @viewBoxDim.height)
+                .anchor(anc)
+                .label(lab)
+                .start(500)
+
+    labels_svg.transition()
+              .duration(800)
+              .attr('x', (d) -> d.x)
+              .attr('y', (d) -> d.y)
+    @drawLinks(lab, anc, len)
+
+  drawLinks: (lab, anc, len) ->
+    # calc the links from anc to label text if ambiguous
+    newPtOnLabelBorder = (label, anchor) ->
+      labelBorder =
+        botL: [label.x - label.width/2,     label.y]                   # botL - 0
+        botC: [label.x,                     label.y]                   # botC - 1
+        botR: [label.x + label.width/2,     label.y]                   # botR - 2
+        topL: [label.x - label.width/2,     label.y - label.height + 2]  # topL - 3
+        topC: [label.x,                     label.y - label.height + 2]  # topC - 4
+        topR: [label.x + label.width/2,     label.y - label.height + 2]  # topR - 5
+        midL: [label.x - label.width/2,     label.y - label.height/2]    # midL - 6
+        midR: [label.x + label.width/2,     label.y - label.height/2]    # midR - 7
+
+      padding = 10
+      centered = (anchor.x > label.x - label.width/2) and (anchor.x < label.x + label.width/2)
+      paddedCenter = (anchor.x > label.x - label.width/2 - padding) and (anchor.x < label.x + label.width/2 + padding)
+      abovePadded = anchor.y < label.y - label.height - padding
+      above = anchor.y < label.y - label.height
+      aboveMid = anchor.y < label.y - label.height/2
+      belowPadded = anchor.y > label.y + padding
+      below = anchor.y > label.y
+      belowMid = anchor.y >= label.y - label.height/2
+      left = anchor.x < label.x - label.width/2
+      right = anchor.x > label.x + label.width/2
+      leftPadded = anchor.x < label.x - label.width/2 - padding
+      rightPadded = anchor.x > label.x + label.width/2 + padding
+
+      if centered and abovePadded
+        return labelBorder.topC
+      else if centered and belowPadded
+        return labelBorder.botC
+      else if above and left
+        return labelBorder.topL
+      else if above and right
+        return labelBorder.topR
+      else if below and left
+        return labelBorder.botL
+      else if below and right
+        return labelBorder.botR
+      else if leftPadded
+        return labelBorder.midL
+      else if rightPadded
+        return labelBorder.midR
+      else
+        # Draw the link if there are any anc nearby
+        ambiguityFactor = 10
+        padL = labelBorder.topL[0] - ambiguityFactor
+        padR = labelBorder.topR[0] + ambiguityFactor
+        padT = labelBorder.topL[1] - ambiguityFactor
+        padB = labelBorder.botR[1] + ambiguityFactor
+        ancNearby = 0
+        for a in anc
+          if (a.x > padL and a.x < padR) and (a.y > padT and a.y < padB)
+            ancNearby++
+        if ancNearby > 1
+          if not left and not right and not above and not below
+            return labelBorder.botC
+          else if centered and above
+            return labelBorder.topC
+          else if centered and below
+            return labelBorder.botC
+          else if left and above
+            return labelBorder.topL
+          else if left and below
+            return labelBorder.botL
+          else if right and above
+            return labelBorder.topR
+          else if right and below
+            return labelBorder.botR
+          else if left
+            return labelBorder.midL
+          else if right
+            return labelBorder.midR
+
+    @links = []
+    i = 0
+    while i < len
+      newLinkPt = newPtOnLabelBorder lab[i], anc[i]
+      if newLinkPt?
+        @links.push {
+          x1: anc[i].x
+          y1: anc[i].y
+          x2: newLinkPt[0]
+          y2: newLinkPt[1]
+          width: 0.8
+        }
+      i++
+
+    @svg.selectAll('.link')
+             .data(@links)
+             .enter()
+             .append('line')
+             .attr('x1', (d) -> d.x1)
+             .attr('y1', (d) -> d.y1)
+             .attr('x2', (d) -> d.x2)
+             .attr('y2', (d) -> d.y2)
+             .attr('stroke-width', (d) -> d.width)
+             .attr('stroke', 'gray')

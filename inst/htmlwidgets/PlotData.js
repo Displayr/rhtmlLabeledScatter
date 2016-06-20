@@ -2,11 +2,16 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y) {
+  function PlotData(X, Y, group, label, viewBoxDim) {
     this.X = X;
     this.Y = Y;
+    this.group = group;
+    this.label = label;
+    this.viewBoxDim = viewBoxDim;
     if (this.X.length === this.Y.length) {
       this.len = X.length;
+      this.normalizeData();
+      this.initDataArrays();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
     }
@@ -45,32 +50,49 @@ PlotData = (function() {
     return _results;
   };
 
-  PlotData.prototype.getX = function() {
-    return this.X;
-  };
-
-  PlotData.prototype.getY = function() {
-    return this.Y;
-  };
-
-  PlotData.prototype.getLen = function() {
-    return this.len;
-  };
-
-  PlotData.prototype.getMinX = function() {
-    return this.minX;
-  };
-
-  PlotData.prototype.getMaxX = function() {
-    return this.maxX;
-  };
-
-  PlotData.prototype.getMinY = function() {
-    return this.minY;
-  };
-
-  PlotData.prototype.getMaxY = function() {
-    return this.maxY;
+  PlotData.prototype.initDataArrays = function() {
+    var color, group, i, newColor, _results;
+    this.pts = [];
+    this.lab = [];
+    this.anc = [];
+    this.legend = [];
+    color = new RColor;
+    group = this.group;
+    i = 0;
+    _results = [];
+    while (i < this.len) {
+      if (!(_.some(this.legend, function(e) {
+        return e.text === group[i];
+      }))) {
+        newColor = color.get(true, 0.9, 0.9);
+        this.legend.push({
+          text: this.group[i],
+          color: newColor
+        });
+      }
+      this.pts.push({
+        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
+        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        r: 2,
+        label: this.label[i],
+        labelX: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
+        labelY: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        group: this.group[i],
+        color: newColor
+      });
+      this.lab.push({
+        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
+        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        text: this.label[i]
+      });
+      this.anc.push({
+        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
+        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        r: 2
+      });
+      _results.push(i++);
+    }
+    return _results;
   };
 
   return PlotData;

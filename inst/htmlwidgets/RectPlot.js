@@ -299,6 +299,149 @@ RectPlot = (function() {
     return (Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y;
   };
 
+  RectPlot.prototype.drawAnc = function(anc) {
+    return this.svg.selectAll('.anc').data(anc).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+      return d.x;
+    }).attr('cy', function(d) {
+      return d.y;
+    }).attr('r', function(d) {
+      return d.r;
+    }).attr('fill', function(d) {
+      return d.color;
+    });
+  };
+
+  RectPlot.prototype.drawLabs = function(lab, anc, len) {
+    var i, labeler, labels_svg;
+    labels_svg = this.svg.selectAll('.label').data(lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', 'Arial Narrow').text(function(d) {
+      return d.text;
+    }).attr('text-anchor', 'middle');
+    i = 0;
+    while (i < len) {
+      lab[i].width = labels_svg[0][i].getBBox().width;
+      lab[i].height = labels_svg[0][i].getBBox().height;
+      i++;
+    }
+    labeler = d3.labeler().svg(this.outerSvg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(anc).label(lab).start(500);
+    labels_svg.transition().duration(800).attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    });
+    return this.drawLinks(lab, anc, len);
+  };
+
+  RectPlot.prototype.drawLinks = function(lab, anc, len) {
+    var i, newLinkPt, newPtOnLabelBorder;
+    newPtOnLabelBorder = function(label, anchor) {
+      var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
+      labelBorder = {
+        botL: [label.x - label.width / 2, label.y],
+        botC: [label.x, label.y],
+        botR: [label.x + label.width / 2, label.y],
+        topL: [label.x - label.width / 2, label.y - label.height + 2],
+        topC: [label.x, label.y - label.height + 2],
+        topR: [label.x + label.width / 2, label.y - label.height + 2],
+        midL: [label.x - label.width / 2, label.y - label.height / 2],
+        midR: [label.x + label.width / 2, label.y - label.height / 2]
+      };
+      padding = 10;
+      centered = (anchor.x > label.x - label.width / 2) && (anchor.x < label.x + label.width / 2);
+      paddedCenter = (anchor.x > label.x - label.width / 2 - padding) && (anchor.x < label.x + label.width / 2 + padding);
+      abovePadded = anchor.y < label.y - label.height - padding;
+      above = anchor.y < label.y - label.height;
+      aboveMid = anchor.y < label.y - label.height / 2;
+      belowPadded = anchor.y > label.y + padding;
+      below = anchor.y > label.y;
+      belowMid = anchor.y >= label.y - label.height / 2;
+      left = anchor.x < label.x - label.width / 2;
+      right = anchor.x > label.x + label.width / 2;
+      leftPadded = anchor.x < label.x - label.width / 2 - padding;
+      rightPadded = anchor.x > label.x + label.width / 2 + padding;
+      if (centered && abovePadded) {
+        return labelBorder.topC;
+      } else if (centered && belowPadded) {
+        return labelBorder.botC;
+      } else if (above && left) {
+        return labelBorder.topL;
+      } else if (above && right) {
+        return labelBorder.topR;
+      } else if (below && left) {
+        return labelBorder.botL;
+      } else if (below && right) {
+        return labelBorder.botR;
+      } else if (leftPadded) {
+        return labelBorder.midL;
+      } else if (rightPadded) {
+        return labelBorder.midR;
+      } else {
+        ambiguityFactor = 10;
+        padL = labelBorder.topL[0] - ambiguityFactor;
+        padR = labelBorder.topR[0] + ambiguityFactor;
+        padT = labelBorder.topL[1] - ambiguityFactor;
+        padB = labelBorder.botR[1] + ambiguityFactor;
+        ancNearby = 0;
+        for (_i = 0, _len = anc.length; _i < _len; _i++) {
+          a = anc[_i];
+          if ((a.x > padL && a.x < padR) && (a.y > padT && a.y < padB)) {
+            ancNearby++;
+          }
+        }
+        if (ancNearby > 1) {
+          if (!left && !right && !above && !below) {
+            return labelBorder.botC;
+          } else if (centered && above) {
+            return labelBorder.topC;
+          } else if (centered && below) {
+            return labelBorder.botC;
+          } else if (left && above) {
+            return labelBorder.topL;
+          } else if (left && below) {
+            return labelBorder.botL;
+          } else if (right && above) {
+            return labelBorder.topR;
+          } else if (right && below) {
+            return labelBorder.botR;
+          } else if (left) {
+            return labelBorder.midL;
+          } else if (right) {
+            return labelBorder.midR;
+          }
+        }
+      }
+    };
+    this.links = [];
+    i = 0;
+    while (i < len) {
+      newLinkPt = newPtOnLabelBorder(lab[i], anc[i]);
+      if (newLinkPt != null) {
+        this.links.push({
+          x1: anc[i].x,
+          y1: anc[i].y,
+          x2: newLinkPt[0],
+          y2: newLinkPt[1],
+          width: 0.8
+        });
+      }
+      i++;
+    }
+    return this.svg.selectAll('.link').data(this.links).enter().append('line').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', function(d) {
+      return d.width;
+    }).attr('stroke', 'gray');
+  };
+
   return RectPlot;
 
 })();
