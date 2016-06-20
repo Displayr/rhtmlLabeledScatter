@@ -28,89 +28,26 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var anc, axisLabels, between, calcViewBoxDim, color, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, links, maxX, maxY, minX, minY, newColor, newLinkPt, newPtOnLabelBorder, normalizeXCoords, normalizeYCoords, originAxis, originX, originY, pts, pushDimensionMarker, rowsNegative, rowsPositive, threshold, val, viewBoxDim, x1, x2, xAxisPadding, y1, y2, yAxisPadding;
+    var anc, axisLabels, color, data, heightOfRow, i, lab, labeler, labels_svg, legend, legendLeftPadding, legendPtRad, legendStartY, li, links, maxX, maxY, minX, minY, newColor, newLinkPt, newPtOnLabelBorder, plot, plotData, pts, viewBoxDim, xAxisPadding, yAxisPadding;
     console.log('_redraw. Change this function in your rhtmlWidget');
     console.log('the outer SVG has already been created and added to the DOM. You should do things with it');
-    data = testData2;
-    calcViewBoxDim = function(X, Y, width, height) {
-      return {
-        width: width / 2,
-        height: height / 2,
-        rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
-        rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-      };
-    };
-    viewBoxDim = calcViewBoxDim(data.X, data.Y, this.width, this.height);
-    viewBoxDim['x'] = this.width / 5;
-    viewBoxDim['y'] = this.height / 5;
-    this.outerSvg.append('rect').attr('class', 'plot-viewbox').attr('x', viewBoxDim.x).attr('y', viewBoxDim.y).attr('width', viewBoxDim.width).attr('height', viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
-    minX = Infinity;
-    maxX = -Infinity;
-    minY = Infinity;
-    maxY = -Infinity;
-    i = 0;
-    while (i < data.X.length) {
-      if (minX > data.X[i]) {
-        minX = data.X[i];
-      }
-      if (maxX < data.X[i]) {
-        maxX = data.X[i];
-      }
-      if (minY > data.Y[i]) {
-        minY = data.Y[i];
-      }
-      if (maxY < data.Y[i]) {
-        maxY = data.Y[i];
-      }
-      i++;
-    }
-    threshold = 0.05;
-    i = 0;
-    while (i < data.X.length) {
-      data.X[i] = threshold + (data.X[i] - minX) / (maxX - minX) * (1 - 2 * threshold);
-      data.Y[i] = threshold + (data.Y[i] - minY) / (maxY - minY) * (1 - 2 * threshold);
-      i++;
-    }
-    normalizeXCoords = function(Xcoord) {
-      return (Xcoord - minX) / (maxX - minX) * viewBoxDim.width + viewBoxDim.x;
-    };
-    normalizeYCoords = function(Ycoord) {
-      return (Ycoord - minY) / (maxY - minY) * viewBoxDim.height + viewBoxDim.y;
-    };
-    between = function(num, min, max) {
-      return num > min && num < max;
-    };
-    colsPositive = 0;
-    colsNegative = 0;
-    i = 0.25;
-    while (between(i, minX, maxX) || between(-i, minX, maxX)) {
-      if (between(i, minX, maxX)) {
-        colsPositive++;
-      }
-      if (between(-i, minX, maxX)) {
-        colsNegative++;
-      }
-      i += 0.25;
-    }
-    rowsPositive = 0;
-    rowsNegative = 0;
-    i = 0.25;
-    while (between(i, minY, maxY) || between(-i, minY, maxY)) {
-      if (between(i, minY, maxY)) {
-        rowsNegative++;
-      }
-      if (between(-i, minY, maxY)) {
-        rowsPositive++;
-      }
-      i += 0.25;
-    }
+    data = testData;
+    plot = new RectPlot(this.width, this.height, data.X, data.Y, this.outerSvg);
+    viewBoxDim = plot.getViewBoxDim();
+    plotData = new PlotData(data.X, data.Y);
+    plotData.normalizeData();
+    minX = plotData.getMinX();
+    maxX = plotData.getMaxX();
+    minY = plotData.getMinY();
+    maxY = plotData.getMaxY();
+    plot.draw(plotData.getMinX(), plotData.getMaxX(), plotData.getMinY(), plotData.getMaxY());
     pts = [];
     lab = [];
     anc = [];
     legend = [];
     color = new RColor;
     i = 0;
-    while (i < data.X.length) {
+    while (i < plotData.getLen()) {
       if (!(_.some(legend, function(e) {
         return e.text === data.group[i];
       }))) {
@@ -159,7 +96,7 @@ LabeledScatter = (function(_super) {
       return d.text;
     }).attr('text-anchor', 'middle');
     i = 0;
-    while (i < data.X.length) {
+    while (i < plotData.getLen()) {
       lab[i].width = labels_svg[0][i].getBBox().width;
       lab[i].height = labels_svg[0][i].getBBox().height;
       i++;
@@ -244,7 +181,7 @@ LabeledScatter = (function(_super) {
     };
     links = [];
     i = 0;
-    while (i < pts.length) {
+    while (i < plotData.getLen()) {
       newLinkPt = newPtOnLabelBorder(lab[i], pts[i]);
       if (newLinkPt != null) {
         links.push({
@@ -273,142 +210,6 @@ LabeledScatter = (function(_super) {
     }).attr('y', function(d) {
       return d.y;
     });
-    originX = normalizeXCoords(0);
-    originY = normalizeYCoords(0);
-    originAxis = [
-      {
-        x1: viewBoxDim.x,
-        y1: originY,
-        x2: viewBoxDim.x + viewBoxDim.width,
-        y2: originY
-      }, {
-        x1: originX,
-        y1: viewBoxDim.y,
-        x2: originX,
-        y2: viewBoxDim.y + viewBoxDim.height
-      }
-    ];
-    this.outerSvg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '3, 3');
-    dimensionMarkerStack = [];
-    dimensionMarkerLeaderStack = [];
-    dimensionMarkerLabelStack = [];
-    pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
-      var labelHeight, leaderLineLen, numShown;
-      leaderLineLen = 5;
-      labelHeight = 15;
-      numShown = label.toFixed(1);
-      if (type === 'c') {
-        dimensionMarkerLeaderStack.push({
-          x1: x1,
-          y1: y2,
-          x2: x1,
-          y2: y2 + leaderLineLen
-        });
-        dimensionMarkerLabelStack.push({
-          x: x1,
-          y: y2 + leaderLineLen + labelHeight,
-          label: numShown,
-          anchor: 'middle'
-        });
-      }
-      if (type === 'r') {
-        dimensionMarkerLeaderStack.push({
-          x1: x1 - leaderLineLen,
-          y1: y1,
-          x2: x1,
-          y2: y2
-        });
-        return dimensionMarkerLabelStack.push({
-          x: x1 - leaderLineLen,
-          y: y2 + labelHeight / 3,
-          label: numShown,
-          anchor: 'end'
-        });
-      }
-    };
-    pushDimensionMarker('r', originAxis[0].x1, originAxis[0].y1, originAxis[0].x2, originAxis[0].y2, 0);
-    pushDimensionMarker('c', originAxis[1].x1, originAxis[1].y1, originAxis[1].x2, originAxis[1].y2, 0);
-    i = 0;
-    while (i < Math.max(colsPositive, colsNegative)) {
-      if (i < colsPositive) {
-        val = (i + 1) * 0.25;
-        x1 = normalizeXCoords(val);
-        y1 = viewBoxDim.y;
-        x2 = normalizeXCoords(val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
-        dimensionMarkerStack.push({
-          x1: x1,
-          y1: y1,
-          x2: x2,
-          y2: y2
-        });
-        if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val);
-        }
-      }
-      if (i < colsNegative) {
-        val = -(i + 1) * 0.25;
-        x1 = normalizeXCoords(val);
-        y1 = viewBoxDim.y;
-        x2 = normalizeXCoords(val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
-        dimensionMarkerStack.push({
-          x1: x1,
-          y1: y1,
-          x2: x2,
-          y2: y2
-        });
-        if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val);
-        }
-      }
-      i++;
-    }
-    i = 0;
-    while (i < Math.max(rowsPositive, rowsNegative)) {
-      x1 = y1 = x2 = y2 = 0;
-      if (i < rowsPositive) {
-        val = -(i + 1) * 0.25;
-        x1 = viewBoxDim.x;
-        y1 = normalizeYCoords(val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = normalizeYCoords(val);
-        dimensionMarkerStack.push({
-          x1: x1,
-          y1: y1,
-          x2: x2,
-          y2: y2
-        });
-        if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
-        }
-      }
-      if (i < rowsNegative) {
-        val = (i + 1) * 0.25;
-        x1 = viewBoxDim.x;
-        y1 = normalizeYCoords(val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = normalizeYCoords(val);
-        dimensionMarkerStack.push({
-          x1: x1,
-          y1: y1,
-          x2: x2,
-          y2: y2
-        });
-        if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
-        }
-      }
-      i++;
-    }
     yAxisPadding = 35;
     xAxisPadding = 40;
     axisLabels = [
@@ -441,33 +242,6 @@ LabeledScatter = (function(_super) {
       li['anchor'] = 'start';
       i++;
     }
-    this.outerSvg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-    this.outerSvg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black');
-    this.outerSvg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
-      return d.label;
-    }).attr('text-anchor', function(d) {
-      return d.anchor;
-    });
     this.outerSvg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
