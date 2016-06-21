@@ -280,7 +280,7 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .append('title')
-             .text((d) -> "#{d.label}, #{d.group}\n[#{d.labelX}, #{d.labelY}]")
+             .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
   drawLabs: ->
     labels_svg = @svg.selectAll('.label')

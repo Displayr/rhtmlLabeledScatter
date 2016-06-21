@@ -329,7 +329,7 @@ RectPlot = (function() {
     }).attr('fill', function(d) {
       return d.color;
     }).append('title').text(function(d) {
-      return "" + d.label + ", " + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
+      return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
     });
   };
 
