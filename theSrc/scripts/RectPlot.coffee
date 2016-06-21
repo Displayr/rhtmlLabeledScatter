@@ -71,7 +71,7 @@ class RectPlot
       y2: @_normalizeYCoords 0
     }
     pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
-    originAxis.push(oax) unless (@minX is 0) or (@maxX is 0)
+    originAxis.push(oax) unless (@minY is 0) or (@maxY is 0)
 
     oay = {
       x1: @_normalizeXCoords 0
@@ -80,7 +80,7 @@ class RectPlot
       y2: @viewBoxDim.y + @viewBoxDim.height
     }
     pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
-    originAxis.push(oay) unless (@minY is 0) or (@maxY is 0)
+    originAxis.push(oay) unless (@minX is 0) or (@maxX is 0)
 
 
     @svg.selectAll('.origin')

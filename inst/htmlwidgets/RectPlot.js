@@ -90,7 +90,7 @@ RectPlot = (function() {
       y2: this._normalizeYCoords(0)
     };
     pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0);
-    if (!((this.minX === 0) || (this.maxX === 0))) {
+    if (!((this.minY === 0) || (this.maxY === 0))) {
       originAxis.push(oax);
     }
     oay = {
@@ -100,7 +100,7 @@ RectPlot = (function() {
       y2: this.viewBoxDim.y + this.viewBoxDim.height
     };
     pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0);
-    if (!((this.minY === 0) || (this.maxY === 0))) {
+    if (!((this.minX === 0) || (this.maxX === 0))) {
       originAxis.push(oay);
     }
     this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
