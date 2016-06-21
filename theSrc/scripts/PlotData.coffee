@@ -2,6 +2,8 @@ class PlotData
   constructor: (X, Y, group, label, viewBoxDim, colors) ->
     @X = X
     @Y = Y
+    @origX = X.slice(0)
+    @origY = Y.slice(0)
     @group = group
     @label = label
     @viewBoxDim = viewBoxDim
@@ -22,7 +24,7 @@ class PlotData
       # '#FFFFFF' was in original color wheel but removed
       '#FF2323'
     ]
-    @cIndex = 0
+    @cIndex = 0 # color index
 
     if @X.length is @Y.length
       @len = X.length
@@ -73,23 +75,23 @@ class PlotData
         }
       @pts.push({
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
+        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
         r: 2
         label: @label[i]
-        labelX: @X[i].toPrecision(3).toString()
-        labelY: @Y[i].toPrecision(3).toString()
+        labelX: @origX[i].toPrecision(3).toString()
+        labelY: @origY[i].toPrecision(3).toString()
         group: @group[i]
         color: newColor
       })
       @lab.push({
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
+        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
         text: @label[i]
         color: newColor
       })
       @anc.push({
         x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
+        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
         r: 2
       })
       i++

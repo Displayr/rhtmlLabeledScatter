@@ -5,6 +5,8 @@ PlotData = (function() {
   function PlotData(X, Y, group, label, viewBoxDim, colors) {
     this.X = X;
     this.Y = Y;
+    this.origX = X.slice(0);
+    this.origY = Y.slice(0);
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
@@ -73,23 +75,23 @@ PlotData = (function() {
       }
       this.pts.push({
         x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
         r: 2,
         label: this.label[i],
-        labelX: this.X[i].toPrecision(3).toString(),
-        labelY: this.Y[i].toPrecision(3).toString(),
+        labelX: this.origX[i].toPrecision(3).toString(),
+        labelY: this.origY[i].toPrecision(3).toString(),
         group: this.group[i],
         color: newColor
       });
       this.lab.push({
         x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
         text: this.label[i],
         color: newColor
       });
       this.anc.push({
         x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
         r: 2
       });
       _results.push(i++);

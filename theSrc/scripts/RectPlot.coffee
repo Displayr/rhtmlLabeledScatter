@@ -33,6 +33,18 @@ class RectPlot
     @drawLegend()
 
   drawDimensionMarkers: ->
+    getTickRange = (max, min) ->
+      maxTicks = 8
+      range = max - min
+      unroundedTickSize = range/(maxTicks-1)
+      x = Math.ceil(Math.log10(unroundedTickSize)-1)
+      pow10x = Math.pow(10, x)
+      roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x
+      roundedTickRange
+
+    ticksX = getTickRange(@maxX, @minX)
+    ticksY = getTickRange(@maxY, @minY)
+
     originX = @_normalizeXCoords 0
     originY = @_normalizeYCoords 0
     originAxis = [
@@ -51,7 +63,7 @@ class RectPlot
         .attr('y2', (d) -> d.y2)
         .attr('stroke-width', 1)
         .attr('stroke', 'black')
-        .style('stroke-dasharray', ('3, 3'))
+        .style('stroke-dasharray', ('4, 6'))
 
     #calculate number of dimension markers
     between = (num, min, max) ->
@@ -122,7 +134,7 @@ class RectPlot
         y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val
+          pushDimensionMarker 'r', x1, y1, x2, y2, -val
       if i < rowsNegative
         val = (i+1)*0.25
         x1 = @viewBoxDim.x
@@ -131,7 +143,7 @@ class RectPlot
         y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val
+          pushDimensionMarker 'r', x1, y1, x2, y2, -val
       i++
 
     @svg.selectAll('.dim-marker')
@@ -168,7 +180,7 @@ class RectPlot
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
-  drawAxisLabels: () ->
+  drawAxisLabels: ->
     yAxisPadding = 35
     xAxisPadding = 40
     axisLabels = [
@@ -254,8 +266,7 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .append('title')
-             .text((d) -> "#{d.label}, #{d.group}\n[#{d.labelX},#{d.labelY}]")
-
+             .text((d) -> "#{d.label}, #{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
   drawLabs: ->
     labels_svg = @svg.selectAll('.label')

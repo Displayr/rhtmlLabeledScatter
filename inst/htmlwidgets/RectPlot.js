@@ -29,7 +29,19 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
-    var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, originAxis, originX, originY, pushDimensionMarker, rowsNegative, rowsPositive, val, x1, x2, y1, y2;
+    var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, originAxis, originX, originY, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
+    getTickRange = function(max, min) {
+      var maxTicks, pow10x, range, roundedTickRange, unroundedTickSize, x;
+      maxTicks = 8;
+      range = max - min;
+      unroundedTickSize = range / (maxTicks - 1);
+      x = Math.ceil(Math.log10(unroundedTickSize) - 1);
+      pow10x = Math.pow(10, x);
+      roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
+      return roundedTickRange;
+    };
+    ticksX = getTickRange(this.maxX, this.minX);
+    ticksY = getTickRange(this.maxY, this.minY);
     originX = this._normalizeXCoords(0);
     originY = this._normalizeYCoords(0);
     originAxis = [
@@ -53,7 +65,7 @@ RectPlot = (function() {
       return d.x2;
     }).attr('y2', function(d) {
       return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '3, 3');
+    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '4, 6');
     between = function(num, min, max) {
       return num > min && num < max;
     };
@@ -172,7 +184,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
+          pushDimensionMarker('r', x1, y1, x2, y2, -val);
         }
       }
       if (i < rowsNegative) {
@@ -188,7 +200,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
+          pushDimensionMarker('r', x1, y1, x2, y2, -val);
         }
       }
       i++;
@@ -313,7 +325,7 @@ RectPlot = (function() {
     }).attr('fill', function(d) {
       return d.color;
     }).append('title').text(function(d) {
-      return "" + d.label + ", " + d.group + "\n[" + d.labelX + "," + d.labelY + "]";
+      return "" + d.label + ", " + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
     });
   };
 
