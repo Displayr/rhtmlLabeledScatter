@@ -64,6 +64,14 @@ class PlotData
 
     # color = new RColor #using rColor library to gen random colours
 
+    thres = 0.08
+    xThres = thres*(@maxX - @minX)
+    @maxX += xThres
+    @minX -= xThres
+    yThres = thres*(@maxY - @minY)
+    @maxY += yThres
+    @minY -= yThres
+
     i = 0
     while i < @len
       unless (_.some @legend, (e) -> e.text is group[i])
@@ -75,10 +83,11 @@ class PlotData
           # stroke: 'gray'
           # 'stroke-opacity': 0.3
         }
-      thres = 0.08
+      x = @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
+      y = (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
       @pts.push({
-        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
-        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
+        x: x
+        y: y
         r: 2
         label: @label[i]
         labelX: @origX[i].toPrecision(3).toString()
@@ -87,14 +96,14 @@ class PlotData
         color: newColor
       })
       @lab.push({
-        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
-        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
+        x: x
+        y: y
         text: @label[i]
         color: newColor
       })
       @anc.push({
-        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
-        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
+        x: x
+        y: y
         r: 2
       })
       i++
