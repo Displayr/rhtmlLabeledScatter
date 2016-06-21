@@ -2,12 +2,12 @@ class RectPlot
   constructor: (width, height, X, Y, group, label, svg) ->
     @svg = svg
     @viewBoxDim =
-      width: width / 2
-      height: height / 2
+      width: width - 200
+      height: height - 60
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    @viewBoxDim['x'] = width / 5
-    @viewBoxDim['y'] = height / 5
+    @viewBoxDim['x'] = 50
+    @viewBoxDim['y'] = 10
 
     @data = new PlotData(X, Y, group, label, @viewBoxDim)
     @minX = @data.minX
@@ -44,9 +44,6 @@ class RectPlot
 
     ticksX = getTickRange(@maxX, @minX)
     ticksY = getTickRange(@maxY, @minY)
-
-    console.log @maxX
-    console.log @_normalizeXCoords(@maxX)
 
     originX = @_normalizeXCoords 0
     originY = @_normalizeYCoords 0

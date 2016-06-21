@@ -5,13 +5,13 @@ RectPlot = (function() {
   function RectPlot(width, height, X, Y, group, label, svg) {
     this.svg = svg;
     this.viewBoxDim = {
-      width: width / 2,
-      height: height / 2,
+      width: width - 200,
+      height: height - 60,
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
     };
-    this.viewBoxDim['x'] = width / 5;
-    this.viewBoxDim['y'] = height / 5;
+    this.viewBoxDim['x'] = 50;
+    this.viewBoxDim['y'] = 10;
     this.data = new PlotData(X, Y, group, label, this.viewBoxDim);
     this.minX = this.data.minX;
     this.maxX = this.data.maxX;
@@ -42,8 +42,6 @@ RectPlot = (function() {
     };
     ticksX = getTickRange(this.maxX, this.minX);
     ticksY = getTickRange(this.maxY, this.minY);
-    console.log(this.maxX);
-    console.log(this._normalizeXCoords(this.maxX));
     originX = this._normalizeXCoords(0);
     originY = this._normalizeYCoords(0);
     originAxis = [
