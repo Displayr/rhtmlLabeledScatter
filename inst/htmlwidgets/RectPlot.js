@@ -231,7 +231,7 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
+    }).attr('font-family', 'Arial').text(function(d) {
       return d.label;
     }).attr('text-anchor', function(d) {
       return d.anchor;
@@ -304,7 +304,7 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
+    }).attr('font-family', 'Arial').text(function(d) {
       return d.text;
     }).attr('text-anchor', function(d) {
       return d.anchor;
@@ -339,7 +339,7 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial Narrow').text(function(d) {
+    }).attr('font-family', 'Arial').text(function(d) {
       return d.text;
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;

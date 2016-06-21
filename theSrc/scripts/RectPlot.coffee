@@ -190,7 +190,7 @@ class RectPlot
              .append('text')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial Narrow')
+             .attr('font-family', 'Arial')
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
@@ -259,7 +259,7 @@ class RectPlot
              .append('text')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial Narrow')
+             .attr('font-family', 'Arial')
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
 
@@ -290,7 +290,7 @@ class RectPlot
              .attr('class', 'init-labs')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial Narrow')
+             .attr('font-family', 'Arial')
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
              .attr('fill', (d) -> d.color)
