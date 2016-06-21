@@ -1,12 +1,16 @@
 class RectPlot
   constructor: (width, height, X, Y, group, label, svg) ->
     @svg = svg
+
+    @yAxisPadding = 50
+    @xAxisPadding = 40
+
     @viewBoxDim =
       width: width - 200
-      height: height - 60
+      height: height - @xAxisPadding - 20
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    @viewBoxDim['x'] = 70
+    @viewBoxDim['x'] = @yAxisPadding + 25
     @viewBoxDim['y'] = 10
 
     @data = new PlotData(X, Y, group, label, @viewBoxDim)
@@ -33,6 +37,7 @@ class RectPlot
     @drawLegend()
 
   drawDimensionMarkers: ->
+    # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
     getTickRange = (max, min) ->
       maxTicks = 8
       range = max - min
@@ -195,22 +200,20 @@ class RectPlot
              .attr('text-anchor', (d) -> d.anchor)
 
   drawAxisLabels: ->
-    yAxisPadding = 45
-    xAxisPadding = 40
     axisLabels = [
       { # x axis label
         x: @viewBoxDim.x + @viewBoxDim.width/2
-        y: @viewBoxDim.y + @viewBoxDim.height + xAxisPadding
+        y: @viewBoxDim.y + @viewBoxDim.height + @xAxisPadding
         text: 'Dimension 1 (64%)'
         anchor: 'middle'
         transform: 'rotate(0)'
       },
       { # y axis label
-        x: @viewBoxDim.x - yAxisPadding
+        x: @viewBoxDim.x - @yAxisPadding
         y: @viewBoxDim.y + @viewBoxDim.height/2
         text: 'Dimension 2 (24%)'
         anchor: 'middle'
-        transform: 'rotate(270,'+(@viewBoxDim.x-yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+        transform: 'rotate(270,'+(@viewBoxDim.x-@yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
       }
     ]
 

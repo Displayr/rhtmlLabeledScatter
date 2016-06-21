@@ -4,13 +4,15 @@ var RectPlot;
 RectPlot = (function() {
   function RectPlot(width, height, X, Y, group, label, svg) {
     this.svg = svg;
+    this.yAxisPadding = 50;
+    this.xAxisPadding = 40;
     this.viewBoxDim = {
       width: width - 200,
-      height: height - 60,
+      height: height - this.xAxisPadding - 20,
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
     };
-    this.viewBoxDim['x'] = 70;
+    this.viewBoxDim['x'] = this.yAxisPadding + 25;
     this.viewBoxDim['y'] = 10;
     this.data = new PlotData(X, Y, group, label, this.viewBoxDim);
     this.minX = this.data.minX;
@@ -239,22 +241,20 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawAxisLabels = function() {
-    var axisLabels, xAxisPadding, yAxisPadding;
-    yAxisPadding = 45;
-    xAxisPadding = 40;
+    var axisLabels;
     axisLabels = [
       {
         x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
-        y: this.viewBoxDim.y + this.viewBoxDim.height + xAxisPadding,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + this.xAxisPadding,
         text: 'Dimension 1 (64%)',
         anchor: 'middle',
         transform: 'rotate(0)'
       }, {
-        x: this.viewBoxDim.x - yAxisPadding,
+        x: this.viewBoxDim.x - this.yAxisPadding,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
         text: 'Dimension 2 (24%)',
         anchor: 'middle',
-        transform: 'rotate(270,' + (this.viewBoxDim.x - yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
+        transform: 'rotate(270,' + (this.viewBoxDim.x - this.yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
       }
     ];
     return this.svg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('x', function(d) {
