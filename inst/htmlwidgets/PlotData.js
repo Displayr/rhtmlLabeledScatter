@@ -22,7 +22,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function() {
-    var i, threshold;
+    var i, thres, xThres, yThres;
     this.minX = Infinity;
     this.maxX = -Infinity;
     this.minY = Infinity;
@@ -43,7 +43,13 @@ PlotData = (function() {
       }
       i++;
     }
-    threshold = 0.05;
+    thres = 0.08;
+    xThres = thres * (this.maxX - this.minX);
+    this.maxX += xThres;
+    this.minX -= xThres;
+    yThres = thres * (this.maxY - this.minY);
+    this.maxY += yThres;
+    this.minY -= yThres;
     i = 0;
     while (i < this.len) {
       this.X[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
@@ -53,19 +59,12 @@ PlotData = (function() {
   };
 
   PlotData.prototype.initDataArrays = function() {
-    var group, i, newColor, thres, x, xThres, y, yThres, _results;
+    var group, i, newColor, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
     this.legend = [];
     group = this.group;
-    thres = 0.08;
-    xThres = thres * (this.maxX - this.minX);
-    this.maxX += xThres;
-    this.minX -= xThres;
-    yThres = thres * (this.maxY - this.minY);
-    this.maxY += yThres;
-    this.minY -= yThres;
     i = 0;
     _results = [];
     while (i < this.len) {
@@ -78,8 +77,8 @@ PlotData = (function() {
           color: newColor
         });
       }
-      x = this.X[i] * (1 - 2 * thres) * this.viewBoxDim.width + this.viewBoxDim.x + this.viewBoxDim.width * thres;
-      y = (1 - this.Y[i]) * this.viewBoxDim.height * (1 - 2 * thres) + this.viewBoxDim.y + this.viewBoxDim.height * thres;
+      x = this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x;
+      y = (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
       this.pts.push({
         x: x,
         y: y,

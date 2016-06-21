@@ -42,6 +42,8 @@ RectPlot = (function() {
     };
     ticksX = getTickRange(this.maxX, this.minX);
     ticksY = getTickRange(this.maxY, this.minY);
+    console.log(this.maxX);
+    console.log(this._normalizeXCoords(this.maxX));
     originX = this._normalizeXCoords(0);
     originY = this._normalizeYCoords(0);
     originAxis = [

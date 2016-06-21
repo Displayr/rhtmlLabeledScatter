@@ -45,6 +45,9 @@ class RectPlot
     ticksX = getTickRange(@maxX, @minX)
     ticksY = getTickRange(@maxY, @minY)
 
+    console.log @maxX
+    console.log @_normalizeXCoords(@maxX)
+
     originX = @_normalizeXCoords 0
     originY = @_normalizeYCoords 0
     originAxis = [

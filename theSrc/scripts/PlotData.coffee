@@ -21,7 +21,7 @@ class PlotData
       '#997300'
       '#264478'
       '#43682B'
-      # '#FFFFFF' was in original color wheel but removed
+      # '#FFFFFF' white in original color wheel but removed
       '#FF2323'
     ]
     @cIndex = 0 # color index
@@ -46,7 +46,14 @@ class PlotData
       @maxY = @Y[i] if @maxY < @Y[i]
       i++
 
-    threshold = 0.05
+    thres = 0.08
+    xThres = thres*(@maxX - @minX)
+    @maxX += xThres
+    @minX -= xThres
+    yThres = thres*(@maxY - @minY)
+    @maxY += yThres
+    @minY -= yThres
+
     i = 0
     while i < @len
       @X[i] = (@X[i] - @minX)/(@maxX - @minX)
@@ -64,13 +71,7 @@ class PlotData
 
     # color = new RColor #using rColor library to gen random colours
 
-    thres = 0.08
-    xThres = thres*(@maxX - @minX)
-    @maxX += xThres
-    @minX -= xThres
-    yThres = thres*(@maxY - @minY)
-    @maxY += yThres
-    @minY -= yThres
+
 
     i = 0
     while i < @len
@@ -83,8 +84,8 @@ class PlotData
           # stroke: 'gray'
           # 'stroke-opacity': 0.3
         }
-      x = @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
-      y = (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
+      x = @X[i]*@viewBoxDim.width + @viewBoxDim.x
+      y = (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
       @pts.push({
         x: x
         y: y
