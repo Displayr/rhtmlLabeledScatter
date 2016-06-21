@@ -10,7 +10,7 @@ RectPlot = (function() {
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
     };
-    this.viewBoxDim['x'] = 50;
+    this.viewBoxDim['x'] = 70;
     this.viewBoxDim['y'] = 10;
     this.data = new PlotData(X, Y, group, label, this.viewBoxDim);
     this.minX = this.data.minX;
@@ -29,7 +29,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
-    var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, originAxis, originX, originY, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
+    var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, oax, oay, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
     getTickRange = function(max, min) {
       var maxTicks, pow10x, range, roundedTickRange, unroundedTickSize, x;
       maxTicks = 8;
@@ -40,62 +40,9 @@ RectPlot = (function() {
       roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
       return roundedTickRange;
     };
-    ticksX = getTickRange(this.maxX, this.minX);
-    ticksY = getTickRange(this.maxY, this.minY);
-    originX = this._normalizeXCoords(0);
-    originY = this._normalizeYCoords(0);
-    originAxis = [
-      {
-        x1: this.viewBoxDim.x,
-        y1: originY,
-        x2: this.viewBoxDim.x + this.viewBoxDim.width,
-        y2: originY
-      }, {
-        x1: originX,
-        y1: this.viewBoxDim.y,
-        x2: originX,
-        y2: this.viewBoxDim.y + this.viewBoxDim.height
-      }
-    ];
-    this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '4, 6');
     between = function(num, min, max) {
       return num > min && num < max;
     };
-    colsPositive = 0;
-    colsNegative = 0;
-    i = 0.25;
-    while (between(i, this.minX, this.maxX) || between(-i, this.minX, this.maxX)) {
-      if (between(i, this.minX, this.maxX)) {
-        colsPositive++;
-      }
-      if (between(-i, this.minX, this.maxX)) {
-        colsNegative++;
-      }
-      i += 0.25;
-    }
-    rowsPositive = 0;
-    rowsNegative = 0;
-    i = 0.25;
-    while (between(i, this.minY, this.maxY) || between(-i, this.minY, this.maxY)) {
-      if (between(i, this.minY, this.maxY)) {
-        rowsNegative++;
-      }
-      if (between(-i, this.minY, this.maxY)) {
-        rowsPositive++;
-      }
-      i += 0.25;
-    }
-    dimensionMarkerStack = [];
-    dimensionMarkerLeaderStack = [];
-    dimensionMarkerLabelStack = [];
     pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
       var labelHeight, leaderLineLen, numShown;
       leaderLineLen = 5;
@@ -130,12 +77,69 @@ RectPlot = (function() {
         });
       }
     };
-    pushDimensionMarker('r', originAxis[0].x1, originAxis[0].y1, originAxis[0].x2, originAxis[0].y2, 0);
-    pushDimensionMarker('c', originAxis[1].x1, originAxis[1].y1, originAxis[1].x2, originAxis[1].y2, 0);
+    dimensionMarkerStack = [];
+    dimensionMarkerLeaderStack = [];
+    dimensionMarkerLabelStack = [];
+    ticksX = getTickRange(this.maxX, this.minX);
+    ticksY = getTickRange(this.maxY, this.minY);
+    originAxis = [];
+    oax = {
+      x1: this.viewBoxDim.x,
+      y1: this._normalizeYCoords(0),
+      x2: this.viewBoxDim.x + this.viewBoxDim.width,
+      y2: this._normalizeYCoords(0)
+    };
+    pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0);
+    if (!((this.minX === 0) || (this.maxX === 0))) {
+      originAxis.push(oax);
+    }
+    oay = {
+      x1: this._normalizeXCoords(0),
+      y1: this.viewBoxDim.y,
+      x2: this._normalizeXCoords(0),
+      y2: this.viewBoxDim.y + this.viewBoxDim.height
+    };
+    pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0);
+    if (!((this.minY === 0) || (this.maxY === 0))) {
+      originAxis.push(oay);
+    }
+    this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '4, 6');
+    colsPositive = 0;
+    colsNegative = 0;
+    i = ticksX;
+    while (between(i, this.minX, this.maxX) || between(-i, this.minX, this.maxX)) {
+      if (between(i, this.minX, this.maxX)) {
+        colsPositive++;
+      }
+      if (between(-i, this.minX, this.maxX)) {
+        colsNegative++;
+      }
+      i += ticksX;
+    }
+    rowsPositive = 0;
+    rowsNegative = 0;
+    i = ticksY;
+    while (between(i, this.minY, this.maxY) || between(-i, this.minY, this.maxY)) {
+      if (between(i, this.minY, this.maxY)) {
+        rowsNegative++;
+      }
+      if (between(-i, this.minY, this.maxY)) {
+        rowsPositive++;
+      }
+      i += ticksY;
+    }
     i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
       if (i < colsPositive) {
-        val = (i + 1) * 0.25;
+        val = (i + 1) * ticksX;
         x1 = this._normalizeXCoords(val);
         y1 = this.viewBoxDim.y;
         x2 = this._normalizeXCoords(val);
@@ -151,7 +155,7 @@ RectPlot = (function() {
         }
       }
       if (i < colsNegative) {
-        val = -(i + 1) * 0.25;
+        val = -(i + 1) * ticksX;
         x1 = this._normalizeXCoords(val);
         y1 = this.viewBoxDim.y;
         x2 = this._normalizeXCoords(val);
@@ -172,7 +176,7 @@ RectPlot = (function() {
     while (i < Math.max(rowsPositive, rowsNegative)) {
       x1 = y1 = x2 = y2 = 0;
       if (i < rowsPositive) {
-        val = -(i + 1) * 0.25;
+        val = -(i + 1) * ticksY;
         x1 = this.viewBoxDim.x;
         y1 = this._normalizeYCoords(val);
         x2 = this.viewBoxDim.x + this.viewBoxDim.width;
@@ -188,7 +192,7 @@ RectPlot = (function() {
         }
       }
       if (i < rowsNegative) {
-        val = (i + 1) * 0.25;
+        val = (i + 1) * ticksY;
         x1 = this.viewBoxDim.x;
         y1 = this._normalizeYCoords(val);
         x2 = this.viewBoxDim.x + this.viewBoxDim.width;
@@ -236,7 +240,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawAxisLabels = function() {
     var axisLabels, xAxisPadding, yAxisPadding;
-    yAxisPadding = 35;
+    yAxisPadding = 45;
     xAxisPadding = 40;
     axisLabels = [
       {

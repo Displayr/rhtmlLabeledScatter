@@ -6,7 +6,7 @@ class RectPlot
       height: height - 60
       rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
       rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    @viewBoxDim['x'] = 50
+    @viewBoxDim['x'] = 70
     @viewBoxDim['y'] = 10
 
     @data = new PlotData(X, Y, group, label, @viewBoxDim)
@@ -42,15 +42,46 @@ class RectPlot
       roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x
       roundedTickRange
 
+    between = (num, min, max) ->
+      num > min and num < max
+
+    pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
+      leaderLineLen = 5
+      labelHeight = 15
+      numShown = label.toFixed(1)
+      if type == 'c'
+        dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
+        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: numShown, anchor: 'middle'})
+      if type == 'r'
+        dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
+        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: numShown, anchor: 'end'})
+
+    dimensionMarkerStack = []
+    dimensionMarkerLeaderStack = []
+    dimensionMarkerLabelStack = []
+
     ticksX = getTickRange(@maxX, @minX)
     ticksY = getTickRange(@maxY, @minY)
 
-    originX = @_normalizeXCoords 0
-    originY = @_normalizeYCoords 0
-    originAxis = [
-      {x1: @viewBoxDim.x, y1: originY, x2: @viewBoxDim.x + @viewBoxDim.width, y2: originY},
-      {x1: originX, y1: @viewBoxDim.y, x2: originX, y2: @viewBoxDim.y + @viewBoxDim.height}
-    ]
+    originAxis = []
+    oax = {
+      x1: @viewBoxDim.x
+      y1: @_normalizeYCoords 0
+      x2: @viewBoxDim.x + @viewBoxDim.width
+      y2: @_normalizeYCoords 0
+    }
+    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
+    originAxis.push(oax) unless (@minX is 0) or (@maxX is 0)
+
+    oay = {
+      x1: @_normalizeXCoords 0
+      y1: @viewBoxDim.y
+      x2: @_normalizeXCoords 0
+      y2: @viewBoxDim.y + @viewBoxDim.height
+    }
+    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
+    originAxis.push(oay) unless (@minY is 0) or (@maxY is 0)
+
 
     @svg.selectAll('.origin')
         .data(originAxis)
@@ -66,44 +97,27 @@ class RectPlot
         .style('stroke-dasharray', ('4, 6'))
 
     #calculate number of dimension markers
-    between = (num, min, max) ->
-      num > min and num < max
-
     colsPositive = 0
     colsNegative = 0
-    i = 0.25
+    i = ticksX
     while between(i, @minX, @maxX) or between(-i, @minX, @maxX)
       colsPositive++ if between(i, @minX, @maxX)
       colsNegative++ if between(-i, @minX, @maxX)
-      i += 0.25
+      i += ticksX
 
     rowsPositive = 0
     rowsNegative = 0
-    i = 0.25
+    i = ticksY
     while between(i, @minY, @maxY) or between(-i, @minY, @maxY)
       rowsNegative++ if between(i, @minY, @maxY) # y axis inversed svg
       rowsPositive++ if between(-i, @minY, @maxY)
-      i += 0.25
+      i += ticksY
 
-    dimensionMarkerStack = []
-    dimensionMarkerLeaderStack = []
-    dimensionMarkerLabelStack = []
-    pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
-      leaderLineLen = 5
-      labelHeight = 15
-      numShown = label.toFixed(1)
-      if type == 'c'
-        dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
-        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: numShown, anchor: 'middle'})
-      if type == 'r'
-        dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
-        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: numShown, anchor: 'end'})
-    pushDimensionMarker 'r', originAxis[0].x1, originAxis[0].y1, originAxis[0].x2, originAxis[0].y2, 0
-    pushDimensionMarker 'c', originAxis[1].x1, originAxis[1].y1, originAxis[1].x2, originAxis[1].y2, 0
+
     i = 0
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
-        val = (i+1)*0.25
+        val = (i+1)*ticksX
         x1 = @_normalizeXCoords val
         y1 = @viewBoxDim.y
         x2 = @_normalizeXCoords val
@@ -113,7 +127,7 @@ class RectPlot
           pushDimensionMarker 'c', x1, y1, x2, y2, val
 
       if i < colsNegative
-        val = -(i+1)*0.25
+        val = -(i+1)*ticksX
         x1 = @_normalizeXCoords val
         y1 = @viewBoxDim.y
         x2 = @_normalizeXCoords val
@@ -127,7 +141,7 @@ class RectPlot
     while i < Math.max(rowsPositive, rowsNegative)
       x1 = y1 = x2 = y2 = 0
       if i < rowsPositive
-        val = -(i+1)*0.25
+        val = -(i+1)*ticksY
         x1 = @viewBoxDim.x
         y1 = @_normalizeYCoords val
         x2 = @viewBoxDim.x + @viewBoxDim.width
@@ -136,7 +150,7 @@ class RectPlot
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
-        val = (i+1)*0.25
+        val = (i+1)*ticksY
         x1 = @viewBoxDim.x
         y1 = @_normalizeYCoords val
         x2 = @viewBoxDim.x + @viewBoxDim.width
@@ -181,7 +195,7 @@ class RectPlot
              .attr('text-anchor', (d) -> d.anchor)
 
   drawAxisLabels: ->
-    yAxisPadding = 35
+    yAxisPadding = 45
     xAxisPadding = 40
     axisLabels = [
       { # x axis label

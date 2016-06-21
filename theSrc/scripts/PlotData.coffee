@@ -48,11 +48,11 @@ class PlotData
 
     thres = 0.08
     xThres = thres*(@maxX - @minX)
-    @maxX += xThres
-    @minX -= xThres
+    @maxX = if @maxX < 0 then 0 else @maxX+xThres
+    @minX = if @minX > 0 then 0 else @minX-xThres
     yThres = thres*(@maxY - @minY)
-    @maxY += yThres
-    @minY -= yThres
+    @maxY = if @maxY < 0 then 0 else @maxY+yThres
+    @minY = if @minY > 0 then 0 else @minY-yThres
 
     i = 0
     while i < @len

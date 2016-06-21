@@ -45,11 +45,11 @@ PlotData = (function() {
     }
     thres = 0.08;
     xThres = thres * (this.maxX - this.minX);
-    this.maxX += xThres;
-    this.minX -= xThres;
+    this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres;
+    this.minX = this.minX > 0 ? 0 : this.minX - xThres;
     yThres = thres * (this.maxY - this.minY);
-    this.maxY += yThres;
-    this.minY -= yThres;
+    this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres;
+    this.minY = this.minY > 0 ? 0 : this.minY - yThres;
     i = 0;
     while (i < this.len) {
       this.X[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
