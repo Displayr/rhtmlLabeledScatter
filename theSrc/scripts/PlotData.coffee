@@ -47,16 +47,16 @@ class PlotData
       i++
 
     threshold = 0.05
+    # @minX *= (1+threshold)
+    # @minY *= (1+threshold)
+    # @maxX *= (1+threshold)
+    # @maxY *= (1+threshold)
     i = 0
     while i < @len
-      @X[i] = threshold + (@X[i] - @minX)/(@maxX - @minX)*(1-2*threshold)
-      @Y[i] = threshold + (@Y[i] - @minY)/(@maxY - @minY)*(1-2*threshold)
+      @X[i] = (@X[i] - @minX)/(@maxX - @minX)
+      @Y[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
-    @minX -= threshold
-    @minY -= threshold
-    @maxX += threshold
-    @maxY += threshold
     return
 
   initDataArrays: () ->

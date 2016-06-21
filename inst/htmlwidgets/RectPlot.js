@@ -184,7 +184,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, -val);
+          pushDimensionMarker('r', x1, y1, x2, y2, val);
         }
       }
       if (i < rowsNegative) {
@@ -200,7 +200,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, -val);
+          pushDimensionMarker('r', x1, y1, x2, y2, val);
         }
       }
       i++;
@@ -312,7 +312,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype._normalizeYCoords = function(Ycoord) {
-    return (Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y;
+    return -(Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y + this.viewBoxDim.height;
   };
 
   RectPlot.prototype.drawAnc = function() {

@@ -46,14 +46,10 @@ PlotData = (function() {
     threshold = 0.05;
     i = 0;
     while (i < this.len) {
-      this.X[i] = threshold + (this.X[i] - this.minX) / (this.maxX - this.minX) * (1 - 2 * threshold);
-      this.Y[i] = threshold + (this.Y[i] - this.minY) / (this.maxY - this.minY) * (1 - 2 * threshold);
+      this.X[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
+      this.Y[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
       i++;
     }
-    this.minX -= threshold;
-    this.minY -= threshold;
-    this.maxX += threshold;
-    this.maxY += threshold;
   };
 
   PlotData.prototype.initDataArrays = function() {

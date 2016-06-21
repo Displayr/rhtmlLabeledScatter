@@ -134,7 +134,7 @@ class RectPlot
         y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, -val
+          pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
         val = (i+1)*0.25
         x1 = @viewBoxDim.x
@@ -143,7 +143,7 @@ class RectPlot
         y2 = @_normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, -val
+          pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
     @svg.selectAll('.dim-marker')
@@ -253,7 +253,7 @@ class RectPlot
     (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x
 
   _normalizeYCoords: (Ycoord) ->
-    (Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y
+    -(Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y + @viewBoxDim.height
 
   drawAnc: ->
     @svg.selectAll('.anc')
