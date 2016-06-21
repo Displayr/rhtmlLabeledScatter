@@ -76,8 +76,8 @@ class PlotData
         y: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
         r: 2
         label: @label[i]
-        labelX: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        labelY: @Y[i]*@viewBoxDim.height + @viewBoxDim.y
+        labelX: @X[i].toPrecision(3).toString()
+        labelY: @Y[i].toPrecision(3).toString()
         group: @group[i]
         color: newColor
       })

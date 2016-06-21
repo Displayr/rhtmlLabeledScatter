@@ -76,8 +76,8 @@ PlotData = (function() {
         y: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
         r: 2,
         label: this.label[i],
-        labelX: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        labelY: this.Y[i] * this.viewBoxDim.height + this.viewBoxDim.y,
+        labelX: this.X[i].toPrecision(3).toString(),
+        labelY: this.Y[i].toPrecision(3).toString(),
         group: this.group[i],
         color: newColor
       });

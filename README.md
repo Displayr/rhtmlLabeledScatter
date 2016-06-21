@@ -90,7 +90,6 @@ There are example widget use in R in the [features.R file](examples/features.R),
 
 ## TODO
 - Draggable labels
-- Hover effect - should display label name, group, coords over point
 - Find rule from ggplot for axis tick spacing
 - Fix links going to bottom?
 - Fix yaml file when it is time to test in RStudio
