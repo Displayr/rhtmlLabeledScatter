@@ -91,5 +91,4 @@ There are example widget use in R in the [features.R file](examples/features.R),
 ## TODO
 - Draggable labels
 - Resizing legend text
-- Find rule from ggplot for axis tick spacing
 - Fix yaml file when it is time to test in RStudio
