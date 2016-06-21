@@ -22,7 +22,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function() {
-    var i, threshold, _results;
+    var i, threshold;
     this.minX = Infinity;
     this.maxX = -Infinity;
     this.minY = Infinity;
@@ -45,13 +45,15 @@ PlotData = (function() {
     }
     threshold = 0.05;
     i = 0;
-    _results = [];
     while (i < this.len) {
       this.X[i] = threshold + (this.X[i] - this.minX) / (this.maxX - this.minX) * (1 - 2 * threshold);
       this.Y[i] = threshold + (this.Y[i] - this.minY) / (this.maxY - this.minY) * (1 - 2 * threshold);
-      _results.push(i++);
+      i++;
     }
-    return _results;
+    this.minX -= threshold;
+    this.minY -= threshold;
+    this.maxX += threshold;
+    this.maxY += threshold;
   };
 
   PlotData.prototype.initDataArrays = function() {

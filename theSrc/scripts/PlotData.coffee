@@ -53,6 +53,12 @@ class PlotData
       @Y[i] = threshold + (@Y[i] - @minY)/(@maxY - @minY)*(1-2*threshold)
       i++
 
+    @minX -= threshold
+    @minY -= threshold
+    @maxX += threshold
+    @maxY += threshold
+    return
+
   initDataArrays: () ->
     @pts = []
     @lab = []
