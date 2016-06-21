@@ -47,10 +47,6 @@ class PlotData
       i++
 
     threshold = 0.05
-    # @minX *= (1+threshold)
-    # @minY *= (1+threshold)
-    # @maxX *= (1+threshold)
-    # @maxY *= (1+threshold)
     i = 0
     while i < @len
       @X[i] = (@X[i] - @minX)/(@maxX - @minX)
@@ -79,9 +75,10 @@ class PlotData
           # stroke: 'gray'
           # 'stroke-opacity': 0.3
         }
+      thres = 0.08
       @pts.push({
-        x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
+        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
+        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
         r: 2
         label: @label[i]
         labelX: @origX[i].toPrecision(3).toString()
@@ -90,14 +87,14 @@ class PlotData
         color: newColor
       })
       @lab.push({
-        x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
+        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
+        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
         text: @label[i]
         color: newColor
       })
       @anc.push({
-        x: @X[i]*@viewBoxDim.width + @viewBoxDim.x
-        y: (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
+        x: @X[i]*(1-2*thres)*@viewBoxDim.width + @viewBoxDim.x + @viewBoxDim.width*thres
+        y: (1-@Y[i])*@viewBoxDim.height*(1-2*thres) + @viewBoxDim.y + @viewBoxDim.height*thres
         r: 2
       })
       i++

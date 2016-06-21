@@ -53,7 +53,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.initDataArrays = function() {
-    var group, i, newColor, _results;
+    var group, i, newColor, thres, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
@@ -71,9 +71,10 @@ PlotData = (function() {
           color: newColor
         });
       }
+      thres = 0.08;
       this.pts.push({
-        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
+        x: this.X[i] * (1 - 2 * thres) * this.viewBoxDim.width + this.viewBoxDim.x + this.viewBoxDim.width * thres,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height * (1 - 2 * thres) + this.viewBoxDim.y + this.viewBoxDim.height * thres,
         r: 2,
         label: this.label[i],
         labelX: this.origX[i].toPrecision(3).toString(),
@@ -82,14 +83,14 @@ PlotData = (function() {
         color: newColor
       });
       this.lab.push({
-        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
+        x: this.X[i] * (1 - 2 * thres) * this.viewBoxDim.width + this.viewBoxDim.x + this.viewBoxDim.width * thres,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height * (1 - 2 * thres) + this.viewBoxDim.y + this.viewBoxDim.height * thres,
         text: this.label[i],
         color: newColor
       });
       this.anc.push({
-        x: this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x,
-        y: (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y,
+        x: this.X[i] * (1 - 2 * thres) * this.viewBoxDim.width + this.viewBoxDim.x + this.viewBoxDim.width * thres,
+        y: (1 - this.Y[i]) * this.viewBoxDim.height * (1 - 2 * thres) + this.viewBoxDim.y + this.viewBoxDim.height * thres,
         r: 2
       });
       _results.push(i++);
