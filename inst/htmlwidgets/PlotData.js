@@ -2,7 +2,7 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, colors) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors) {
     this.X = X;
     this.Y = Y;
     this.origX = X.slice(0);
@@ -10,6 +10,7 @@ PlotData = (function() {
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
+    this.legendDim = legendDim;
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
     if (this.X.length === this.Y.length) {
@@ -23,26 +24,10 @@ PlotData = (function() {
 
   PlotData.prototype.normalizeData = function() {
     var i, thres, xThres, yThres;
-    this.minX = Infinity;
-    this.maxX = -Infinity;
-    this.minY = Infinity;
-    this.maxY = -Infinity;
-    i = 0;
-    while (i < this.len) {
-      if (this.minX > this.X[i]) {
-        this.minX = this.X[i];
-      }
-      if (this.maxX < this.X[i]) {
-        this.maxX = this.X[i];
-      }
-      if (this.minY > this.Y[i]) {
-        this.minY = this.Y[i];
-      }
-      if (this.maxY < this.Y[i]) {
-        this.maxY = this.Y[i];
-      }
-      i++;
-    }
+    this.minX = _.min(this.X);
+    this.maxX = _.max(this.X);
+    this.minY = _.min(this.Y);
+    this.maxY = _.max(this.Y);
     thres = 0.08;
     xThres = thres * (this.maxX - this.minX);
     this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres;
@@ -59,21 +44,20 @@ PlotData = (function() {
   };
 
   PlotData.prototype.initDataArrays = function() {
-    var group, i, newColor, x, y, _results;
+    var group, i, newColor, x, y;
     this.pts = [];
     this.lab = [];
     this.anc = [];
-    this.legend = [];
-    this.legend['moved'] = [];
+    this.legendGroups = [];
+    this.legendPts = [];
     group = this.group;
     i = 0;
-    _results = [];
     while (i < this.len) {
-      if (!(_.some(this.legend, function(e) {
+      if (!(_.some(this.legendGroups, function(e) {
         return e.text === group[i];
       }))) {
         newColor = this.getDefaultColor();
-        this.legend.push({
+        this.legendGroups.push({
           text: this.group[i],
           color: newColor
         });
@@ -104,9 +88,42 @@ PlotData = (function() {
         r: 2,
         id: i
       });
+      i++;
+    }
+    return this.setupLegendGroups(this.legendGroups, this.legendDim);
+  };
+
+  PlotData.prototype.setupLegendGroups = function(legendGroups, legendDim) {
+    var i, legendStartY, li, _results;
+    legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * legendGroups.length / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
+    i = 0;
+    _results = [];
+    while (i < legendGroups.length) {
+      li = legendGroups[i];
+      li['r'] = legendDim.ptRadius;
+      li['cx'] = legendDim.x + legendDim.leftPadding;
+      li['cy'] = legendStartY + i * legendDim.heightOfRow;
+      li['x'] = li['cx'] + legendDim.ptToTextSpace;
+      li['y'] = li['cy'] + li['r'];
+      li['anchor'] = 'start';
       _results.push(i++);
     }
     return _results;
+  };
+
+  PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
+    var initVal;
+    initVal = this.legendDim.maxTextWidth;
+    this.legendDim.maxTextWidth = (_.maxBy(this.legendGroups, function(e) {
+      return e.width;
+    })).width;
+    this.legendDim.width = this.legendDim.maxTextWidth + this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
+    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width;
+    this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
+    this.setupLegendGroups(this.legendGroups, this.legendDim);
+    console.log('here');
+    console.log(this.viewBoxDim.width);
+    return initVal !== this.legendDim.maxTextWidth;
   };
 
   PlotData.prototype.getDefaultColor = function() {
@@ -133,7 +150,7 @@ PlotData = (function() {
     movedPt = _.remove(this.pts, checkId);
     movedLab = _.remove(this.lab, checkId);
     movedAnc = _.remove(this.anc, checkId);
-    this.legend.moved.push({
+    this.legendPts.push({
       pt: movedPt,
       lab: movedLab,
       anc: movedAnc

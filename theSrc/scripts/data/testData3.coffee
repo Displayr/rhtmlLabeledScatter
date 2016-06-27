@@ -145,7 +145,7 @@ testData3 =
     "Levi 's jeans",
     "American Express",
     "Three mobile phone network",
-    "Michelin tires",
+    "Michelin tires23423423423423442",
     "Visa",
     "Foxtel cable",
     "IBM computers",

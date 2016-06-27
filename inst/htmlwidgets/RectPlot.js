@@ -6,15 +6,25 @@ RectPlot = (function() {
     this.svg = svg;
     this.yAxisPadding = 50;
     this.xAxisPadding = 40;
-    this.viewBoxDim = {
-      width: width - 200,
-      height: height - this.xAxisPadding - 20,
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X),
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
+    this.legendDim = {
+      width: 300,
+      heightOfRow: 25,
+      rightPadding: 10,
+      ptRadius: 6,
+      leftPadding: 30,
+      ptToTextSpace: 15,
+      maxTextWidth: -Infinity
     };
-    this.viewBoxDim['x'] = this.yAxisPadding + 25;
-    this.viewBoxDim['y'] = 10;
-    this.data = new PlotData(X, Y, group, label, this.viewBoxDim);
+    this.viewBoxDim = {
+      svgWidth: width,
+      svgHeight: height,
+      width: width - this.legendDim.width,
+      height: height - this.xAxisPadding - 20,
+      x: this.yAxisPadding + 25,
+      y: 10
+    };
+    this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
+    this.data = new PlotData(X, Y, group, label, this.viewBoxDim, this.legendDim);
     this.minX = this.data.minX;
     this.maxX = this.data.maxX;
     this.minY = this.data.minY;
@@ -22,12 +32,26 @@ RectPlot = (function() {
   }
 
   RectPlot.prototype.draw = function() {
+    console.log('before');
+    console.log(this.viewBoxDim.width);
+    this.drawLegend();
+    console.log('after');
+    console.log(this.viewBoxDim.width);
     this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
     this.drawDimensionMarkers();
     this.drawAxisLabels();
     this.drawAnc(this.svg, this.data);
-    this.drawLabs(this.svg, this.data, this.drawAnc, this.viewBoxDim, this.drawLinks, this.drawLabs);
-    return this.drawLegend();
+    return this.drawLabs(this.svg, this.data, this.drawAnc, this.viewBoxDim, this.drawLinks, this.drawLabs);
+  };
+
+  RectPlot.prototype.redraw = function() {
+    var elem, plotElems, _i, _len;
+    plotElems = ['.plot-viewbox', '.origin', '.dim-marker', '.dim-marker-leader', '.dim-marker-label', '.axis-label', '.legend-pts', '.legend-text', '.anc', '.lab', '.link'];
+    for (_i = 0, _len = plotElems.length; _i < _len; _i++) {
+      elem = plotElems[_i];
+      this.svg.selectAll(elem).remove();
+    }
+    return this.draw();
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
@@ -271,23 +295,8 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function() {
-    var heightOfRow, i, legendLeftPadding, legendPtRad, legendStartY, li;
-    legendPtRad = 6;
-    legendLeftPadding = 30;
-    heightOfRow = 25;
-    legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - heightOfRow * this.data.legend.length / 2 + legendPtRad, this.viewBoxDim.y + legendPtRad);
-    i = 0;
-    while (i < this.data.legend.length) {
-      li = this.data.legend[i];
-      li['r'] = legendPtRad;
-      li['cx'] = this.viewBoxDim.x + this.viewBoxDim.width + legendLeftPadding;
-      li['cy'] = legendStartY + i * heightOfRow;
-      li['x'] = li['cx'] + 15;
-      li['y'] = li['cy'] + li['r'];
-      li['anchor'] = 'start';
-      i++;
-    }
-    this.svg.selectAll('.legend-pts').data(this.data.legend).enter().append('circle').attr('cx', function(d) {
+    var i, legendGroupsLab;
+    this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
       return d.cy;
@@ -300,7 +309,7 @@ RectPlot = (function() {
     }).attr('stroke-opacity', function(d) {
       return d['stroke-opacity'];
     });
-    return this.svg.selectAll('.legend-text').data(this.data.legend).enter().append('text').attr('x', function(d) {
+    this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -309,6 +318,17 @@ RectPlot = (function() {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
+    legendGroupsLab = this.svg.selectAll('.legend-groups-text');
+    i = 0;
+    while (i < this.data.legendGroups.length) {
+      this.data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
+      this.data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height;
+      i++;
+    }
+    console.log(this.viewBoxDim);
+    if (this.data.resizedAfterLegendGroupsDrawn()) {
+      return this.drawLegend();
+    }
   };
 
   RectPlot.prototype._normalizeXCoords = function(Xcoord) {

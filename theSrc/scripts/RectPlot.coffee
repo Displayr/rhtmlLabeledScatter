@@ -5,21 +5,37 @@ class RectPlot
     @yAxisPadding = 50
     @xAxisPadding = 40
 
-    @viewBoxDim =
-      width: width - 200
-      height: height - @xAxisPadding - 20
-      rangeX: Math.max.apply(null, X) - Math.min.apply(null, X)
-      rangeY: Math.max.apply(null, Y) - Math.min.apply(null, Y)
-    @viewBoxDim['x'] = @yAxisPadding + 25
-    @viewBoxDim['y'] = 10
+    @legendDim =
+      width: 300 #init value
+      heightOfRow: 25 #init val
+      rightPadding: 10
+      ptRadius: 6
+      leftPadding: 30
+      ptToTextSpace: 15
+      maxTextWidth: -Infinity
 
-    @data = new PlotData(X, Y, group, label, @viewBoxDim)
+    @viewBoxDim =
+      svgWidth: width
+      svgHeight: height
+      width: width - @legendDim.width
+      height: height - @xAxisPadding - 20
+      x: @yAxisPadding + 25
+      y: 10
+
+    @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
+
+    @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim)
     @minX = @data.minX
     @maxX = @data.maxX
     @minY = @data.minY
     @maxY = @data.maxY
 
   draw: ->
+    console.log 'before'
+    console.log @viewBoxDim.width
+    @drawLegend()
+    console.log 'after'
+    console.log @viewBoxDim.width
     @svg.append('rect')
         .attr('class', 'plot-viewbox')
         .attr('x', @viewBoxDim.x)
@@ -34,7 +50,24 @@ class RectPlot
     @drawAxisLabels()
     @drawAnc(@svg, @data)
     @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs)
-    @drawLegend()
+
+  redraw: ->
+    plotElems = [
+      '.plot-viewbox'
+      '.origin'
+      '.dim-marker'
+      '.dim-marker-leader'
+      '.dim-marker-label'
+      '.axis-label'
+      '.legend-pts'
+      '.legend-text'
+      '.anc'
+      '.lab'
+      '.link'
+    ]
+    for elem in plotElems
+      @svg.selectAll(elem).remove()
+    @draw()
 
   drawDimensionMarkers: ->
     # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
@@ -230,25 +263,11 @@ class RectPlot
              .style('font-weight', 'bold')
 
   drawLegend: ->
-    legendPtRad = 6
-    legendLeftPadding = 30
-    heightOfRow = 25
-    legendStartY = Math.max((@viewBoxDim.y + @viewBoxDim.height/2 - heightOfRow*(@data.legend.length)/2 + legendPtRad), @viewBoxDim.y + legendPtRad)
-    i = 0
-    while i < @data.legend.length
-      li = @data.legend[i]
-      li['r'] = legendPtRad
-      li['cx'] = @viewBoxDim.x + @viewBoxDim.width + legendLeftPadding
-      li['cy'] = legendStartY + i*heightOfRow
-      li['x'] = li['cx'] + 15
-      li['y'] = li['cy'] + li['r']
-      li['anchor'] = 'start'
-      i++
-
-    @svg.selectAll('.legend-pts')
-             .data(@data.legend)
+    @svg.selectAll('.legend-groups-pts')
+             .data(@data.legendGroups)
              .enter()
              .append('circle')
+             .attr('class', 'legend-groups-pts')
              .attr('cx', (d) -> d.cx)
              .attr('cy', (d) -> d.cy)
              .attr('r', (d) -> d.r)
@@ -256,15 +275,30 @@ class RectPlot
              .attr('stroke', (d) -> d.stroke)
              .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
-    @svg.selectAll('.legend-text')
-             .data(@data.legend)
+    @svg.selectAll('.legend-groups-text')
+             .data(@data.legendGroups)
              .enter()
              .append('text')
+             .attr('class', 'legend-groups-text')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
+
+    legendGroupsLab = @svg.selectAll('.legend-groups-text')
+
+    i = 0
+    while i < @data.legendGroups.length
+      @data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
+      @data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
+      i++
+
+    console.log @viewBoxDim
+    if @data.resizedAfterLegendGroupsDrawn()
+      @drawLegend()
+
+
 
   _normalizeXCoords: (Xcoord) ->
     (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x

@@ -1,5 +1,5 @@
 class PlotData
-  constructor: (X, Y, group, label, viewBoxDim, colors) ->
+  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors) ->
     @X = X
     @Y = Y
     @origX = X.slice(0)
@@ -7,6 +7,7 @@ class PlotData
     @group = group
     @label = label
     @viewBoxDim = viewBoxDim
+    @legendDim = legendDim
 
     @colorWheel = if colors then colors else [ # default qColors
       '#5B9BD5'
@@ -34,17 +35,10 @@ class PlotData
       throw new Error("Inputs X and Y lengths do not match!")
 
   normalizeData: ->
-    @minX = Infinity
-    @maxX = -Infinity
-    @minY = Infinity
-    @maxY = -Infinity
-    i = 0
-    while i < @len
-      @minX = @X[i] if @minX > @X[i]
-      @maxX = @X[i] if @maxX < @X[i]
-      @minY = @Y[i] if @minY > @Y[i]
-      @maxY = @Y[i] if @maxY < @Y[i]
-      i++
+    @minX = _.min @X
+    @maxX = _.max @X
+    @minY = _.min @Y
+    @maxY = _.max @Y
 
     thres = 0.08
     xThres = thres*(@maxX - @minX)
@@ -66,18 +60,18 @@ class PlotData
     @pts = []
     @lab = []
     @anc = []
-    @legend = []
-    @legend['moved'] = []
+    @legendGroups = []
+    @legendPts = []
     group = @group
 
     # color = new RColor #using rColor library to gen random colours
 
     i = 0
     while i < @len
-      unless (_.some @legend, (e) -> e.text is group[i])
+      unless (_.some @legendGroups, (e) -> e.text is group[i])
         # newColor = color.get(true, 0.9, 0.9)
         newColor = @getDefaultColor()
-        @legend.push {
+        @legendGroups.push {
           text: @group[i]
           color: newColor
           # stroke: 'gray'
@@ -111,6 +105,43 @@ class PlotData
       })
       i++
 
+    @setupLegendGroups(@legendGroups, @legendDim)
+
+  setupLegendGroups: (legendGroups, legendDim) ->
+    legendStartY =
+      Math.max((@viewBoxDim.y +
+        @viewBoxDim.height/2 -
+        legendDim.heightOfRow*(legendGroups.length)/2 +
+        legendDim.ptRadius), @viewBoxDim.y + legendDim.ptRadius)
+    i = 0
+    while i < legendGroups.length
+      li = legendGroups[i]
+      li['r'] = legendDim.ptRadius
+      li['cx'] = legendDim.x + legendDim.leftPadding
+      li['cy'] = legendStartY + i*legendDim.heightOfRow
+      li['x'] = li['cx'] + legendDim.ptToTextSpace
+      li['y'] = li['cy'] + li['r']
+      li['anchor'] = 'start'
+      i++
+
+  resizedAfterLegendGroupsDrawn: ->
+    initVal = @legendDim.maxTextWidth
+    @legendDim.maxTextWidth = (_.maxBy @legendGroups, (e) -> e.width).width
+
+    @legendDim.width = @legendDim.maxTextWidth +
+      @legendDim.leftPadding +
+      @legendDim.ptRadius * 2 +
+      @legendDim.rightPadding +
+      @legendDim.ptToTextSpace
+
+    @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width
+    @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
+    @setupLegendGroups(@legendGroups, @legendDim)
+    console.log 'here'
+    console.log @viewBoxDim.width
+
+    initVal != @legendDim.maxTextWidth
+
   getDefaultColor: ->
     @colorWheel[(@cIndex++)%(@colorWheel.length)]
 
@@ -132,7 +163,7 @@ class PlotData
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
     movedAnc = _.remove @anc, checkId
-    @legend.moved.push {
+    @legendPts.push {
       pt: movedPt
       lab: movedLab
       anc: movedAnc
