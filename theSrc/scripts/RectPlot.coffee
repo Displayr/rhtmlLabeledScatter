@@ -304,9 +304,10 @@ class RectPlot
 
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
-        id = d3.select(this).attr('id')
-        if data.isOutsideViewBox(data.lab[id])
-          data.moveElemToLegend(Number(id))
+        id = Number(d3.select(this).attr('id'))
+        lab = _.find data.lab, (l) -> l.id == id
+        if data.isOutsideViewBox(lab)
+          data.moveElemToLegend(id)
           svg.selectAll('.lab').remove()
           svg.selectAll('.anc').remove()
           drawAnc(svg, data)

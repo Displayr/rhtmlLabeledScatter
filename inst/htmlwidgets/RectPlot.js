@@ -351,10 +351,13 @@ RectPlot = (function() {
         return label.y = d3.event.y;
       };
       dragEnd = function() {
-        var id;
-        id = d3.select(this).attr('id');
-        if (data.isOutsideViewBox(data.lab[id])) {
-          data.moveElemToLegend(Number(id));
+        var id, lab;
+        id = Number(d3.select(this).attr('id'));
+        lab = _.find(data.lab, function(l) {
+          return l.id === id;
+        });
+        if (data.isOutsideViewBox(lab)) {
+          data.moveElemToLegend(id);
           svg.selectAll('.lab').remove();
           svg.selectAll('.anc').remove();
           drawAnc(svg, data);
