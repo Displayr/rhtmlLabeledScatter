@@ -25,8 +25,8 @@ RectPlot = (function() {
     this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
     this.drawDimensionMarkers();
     this.drawAxisLabels();
-    this.drawAnc();
-    this.drawLabs();
+    this.drawAnc(this.svg, this.data);
+    this.drawLabs(this.svg, this.data, this.drawAnc, this.viewBoxDim, this.drawLinks, this.drawLabs);
     return this.drawLegend();
   };
 
@@ -319,8 +319,8 @@ RectPlot = (function() {
     return -(Ycoord - this.minY) / (this.maxY - this.minY) * this.viewBoxDim.height + this.viewBoxDim.y + this.viewBoxDim.height;
   };
 
-  RectPlot.prototype.drawAnc = function() {
-    return this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+  RectPlot.prototype.drawAnc = function(svg, data) {
+    return svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -333,9 +333,9 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.drawLabs = function() {
-    var i, labelDragAndDrop, labeler, labels_svg;
-    labelDragAndDrop = function(svg, drawLinks, data) {
+  RectPlot.prototype.drawLabs = function(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs) {
+    var drag, i, labelDragAndDrop, labeler, labels_svg;
+    labelDragAndDrop = function(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim) {
       var dragEnd, dragMove, dragStart;
       dragStart = function() {
         return svg.selectAll('.link').remove();
@@ -348,7 +348,17 @@ RectPlot = (function() {
         return data.lab[id].y = d3.event.y;
       };
       dragEnd = function() {
-        return drawLinks(svg, data);
+        var id;
+        id = d3.select(this).attr('id');
+        if (data.isOutsideViewBox(data.lab[id])) {
+          data.moveElemToLegend(Number(id));
+          svg.selectAll('.lab').remove();
+          svg.selectAll('.anc').remove();
+          drawAnc(svg, data);
+          return drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs);
+        } else {
+          return drawLinks(svg, data);
+        }
       };
       return d3.behavior.drag().origin(function() {
         return {
@@ -357,7 +367,8 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
-    labels_svg = this.svg.selectAll('.label').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim);
+    svg.selectAll('.lab').data(data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
       return d.id;
     }).attr('x', function(d) {
       return d.x;
@@ -367,20 +378,21 @@ RectPlot = (function() {
       return d.text;
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;
-    }).call(labelDragAndDrop(this.svg, this.drawLinks, this.data));
+    }).call(drag);
+    labels_svg = svg.selectAll('.lab');
     i = 0;
-    while (i < this.data.len) {
-      this.data.lab[i].width = labels_svg[0][i].getBBox().width;
-      this.data.lab[i].height = labels_svg[0][i].getBBox().height;
+    while (i < data.len) {
+      data.lab[i].width = labels_svg[0][i].getBBox().width;
+      data.lab[i].height = labels_svg[0][i].getBBox().height;
       i++;
     }
-    labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.anc).label(this.data.lab).start(500);
+    labeler = d3.labeler().svg(svg).w1(viewBoxDim.x).w2(viewBoxDim.x + viewBoxDim.width).h1(viewBoxDim.y).h2(viewBoxDim.y + viewBoxDim.height).anchor(data.anc).label(data.lab).start(500);
     labels_svg.transition().duration(800).attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
     });
-    return this.drawLinks(this.svg, this.data);
+    return drawLinks(svg, data);
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {

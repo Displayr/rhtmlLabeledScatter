@@ -32,8 +32,8 @@ class RectPlot
 
     @drawDimensionMarkers()
     @drawAxisLabels()
-    @drawAnc()
-    @drawLabs()
+    @drawAnc(@svg, @data)
+    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs)
     @drawLegend()
 
   drawDimensionMarkers: ->
@@ -272,9 +272,9 @@ class RectPlot
   _normalizeYCoords: (Ycoord) ->
     -(Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y + @viewBoxDim.height
 
-  drawAnc: ->
-    @svg.selectAll('.anc')
-             .data(@data.pts)
+  drawAnc: (svg, data) ->
+    svg.selectAll('.anc')
+             .data(data.pts)
              .enter()
              .append('circle')
              .attr('class', 'anc')
@@ -285,8 +285,8 @@ class RectPlot
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
-  drawLabs: ->
-    labelDragAndDrop = (svg, drawLinks, data) ->
+  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs) ->
+    labelDragAndDrop = (svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim) ->
       dragStart = () ->
         svg.selectAll('.link').remove()
 
@@ -300,18 +300,18 @@ class RectPlot
         id = d3.select(this).attr('id')
         data.lab[id].x = d3.event.x
         data.lab[id].y = d3.event.y
-        # for label in data.lab
-        #   console.log d3.select(this).attr('id')
-        #   if d3.select(this).attr('id') == label.id
-        #     label.x = d3.event.x
-        #     label.y = d3.event.y
-        #     console.log 'here'
 
       dragEnd = ->
-        drawLinks(svg, data)
-        # coreLabels = d3.selectAll('.lab')[0]
-        # adjustCoreLabelLength(coreLabels, radius, xCenter, yCenter)
-        # adjustCoreLinks(lunar_core_labels, anchor_array)
+        # If label is dragged out of viewBox, remove the lab and add to legend
+        id = d3.select(this).attr('id')
+        if data.isOutsideViewBox(data.lab[id])
+          data.moveElemToLegend(Number(id))
+          svg.selectAll('.lab').remove()
+          svg.selectAll('.anc').remove()
+          drawAnc(svg, data)
+          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs)
+        else
+          drawLinks(svg, data)
 
       d3.behavior.drag()
                .origin(() ->
@@ -324,8 +324,9 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    labels_svg = @svg.selectAll('.label')
-             .data(@data.lab)
+    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim)
+    svg.selectAll('.lab')
+             .data(data.lab)
              .enter()
              .append('text')
              .attr('class', 'lab')
@@ -336,23 +337,24 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
              .attr('fill', (d) -> d.color)
-             .call(labelDragAndDrop(@svg, @drawLinks, @data))
+             .call(drag)
 
+    labels_svg = svg.selectAll('.lab')
     i = 0
-    while i < @data.len
-      @data.lab[i].width = labels_svg[0][i].getBBox().width
-      @data.lab[i].height = labels_svg[0][i].getBBox().height
+    while i < data.len
+      data.lab[i].width = labels_svg[0][i].getBBox().width
+      data.lab[i].height = labels_svg[0][i].getBBox().height
       i++
 
 
     labeler = d3.labeler()
-                .svg(@svg)
-                .w1(@viewBoxDim.x)
-                .w2(@viewBoxDim.x + @viewBoxDim.width)
-                .h1(@viewBoxDim.y)
-                .h2(@viewBoxDim.y + @viewBoxDim.height)
-                .anchor(@data.anc)
-                .label(@data.lab)
+                .svg(svg)
+                .w1(viewBoxDim.x)
+                .w2(viewBoxDim.x + viewBoxDim.width)
+                .h1(viewBoxDim.y)
+                .h2(viewBoxDim.y + viewBoxDim.height)
+                .anchor(data.anc)
+                .label(data.lab)
                 .start(500)
 
     labels_svg.transition()
@@ -360,7 +362,7 @@ class RectPlot
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
 
-    @drawLinks(@svg, @data)
+    drawLinks(svg, data)
 
   drawLinks: (svg, data) ->
     # calc the links from anc to label text if ambiguous

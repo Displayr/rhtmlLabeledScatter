@@ -64,6 +64,7 @@ PlotData = (function() {
     this.lab = [];
     this.anc = [];
     this.legend = [];
+    this.legend['moved'] = [];
     group = this.group;
     i = 0;
     _results = [];
@@ -87,7 +88,8 @@ PlotData = (function() {
         labelX: this.origX[i].toPrecision(3).toString(),
         labelY: this.origY[i].toPrecision(3).toString(),
         group: this.group[i],
-        color: newColor
+        color: newColor,
+        id: i
       });
       this.lab.push({
         x: x,
@@ -99,7 +101,8 @@ PlotData = (function() {
       this.anc.push({
         x: x,
         y: y,
-        r: 2
+        r: 2,
+        id: i
       });
       _results.push(i++);
     }
@@ -108,6 +111,34 @@ PlotData = (function() {
 
   PlotData.prototype.getDefaultColor = function() {
     return this.colorWheel[(this.cIndex++) % this.colorWheel.length];
+  };
+
+  PlotData.prototype.isOutsideViewBox = function(lab) {
+    var bot, left, right, top;
+    left = lab.x - lab.width / 2;
+    right = lab.x + lab.width / 2;
+    top = lab.y - lab.height;
+    bot = lab.y;
+    if (left < this.viewBoxDim.x || right > this.viewBoxDim.x + this.viewBoxDim.width || top < this.viewBoxDim.y || bot > this.viewBoxDim.y + this.viewBoxDim.height) {
+      return true;
+    }
+    return false;
+  };
+
+  PlotData.prototype.moveElemToLegend = function(id) {
+    var checkId, movedAnc, movedLab, movedPt;
+    checkId = function(e) {
+      return e.id === id;
+    };
+    movedPt = _.remove(this.pts, checkId);
+    movedLab = _.remove(this.lab, checkId);
+    movedAnc = _.remove(this.anc, checkId);
+    this.legend.moved.push({
+      pt: movedPt,
+      lab: movedLab,
+      anc: movedAnc
+    });
+    return this.len--;
   };
 
   return PlotData;

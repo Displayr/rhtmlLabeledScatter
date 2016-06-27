@@ -67,11 +67,10 @@ class PlotData
     @lab = []
     @anc = []
     @legend = []
+    @legend['moved'] = []
     group = @group
 
     # color = new RColor #using rColor library to gen random colours
-
-
 
     i = 0
     while i < @len
@@ -95,6 +94,7 @@ class PlotData
         labelY: @origY[i].toPrecision(3).toString()
         group: @group[i]
         color: newColor
+        id: i
       })
       @lab.push({
         x: x
@@ -107,8 +107,34 @@ class PlotData
         x: x
         y: y
         r: 2
+        id: i
       })
       i++
 
   getDefaultColor: ->
     @colorWheel[(@cIndex++)%(@colorWheel.length)]
+
+  isOutsideViewBox: (lab) ->
+    left  = lab.x - lab.width/2
+    right = lab.x + lab.width/2
+    top   = lab.y - lab.height
+    bot   = lab.y
+
+    if left < @viewBoxDim.x or
+        right > @viewBoxDim.x + @viewBoxDim.width or
+        top < @viewBoxDim.y or
+        bot > @viewBoxDim.y + @viewBoxDim.height
+      return true
+    return false
+
+  moveElemToLegend: (id) ->
+    checkId = (e) -> e.id == id
+    movedPt = _.remove @pts, checkId
+    movedLab = _.remove @lab, checkId
+    movedAnc = _.remove @anc, checkId
+    @legend.moved.push {
+      pt: movedPt
+      lab: movedLab
+      anc: movedAnc
+    }
+    @len--
