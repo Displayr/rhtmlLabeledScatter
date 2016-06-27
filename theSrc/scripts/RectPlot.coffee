@@ -298,8 +298,9 @@ class RectPlot
 
         # Save the new location of text so links can be redrawn
         id = d3.select(this).attr('id')
-        data.lab[id].x = d3.event.x
-        data.lab[id].y = d3.event.y
+        label = _.find data.lab, (l) -> l.id == Number(id)
+        label.x = d3.event.x
+        label.y = d3.event.y
 
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
@@ -438,11 +439,11 @@ class RectPlot
           else if right
             return labelBorder.midR
 
-    @links = []
+    links = []
     i = 0
     while i < data.len
       newLinkPt = newPtOnLabelBorder data.lab[i], data.anc[i], data.pts
-      @links.push({
+      links.push({
         x1: data.anc[i].x
         y1: data.anc[i].y
         x2: newLinkPt[0]
@@ -452,7 +453,7 @@ class RectPlot
       i++
 
     svg.selectAll('.link')
-             .data(@links)
+             .data(links)
              .enter()
              .append('line')
              .attr('class', 'link')

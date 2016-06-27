@@ -341,11 +341,14 @@ RectPlot = (function() {
         return svg.selectAll('.link').remove();
       };
       dragMove = function() {
-        var id;
+        var id, label;
         d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y).attr('cursor', 'all-scroll');
         id = d3.select(this).attr('id');
-        data.lab[id].x = d3.event.x;
-        return data.lab[id].y = d3.event.y;
+        label = _.find(data.lab, function(l) {
+          return l.id === Number(id);
+        });
+        label.x = d3.event.x;
+        return label.y = d3.event.y;
       };
       dragEnd = function() {
         var id;
@@ -396,7 +399,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {
-    var i, newLinkPt, newPtOnLabelBorder;
+    var i, links, newLinkPt, newPtOnLabelBorder;
     newPtOnLabelBorder = function(label, anchor, anchor_array) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
       labelBorder = {
@@ -474,12 +477,12 @@ RectPlot = (function() {
         }
       }
     };
-    this.links = [];
+    links = [];
     i = 0;
     while (i < data.len) {
       newLinkPt = newPtOnLabelBorder(data.lab[i], data.anc[i], data.pts);
       if (newLinkPt != null) {
-        this.links.push({
+        links.push({
           x1: data.anc[i].x,
           y1: data.anc[i].y,
           x2: newLinkPt[0],
@@ -489,7 +492,7 @@ RectPlot = (function() {
       }
       i++;
     }
-    return svg.selectAll('.link').data(this.links).enter().append('line').attr('class', 'link').attr('x1', function(d) {
+    return svg.selectAll('.link').data(links).enter().append('line').attr('class', 'link').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
