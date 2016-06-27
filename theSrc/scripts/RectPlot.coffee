@@ -286,17 +286,57 @@ class RectPlot
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
   drawLabs: ->
+    labelDragAndDrop = (svg, drawLinks, data) ->
+      dragStart = () ->
+        svg.selectAll('.link').remove()
+
+      dragMove = () ->
+        d3.select(this)
+        .attr('x', d3.select(this).x = d3.event.x)
+        .attr('y', d3.select(this).y = d3.event.y)
+        .attr('cursor', 'all-scroll')
+
+        # Save the new location of text so links can be redrawn
+        id = d3.select(this).attr('id')
+        data.lab[id].x = d3.event.x
+        data.lab[id].y = d3.event.y
+        # for label in data.lab
+        #   console.log d3.select(this).attr('id')
+        #   if d3.select(this).attr('id') == label.id
+        #     label.x = d3.event.x
+        #     label.y = d3.event.y
+        #     console.log 'here'
+
+      dragEnd = ->
+        drawLinks(svg, data)
+        # coreLabels = d3.selectAll('.lab')[0]
+        # adjustCoreLabelLength(coreLabels, radius, xCenter, yCenter)
+        # adjustCoreLinks(lunar_core_labels, anchor_array)
+
+      d3.behavior.drag()
+               .origin(() ->
+                 {
+                   x: d3.select(this).attr("x")
+                   y: d3.select(this).attr("y")
+                 }
+                )
+               .on('dragstart', dragStart)
+               .on('drag', dragMove)
+               .on('dragend', dragEnd)
+
     labels_svg = @svg.selectAll('.label')
              .data(@data.lab)
              .enter()
              .append('text')
-             .attr('class', 'init-labs')
+             .attr('class', 'lab')
+             .attr('id', (d) -> d.id)
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
              .attr('fill', (d) -> d.color)
+             .call(labelDragAndDrop(@svg, @drawLinks, @data))
 
     i = 0
     while i < @data.len
@@ -320,9 +360,9 @@ class RectPlot
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
 
-    @drawLinks()
+    @drawLinks(@svg, @data)
 
-  drawLinks: ->
+  drawLinks: (svg, data) ->
     # calc the links from anc to label text if ambiguous
     newPtOnLabelBorder = (label, anchor, anchor_array) ->
       labelBorder =
@@ -398,21 +438,22 @@ class RectPlot
 
     @links = []
     i = 0
-    while i < @data.len
-      newLinkPt = newPtOnLabelBorder @data.lab[i], @data.anc[i], @data.pts
+    while i < data.len
+      newLinkPt = newPtOnLabelBorder data.lab[i], data.anc[i], data.pts
       @links.push({
-        x1: @data.anc[i].x
-        y1: @data.anc[i].y
+        x1: data.anc[i].x
+        y1: data.anc[i].y
         x2: newLinkPt[0]
         y2: newLinkPt[1]
         width: 1
       }) if newLinkPt?
       i++
 
-    @svg.selectAll('.link')
+    svg.selectAll('.link')
              .data(@links)
              .enter()
              .append('line')
+             .attr('class', 'link')
              .attr('x1', (d) -> d.x1)
              .attr('y1', (d) -> d.y1)
              .attr('x2', (d) -> d.x2)

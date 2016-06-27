@@ -334,8 +334,32 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabs = function() {
-    var i, labeler, labels_svg;
-    labels_svg = this.svg.selectAll('.label').data(this.data.lab).enter().append('text').attr('class', 'init-labs').attr('x', function(d) {
+    var i, labelDragAndDrop, labeler, labels_svg;
+    labelDragAndDrop = function(svg, drawLinks, data) {
+      var dragEnd, dragMove, dragStart;
+      dragStart = function() {
+        return svg.selectAll('.link').remove();
+      };
+      dragMove = function() {
+        var id;
+        d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y).attr('cursor', 'all-scroll');
+        id = d3.select(this).attr('id');
+        data.lab[id].x = d3.event.x;
+        return data.lab[id].y = d3.event.y;
+      };
+      dragEnd = function() {
+        return drawLinks(svg, data);
+      };
+      return d3.behavior.drag().origin(function() {
+        return {
+          x: d3.select(this).attr("x"),
+          y: d3.select(this).attr("y")
+        };
+      }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
+    };
+    labels_svg = this.svg.selectAll('.label').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+      return d.id;
+    }).attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -343,7 +367,7 @@ RectPlot = (function() {
       return d.text;
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;
-    });
+    }).call(labelDragAndDrop(this.svg, this.drawLinks, this.data));
     i = 0;
     while (i < this.data.len) {
       this.data.lab[i].width = labels_svg[0][i].getBBox().width;
@@ -356,10 +380,10 @@ RectPlot = (function() {
     }).attr('y', function(d) {
       return d.y;
     });
-    return this.drawLinks();
+    return this.drawLinks(this.svg, this.data);
   };
 
-  RectPlot.prototype.drawLinks = function() {
+  RectPlot.prototype.drawLinks = function(svg, data) {
     var i, newLinkPt, newPtOnLabelBorder;
     newPtOnLabelBorder = function(label, anchor, anchor_array) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
@@ -440,12 +464,12 @@ RectPlot = (function() {
     };
     this.links = [];
     i = 0;
-    while (i < this.data.len) {
-      newLinkPt = newPtOnLabelBorder(this.data.lab[i], this.data.anc[i], this.data.pts);
+    while (i < data.len) {
+      newLinkPt = newPtOnLabelBorder(data.lab[i], data.anc[i], data.pts);
       if (newLinkPt != null) {
         this.links.push({
-          x1: this.data.anc[i].x,
-          y1: this.data.anc[i].y,
+          x1: data.anc[i].x,
+          y1: data.anc[i].y,
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1
@@ -453,7 +477,7 @@ RectPlot = (function() {
       }
       i++;
     }
-    return this.svg.selectAll('.link').data(this.links).enter().append('line').attr('x1', function(d) {
+    return svg.selectAll('.link').data(this.links).enter().append('line').attr('class', 'link').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;

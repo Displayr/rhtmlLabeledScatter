@@ -93,7 +93,8 @@ PlotData = (function() {
         x: x,
         y: y,
         text: this.label[i],
-        color: newColor
+        color: newColor,
+        id: i
       });
       this.anc.push({
         x: x,

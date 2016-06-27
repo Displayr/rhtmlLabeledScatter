@@ -101,6 +101,7 @@ class PlotData
         y: y
         text: @label[i]
         color: newColor
+        id: i
       })
       @anc.push({
         x: x
