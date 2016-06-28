@@ -25,10 +25,6 @@ class RectPlot
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
     @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim)
-    @minX = @data.minX
-    @maxX = @data.maxX
-    @minY = @data.minY
-    @maxY = @data.maxY
 
   draw: ->
     @drawLegend(@svg, @data, @drawLegend)
@@ -42,10 +38,10 @@ class RectPlot
         .attr('stroke', 'black')
         .attr('stroke-width', '1px')
 
-    @drawDimensionMarkers()
-    @drawAxisLabels()
+    @drawDimensionMarkers(@svg, @viewBoxDim, @data)
+    @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc(@svg, @data)
-    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs)
+    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @drawAxisLabels, @drawDimensionMarkers)
 
   redraw: ->
     plotElems = [
@@ -65,7 +61,7 @@ class RectPlot
       @svg.selectAll(elem).remove()
     @draw()
 
-  drawDimensionMarkers: ->
+  drawDimensionMarkers: (svg, viewBoxDim, data)->
     # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
     getTickRange = (max, min) ->
       maxTicks = 8
@@ -90,34 +86,40 @@ class RectPlot
         dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
         dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: numShown, anchor: 'end'})
 
+    normalizeXCoords = (Xcoord) ->
+      (Xcoord-data.minX)/(data.maxX - data.minX)*viewBoxDim.width + viewBoxDim.x
+
+    normalizeYCoords = (Ycoord) ->
+      -(Ycoord-data.minY)/(data.maxY - data.minY)*viewBoxDim.height + viewBoxDim.y + viewBoxDim.height
+
     dimensionMarkerStack = []
     dimensionMarkerLeaderStack = []
     dimensionMarkerLabelStack = []
 
-    ticksX = getTickRange(@maxX, @minX)
-    ticksY = getTickRange(@maxY, @minY)
+    ticksX = getTickRange(data.maxX, data.minX)
+    ticksY = getTickRange(data.maxY, data.minY)
 
     originAxis = []
     oax = {
-      x1: @viewBoxDim.x
-      y1: @_normalizeYCoords 0
-      x2: @viewBoxDim.x + @viewBoxDim.width
-      y2: @_normalizeYCoords 0
+      x1: viewBoxDim.x
+      y1: normalizeYCoords 0
+      x2: viewBoxDim.x + viewBoxDim.width
+      y2: normalizeYCoords 0
     }
     pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
-    originAxis.push(oax) unless (@minY is 0) or (@maxY is 0)
+    originAxis.push(oax) unless (data.minY is 0) or (data.maxY is 0)
 
     oay = {
-      x1: @_normalizeXCoords 0
-      y1: @viewBoxDim.y
-      x2: @_normalizeXCoords 0
-      y2: @viewBoxDim.y + @viewBoxDim.height
+      x1: normalizeXCoords 0
+      y1: viewBoxDim.y
+      x2: normalizeXCoords 0
+      y2: viewBoxDim.y + viewBoxDim.height
     }
     pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
-    originAxis.push(oay) unless (@minX is 0) or (@maxX is 0)
+    originAxis.push(oay) unless (data.minX is 0) or (data.maxX is 0)
 
-
-    @svg.selectAll('.origin')
+    svg.selectAll('.origin').remove()
+    svg.selectAll('.origin')
         .data(originAxis)
         .enter()
         .append('line')
@@ -134,17 +136,17 @@ class RectPlot
     colsPositive = 0
     colsNegative = 0
     i = ticksX
-    while between(i, @minX, @maxX) or between(-i, @minX, @maxX)
-      colsPositive++ if between(i, @minX, @maxX)
-      colsNegative++ if between(-i, @minX, @maxX)
+    while between(i, data.minX, data.maxX) or between(-i, data.minX, data.maxX)
+      colsPositive++ if between(i, data.minX, data.maxX)
+      colsNegative++ if between(-i, data.minX, data.maxX)
       i += ticksX
 
     rowsPositive = 0
     rowsNegative = 0
     i = ticksY
-    while between(i, @minY, @maxY) or between(-i, @minY, @maxY)
-      rowsNegative++ if between(i, @minY, @maxY) # y axis inversed svg
-      rowsPositive++ if between(-i, @minY, @maxY)
+    while between(i, data.minY, data.maxY) or between(-i, data.minY, data.maxY)
+      rowsNegative++ if between(i, data.minY, data.maxY) # y axis inversed svg
+      rowsPositive++ if between(-i, data.minY, data.maxY)
       i += ticksY
 
 
@@ -152,20 +154,20 @@ class RectPlot
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
         val = (i+1)*ticksX
-        x1 = @_normalizeXCoords val
-        y1 = @viewBoxDim.y
-        x2 = @_normalizeXCoords val
-        y2 = @viewBoxDim.y + @viewBoxDim.height
+        x1 = normalizeXCoords val
+        y1 = viewBoxDim.y
+        x2 = normalizeXCoords val
+        y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
 
       if i < colsNegative
         val = -(i+1)*ticksX
-        x1 = @_normalizeXCoords val
-        y1 = @viewBoxDim.y
-        x2 = @_normalizeXCoords val
-        y2 = @viewBoxDim.y + @viewBoxDim.height
+        x1 = normalizeXCoords val
+        y1 = viewBoxDim.y
+        x2 = normalizeXCoords val
+        y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
@@ -176,25 +178,26 @@ class RectPlot
       x1 = y1 = x2 = y2 = 0
       if i < rowsPositive
         val = -(i+1)*ticksY
-        x1 = @viewBoxDim.x
-        y1 = @_normalizeYCoords val
-        x2 = @viewBoxDim.x + @viewBoxDim.width
-        y2 = @_normalizeYCoords val
+        x1 = viewBoxDim.x
+        y1 = normalizeYCoords val
+        x2 = viewBoxDim.x + viewBoxDim.width
+        y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
         val = (i+1)*ticksY
-        x1 = @viewBoxDim.x
-        y1 = @_normalizeYCoords val
-        x2 = @viewBoxDim.x + @viewBoxDim.width
-        y2 = @_normalizeYCoords val
+        x1 = viewBoxDim.x
+        y1 = normalizeYCoords val
+        x2 = viewBoxDim.x + viewBoxDim.width
+        y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
-    @svg.selectAll('.dim-marker')
+    svg.selectAll('.dim-marker').remove()
+    svg.selectAll('.dim-marker')
              .data(dimensionMarkerStack)
              .enter()
              .append('line')
@@ -206,7 +209,8 @@ class RectPlot
              .attr('stroke-width', 0.2)
              .attr('stroke', 'grey')
 
-    @svg.selectAll('.dim-marker-leader')
+    svg.selectAll('.dim-marker-leader').remove()
+    svg.selectAll('.dim-marker-leader')
              .data(dimensionMarkerLeaderStack)
              .enter()
              .append('line')
@@ -218,38 +222,42 @@ class RectPlot
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
 
-    @svg.selectAll('.dim-marker-label')
+    svg.selectAll('.dim-marker-label').remove()
+    svg.selectAll('.dim-marker-label')
              .data(dimensionMarkerLabelStack)
              .enter()
              .append('text')
+             .attr('class', 'dim-marker-label')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
-  drawAxisLabels: ->
+  drawAxisLabels: (svg, viewBoxDim, xAxisPadding, yAxisPadding)->
     axisLabels = [
       { # x axis label
-        x: @viewBoxDim.x + @viewBoxDim.width/2
-        y: @viewBoxDim.y + @viewBoxDim.height + @xAxisPadding
+        x: viewBoxDim.x + viewBoxDim.width/2
+        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding
         text: 'Dimension 1 (64%)'
         anchor: 'middle'
         transform: 'rotate(0)'
       },
       { # y axis label
-        x: @viewBoxDim.x - @yAxisPadding
-        y: @viewBoxDim.y + @viewBoxDim.height/2
+        x: viewBoxDim.x - yAxisPadding
+        y: viewBoxDim.y + viewBoxDim.height/2
         text: 'Dimension 2 (24%)'
         anchor: 'middle'
-        transform: 'rotate(270,'+(@viewBoxDim.x-@yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+        transform: 'rotate(270,'+(viewBoxDim.x-yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height/2)+ ')'
       }
     ]
 
-    @svg.selectAll('.axis-label')
+    svg.selectAll('.axis-label').remove()
+    svg.selectAll('.axis-label')
              .data(axisLabels)
              .enter()
              .append('text')
+             .attr('class', 'axis-label')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
@@ -299,12 +307,6 @@ class RectPlot
       drawLegend(svg, data, drawLegend)
       data.calcDataArrays()
 
-  _normalizeXCoords: (Xcoord) ->
-    (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x
-
-  _normalizeYCoords: (Ycoord) ->
-    -(Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y + @viewBoxDim.height
-
   drawAnc: (svg, data) ->
     svg.selectAll('.anc').remove()
     svg.selectAll('.anc')
@@ -319,8 +321,8 @@ class RectPlot
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
-  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs) ->
-    labelDragAndDrop = (svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim) ->
+  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers) ->
+    labelDragAndDrop = (svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers) ->
       dragStart = () ->
         svg.selectAll('.link').remove()
 
@@ -341,8 +343,10 @@ class RectPlot
         lab = _.find data.lab, (l) -> l.id == id
         if data.isOutsideViewBox(lab)
           data.moveElemToLegend(id)
+          drawAxisLabels(svg, viewBoxDim, xAxisPadding, yAxisPadding)
+          drawDimensionMarkers(svg, viewBoxDim, data)
           drawAnc(svg, data)
-          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs)
+          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers)
         else
           drawLinks(svg, data)
 
@@ -357,7 +361,7 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim)
+    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers)
     svg.selectAll('.lab').remove()
     svg.selectAll('.lab')
              .data(data.lab)
