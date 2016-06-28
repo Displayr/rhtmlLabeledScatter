@@ -14,6 +14,7 @@ PlotData = (function() {
     this.viewBoxDim = viewBoxDim;
     this.legendDim = legendDim;
     this.draggedOutPtsId = [];
+    this.legendPts = [];
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
     if (this.X.length === this.Y.length) {
@@ -86,7 +87,6 @@ PlotData = (function() {
     this.pts = [];
     this.lab = [];
     this.anc = [];
-    this.legendPts = [];
     group = this.group;
     i = 0;
     _results = [];
@@ -142,16 +142,54 @@ PlotData = (function() {
     return _results;
   };
 
+  PlotData.prototype.calcLegendDisplayPtsAndGroups = function(legendGroups, legendDim, legendPts) {
+    var i, j, legendStartY, lgi, lpj, _results;
+    if (legendPts.length > 0) {
+      legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * (legendGroups.length + legendPts.length) / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
+      i = 0;
+      _results = [];
+      while (i < legendGroups.length + legendPts.length) {
+        if (i < legendGroups.length) {
+          lgi = legendGroups[i];
+          lgi.r = legendDim.ptRadius;
+          lgi.cx = legendDim.x + legendDim.leftPadding;
+          lgi.cy = legendStartY + i * legendDim.heightOfRow;
+          lgi.x = lgi.cx + legendDim.ptToTextSpace;
+          lgi.y = lgi.cy + lgi.r;
+          lgi.anchor = 'start';
+        } else {
+          j = i - legendGroups.length;
+          lpj = legendPts[j];
+          lpj.r = legendDim.ptRadius;
+          lpj.cx = legendDim.x + legendDim.leftPadding;
+          lpj.cy = legendStartY + (i + 1) * legendDim.heightOfRow;
+          lpj.x = lpj.cx + legendDim.ptToTextSpace;
+          lpj.y = lpj.cy + lpj.r;
+          lpj.color = lpj.pt.color;
+          lpj.text = lpj.pt.label + lpj.pt.labelX + lpj.pt.labelY;
+          lpj.anchor = 'start';
+        }
+        _results.push(i++);
+      }
+      return _results;
+    }
+  };
+
   PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
-    var initVal;
+    var initVal, legendGrpsTextMax, legendPtsTextMax;
     initVal = this.legendDim.maxTextWidth;
-    this.legendDim.maxTextWidth = (_.maxBy(this.legendGroups, function(e) {
+    legendGrpsTextMax = (_.maxBy(this.legendGroups, function(e) {
       return e.width;
     })).width;
+    legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
+      return e.width;
+    })).width : 0;
+    this.legendDim.maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
     this.legendDim.width = this.legendDim.maxTextWidth + this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.setupLegendGroups(this.legendGroups, this.legendDim);
+    this.calcLegendDisplayPtsAndGroups(this.legendGroups, this.legendDim, this.legendPts);
     return initVal !== this.legendDim.maxTextWidth;
   };
 
@@ -171,7 +209,7 @@ PlotData = (function() {
     return false;
   };
 
-  PlotData.prototype.moveElemToLegend = function(id) {
+  PlotData.prototype.moveElemToLegend = function(id, legendPts) {
     var checkId, movedAnc, movedLab, movedPt;
     checkId = function(e) {
       return e.id === id;
@@ -179,15 +217,16 @@ PlotData = (function() {
     movedPt = _.remove(this.pts, checkId);
     movedLab = _.remove(this.lab, checkId);
     movedAnc = _.remove(this.anc, checkId);
-    this.legendPts.push({
-      pt: movedPt,
-      lab: movedLab,
-      anc: movedAnc
+    legendPts.push({
+      pt: movedPt[0],
+      lab: movedLab[0],
+      anc: movedAnc[0]
     });
     this.draggedOutPtsId.push(id);
     this.len--;
     this.normalizeData();
-    return this.calcDataArrays();
+    this.calcDataArrays();
+    return this.calcLegendDisplayPtsAndGroups(this.legendGroups, this.legendDim, legendPts);
   };
 
   return PlotData;

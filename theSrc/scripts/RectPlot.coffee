@@ -41,7 +41,7 @@ class RectPlot
     @drawDimensionMarkers(@svg, @viewBoxDim, @data)
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc(@svg, @data)
-    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @drawAxisLabels, @drawDimensionMarkers)
+    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @drawAxisLabels, @drawDimensionMarkers, @drawLegend)
 
   redraw: ->
     plotElems = [
@@ -267,10 +267,11 @@ class RectPlot
              .style('font-weight', 'bold')
 
   drawLegend: (svg, data, drawLegend) ->
-    svg.selectAll('.legend-groups-pts').remove()
-    svg.selectAll('.legend-groups-text').remove()
+    console.log "drawLegend"
+    console.log data.legendGroups
     data.setupLegendGroups(data.legendGroups, data.legendDim)
 
+    svg.selectAll('.legend-groups-pts').remove()
     svg.selectAll('.legend-groups-pts')
              .data(data.legendGroups)
              .enter()
@@ -283,6 +284,7 @@ class RectPlot
              .attr('stroke', (d) -> d.stroke)
              .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
+    svg.selectAll('.legend-groups-text').remove()
     svg.selectAll('.legend-groups-text')
              .data(data.legendGroups)
              .enter()
@@ -294,7 +296,33 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
 
+    svg.selectAll('.legend-pts-pts').remove()
+    svg.selectAll('.legend-pts-pts')
+             .data(data.legendPts)
+             .enter()
+             .append('circle')
+             .attr('class', 'legend-pts-pts')
+             .attr('cx', (d) -> d.cx)
+             .attr('cy', (d) -> d.cy)
+             .attr('r', (d) -> d.r)
+             .attr('fill', (d) -> d.color)
+
+    svg.selectAll('.legend-pts-text').remove()
+    svg.selectAll('.legend-pts-text')
+             .data(data.legendPts)
+             .enter()
+             .append('text')
+             .attr('class', 'legend-pts-text')
+             .attr('x', (d) -> d.x)
+             .attr('y', (d) -> d.y)
+             .attr('font-family', 'Arial')
+             .text((d) -> d.text)
+             .attr('text-anchor', (d) -> d.anchor)
+             .attr('fill', (d) -> d.color)
+
+
     legendGroupsLab = svg.selectAll('.legend-groups-text')
+    legendPtsLab = svg.selectAll('.legend-pts-text')
 
     i = 0
     while i < data.legendGroups.length
@@ -302,10 +330,17 @@ class RectPlot
       data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
       i++
 
+    i = 0
+    while i < data.legendPts.length
+      data.legendPts[i].width = legendPtsLab[0][i].getBBox().width
+      data.legendPts[i].height = legendPtsLab[0][i].getBBox().height
+      i++
+
     if data.resizedAfterLegendGroupsDrawn()
       console.log 'Legend resize triggered'
-      drawLegend(svg, data, drawLegend)
-      data.calcDataArrays()
+      @redraw()
+      # drawLegend(svg, data, drawLegend)
+      # data.calcDataArrays()
 
   drawAnc: (svg, data) ->
     svg.selectAll('.anc').remove()
@@ -321,7 +356,7 @@ class RectPlot
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
-  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers) ->
+  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend) ->
     labelDragAndDrop = (svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers) ->
       dragStart = () ->
         svg.selectAll('.link').remove()
@@ -342,11 +377,12 @@ class RectPlot
         id = Number(d3.select(this).attr('id'))
         lab = _.find data.lab, (l) -> l.id == id
         if data.isOutsideViewBox(lab)
-          data.moveElemToLegend(id)
+          data.moveElemToLegend(id, data.legendPts)
           drawAxisLabels(svg, viewBoxDim, xAxisPadding, yAxisPadding)
           drawDimensionMarkers(svg, viewBoxDim, data)
           drawAnc(svg, data)
-          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers)
+          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend)
+          drawLegend(svg, data, drawLegend)
         else
           drawLinks(svg, data)
 

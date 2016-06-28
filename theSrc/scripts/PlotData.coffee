@@ -11,6 +11,7 @@ class PlotData
     @viewBoxDim = viewBoxDim
     @legendDim = legendDim
     @draggedOutPtsId = []
+    @legendPts = []
 
     @colorWheel = if colors then colors else [ # default qColors
       '#5B9BD5'
@@ -87,7 +88,6 @@ class PlotData
     @pts = []
     @lab = []
     @anc = []
-    @legendPts = []
     group = @group
 
     i = 0
@@ -121,15 +121,15 @@ class PlotData
         })
       i++
 
-
   setupLegendGroups: (legendGroups, legendDim) ->
     legendStartY =
       Math.max((@viewBoxDim.y +
         @viewBoxDim.height/2 -
         legendDim.heightOfRow*(legendGroups.length)/2 +
-        legendDim.ptRadius), @viewBoxDim.y + legendDim.ptRadius)
-    i = 0
+        legendDim.ptRadius),
+        @viewBoxDim.y + legendDim.ptRadius)
 
+    i = 0
     while i < legendGroups.length
       li = legendGroups[i]
       li.r = legendDim.ptRadius
@@ -140,9 +140,45 @@ class PlotData
       li.anchor = 'start'
       i++
 
+  calcLegendDisplayPtsAndGroups: (legendGroups, legendDim, legendPts) ->
+    if legendPts.length > 0
+      legendStartY =
+        Math.max((@viewBoxDim.y +
+          @viewBoxDim.height/2 -
+          legendDim.heightOfRow*(legendGroups.length + legendPts.length)/2 +
+          legendDim.ptRadius),
+          @viewBoxDim.y + legendDim.ptRadius)
+
+      i = 0
+      while i < legendGroups.length + legendPts.length
+        if i < legendGroups.length
+          lgi = legendGroups[i]
+          lgi.r = legendDim.ptRadius
+          lgi.cx = legendDim.x + legendDim.leftPadding
+          lgi.cy = legendStartY + i*legendDim.heightOfRow
+          lgi.x = lgi.cx + legendDim.ptToTextSpace
+          lgi.y = lgi.cy + lgi.r
+          lgi.anchor = 'start'
+        else
+          j = i - legendGroups.length
+          lpj = legendPts[j]
+          lpj.r = legendDim.ptRadius
+          lpj.cx = legendDim.x + legendDim.leftPadding
+          lpj.cy = legendStartY + (i+1)*legendDim.heightOfRow
+          lpj.x = lpj.cx + legendDim.ptToTextSpace
+          lpj.y = lpj.cy + lpj.r
+          lpj.color = lpj.pt.color
+          lpj.text = lpj.pt.label + lpj.pt.labelX + lpj.pt.labelY
+          lpj.anchor = 'start'
+        i++
+
+
   resizedAfterLegendGroupsDrawn: ->
     initVal = @legendDim.maxTextWidth
-    @legendDim.maxTextWidth = (_.maxBy @legendGroups, (e) -> e.width).width
+
+    legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
+    legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
+    @legendDim.maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax)
 
     @legendDim.width = @legendDim.maxTextWidth +
       @legendDim.leftPadding +
@@ -153,6 +189,7 @@ class PlotData
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
     @setupLegendGroups(@legendGroups, @legendDim)
+    @calcLegendDisplayPtsAndGroups(@legendGroups, @legendDim, @legendPts)
 
     initVal != @legendDim.maxTextWidth
 
@@ -172,17 +209,18 @@ class PlotData
       return true
     return false
 
-  moveElemToLegend: (id) ->
+  moveElemToLegend: (id, legendPts) ->
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
     movedAnc = _.remove @anc, checkId
-    @legendPts.push {
-      pt: movedPt
-      lab: movedLab
-      anc: movedAnc
+    legendPts.push {
+      pt: movedPt[0]
+      lab: movedLab[0]
+      anc: movedAnc[0]
     }
     @draggedOutPtsId.push id
     @len--
     @normalizeData()
     @calcDataArrays()
+    @calcLegendDisplayPtsAndGroups(@legendGroups, @legendDim, legendPts)
