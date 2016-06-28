@@ -297,7 +297,7 @@ class RectPlot
     if data.resizedAfterLegendGroupsDrawn()
       console.log 'Legend resize triggered'
       drawLegend(svg, data, drawLegend)
-      data.sizeDataArrays()
+      data.calcDataArrays()
 
   _normalizeXCoords: (Xcoord) ->
     (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x
@@ -306,6 +306,7 @@ class RectPlot
     -(Ycoord-@minY)/(@maxY - @minY)*@viewBoxDim.height + @viewBoxDim.y + @viewBoxDim.height
 
   drawAnc: (svg, data) ->
+    svg.selectAll('.anc').remove()
     svg.selectAll('.anc')
              .data(data.pts)
              .enter()
@@ -327,7 +328,6 @@ class RectPlot
         d3.select(this)
         .attr('x', d3.select(this).x = d3.event.x)
         .attr('y', d3.select(this).y = d3.event.y)
-        .attr('cursor', 'all-scroll')
 
         # Save the new location of text so links can be redrawn
         id = d3.select(this).attr('id')
@@ -341,8 +341,6 @@ class RectPlot
         lab = _.find data.lab, (l) -> l.id == id
         if data.isOutsideViewBox(lab)
           data.moveElemToLegend(id)
-          svg.selectAll('.lab').remove()
-          svg.selectAll('.anc').remove()
           drawAnc(svg, data)
           drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs)
         else
@@ -360,6 +358,7 @@ class RectPlot
                .on('dragend', dragEnd)
 
     drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim)
+    svg.selectAll('.lab').remove()
     svg.selectAll('.lab')
              .data(data.lab)
              .enter()
@@ -380,7 +379,6 @@ class RectPlot
       data.lab[i].width = labels_svg[0][i].getBBox().width
       data.lab[i].height = labels_svg[0][i].getBBox().height
       i++
-
 
     labeler = d3.labeler()
                 .svg(svg)

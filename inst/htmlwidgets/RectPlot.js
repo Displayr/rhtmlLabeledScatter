@@ -327,7 +327,7 @@ RectPlot = (function() {
     if (data.resizedAfterLegendGroupsDrawn()) {
       console.log('Legend resize triggered');
       drawLegend(svg, data, drawLegend);
-      return data.sizeDataArrays();
+      return data.calcDataArrays();
     }
   };
 
@@ -340,6 +340,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawAnc = function(svg, data) {
+    svg.selectAll('.anc').remove();
     return svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
@@ -362,7 +363,7 @@ RectPlot = (function() {
       };
       dragMove = function() {
         var id, label;
-        d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y).attr('cursor', 'all-scroll');
+        d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
         id = d3.select(this).attr('id');
         label = _.find(data.lab, function(l) {
           return l.id === Number(id);
@@ -378,8 +379,6 @@ RectPlot = (function() {
         });
         if (data.isOutsideViewBox(lab)) {
           data.moveElemToLegend(id);
-          svg.selectAll('.lab').remove();
-          svg.selectAll('.anc').remove();
           drawAnc(svg, data);
           return drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs);
         } else {
@@ -394,6 +393,7 @@ RectPlot = (function() {
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
     drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim);
+    svg.selectAll('.lab').remove();
     svg.selectAll('.lab').data(data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
       return d.id;
     }).attr('x', function(d) {

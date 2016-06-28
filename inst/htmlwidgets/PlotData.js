@@ -7,6 +7,8 @@ PlotData = (function() {
     this.Y = Y;
     this.origX = X.slice(0);
     this.origY = Y.slice(0);
+    this.normX = X.slice(0);
+    this.normY = Y.slice(0);
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
@@ -15,10 +17,10 @@ PlotData = (function() {
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
     if (this.X.length === this.Y.length) {
-      this.len = X.length;
+      this.len = this.origLen = X.length;
       this.normalizeData();
       this.setupColors();
-      this.sizeDataArrays();
+      this.calcDataArrays();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
     }
@@ -27,18 +29,16 @@ PlotData = (function() {
   PlotData.prototype.normalizeData = function() {
     var i, notMovedX, notMovedY, ptsOut, thres, xThres, yThres, _results;
     ptsOut = this.draggedOutPtsId;
-    notMovedX = _.filter(this.X, function(val, key) {
+    notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
     });
-    notMovedY = _.filter(this.Y, function(val, key) {
+    notMovedY = _.filter(this.origY, function(val, key) {
       return !(_.includes(ptsOut, key));
     });
-    console.log("notMoved");
-    console.log(notMovedX.length);
-    this.minX = _.min(this.X);
-    this.maxX = _.max(this.X);
-    this.minY = _.min(this.Y);
-    this.maxY = _.max(this.Y);
+    this.minX = _.min(notMovedX);
+    this.maxX = _.max(notMovedX);
+    this.minY = _.min(notMovedY);
+    this.maxY = _.max(notMovedY);
     thres = 0.08;
     xThres = thres * (this.maxX - this.minX);
     this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres;
@@ -49,8 +49,10 @@ PlotData = (function() {
     i = 0;
     _results = [];
     while (i < this.len) {
-      this.X[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
-      this.Y[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
+      if (!_.includes(ptsOut, i)) {
+        this.normX[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
+        this.normY[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
+      }
       _results.push(i++);
     }
     return _results;
@@ -79,7 +81,7 @@ PlotData = (function() {
     return _results;
   };
 
-  PlotData.prototype.sizeDataArrays = function() {
+  PlotData.prototype.calcDataArrays = function() {
     var group, i, x, y, _results;
     this.pts = [];
     this.lab = [];
@@ -88,33 +90,35 @@ PlotData = (function() {
     group = this.group;
     i = 0;
     _results = [];
-    while (i < this.len) {
-      x = this.X[i] * this.viewBoxDim.width + this.viewBoxDim.x;
-      y = (1 - this.Y[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
-      this.pts.push({
-        x: x,
-        y: y,
-        r: 2,
-        label: this.label[i],
-        labelX: this.origX[i].toPrecision(3).toString(),
-        labelY: this.origY[i].toPrecision(3).toString(),
-        group: this.group[i],
-        color: this.groupToColorMap[this.group[i]],
-        id: i
-      });
-      this.lab.push({
-        x: x,
-        y: y,
-        text: this.label[i],
-        color: this.groupToColorMap[this.group[i]],
-        id: i
-      });
-      this.anc.push({
-        x: x,
-        y: y,
-        r: 2,
-        id: i
-      });
+    while (i < this.origLen) {
+      if (!_.includes(this.draggedOutPtsId, i)) {
+        x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
+        y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
+        this.pts.push({
+          x: x,
+          y: y,
+          r: 2,
+          label: this.label[i],
+          labelX: this.origX[i].toPrecision(3).toString(),
+          labelY: this.origY[i].toPrecision(3).toString(),
+          group: this.group[i],
+          color: this.groupToColorMap[this.group[i]],
+          id: i
+        });
+        this.lab.push({
+          x: x,
+          y: y,
+          text: this.label[i],
+          color: this.groupToColorMap[this.group[i]],
+          id: i
+        });
+        this.anc.push({
+          x: x,
+          y: y,
+          r: 2,
+          id: i
+        });
+      }
       _results.push(i++);
     }
     return _results;
@@ -169,7 +173,7 @@ PlotData = (function() {
 
   PlotData.prototype.moveElemToLegend = function(id) {
     var checkId, movedAnc, movedLab, movedPt;
-    console.log('called moveElemToLegend');
+    console.log('moveElemToLegend');
     checkId = function(e) {
       return e.id === id;
     };
@@ -182,7 +186,9 @@ PlotData = (function() {
       anc: movedAnc
     });
     this.draggedOutPtsId.push(id);
-    return this.len--;
+    this.len--;
+    this.normalizeData();
+    return this.calcDataArrays();
   };
 
   return PlotData;
