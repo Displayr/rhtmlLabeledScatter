@@ -62,7 +62,7 @@ class PlotData
     @minY = if @minY > 0 then 0 else @minY-yThres
 
     i = 0
-    while i < @len
+    while i < @origLen
       unless _.includes ptsOut, i
         @normX[i] = (@X[i] - @minX)/(@maxX - @minX)
         @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
@@ -173,7 +173,6 @@ class PlotData
     return false
 
   moveElemToLegend: (id) ->
-    console.log 'moveElemToLegend'
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId

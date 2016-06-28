@@ -48,7 +48,7 @@ PlotData = (function() {
     this.minY = this.minY > 0 ? 0 : this.minY - yThres;
     i = 0;
     _results = [];
-    while (i < this.len) {
+    while (i < this.origLen) {
       if (!_.includes(ptsOut, i)) {
         this.normX[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
         this.normY[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
@@ -173,7 +173,6 @@ PlotData = (function() {
 
   PlotData.prototype.moveElemToLegend = function(id) {
     var checkId, movedAnc, movedLab, movedPt;
-    console.log('moveElemToLegend');
     checkId = function(e) {
       return e.id === id;
     };
