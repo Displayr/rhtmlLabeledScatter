@@ -325,6 +325,7 @@ RectPlot = (function() {
       i++;
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
+      console.log('Legend resize triggered');
       drawLegend(svg, data, drawLegend);
       return data.sizeDataArrays();
     }

@@ -295,6 +295,7 @@ class RectPlot
       i++
 
     if data.resizedAfterLegendGroupsDrawn()
+      console.log 'Legend resize triggered'
       drawLegend(svg, data, drawLegend)
       data.sizeDataArrays()
 

@@ -8,6 +8,7 @@ class PlotData
     @label = label
     @viewBoxDim = viewBoxDim
     @legendDim = legendDim
+    @draggedOutPtsId = []
 
     @colorWheel = if colors then colors else [ # default qColors
       '#5B9BD5'
@@ -30,19 +31,31 @@ class PlotData
     if @X.length is @Y.length
       @len = X.length
       @normalizeData()
+      @setupColors()
       @sizeDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
   normalizeData: ->
+    ptsOut = @draggedOutPtsId
+    notMovedX = _.filter(@X, (val, key) ->
+      !(_.includes(ptsOut, key))
+    )
+    notMovedY = _.filter(@Y, (val, key) ->
+      !(_.includes(ptsOut, key))
+    )
+    console.log "notMoved"
+    console.log notMovedX.length
+
     @minX = _.min @X
     @maxX = _.max @X
     @minY = _.min @Y
     @maxY = _.max @Y
 
+    # threshold used so pts are not right on border of plot
     thres = 0.08
     xThres = thres*(@maxX - @minX)
-    @maxX = if @maxX < 0 then 0 else @maxX+xThres
+    @maxX = if @maxX < 0 then 0 else @maxX+xThres # so axis can be on origin
     @minX = if @minX > 0 then 0 else @minX-xThres
     yThres = thres*(@maxY - @minY)
     @maxY = if @maxY < 0 then 0 else @maxY+yThres
@@ -54,18 +67,10 @@ class PlotData
       @Y[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
-    return
-
-  sizeDataArrays: () ->
-    @pts = []
-    @lab = []
-    @anc = []
+  setupColors: ->
     @legendGroups = []
-    @legendPts = []
+    @groupToColorMap = {}
     group = @group
-
-    # color = new RColor #using rColor library to gen random colours
-
     i = 0
     while i < @len
       unless (_.some @legendGroups, (e) -> e.text is group[i])
@@ -77,6 +82,20 @@ class PlotData
           # stroke: 'gray'
           # 'stroke-opacity': 0.3
         }
+        @groupToColorMap[@group[i]] = newColor
+      i++
+
+  sizeDataArrays: () ->
+    @pts = []
+    @lab = []
+    @anc = []
+    @legendPts = []
+    group = @group
+
+    # color = new RColor #using rColor library to gen random colours
+
+    i = 0
+    while i < @len
       x = @X[i]*@viewBoxDim.width + @viewBoxDim.x
       y = (1-@Y[i])*@viewBoxDim.height + @viewBoxDim.y
       @pts.push({
@@ -87,14 +106,14 @@ class PlotData
         labelX: @origX[i].toPrecision(3).toString()
         labelY: @origY[i].toPrecision(3).toString()
         group: @group[i]
-        color: newColor
+        color: @groupToColorMap[@group[i]]
         id: i
       })
       @lab.push({
         x: x
         y: y
         text: @label[i]
-        color: newColor
+        color: @groupToColorMap[@group[i]]
         id: i
       })
       @anc.push({
@@ -105,7 +124,6 @@ class PlotData
       })
       i++
 
-    # @setupLegendGroups(@legendGroups, @legendDim)
 
   setupLegendGroups: (legendGroups, legendDim) ->
     legendStartY =
@@ -123,7 +141,6 @@ class PlotData
       li.x = li.cx + legendDim.ptToTextSpace
       li.y = li.cy + li.r
       li.anchor = 'start'
-      console.log li.cx
       i++
 
   resizedAfterLegendGroupsDrawn: ->
@@ -159,6 +176,7 @@ class PlotData
     return false
 
   moveElemToLegend: (id) ->
+    console.log 'called moveElemToLegend'
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
@@ -168,4 +186,7 @@ class PlotData
       lab: movedLab
       anc: movedAnc
     }
+    @draggedOutPtsId.push id
     @len--
+    # @normalizeData()
+    # @sizeDataArrays()
