@@ -16,7 +16,7 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = X.length;
       this.normalizeData();
-      this.initDataArrays();
+      this.sizeDataArrays();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
     }
@@ -43,8 +43,8 @@ PlotData = (function() {
     }
   };
 
-  PlotData.prototype.initDataArrays = function() {
-    var group, i, newColor, x, y;
+  PlotData.prototype.sizeDataArrays = function() {
+    var group, i, newColor, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
@@ -52,6 +52,7 @@ PlotData = (function() {
     this.legendPts = [];
     group = this.group;
     i = 0;
+    _results = [];
     while (i < this.len) {
       if (!(_.some(this.legendGroups, function(e) {
         return e.text === group[i];
@@ -88,9 +89,9 @@ PlotData = (function() {
         r: 2,
         id: i
       });
-      i++;
+      _results.push(i++);
     }
-    return this.setupLegendGroups(this.legendGroups, this.legendDim);
+    return _results;
   };
 
   PlotData.prototype.setupLegendGroups = function(legendGroups, legendDim) {
@@ -100,12 +101,13 @@ PlotData = (function() {
     _results = [];
     while (i < legendGroups.length) {
       li = legendGroups[i];
-      li['r'] = legendDim.ptRadius;
-      li['cx'] = legendDim.x + legendDim.leftPadding;
-      li['cy'] = legendStartY + i * legendDim.heightOfRow;
-      li['x'] = li['cx'] + legendDim.ptToTextSpace;
-      li['y'] = li['cy'] + li['r'];
-      li['anchor'] = 'start';
+      li.r = legendDim.ptRadius;
+      li.cx = legendDim.x + legendDim.leftPadding;
+      li.cy = legendStartY + i * legendDim.heightOfRow;
+      li.x = li.cx + legendDim.ptToTextSpace;
+      li.y = li.cy + li.r;
+      li.anchor = 'start';
+      console.log(li.cx);
       _results.push(i++);
     }
     return _results;
@@ -118,11 +120,9 @@ PlotData = (function() {
       return e.width;
     })).width;
     this.legendDim.width = this.legendDim.maxTextWidth + this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
-    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width;
+    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.setupLegendGroups(this.legendGroups, this.legendDim);
-    console.log('here');
-    console.log(this.viewBoxDim.width);
     return initVal !== this.legendDim.maxTextWidth;
   };
 

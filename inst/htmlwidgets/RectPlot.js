@@ -32,11 +32,7 @@ RectPlot = (function() {
   }
 
   RectPlot.prototype.draw = function() {
-    console.log('before');
-    console.log(this.viewBoxDim.width);
-    this.drawLegend();
-    console.log('after');
-    console.log(this.viewBoxDim.width);
+    this.drawLegend(this.svg, this.data, this.drawLegend);
     this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
     this.drawDimensionMarkers();
     this.drawAxisLabels();
@@ -294,9 +290,12 @@ RectPlot = (function() {
     }).style('font-weight', 'bold');
   };
 
-  RectPlot.prototype.drawLegend = function() {
+  RectPlot.prototype.drawLegend = function(svg, data, drawLegend) {
     var i, legendGroupsLab;
-    this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
+    svg.selectAll('.legend-groups-pts').remove();
+    svg.selectAll('.legend-groups-text').remove();
+    data.setupLegendGroups(data.legendGroups, data.legendDim);
+    svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
       return d.cy;
@@ -309,7 +308,7 @@ RectPlot = (function() {
     }).attr('stroke-opacity', function(d) {
       return d['stroke-opacity'];
     });
-    this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
+    svg.selectAll('.legend-groups-text').data(data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -318,16 +317,16 @@ RectPlot = (function() {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
-    legendGroupsLab = this.svg.selectAll('.legend-groups-text');
+    legendGroupsLab = svg.selectAll('.legend-groups-text');
     i = 0;
-    while (i < this.data.legendGroups.length) {
-      this.data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
-      this.data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height;
+    while (i < data.legendGroups.length) {
+      data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
+      data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height;
       i++;
     }
-    console.log(this.viewBoxDim);
-    if (this.data.resizedAfterLegendGroupsDrawn()) {
-      return this.drawLegend();
+    if (data.resizedAfterLegendGroupsDrawn()) {
+      drawLegend(svg, data, drawLegend);
+      return data.sizeDataArrays();
     }
   };
 

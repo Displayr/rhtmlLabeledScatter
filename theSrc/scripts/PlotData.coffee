@@ -30,7 +30,7 @@ class PlotData
     if @X.length is @Y.length
       @len = X.length
       @normalizeData()
-      @initDataArrays()
+      @sizeDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
@@ -56,7 +56,7 @@ class PlotData
 
     return
 
-  initDataArrays: () ->
+  sizeDataArrays: () ->
     @pts = []
     @lab = []
     @anc = []
@@ -105,7 +105,7 @@ class PlotData
       })
       i++
 
-    @setupLegendGroups(@legendGroups, @legendDim)
+    # @setupLegendGroups(@legendGroups, @legendDim)
 
   setupLegendGroups: (legendGroups, legendDim) ->
     legendStartY =
@@ -114,14 +114,16 @@ class PlotData
         legendDim.heightOfRow*(legendGroups.length)/2 +
         legendDim.ptRadius), @viewBoxDim.y + legendDim.ptRadius)
     i = 0
+
     while i < legendGroups.length
       li = legendGroups[i]
-      li['r'] = legendDim.ptRadius
-      li['cx'] = legendDim.x + legendDim.leftPadding
-      li['cy'] = legendStartY + i*legendDim.heightOfRow
-      li['x'] = li['cx'] + legendDim.ptToTextSpace
-      li['y'] = li['cy'] + li['r']
-      li['anchor'] = 'start'
+      li.r = legendDim.ptRadius
+      li.cx = legendDim.x + legendDim.leftPadding
+      li.cy = legendStartY + i*legendDim.heightOfRow
+      li.x = li.cx + legendDim.ptToTextSpace
+      li.y = li.cy + li.r
+      li.anchor = 'start'
+      console.log li.cx
       i++
 
   resizedAfterLegendGroupsDrawn: ->
@@ -134,11 +136,9 @@ class PlotData
       @legendDim.rightPadding +
       @legendDim.ptToTextSpace
 
-    @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width
+    @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
     @setupLegendGroups(@legendGroups, @legendDim)
-    console.log 'here'
-    console.log @viewBoxDim.width
 
     initVal != @legendDim.maxTextWidth
 

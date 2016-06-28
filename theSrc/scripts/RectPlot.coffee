@@ -31,11 +31,7 @@ class RectPlot
     @maxY = @data.maxY
 
   draw: ->
-    console.log 'before'
-    console.log @viewBoxDim.width
-    @drawLegend()
-    console.log 'after'
-    console.log @viewBoxDim.width
+    @drawLegend(@svg, @data, @drawLegend)
     @svg.append('rect')
         .attr('class', 'plot-viewbox')
         .attr('x', @viewBoxDim.x)
@@ -262,9 +258,13 @@ class RectPlot
              .text((d) -> d.text)
              .style('font-weight', 'bold')
 
-  drawLegend: ->
-    @svg.selectAll('.legend-groups-pts')
-             .data(@data.legendGroups)
+  drawLegend: (svg, data, drawLegend) ->
+    svg.selectAll('.legend-groups-pts').remove()
+    svg.selectAll('.legend-groups-text').remove()
+    data.setupLegendGroups(data.legendGroups, data.legendDim)
+
+    svg.selectAll('.legend-groups-pts')
+             .data(data.legendGroups)
              .enter()
              .append('circle')
              .attr('class', 'legend-groups-pts')
@@ -275,8 +275,8 @@ class RectPlot
              .attr('stroke', (d) -> d.stroke)
              .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
-    @svg.selectAll('.legend-groups-text')
-             .data(@data.legendGroups)
+    svg.selectAll('.legend-groups-text')
+             .data(data.legendGroups)
              .enter()
              .append('text')
              .attr('class', 'legend-groups-text')
@@ -286,19 +286,17 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
 
-    legendGroupsLab = @svg.selectAll('.legend-groups-text')
+    legendGroupsLab = svg.selectAll('.legend-groups-text')
 
     i = 0
-    while i < @data.legendGroups.length
-      @data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
-      @data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
+    while i < data.legendGroups.length
+      data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
+      data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
       i++
 
-    console.log @viewBoxDim
-    if @data.resizedAfterLegendGroupsDrawn()
-      @drawLegend()
-
-
+    if data.resizedAfterLegendGroupsDrawn()
+      drawLegend(svg, data, drawLegend)
+      data.sizeDataArrays()
 
   _normalizeXCoords: (Xcoord) ->
     (Xcoord-@minX)/(@maxX - @minX)*@viewBoxDim.width + @viewBoxDim.x
