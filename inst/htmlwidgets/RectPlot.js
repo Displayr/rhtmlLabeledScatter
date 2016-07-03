@@ -33,7 +33,7 @@ RectPlot = (function() {
     this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
     this.drawAnc();
-    return this.drawLabs(this.svg, this.data, this.viewBoxDim, this.drawLinks, this.drawLabs, this.xAxisPadding, this.yAxisPadding, this);
+    return this.drawLabs(this);
   };
 
   RectPlot.prototype.redraw = function() {
@@ -395,21 +395,22 @@ RectPlot = (function() {
     plot.drawAxisLabels();
     plot.drawDimensionMarkers();
     plot.drawAnc();
+    plot.drawLabs(plot);
     return plot.drawLegend(plot, data);
   };
 
-  RectPlot.prototype.drawLabs = function(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot) {
+  RectPlot.prototype.drawLabs = function(plot) {
     var drag, i, labelDragAndDrop, labeler, labels_svg;
-    labelDragAndDrop = function(svg, drawLinks, data, drawLabs, viewBoxDim) {
+    labelDragAndDrop = function() {
       var dragEnd, dragMove, dragStart;
       dragStart = function() {
-        return svg.selectAll('.link').remove();
+        return plot.svg.selectAll('.link').remove();
       };
       dragMove = function() {
         var id, label;
         d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
         id = d3.select(this).attr('id');
-        label = _.find(data.lab, function(l) {
+        label = _.find(plot.data.lab, function(l) {
           return l.id === Number(id);
         });
         label.x = d3.event.x;
@@ -418,14 +419,13 @@ RectPlot = (function() {
       dragEnd = function() {
         var id, lab;
         id = Number(d3.select(this).attr('id'));
-        lab = _.find(data.lab, function(l) {
+        lab = _.find(plot.data.lab, function(l) {
           return l.id === id;
         });
-        if (data.isOutsideViewBox(lab)) {
-          plot.elemDraggedOffPlot(plot, data, id);
-          return drawLabs(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot);
+        if (plot.data.isOutsideViewBox(lab)) {
+          return plot.elemDraggedOffPlot(plot, plot.data, id);
         } else {
-          return drawLinks(svg, data);
+          return plot.drawLinks(plot.svg, plot.data);
         }
       };
       return d3.behavior.drag().origin(function() {
@@ -435,9 +435,9 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
-    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, viewBoxDim);
-    svg.selectAll('.lab').remove();
-    svg.selectAll('.lab').data(data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+    drag = labelDragAndDrop();
+    plot.svg.selectAll('.lab').remove();
+    plot.svg.selectAll('.lab').data(plot.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
       return d.id;
     }).attr('x', function(d) {
       return d.x;
@@ -448,20 +448,20 @@ RectPlot = (function() {
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;
     }).call(drag);
-    labels_svg = svg.selectAll('.lab');
+    labels_svg = plot.svg.selectAll('.lab');
     i = 0;
-    while (i < data.len) {
-      data.lab[i].width = labels_svg[0][i].getBBox().width;
-      data.lab[i].height = labels_svg[0][i].getBBox().height;
+    while (i < plot.data.len) {
+      plot.data.lab[i].width = labels_svg[0][i].getBBox().width;
+      plot.data.lab[i].height = labels_svg[0][i].getBBox().height;
       i++;
     }
-    labeler = d3.labeler().svg(svg).w1(viewBoxDim.x).w2(viewBoxDim.x + viewBoxDim.width).h1(viewBoxDim.y).h2(viewBoxDim.y + viewBoxDim.height).anchor(data.anc).label(data.lab).start(500);
+    labeler = d3.labeler().svg(plot.svg).w1(plot.viewBoxDim.x).w2(plot.viewBoxDim.x + plot.viewBoxDim.width).h1(plot.viewBoxDim.y).h2(plot.viewBoxDim.y + plot.viewBoxDim.height).anchor(plot.data.anc).label(plot.data.lab).start(500);
     labels_svg.transition().duration(800).attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
     });
-    return drawLinks(svg, data);
+    return plot.drawLinks(plot.svg, plot.data);
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {

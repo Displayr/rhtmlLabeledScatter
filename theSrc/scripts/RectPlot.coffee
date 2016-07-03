@@ -32,7 +32,7 @@ class RectPlot
     @drawDimensionMarkers()
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc()
-    @drawLabs(@svg, @data, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @)
+    @drawLabs(@)
 
   redraw: ->
     plotElems = [
@@ -367,14 +367,14 @@ class RectPlot
     plot.drawAxisLabels()
     plot.drawDimensionMarkers()
     plot.drawAnc()
-#    plot.drawLabs()
+    plot.drawLabs(plot)
     plot.drawLegend(plot, data)
 
 
-  drawLabs: (svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot) ->
-    labelDragAndDrop = (svg, drawLinks, data, drawLabs, viewBoxDim) ->
+  drawLabs: (plot) ->
+    labelDragAndDrop = ->
       dragStart = () ->
-        svg.selectAll('.link').remove()
+        plot.svg.selectAll('.link').remove()
 
       dragMove = () ->
         d3.select(this)
@@ -383,19 +383,18 @@ class RectPlot
 
         # Save the new location of text so links can be redrawn
         id = d3.select(this).attr('id')
-        label = _.find data.lab, (l) -> l.id == Number(id)
+        label = _.find plot.data.lab, (l) -> l.id == Number(id)
         label.x = d3.event.x
         label.y = d3.event.y
 
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
         id = Number(d3.select(this).attr('id'))
-        lab = _.find data.lab, (l) -> l.id == id
-        if data.isOutsideViewBox(lab)
-          plot.elemDraggedOffPlot(plot, data, id)
-          drawLabs(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot)
+        lab = _.find plot.data.lab, (l) -> l.id == id
+        if plot.data.isOutsideViewBox(lab)
+          plot.elemDraggedOffPlot(plot, plot.data, id)
         else
-          drawLinks(svg, data)
+          plot.drawLinks(plot.svg, plot.data)
 
       d3.behavior.drag()
                .origin(() ->
@@ -408,10 +407,10 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, viewBoxDim)
-    svg.selectAll('.lab').remove()
-    svg.selectAll('.lab')
-             .data(data.lab)
+    drag = labelDragAndDrop()
+    plot.svg.selectAll('.lab').remove()
+    plot.svg.selectAll('.lab')
+             .data(plot.data.lab)
              .enter()
              .append('text')
              .attr('class', 'lab')
@@ -424,21 +423,21 @@ class RectPlot
              .attr('fill', (d) -> d.color)
              .call(drag)
 
-    labels_svg = svg.selectAll('.lab')
+    labels_svg = plot.svg.selectAll('.lab')
     i = 0
-    while i < data.len
-      data.lab[i].width = labels_svg[0][i].getBBox().width
-      data.lab[i].height = labels_svg[0][i].getBBox().height
+    while i < plot.data.len
+      plot.data.lab[i].width = labels_svg[0][i].getBBox().width
+      plot.data.lab[i].height = labels_svg[0][i].getBBox().height
       i++
 
     labeler = d3.labeler()
-                .svg(svg)
-                .w1(viewBoxDim.x)
-                .w2(viewBoxDim.x + viewBoxDim.width)
-                .h1(viewBoxDim.y)
-                .h2(viewBoxDim.y + viewBoxDim.height)
-                .anchor(data.anc)
-                .label(data.lab)
+                .svg(plot.svg)
+                .w1(plot.viewBoxDim.x)
+                .w2(plot.viewBoxDim.x + plot.viewBoxDim.width)
+                .h1(plot.viewBoxDim.y)
+                .h2(plot.viewBoxDim.y + plot.viewBoxDim.height)
+                .anchor(plot.data.anc)
+                .label(plot.data.lab)
                 .start(500)
 
     labels_svg.transition()
@@ -446,7 +445,7 @@ class RectPlot
               .attr('x', (d) -> d.x)
               .attr('y', (d) -> d.y)
 
-    drawLinks(svg, data)
+    plot.drawLinks(plot.svg, plot.data)
 
   drawLinks: (svg, data) ->
     # calc the links from anc to label text if ambiguous
