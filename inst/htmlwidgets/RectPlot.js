@@ -28,12 +28,12 @@ RectPlot = (function() {
   }
 
   RectPlot.prototype.draw = function() {
-    this.drawLegend(this.svg, this.data, this.drawLegend);
-    this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
-    this.drawDimensionMarkers(this.svg, this.viewBoxDim, this.data);
+    this.drawLegend(this, this.data);
+    this.drawRect(this.svg, this.viewBoxDim);
+    this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
-    this.drawAnc(this.svg, this.data);
-    return this.drawLabs(this.svg, this.data, this.drawAnc, this.viewBoxDim, this.drawLinks, this.drawLabs, this.xAxisPadding, this.yAxisPadding, this.drawAxisLabels, this.drawDimensionMarkers, this.drawLegend);
+    this.drawAnc();
+    return this.drawLabs(this.svg, this.data, this.viewBoxDim, this.drawLinks, this.drawLabs, this.xAxisPadding, this.yAxisPadding, this);
   };
 
   RectPlot.prototype.redraw = function() {
@@ -46,8 +46,15 @@ RectPlot = (function() {
     return this.draw();
   };
 
-  RectPlot.prototype.drawDimensionMarkers = function(svg, viewBoxDim, data) {
-    var between, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, normalizeXCoords, normalizeYCoords, oax, oay, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
+  RectPlot.prototype.drawRect = function() {
+    this.svg.selectAll('.plot-viewbox').remove();
+    return this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
+  };
+
+  RectPlot.prototype.drawDimensionMarkers = function() {
+    var between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, normalizeXCoords, normalizeYCoords, oax, oay, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, viewBoxDim, x1, x2, y1, y2;
+    data = this.data;
+    viewBoxDim = this.viewBoxDim;
     getTickRange = function(max, min) {
       var maxTicks, pow10x, range, roundedTickRange, unroundedTickSize, x;
       maxTicks = 8;
@@ -104,31 +111,31 @@ RectPlot = (function() {
     dimensionMarkerStack = [];
     dimensionMarkerLeaderStack = [];
     dimensionMarkerLabelStack = [];
-    ticksX = getTickRange(data.maxX, data.minX);
-    ticksY = getTickRange(data.maxY, data.minY);
+    ticksX = getTickRange(this.data.maxX, this.data.minX);
+    ticksY = getTickRange(this.data.maxY, this.data.minY);
     originAxis = [];
     oax = {
-      x1: viewBoxDim.x,
+      x1: this.viewBoxDim.x,
       y1: normalizeYCoords(0),
-      x2: viewBoxDim.x + viewBoxDim.width,
+      x2: this.viewBoxDim.x + this.viewBoxDim.width,
       y2: normalizeYCoords(0)
     };
     pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0);
-    if (!((data.minY === 0) || (data.maxY === 0))) {
+    if (!((this.data.minY === 0) || (this.data.maxY === 0))) {
       originAxis.push(oax);
     }
     oay = {
       x1: normalizeXCoords(0),
-      y1: viewBoxDim.y,
+      y1: this.viewBoxDim.y,
       x2: normalizeXCoords(0),
-      y2: viewBoxDim.y + viewBoxDim.height
+      y2: this.viewBoxDim.y + this.viewBoxDim.height
     };
     pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0);
-    if (!((data.minX === 0) || (data.maxX === 0))) {
+    if (!((this.data.minX === 0) || (this.data.maxX === 0))) {
       originAxis.push(oay);
     }
-    svg.selectAll('.origin').remove();
-    svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+    this.svg.selectAll('.origin').remove();
+    this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -140,11 +147,11 @@ RectPlot = (function() {
     colsPositive = 0;
     colsNegative = 0;
     i = ticksX;
-    while (between(i, data.minX, data.maxX) || between(-i, data.minX, data.maxX)) {
-      if (between(i, data.minX, data.maxX)) {
+    while (between(i, this.data.minX, this.data.maxX) || between(-i, this.data.minX, this.data.maxX)) {
+      if (between(i, this.data.minX, this.data.maxX)) {
         colsPositive++;
       }
-      if (between(-i, data.minX, data.maxX)) {
+      if (between(-i, this.data.minX, this.data.maxX)) {
         colsNegative++;
       }
       i += ticksX;
@@ -152,11 +159,11 @@ RectPlot = (function() {
     rowsPositive = 0;
     rowsNegative = 0;
     i = ticksY;
-    while (between(i, data.minY, data.maxY) || between(-i, data.minY, data.maxY)) {
-      if (between(i, data.minY, data.maxY)) {
+    while (between(i, this.data.minY, this.data.maxY) || between(-i, this.data.minY, this.data.maxY)) {
+      if (between(i, this.data.minY, this.data.maxY)) {
         rowsNegative++;
       }
-      if (between(-i, data.minY, data.maxY)) {
+      if (between(-i, this.data.minY, this.data.maxY)) {
         rowsPositive++;
       }
       i += ticksY;
@@ -166,9 +173,9 @@ RectPlot = (function() {
       if (i < colsPositive) {
         val = (i + 1) * ticksX;
         x1 = normalizeXCoords(val);
-        y1 = viewBoxDim.y;
+        y1 = this.viewBoxDim.y;
         x2 = normalizeXCoords(val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
+        y2 = this.viewBoxDim.y + this.viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -182,9 +189,9 @@ RectPlot = (function() {
       if (i < colsNegative) {
         val = -(i + 1) * ticksX;
         x1 = normalizeXCoords(val);
-        y1 = viewBoxDim.y;
+        y1 = this.viewBoxDim.y;
         x2 = normalizeXCoords(val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
+        y2 = this.viewBoxDim.y + this.viewBoxDim.height;
         dimensionMarkerStack.push({
           x1: x1,
           y1: y1,
@@ -202,9 +209,9 @@ RectPlot = (function() {
       x1 = y1 = x2 = y2 = 0;
       if (i < rowsPositive) {
         val = -(i + 1) * ticksY;
-        x1 = viewBoxDim.x;
+        x1 = this.viewBoxDim.x;
         y1 = normalizeYCoords(val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
+        x2 = this.viewBoxDim.x + this.viewBoxDim.width;
         y2 = normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
@@ -218,9 +225,9 @@ RectPlot = (function() {
       }
       if (i < rowsNegative) {
         val = (i + 1) * ticksY;
-        x1 = viewBoxDim.x;
+        x1 = this.viewBoxDim.x;
         y1 = normalizeYCoords(val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
+        x2 = this.viewBoxDim.x + this.viewBoxDim.width;
         y2 = normalizeYCoords(val);
         dimensionMarkerStack.push({
           x1: x1,
@@ -234,8 +241,8 @@ RectPlot = (function() {
       }
       i++;
     }
-    svg.selectAll('.dim-marker').remove();
-    svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
+    this.svg.selectAll('.dim-marker').remove();
+    this.svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -244,8 +251,8 @@ RectPlot = (function() {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-    svg.selectAll('.dim-marker-leader').remove();
-    svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
+    this.svg.selectAll('.dim-marker-leader').remove();
+    this.svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -254,8 +261,8 @@ RectPlot = (function() {
     }).attr('y2', function(d) {
       return d.y2;
     }).attr('stroke-width', 1).attr('stroke', 'black');
-    svg.selectAll('.dim-marker-label').remove();
-    return svg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
+    this.svg.selectAll('.dim-marker-label').remove();
+    return this.svg.selectAll('.dim-marker-label').data(dimensionMarkerLabelStack).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -266,25 +273,25 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.drawAxisLabels = function(svg, viewBoxDim, xAxisPadding, yAxisPadding) {
+  RectPlot.prototype.drawAxisLabels = function() {
     var axisLabels;
     axisLabels = [
       {
-        x: viewBoxDim.x + viewBoxDim.width / 2,
-        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding,
+        x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + this.xAxisPadding,
         text: 'Dimension 1 (64%)',
         anchor: 'middle',
         transform: 'rotate(0)'
       }, {
-        x: viewBoxDim.x - yAxisPadding,
-        y: viewBoxDim.y + viewBoxDim.height / 2,
+        x: this.viewBoxDim.x - this.yAxisPadding,
+        y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
         text: 'Dimension 2 (24%)',
         anchor: 'middle',
-        transform: 'rotate(270,' + (viewBoxDim.x - yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height / 2) + ')'
+        transform: 'rotate(270,' + (this.viewBoxDim.x - this.yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
       }
     ];
-    svg.selectAll('.axis-label').remove();
-    return svg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('class', 'axis-label').attr('x', function(d) {
+    this.svg.selectAll('.axis-label').remove();
+    return this.svg.selectAll('.axis-label').data(axisLabels).enter().append('text').attr('class', 'axis-label').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -297,13 +304,11 @@ RectPlot = (function() {
     }).style('font-weight', 'bold');
   };
 
-  RectPlot.prototype.drawLegend = function(svg, data, drawLegend) {
+  RectPlot.prototype.drawLegend = function(plot, data) {
     var i, legendGroupsLab, legendPtsLab;
-    console.log("drawLegend");
-    console.log(data.legendGroups);
     data.setupLegendGroups(data.legendGroups, data.legendDim);
-    svg.selectAll('.legend-groups-pts').remove();
-    svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
+    this.svg.selectAll('.legend-groups-pts').remove();
+    this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
       return d.cy;
@@ -316,8 +321,8 @@ RectPlot = (function() {
     }).attr('stroke-opacity', function(d) {
       return d['stroke-opacity'];
     });
-    svg.selectAll('.legend-groups-text').remove();
-    svg.selectAll('.legend-groups-text').data(data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
+    this.svg.selectAll('.legend-groups-text').remove();
+    this.svg.selectAll('.legend-groups-text').data(data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -326,8 +331,8 @@ RectPlot = (function() {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
-    svg.selectAll('.legend-pts-pts').remove();
-    svg.selectAll('.legend-pts-pts').data(data.legendPts).enter().append('circle').attr('class', 'legend-pts-pts').attr('cx', function(d) {
+    this.svg.selectAll('.legend-pts-pts').remove();
+    this.svg.selectAll('.legend-pts-pts').data(data.legendPts).enter().append('circle').attr('class', 'legend-pts-pts').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
       return d.cy;
@@ -336,8 +341,8 @@ RectPlot = (function() {
     }).attr('fill', function(d) {
       return d.color;
     });
-    svg.selectAll('.legend-pts-text').remove();
-    svg.selectAll('.legend-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-pts-text').attr('x', function(d) {
+    this.svg.selectAll('.legend-pts-text').remove();
+    this.svg.selectAll('.legend-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-pts-text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -348,8 +353,8 @@ RectPlot = (function() {
     }).attr('fill', function(d) {
       return d.color;
     });
-    legendGroupsLab = svg.selectAll('.legend-groups-text');
-    legendPtsLab = svg.selectAll('.legend-pts-text');
+    legendGroupsLab = this.svg.selectAll('.legend-groups-text');
+    legendPtsLab = this.svg.selectAll('.legend-pts-text');
     i = 0;
     while (i < data.legendGroups.length) {
       data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
@@ -364,13 +369,14 @@ RectPlot = (function() {
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
       console.log('Legend resize triggered');
-      return this.redraw();
+      plot.redraw();
+      return plot.drawLegend(plot, data);
     }
   };
 
-  RectPlot.prototype.drawAnc = function(svg, data) {
-    svg.selectAll('.anc').remove();
-    return svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+  RectPlot.prototype.drawAnc = function() {
+    this.svg.selectAll('.anc').remove();
+    return this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -383,9 +389,18 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.drawLabs = function(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend) {
+  RectPlot.prototype.elemDraggedOffPlot = function(plot, data, id) {
+    data.moveElemToLegend(id, data.legendPts);
+    plot.drawRect();
+    plot.drawAxisLabels();
+    plot.drawDimensionMarkers();
+    plot.drawAnc();
+    return plot.drawLegend(plot, data);
+  };
+
+  RectPlot.prototype.drawLabs = function(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot) {
     var drag, i, labelDragAndDrop, labeler, labels_svg;
-    labelDragAndDrop = function(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers) {
+    labelDragAndDrop = function(svg, drawLinks, data, drawLabs, viewBoxDim) {
       var dragEnd, dragMove, dragStart;
       dragStart = function() {
         return svg.selectAll('.link').remove();
@@ -407,12 +422,8 @@ RectPlot = (function() {
           return l.id === id;
         });
         if (data.isOutsideViewBox(lab)) {
-          data.moveElemToLegend(id, data.legendPts);
-          drawAxisLabels(svg, viewBoxDim, xAxisPadding, yAxisPadding);
-          drawDimensionMarkers(svg, viewBoxDim, data);
-          drawAnc(svg, data);
-          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend);
-          return drawLegend(svg, data, drawLegend);
+          plot.elemDraggedOffPlot(plot, data, id);
+          return drawLabs(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot);
         } else {
           return drawLinks(svg, data);
         }
@@ -424,7 +435,7 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
-    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers);
+    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, viewBoxDim);
     svg.selectAll('.lab').remove();
     svg.selectAll('.lab').data(data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
       return d.id;

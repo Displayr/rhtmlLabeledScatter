@@ -27,21 +27,12 @@ class RectPlot
     @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim)
 
   draw: ->
-    @drawLegend(@svg, @data, @drawLegend)
-    @svg.append('rect')
-        .attr('class', 'plot-viewbox')
-        .attr('x', @viewBoxDim.x)
-        .attr('y', @viewBoxDim.y)
-        .attr('width', @viewBoxDim.width)
-        .attr('height', @viewBoxDim.height)
-        .attr('fill', 'none')
-        .attr('stroke', 'black')
-        .attr('stroke-width', '1px')
-
-    @drawDimensionMarkers(@svg, @viewBoxDim, @data)
+    @drawLegend(@, @data)
+    @drawRect(@svg, @viewBoxDim)
+    @drawDimensionMarkers()
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
-    @drawAnc(@svg, @data)
-    @drawLabs(@svg, @data, @drawAnc, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @drawAxisLabels, @drawDimensionMarkers, @drawLegend)
+    @drawAnc()
+    @drawLabs(@svg, @data, @viewBoxDim, @drawLinks, @drawLabs, @xAxisPadding, @yAxisPadding, @)
 
   redraw: ->
     plotElems = [
@@ -61,7 +52,23 @@ class RectPlot
       @svg.selectAll(elem).remove()
     @draw()
 
-  drawDimensionMarkers: (svg, viewBoxDim, data)->
+  drawRect: ->
+    @svg.selectAll('.plot-viewbox').remove()
+    @svg.append('rect')
+      .attr('class', 'plot-viewbox')
+      .attr('x', @viewBoxDim.x)
+      .attr('y', @viewBoxDim.y)
+      .attr('width', @viewBoxDim.width)
+      .attr('height', @viewBoxDim.height)
+      .attr('fill', 'none')
+      .attr('stroke', 'black')
+      .attr('stroke-width', '1px')
+
+
+  drawDimensionMarkers: ->
+    data = @data
+    viewBoxDim = @viewBoxDim
+
     # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
     getTickRange = (max, min) ->
       maxTicks = 8
@@ -96,30 +103,30 @@ class RectPlot
     dimensionMarkerLeaderStack = []
     dimensionMarkerLabelStack = []
 
-    ticksX = getTickRange(data.maxX, data.minX)
-    ticksY = getTickRange(data.maxY, data.minY)
+    ticksX = getTickRange(@data.maxX, @data.minX)
+    ticksY = getTickRange(@data.maxY, @data.minY)
 
     originAxis = []
     oax = {
-      x1: viewBoxDim.x
+      x1: @viewBoxDim.x
       y1: normalizeYCoords 0
-      x2: viewBoxDim.x + viewBoxDim.width
+      x2: @viewBoxDim.x + @viewBoxDim.width
       y2: normalizeYCoords 0
     }
     pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
-    originAxis.push(oax) unless (data.minY is 0) or (data.maxY is 0)
+    originAxis.push(oax) unless (@data.minY is 0) or (@data.maxY is 0)
 
     oay = {
       x1: normalizeXCoords 0
-      y1: viewBoxDim.y
+      y1: @viewBoxDim.y
       x2: normalizeXCoords 0
-      y2: viewBoxDim.y + viewBoxDim.height
+      y2: @viewBoxDim.y + @viewBoxDim.height
     }
     pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
-    originAxis.push(oay) unless (data.minX is 0) or (data.maxX is 0)
+    originAxis.push(oay) unless (@data.minX is 0) or (@data.maxX is 0)
 
-    svg.selectAll('.origin').remove()
-    svg.selectAll('.origin')
+    @svg.selectAll('.origin').remove()
+    @svg.selectAll('.origin')
         .data(originAxis)
         .enter()
         .append('line')
@@ -136,17 +143,17 @@ class RectPlot
     colsPositive = 0
     colsNegative = 0
     i = ticksX
-    while between(i, data.minX, data.maxX) or between(-i, data.minX, data.maxX)
-      colsPositive++ if between(i, data.minX, data.maxX)
-      colsNegative++ if between(-i, data.minX, data.maxX)
+    while between(i, @data.minX, @data.maxX) or between(-i, @data.minX, @data.maxX)
+      colsPositive++ if between(i, @data.minX, @data.maxX)
+      colsNegative++ if between(-i, @data.minX, @data.maxX)
       i += ticksX
 
     rowsPositive = 0
     rowsNegative = 0
     i = ticksY
-    while between(i, data.minY, data.maxY) or between(-i, data.minY, data.maxY)
-      rowsNegative++ if between(i, data.minY, data.maxY) # y axis inversed svg
-      rowsPositive++ if between(-i, data.minY, data.maxY)
+    while between(i, @data.minY, @data.maxY) or between(-i, @data.minY, @data.maxY)
+      rowsNegative++ if between(i, @data.minY, @data.maxY) # y axis inversed svg
+      rowsPositive++ if between(-i, @data.minY, @data.maxY)
       i += ticksY
 
 
@@ -155,9 +162,9 @@ class RectPlot
       if i < colsPositive
         val = (i+1)*ticksX
         x1 = normalizeXCoords val
-        y1 = viewBoxDim.y
+        y1 = @viewBoxDim.y
         x2 = normalizeXCoords val
-        y2 = viewBoxDim.y + viewBoxDim.height
+        y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
@@ -165,9 +172,9 @@ class RectPlot
       if i < colsNegative
         val = -(i+1)*ticksX
         x1 = normalizeXCoords val
-        y1 = viewBoxDim.y
+        y1 = @viewBoxDim.y
         x2 = normalizeXCoords val
-        y2 = viewBoxDim.y + viewBoxDim.height
+        y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'c', x1, y1, x2, y2, val
@@ -178,26 +185,26 @@ class RectPlot
       x1 = y1 = x2 = y2 = 0
       if i < rowsPositive
         val = -(i+1)*ticksY
-        x1 = viewBoxDim.x
+        x1 = @viewBoxDim.x
         y1 = normalizeYCoords val
-        x2 = viewBoxDim.x + viewBoxDim.width
+        x2 = @viewBoxDim.x + @viewBoxDim.width
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       if i < rowsNegative
         val = (i+1)*ticksY
-        x1 = viewBoxDim.x
+        x1 = @viewBoxDim.x
         y1 = normalizeYCoords val
-        x2 = viewBoxDim.x + viewBoxDim.width
+        x2 = @viewBoxDim.x + @viewBoxDim.width
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
-    svg.selectAll('.dim-marker').remove()
-    svg.selectAll('.dim-marker')
+    @svg.selectAll('.dim-marker').remove()
+    @svg.selectAll('.dim-marker')
              .data(dimensionMarkerStack)
              .enter()
              .append('line')
@@ -209,8 +216,8 @@ class RectPlot
              .attr('stroke-width', 0.2)
              .attr('stroke', 'grey')
 
-    svg.selectAll('.dim-marker-leader').remove()
-    svg.selectAll('.dim-marker-leader')
+    @svg.selectAll('.dim-marker-leader').remove()
+    @svg.selectAll('.dim-marker-leader')
              .data(dimensionMarkerLeaderStack)
              .enter()
              .append('line')
@@ -222,8 +229,8 @@ class RectPlot
              .attr('stroke-width', 1)
              .attr('stroke', 'black')
 
-    svg.selectAll('.dim-marker-label').remove()
-    svg.selectAll('.dim-marker-label')
+    @svg.selectAll('.dim-marker-label').remove()
+    @svg.selectAll('.dim-marker-label')
              .data(dimensionMarkerLabelStack)
              .enter()
              .append('text')
@@ -234,26 +241,26 @@ class RectPlot
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
-  drawAxisLabels: (svg, viewBoxDim, xAxisPadding, yAxisPadding)->
+  drawAxisLabels: ->
     axisLabels = [
       { # x axis label
-        x: viewBoxDim.x + viewBoxDim.width/2
-        y: viewBoxDim.y + viewBoxDim.height + xAxisPadding
+        x: @viewBoxDim.x + @viewBoxDim.width/2
+        y: @viewBoxDim.y + @viewBoxDim.height + @xAxisPadding
         text: 'Dimension 1 (64%)'
         anchor: 'middle'
         transform: 'rotate(0)'
       },
       { # y axis label
-        x: viewBoxDim.x - yAxisPadding
-        y: viewBoxDim.y + viewBoxDim.height/2
+        x: @viewBoxDim.x - @yAxisPadding
+        y: @viewBoxDim.y + @viewBoxDim.height/2
         text: 'Dimension 2 (24%)'
         anchor: 'middle'
-        transform: 'rotate(270,'+(viewBoxDim.x-yAxisPadding) + ', ' + (viewBoxDim.y + viewBoxDim.height/2)+ ')'
+        transform: 'rotate(270,'+(@viewBoxDim.x-@yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
       }
     ]
 
-    svg.selectAll('.axis-label').remove()
-    svg.selectAll('.axis-label')
+    @svg.selectAll('.axis-label').remove()
+    @svg.selectAll('.axis-label')
              .data(axisLabels)
              .enter()
              .append('text')
@@ -266,13 +273,11 @@ class RectPlot
              .text((d) -> d.text)
              .style('font-weight', 'bold')
 
-  drawLegend: (svg, data, drawLegend) ->
-    console.log "drawLegend"
-    console.log data.legendGroups
+  drawLegend: (plot, data)->
     data.setupLegendGroups(data.legendGroups, data.legendDim)
 
-    svg.selectAll('.legend-groups-pts').remove()
-    svg.selectAll('.legend-groups-pts')
+    @svg.selectAll('.legend-groups-pts').remove()
+    @svg.selectAll('.legend-groups-pts')
              .data(data.legendGroups)
              .enter()
              .append('circle')
@@ -284,8 +289,8 @@ class RectPlot
              .attr('stroke', (d) -> d.stroke)
              .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
-    svg.selectAll('.legend-groups-text').remove()
-    svg.selectAll('.legend-groups-text')
+    @svg.selectAll('.legend-groups-text').remove()
+    @svg.selectAll('.legend-groups-text')
              .data(data.legendGroups)
              .enter()
              .append('text')
@@ -296,8 +301,8 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
 
-    svg.selectAll('.legend-pts-pts').remove()
-    svg.selectAll('.legend-pts-pts')
+    @svg.selectAll('.legend-pts-pts').remove()
+    @svg.selectAll('.legend-pts-pts')
              .data(data.legendPts)
              .enter()
              .append('circle')
@@ -307,8 +312,8 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
 
-    svg.selectAll('.legend-pts-text').remove()
-    svg.selectAll('.legend-pts-text')
+    @svg.selectAll('.legend-pts-text').remove()
+    @svg.selectAll('.legend-pts-text')
              .data(data.legendPts)
              .enter()
              .append('text')
@@ -321,8 +326,8 @@ class RectPlot
              .attr('fill', (d) -> d.color)
 
 
-    legendGroupsLab = svg.selectAll('.legend-groups-text')
-    legendPtsLab = svg.selectAll('.legend-pts-text')
+    legendGroupsLab = @svg.selectAll('.legend-groups-text')
+    legendPtsLab = @svg.selectAll('.legend-pts-text')
 
     i = 0
     while i < data.legendGroups.length
@@ -338,14 +343,14 @@ class RectPlot
 
     if data.resizedAfterLegendGroupsDrawn()
       console.log 'Legend resize triggered'
-      @redraw()
-      # drawLegend(svg, data, drawLegend)
+      plot.redraw()
+      plot.drawLegend(plot, data)
       # data.calcDataArrays()
 
-  drawAnc: (svg, data) ->
-    svg.selectAll('.anc').remove()
-    svg.selectAll('.anc')
-             .data(data.pts)
+  drawAnc: ->
+    @svg.selectAll('.anc').remove()
+    @svg.selectAll('.anc')
+             .data(@data.pts)
              .enter()
              .append('circle')
              .attr('class', 'anc')
@@ -356,8 +361,18 @@ class RectPlot
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
-  drawLabs: (svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend) ->
-    labelDragAndDrop = (svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers) ->
+  elemDraggedOffPlot: (plot, data, id) ->
+    data.moveElemToLegend(id, data.legendPts)
+    plot.drawRect()
+    plot.drawAxisLabels()
+    plot.drawDimensionMarkers()
+    plot.drawAnc()
+#    plot.drawLabs()
+    plot.drawLegend(plot, data)
+
+
+  drawLabs: (svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot) ->
+    labelDragAndDrop = (svg, drawLinks, data, drawLabs, viewBoxDim) ->
       dragStart = () ->
         svg.selectAll('.link').remove()
 
@@ -377,12 +392,8 @@ class RectPlot
         id = Number(d3.select(this).attr('id'))
         lab = _.find data.lab, (l) -> l.id == id
         if data.isOutsideViewBox(lab)
-          data.moveElemToLegend(id, data.legendPts)
-          drawAxisLabels(svg, viewBoxDim, xAxisPadding, yAxisPadding)
-          drawDimensionMarkers(svg, viewBoxDim, data)
-          drawAnc(svg, data)
-          drawLabs(svg, data, drawAnc, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, drawAxisLabels, drawDimensionMarkers, drawLegend)
-          drawLegend(svg, data, drawLegend)
+          plot.elemDraggedOffPlot(plot, data, id)
+          drawLabs(svg, data, viewBoxDim, drawLinks, drawLabs, xAxisPadding, yAxisPadding, plot)
         else
           drawLinks(svg, data)
 
@@ -397,7 +408,7 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, drawAnc, viewBoxDim, drawDimensionMarkers)
+    drag = labelDragAndDrop(svg, drawLinks, data, drawLabs, viewBoxDim)
     svg.selectAll('.lab').remove()
     svg.selectAll('.lab')
              .data(data.lab)
