@@ -49,8 +49,6 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawRect = function() {
-    console.log('drawRect');
-    console.log(this.viewBoxDim.width);
     this.svg.selectAll('.plot-viewbox').remove();
     return this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
   };

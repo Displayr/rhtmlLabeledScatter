@@ -88,8 +88,6 @@ PlotData = (function() {
     this.lab = [];
     this.anc = [];
     i = 0;
-    console.log('calcDataArrays');
-    console.log(this.viewBoxDim.width);
     _results = [];
     while (i < this.origLen) {
       if (!_.includes(this.draggedOutPtsId, i)) {

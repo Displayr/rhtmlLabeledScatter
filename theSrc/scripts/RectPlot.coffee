@@ -55,8 +55,6 @@ class RectPlot
     @draw()
 
   drawRect: ->
-    console.log 'drawRect'
-    console.log @viewBoxDim.width
     @svg.selectAll('.plot-viewbox').remove()
     @svg.append('rect')
       .attr('class', 'plot-viewbox')
