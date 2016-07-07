@@ -31,7 +31,7 @@ class RectPlot
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
-    @drawAnc()
+    @drawAnc(@data)
     @drawLabs(@)
 
   redraw: ->
@@ -274,7 +274,7 @@ class RectPlot
              .style('font-weight', 'bold')
 
   drawLegend: (plot, data)->
-    data.setupLegendGroups(data.legendGroups, data.legendDim)
+    data.calcLegendDisplayPtsAndGroups(data.legendGroups, data.legendDim, data.legendPts)
 
     @svg.selectAll('.legend-groups-pts').remove()
     @svg.selectAll('.legend-groups-pts')
@@ -345,12 +345,11 @@ class RectPlot
       console.log 'Legend resize triggered'
       plot.redraw()
       plot.drawLegend(plot, data)
-      # data.calcDataArrays()
 
-  drawAnc: ->
+  drawAnc: (data) ->
     @svg.selectAll('.anc').remove()
     @svg.selectAll('.anc')
-             .data(@data.pts)
+             .data(data.pts)
              .enter()
              .append('circle')
              .attr('class', 'anc')
@@ -366,7 +365,7 @@ class RectPlot
     plot.drawRect()
     plot.drawAxisLabels()
     plot.drawDimensionMarkers()
-    plot.drawAnc()
+    plot.drawAnc(data)
     plot.drawLabs(plot)
     plot.drawLegend(plot, data)
 

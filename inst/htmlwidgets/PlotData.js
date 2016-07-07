@@ -147,6 +147,7 @@ PlotData = (function() {
     if (legendPts.length > 0) {
       legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * (legendGroups.length + legendPts.length) / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
       i = 0;
+      j = 0;
       _results = [];
       while (i < legendGroups.length + legendPts.length) {
         if (i < legendGroups.length) {
@@ -172,6 +173,8 @@ PlotData = (function() {
         _results.push(i++);
       }
       return _results;
+    } else {
+      return this.setupLegendGroups(legendGroups, legendDim);
     }
   };
 

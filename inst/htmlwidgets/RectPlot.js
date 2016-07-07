@@ -32,7 +32,7 @@ RectPlot = (function() {
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
-    this.drawAnc();
+    this.drawAnc(this.data);
     return this.drawLabs(this);
   };
 
@@ -306,7 +306,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawLegend = function(plot, data) {
     var i, legendGroupsLab, legendPtsLab;
-    data.setupLegendGroups(data.legendGroups, data.legendDim);
+    data.calcLegendDisplayPtsAndGroups(data.legendGroups, data.legendDim, data.legendPts);
     this.svg.selectAll('.legend-groups-pts').remove();
     this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;
@@ -374,9 +374,9 @@ RectPlot = (function() {
     }
   };
 
-  RectPlot.prototype.drawAnc = function() {
+  RectPlot.prototype.drawAnc = function(data) {
     this.svg.selectAll('.anc').remove();
-    return this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+    return this.svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -394,7 +394,7 @@ RectPlot = (function() {
     plot.drawRect();
     plot.drawAxisLabels();
     plot.drawDimensionMarkers();
-    plot.drawAnc();
+    plot.drawAnc(data);
     plot.drawLabs(plot);
     return plot.drawLegend(plot, data);
   };

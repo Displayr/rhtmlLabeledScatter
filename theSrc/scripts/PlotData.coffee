@@ -150,6 +150,7 @@ class PlotData
           @viewBoxDim.y + legendDim.ptRadius)
 
       i = 0
+      j = 0
       while i < legendGroups.length + legendPts.length
         if i < legendGroups.length
           lgi = legendGroups[i]
@@ -171,6 +172,8 @@ class PlotData
           lpj.text = lpj.pt.label + lpj.pt.labelX + lpj.pt.labelY
           lpj.anchor = 'start'
         i++
+    else
+      @setupLegendGroups(legendGroups, legendDim)
 
 
   resizedAfterLegendGroupsDrawn: ->
