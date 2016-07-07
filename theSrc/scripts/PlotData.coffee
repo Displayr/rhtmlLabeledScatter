@@ -88,9 +88,10 @@ class PlotData
     @pts = []
     @lab = []
     @anc = []
-    group = @group
 
     i = 0
+    console.log 'calcDataArrays'
+    console.log @viewBoxDim.width
     while i < @origLen
       unless _.includes @draggedOutPtsId, i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x

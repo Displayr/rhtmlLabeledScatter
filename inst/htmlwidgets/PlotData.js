@@ -83,12 +83,13 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var group, i, x, y, _results;
+    var i, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
-    group = this.group;
     i = 0;
+    console.log('calcDataArrays');
+    console.log(this.viewBoxDim.width);
     _results = [];
     while (i < this.origLen) {
       if (!_.includes(this.draggedOutPtsId, i)) {

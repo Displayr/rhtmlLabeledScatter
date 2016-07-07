@@ -35,7 +35,7 @@ class RectPlot
     @drawAnc(@data)
     @drawLabs(@)
 
-  redraw: ->
+  redraw: (data) ->
     plotElems = [
       '.plot-viewbox'
       '.origin'
@@ -51,9 +51,12 @@ class RectPlot
     ]
     for elem in plotElems
       @svg.selectAll(elem).remove()
+    data.calcDataArrays()
     @draw()
 
   drawRect: ->
+    console.log 'drawRect'
+    console.log @viewBoxDim.width
     @svg.selectAll('.plot-viewbox').remove()
     @svg.append('rect')
       .attr('class', 'plot-viewbox')
@@ -344,7 +347,7 @@ class RectPlot
 
     if data.resizedAfterLegendGroupsDrawn()
       console.log 'Legend resize triggered'
-      plot.redraw()
+      plot.redraw(data)
       plot.drawLegend(plot, data)
 
   drawAnc: (data) ->

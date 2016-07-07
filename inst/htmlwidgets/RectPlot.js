@@ -37,17 +37,20 @@ RectPlot = (function() {
     return this.drawLabs(this);
   };
 
-  RectPlot.prototype.redraw = function() {
+  RectPlot.prototype.redraw = function(data) {
     var elem, plotElems, _i, _len;
     plotElems = ['.plot-viewbox', '.origin', '.dim-marker', '.dim-marker-leader', '.dim-marker-label', '.axis-label', '.legend-pts', '.legend-text', '.anc', '.lab', '.link'];
     for (_i = 0, _len = plotElems.length; _i < _len; _i++) {
       elem = plotElems[_i];
       this.svg.selectAll(elem).remove();
     }
+    data.calcDataArrays();
     return this.draw();
   };
 
   RectPlot.prototype.drawRect = function() {
+    console.log('drawRect');
+    console.log(this.viewBoxDim.width);
     this.svg.selectAll('.plot-viewbox').remove();
     return this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
   };
@@ -370,7 +373,7 @@ RectPlot = (function() {
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
       console.log('Legend resize triggered');
-      plot.redraw();
+      plot.redraw(data);
       return plot.drawLegend(plot, data);
     }
   };
