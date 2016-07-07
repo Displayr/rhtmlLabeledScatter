@@ -10,6 +10,7 @@ class RectPlot
       heightOfRow: 25 #init val
       rightPadding: 10
       ptRadius: 6
+      ptMovedRadius: 2
       leftPadding: 30
       ptToTextSpace: 15
       maxTextWidth: -Infinity

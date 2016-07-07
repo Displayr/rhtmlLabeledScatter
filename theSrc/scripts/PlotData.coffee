@@ -163,13 +163,13 @@ class PlotData
         else
           j = i - legendGroups.length
           lpj = legendPts[j]
-          lpj.r = legendDim.ptRadius
+          lpj.r = legendDim.ptMovedRadius
           lpj.cx = legendDim.x + legendDim.leftPadding
           lpj.cy = legendStartY + (i+1)*legendDim.heightOfRow
           lpj.x = lpj.cx + legendDim.ptToTextSpace
           lpj.y = lpj.cy + lpj.r
           lpj.color = lpj.pt.color
-          lpj.text = lpj.pt.label + lpj.pt.labelX + lpj.pt.labelY
+          lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
           lpj.anchor = 'start'
         i++
     else
