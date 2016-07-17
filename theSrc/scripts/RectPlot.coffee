@@ -13,6 +13,7 @@ class RectPlot
       ptMovedRadius: 2
       leftPadding: 30
       ptToTextSpace: 15
+      yPtOffset: 4
       maxTextWidth: -Infinity
 
     @viewBoxDim =
@@ -70,6 +71,8 @@ class RectPlot
   drawDimensionMarkers: ->
     data = @data
     viewBoxDim = @viewBoxDim
+
+    return unless data.len > 0 # if all points have been dragged off plot
 
     # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
     getTickRange = (max, min) ->
@@ -310,7 +313,7 @@ class RectPlot
              .append('circle')
              .attr('class', 'legend-pts-pts')
              .attr('cx', (d) -> d.cx)
-             .attr('cy', (d) -> d.cy)
+             .attr('cy', (d) -> d.cy - d.yOffset)
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
 
@@ -370,7 +373,6 @@ class RectPlot
     plot.drawAnc(data)
     plot.drawLabs(plot)
     plot.drawLegend(plot, data)
-
 
   drawLabs: (plot) ->
     labelDragAndDrop = ->

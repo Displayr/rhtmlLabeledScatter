@@ -163,6 +163,7 @@ PlotData = (function() {
           lpj.r = legendDim.ptMovedRadius;
           lpj.cx = legendDim.x + legendDim.leftPadding;
           lpj.cy = legendStartY + (i + 1) * legendDim.heightOfRow;
+          lpj.yOffset = legendDim.yPtOffset;
           lpj.x = lpj.cx + legendDim.ptToTextSpace;
           lpj.y = lpj.cy + lpj.r;
           lpj.color = lpj.pt.color;

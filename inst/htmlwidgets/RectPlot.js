@@ -14,6 +14,7 @@ RectPlot = (function() {
       ptMovedRadius: 2,
       leftPadding: 30,
       ptToTextSpace: 15,
+      yPtOffset: 4,
       maxTextWidth: -Infinity
     };
     this.viewBoxDim = {
@@ -57,6 +58,9 @@ RectPlot = (function() {
     var between, colsNegative, colsPositive, data, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, getTickRange, i, normalizeXCoords, normalizeYCoords, oax, oay, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, viewBoxDim, x1, x2, y1, y2;
     data = this.data;
     viewBoxDim = this.viewBoxDim;
+    if (!(data.len > 0)) {
+      return;
+    }
     getTickRange = function(max, min) {
       var maxTicks, pow10x, range, roundedTickRange, unroundedTickSize, x;
       maxTicks = 8;
@@ -337,7 +341,7 @@ RectPlot = (function() {
     this.svg.selectAll('.legend-pts-pts').data(data.legendPts).enter().append('circle').attr('class', 'legend-pts-pts').attr('cx', function(d) {
       return d.cx;
     }).attr('cy', function(d) {
-      return d.cy;
+      return d.cy - d.yOffset;
     }).attr('r', function(d) {
       return d.r;
     }).attr('fill', function(d) {
