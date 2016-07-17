@@ -29,12 +29,12 @@ class RectPlot
     @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim)
 
   draw: ->
+    @drawLabs(@)
     @drawLegend(@, @data)
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc(@data)
-    @drawLabs(@)
 
   redraw: (data) ->
     plotElems = [

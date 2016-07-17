@@ -30,12 +30,12 @@ RectPlot = (function() {
   }
 
   RectPlot.prototype.draw = function() {
+    this.drawLabs(this);
     this.drawLegend(this, this.data);
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
-    this.drawAnc(this.data);
-    return this.drawLabs(this);
+    return this.drawAnc(this.data);
   };
 
   RectPlot.prototype.redraw = function(data) {
