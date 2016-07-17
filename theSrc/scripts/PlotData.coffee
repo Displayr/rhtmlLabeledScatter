@@ -155,8 +155,8 @@ class PlotData
         li = legendGroups[i]
         li.r = legendDim.ptRadius
         li.cx = legendDim.x + legendDim.leftPadding + colSpacing
-        li.x = li.cx + legendDim.ptToTextSpace
         li.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
+        li.x = li.cx + legendDim.ptToTextSpace
         li.y = li.cy + li.r
         li.anchor = 'start'
         i++
@@ -192,7 +192,7 @@ class PlotData
             lpj = legendPts[j]
             lpj.r = legendDim.ptMovedRadius
             lpj.cx = legendDim.x + legendDim.leftPadding
-            lpj.cy = legendStartY + (i+1)*legendDim.heightOfRow
+            lpj.cy = legendStartY + i*legendDim.heightOfRow
             lpj.yOffset = legendDim.yPtOffset
             lpj.x = lpj.cx + legendDim.ptToTextSpace
             lpj.y = lpj.cy + lpj.r
