@@ -124,76 +124,157 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setupLegendGroups = function(legendGroups, legendDim) {
-    var i, legendStartY, li, _results;
+    var colSpacing, i, legendStartY, li, numItemsCol1, _results, _results1;
     legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * legendGroups.length / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
-    i = 0;
-    _results = [];
-    while (i < legendGroups.length) {
-      li = legendGroups[i];
-      li.r = legendDim.ptRadius;
-      li.cx = legendDim.x + legendDim.leftPadding;
-      li.cy = legendStartY + i * legendDim.heightOfRow;
-      li.x = li.cx + legendDim.ptToTextSpace;
-      li.y = li.cy + li.r;
-      li.anchor = 'start';
-      _results.push(i++);
-    }
-    return _results;
-  };
-
-  PlotData.prototype.calcLegendDisplayPtsAndGroups = function(legendGroups, legendDim, legendPts) {
-    var i, j, legendStartY, lgi, lpj, _results;
-    if (legendPts.length > 0) {
-      legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * (legendGroups.length + legendPts.length) / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
+    if (legendDim.cols === 1) {
       i = 0;
-      j = 0;
       _results = [];
-      while (i < legendGroups.length + legendPts.length) {
-        if (i < legendGroups.length) {
-          lgi = legendGroups[i];
-          lgi.r = legendDim.ptRadius;
-          lgi.cx = legendDim.x + legendDim.leftPadding;
-          lgi.cy = legendStartY + i * legendDim.heightOfRow;
-          lgi.x = lgi.cx + legendDim.ptToTextSpace;
-          lgi.y = lgi.cy + lgi.r;
-          lgi.anchor = 'start';
-        } else {
-          j = i - legendGroups.length;
-          lpj = legendPts[j];
-          lpj.r = legendDim.ptMovedRadius;
-          lpj.cx = legendDim.x + legendDim.leftPadding;
-          lpj.cy = legendStartY + (i + 1) * legendDim.heightOfRow;
-          lpj.yOffset = legendDim.yPtOffset;
-          lpj.x = lpj.cx + legendDim.ptToTextSpace;
-          lpj.y = lpj.cy + lpj.r;
-          lpj.color = lpj.pt.color;
-          lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')';
-          lpj.anchor = 'start';
-        }
+      while (i < legendGroups.length) {
+        li = legendGroups[i];
+        li.r = legendDim.ptRadius;
+        li.cx = legendDim.x + legendDim.leftPadding;
+        li.cy = legendStartY + i * legendDim.heightOfRow;
+        li.x = li.cx + legendDim.ptToTextSpace;
+        li.y = li.cy + li.r;
+        li.anchor = 'start';
         _results.push(i++);
       }
       return _results;
+    } else {
+      colSpacing = 0;
+      numItemsCol1 = 0;
+      i = 0;
+      _results1 = [];
+      while (i < legendGroups.length) {
+        if (legendStartY + i * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height) {
+          colSpacing = legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace;
+          if (numItemsCol1 === 0) {
+            numItemsCol1 = i;
+          }
+        }
+        if (legendStartY + (i - numItemsCol1) * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height) {
+          break;
+        }
+        li = legendGroups[i];
+        li.r = legendDim.ptRadius;
+        li.cx = legendDim.x + legendDim.leftPadding + colSpacing;
+        li.x = li.cx + legendDim.ptToTextSpace;
+        li.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
+        li.y = li.cy + li.r;
+        li.anchor = 'start';
+        _results1.push(i++);
+      }
+      return _results1;
+    }
+  };
+
+  PlotData.prototype.calcLegendDisplayPtsAndGroups = function(legendGroups, legendDim, legendPts) {
+    var colSpacing, i, j, legendStartY, lgi, lpj, numItemsCol1, startOfCenteredLegendItems, startOfViewBox, totalLegendItems, _results, _results1;
+    if (legendPts.length > 0) {
+      totalLegendItems = legendGroups.length + legendPts.length;
+      if (legendDim.cols === 1) {
+        legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * totalLegendItems / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
+        i = 0;
+        j = 0;
+        _results = [];
+        while (i < legendGroups.length + legendPts.length) {
+          if (i < legendGroups.length) {
+            lgi = legendGroups[i];
+            lgi.r = legendDim.ptRadius;
+            lgi.cx = legendDim.x + legendDim.leftPadding;
+            lgi.cy = legendStartY + i * legendDim.heightOfRow;
+            lgi.x = lgi.cx + legendDim.ptToTextSpace;
+            lgi.y = lgi.cy + lgi.r;
+            lgi.anchor = 'start';
+          } else {
+            j = i - legendGroups.length;
+            lpj = legendPts[j];
+            lpj.r = legendDim.ptMovedRadius;
+            lpj.cx = legendDim.x + legendDim.leftPadding;
+            lpj.cy = legendStartY + (i + 1) * legendDim.heightOfRow;
+            lpj.yOffset = legendDim.yPtOffset;
+            lpj.x = lpj.cx + legendDim.ptToTextSpace;
+            lpj.y = lpj.cy + lpj.r;
+            lpj.color = lpj.pt.color;
+            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')';
+            lpj.anchor = 'start';
+          }
+          _results.push(i++);
+        }
+        return _results;
+      } else if (legendDim.cols === 2) {
+        startOfCenteredLegendItems = this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * totalLegendItems / 2 + legendDim.ptRadius;
+        startOfViewBox = this.viewBoxDim.y + legendDim.ptRadius;
+        legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox);
+        colSpacing = 0;
+        numItemsCol1 = 0;
+        i = 0;
+        j = 0;
+        _results1 = [];
+        while (i < totalLegendItems) {
+          if (legendStartY + i * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height) {
+            colSpacing = legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace;
+            if (numItemsCol1 === 0) {
+              numItemsCol1 = i;
+            }
+          }
+          if (legendStartY + (i - numItemsCol1) * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height) {
+            break;
+          }
+          if (i < legendGroups.length) {
+            lgi = legendGroups[i];
+            lgi.r = legendDim.ptRadius;
+            lgi.cx = legendDim.x + legendDim.leftPadding + colSpacing;
+            lgi.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
+            lgi.x = lgi.cx + legendDim.ptToTextSpace;
+            lgi.y = lgi.cy + lgi.r;
+            lgi.anchor = 'start';
+          } else {
+            j = i - legendGroups.length;
+            lpj = legendPts[j];
+            lpj.r = legendDim.ptMovedRadius;
+            lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing;
+            lpj.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
+            lpj.yOffset = legendDim.yPtOffset;
+            lpj.x = lpj.cx + legendDim.ptToTextSpace;
+            lpj.y = lpj.cy + lpj.r;
+            lpj.color = lpj.pt.color;
+            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')';
+            lpj.anchor = 'start';
+          }
+          _results1.push(i++);
+        }
+        return _results1;
+      }
     } else {
       return this.setupLegendGroups(legendGroups, legendDim);
     }
   };
 
   PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
-    var initVal, legendGrpsTextMax, legendPtsTextMax;
-    initVal = this.legendDim.maxTextWidth;
+    var initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems;
+    initWidth = this.viewBoxDim.width;
+    totalLegendItems = this.legendGroups.length + this.legendPts.length;
     legendGrpsTextMax = (_.maxBy(this.legendGroups, function(e) {
       return e.width;
     })).width;
     legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
       return e.width;
     })).width : 0;
-    this.legendDim.maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
-    this.legendDim.width = this.legendDim.maxTextWidth + this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
+    maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
+    spacingAroundMaxTextWidth = this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
+    if ((totalLegendItems * this.legendDim.heightOfRow) < this.viewBoxDim.height) {
+      this.legendDim.cols = 1;
+      this.legendDim.width = maxTextWidth + spacingAroundMaxTextWidth;
+    } else {
+      this.legendDim.cols = 2;
+      this.legendDim.width = maxTextWidth * 2 + spacingAroundMaxTextWidth + this.legendDim.centerPadding;
+      this.legendDim.colSpace = maxTextWidth;
+    }
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    this.setupLegendGroups(this.legendGroups, this.legendDim);
     this.calcLegendDisplayPtsAndGroups(this.legendGroups, this.legendDim, this.legendPts);
-    return initVal !== this.legendDim.maxTextWidth;
+    return initWidth !== this.viewBoxDim.width;
   };
 
   PlotData.prototype.getDefaultColor = function() {

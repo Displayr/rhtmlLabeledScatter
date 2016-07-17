@@ -128,73 +128,152 @@ class PlotData
         legendDim.ptRadius),
         @viewBoxDim.y + legendDim.ptRadius)
 
-    i = 0
-    while i < legendGroups.length
-      li = legendGroups[i]
-      li.r = legendDim.ptRadius
-      li.cx = legendDim.x + legendDim.leftPadding
-      li.cy = legendStartY + i*legendDim.heightOfRow
-      li.x = li.cx + legendDim.ptToTextSpace
-      li.y = li.cy + li.r
-      li.anchor = 'start'
-      i++
 
+    if legendDim.cols is 1
+      i = 0
+      while i < legendGroups.length
+        li = legendGroups[i]
+        li.r = legendDim.ptRadius
+        li.cx = legendDim.x + legendDim.leftPadding
+        li.cy = legendStartY + i*legendDim.heightOfRow
+        li.x = li.cx + legendDim.ptToTextSpace
+        li.y = li.cy + li.r
+        li.anchor = 'start'
+        i++
+    else
+      colSpacing = 0
+      numItemsCol1 = 0
+      i = 0
+      while i < legendGroups.length
+        if legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+          colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
+          numItemsCol1 = i if numItemsCol1 == 0
+
+        if legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+          break
+
+        li = legendGroups[i]
+        li.r = legendDim.ptRadius
+        li.cx = legendDim.x + legendDim.leftPadding + colSpacing
+        li.x = li.cx + legendDim.ptToTextSpace
+        li.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
+        li.y = li.cy + li.r
+        li.anchor = 'start'
+        i++
+
+
+  # determine positions of items in legend (groups and/or pts dragged off plot)
   calcLegendDisplayPtsAndGroups: (legendGroups, legendDim, legendPts) ->
     if legendPts.length > 0
-      legendStartY =
-        Math.max((@viewBoxDim.y +
-          @viewBoxDim.height/2 -
-          legendDim.heightOfRow*(legendGroups.length + legendPts.length)/2 +
-          legendDim.ptRadius),
-          @viewBoxDim.y + legendDim.ptRadius)
 
-      i = 0
-      j = 0
-      while i < legendGroups.length + legendPts.length
-        if i < legendGroups.length
-          lgi = legendGroups[i]
-          lgi.r = legendDim.ptRadius
-          lgi.cx = legendDim.x + legendDim.leftPadding
-          lgi.cy = legendStartY + i*legendDim.heightOfRow
-          lgi.x = lgi.cx + legendDim.ptToTextSpace
-          lgi.y = lgi.cy + lgi.r
-          lgi.anchor = 'start'
-        else
-          j = i - legendGroups.length
-          lpj = legendPts[j]
-          lpj.r = legendDim.ptMovedRadius
-          lpj.cx = legendDim.x + legendDim.leftPadding
-          lpj.cy = legendStartY + (i+1)*legendDim.heightOfRow
-          lpj.yOffset = legendDim.yPtOffset
-          lpj.x = lpj.cx + legendDim.ptToTextSpace
-          lpj.y = lpj.cy + lpj.r
-          lpj.color = lpj.pt.color
-          lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
-          lpj.anchor = 'start'
-        i++
+      totalLegendItems = legendGroups.length + legendPts.length
+
+      if legendDim.cols is 1
+        legendStartY =
+          Math.max((@viewBoxDim.y +
+            @viewBoxDim.height/2 -
+            legendDim.heightOfRow*totalLegendItems/2 +
+            legendDim.ptRadius),
+            @viewBoxDim.y + legendDim.ptRadius)
+
+        i = 0
+        j = 0
+        while i < legendGroups.length + legendPts.length
+          if i < legendGroups.length
+            lgi = legendGroups[i]
+            lgi.r = legendDim.ptRadius
+            lgi.cx = legendDim.x + legendDim.leftPadding
+            lgi.cy = legendStartY + i*legendDim.heightOfRow
+            lgi.x = lgi.cx + legendDim.ptToTextSpace
+            lgi.y = lgi.cy + lgi.r
+            lgi.anchor = 'start'
+          else
+            j = i - legendGroups.length
+            lpj = legendPts[j]
+            lpj.r = legendDim.ptMovedRadius
+            lpj.cx = legendDim.x + legendDim.leftPadding
+            lpj.cy = legendStartY + (i+1)*legendDim.heightOfRow
+            lpj.yOffset = legendDim.yPtOffset
+            lpj.x = lpj.cx + legendDim.ptToTextSpace
+            lpj.y = lpj.cy + lpj.r
+            lpj.color = lpj.pt.color
+            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
+            lpj.anchor = 'start'
+          i++
+      else if legendDim.cols is 2
+        startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
+                                      legendDim.heightOfRow*totalLegendItems/2 +
+                                      legendDim.ptRadius)
+        startOfViewBox = @viewBoxDim.y + legendDim.ptRadius
+        legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
+
+        colSpacing = 0
+        numItemsCol1 = 0
+        i = 0
+        j = 0
+        while i < totalLegendItems
+          if legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+            colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
+            numItemsCol1 = i if numItemsCol1 == 0
+
+          if legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+            break
+
+          if i < legendGroups.length
+            lgi = legendGroups[i]
+            lgi.r = legendDim.ptRadius
+            lgi.cx = legendDim.x + legendDim.leftPadding + colSpacing
+            lgi.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
+            lgi.x = lgi.cx + legendDim.ptToTextSpace
+            lgi.y = lgi.cy + lgi.r
+            lgi.anchor = 'start'
+
+          else
+            j = i - legendGroups.length
+            lpj = legendPts[j]
+            lpj.r = legendDim.ptMovedRadius
+            lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing
+            lpj.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
+            lpj.yOffset = legendDim.yPtOffset
+            lpj.x = lpj.cx + legendDim.ptToTextSpace
+            lpj.y = lpj.cy + lpj.r
+            lpj.color = lpj.pt.color
+            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
+            lpj.anchor = 'start'
+
+
+          i++
+
     else
       @setupLegendGroups(legendGroups, legendDim)
 
 
   resizedAfterLegendGroupsDrawn: ->
-    initVal = @legendDim.maxTextWidth
+    initWidth = @viewBoxDim.width
 
+    totalLegendItems = @legendGroups.length + @legendPts.length
     legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
     legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
-    @legendDim.maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax)
+    maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax)
 
-    @legendDim.width = @legendDim.maxTextWidth +
-      @legendDim.leftPadding +
-      @legendDim.ptRadius * 2 +
-      @legendDim.rightPadding +
-      @legendDim.ptToTextSpace
+    spacingAroundMaxTextWidth = @legendDim.leftPadding +
+                                @legendDim.ptRadius * 2 +
+                                @legendDim.rightPadding +
+                                @legendDim.ptToTextSpace
+
+    if (totalLegendItems*@legendDim.heightOfRow) < @viewBoxDim.height
+      @legendDim.cols = 1
+      @legendDim.width = maxTextWidth + spacingAroundMaxTextWidth
+    else
+      @legendDim.cols = 2
+      @legendDim.width = maxTextWidth*2 + spacingAroundMaxTextWidth + @legendDim.centerPadding
+      @legendDim.colSpace = maxTextWidth
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
-    @setupLegendGroups(@legendGroups, @legendDim)
     @calcLegendDisplayPtsAndGroups(@legendGroups, @legendDim, @legendPts)
 
-    initVal != @legendDim.maxTextWidth
+    initWidth != @viewBoxDim.width
 
   getDefaultColor: ->
     @colorWheel[(@cIndex++)%(@colorWheel.length)]

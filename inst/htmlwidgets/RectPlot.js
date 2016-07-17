@@ -10,12 +10,13 @@ RectPlot = (function() {
       width: 300,
       heightOfRow: 25,
       rightPadding: 10,
+      leftPadding: 30,
+      centerPadding: 30,
       ptRadius: 6,
       ptMovedRadius: 2,
-      leftPadding: 30,
       ptToTextSpace: 15,
       yPtOffset: 4,
-      maxTextWidth: -Infinity
+      cols: 1
     };
     this.viewBoxDim = {
       svgWidth: width,

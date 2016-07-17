@@ -6,15 +6,17 @@ class RectPlot
     @xAxisPadding = 40
 
     @legendDim =
-      width: 300 #init value
-      heightOfRow: 25 #init val
-      rightPadding: 10
-      ptRadius: 6
+      width:         300 #init value
+      heightOfRow:   25 #init val
+      rightPadding:  10
+      leftPadding:   30
+      centerPadding: 30
+      ptRadius:      6
       ptMovedRadius: 2
-      leftPadding: 30
       ptToTextSpace: 15
-      yPtOffset: 4
-      maxTextWidth: -Infinity
+      yPtOffset:     4
+      cols:          1
+
 
     @viewBoxDim =
       svgWidth: width
