@@ -313,7 +313,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawLegend = function(plot, data) {
     var i, legendGroupsLab, legendPtsLab;
-    data.setupLegendGroupsAndPts(data.legendGroups, data.legendDim, data.legendPts);
+    data.setupLegendGroupsAndPts(data);
     this.svg.selectAll('.legend-groups-pts').remove();
     this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;

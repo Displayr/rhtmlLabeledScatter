@@ -155,36 +155,27 @@ class PlotData
       i++
 
   # determine positions of items in legend (groups and/or pts dragged off plot)
-  setupLegendGroupsAndPts: (legendGroups, legendDim, legendPts) ->
-    if legendPts.length > 0
+  setupLegendGroupsAndPts: (data) ->
+    legendGroups = data.legendGroups
+    legendDim = data.legendDim
+    legendPts = data.legendPts
 
+    if legendPts.length > 0
       totalLegendItems = legendGroups.length + legendPts.length
 
       if legendDim.cols is 1
-        legendStartY =
-          Math.max((@viewBoxDim.y +
-            @viewBoxDim.height/2 -
-            legendDim.heightOfRow*(totalLegendItems)/2 +
-            legendDim.ptRadius),
-            @viewBoxDim.y + legendDim.ptRadius)
-
+        legendItemArray = []
         i = 0
         j = 0
-        while i < legendGroups.length + legendPts.length
+        while i < totalLegendItems
           if i < legendGroups.length
-            lgi = legendGroups[i]
-            lgi.cx = legendDim.x + legendDim.leftPadding
-            lgi.cy = legendStartY + i*legendDim.heightOfRow
-            lgi.x = lgi.cx + legendDim.ptToTextSpace
-            lgi.y = lgi.cy + lgi.r
+            legendItemArray.push legendGroups[i]
           else
             j = i - legendGroups.length
-            lpj = legendPts[j]
-            lpj.cx = legendDim.x + legendDim.leftPadding
-            lpj.cy = legendStartY + i*legendDim.heightOfRow
-            lpj.x = lpj.cx + legendDim.ptToTextSpace
-            lpj.y = lpj.cy + lpj.r
+            legendItemArray.push legendPts[j]
           i++
+
+        data.setLegendItemsPositions(data, totalLegendItems, legendItemArray, legendDim.cols)
       else if legendDim.cols is 2
         startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
                                       legendDim.heightOfRow*(totalLegendItems/2)/2 +
@@ -248,7 +239,7 @@ class PlotData
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
-    @setupLegendGroupsAndPts(@legendGroups, @legendDim, @legendPts)
+    @setupLegendGroupsAndPts(@)
 
     initWidth != @viewBoxDim.width
 
@@ -287,4 +278,4 @@ class PlotData
     @len--
     @normalizeData()
     @calcDataArrays()
-    @setupLegendGroupsAndPts(@legendGroups, @legendDim, legendPts)
+    @setupLegendGroupsAndPts(@)
