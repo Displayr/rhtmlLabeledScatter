@@ -70,7 +70,7 @@ class PlotData
       if rangeX > rangeY
         @maxY += diff/2
         @minY -= diff/2
-      else if rangeY < rangeX
+      else if rangeY > rangeX
         @maxX += diff/2
         @minX -= diff/2
 

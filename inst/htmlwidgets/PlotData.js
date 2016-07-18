@@ -55,7 +55,7 @@ PlotData = (function() {
       if (rangeX > rangeY) {
         this.maxY += diff / 2;
         this.minY -= diff / 2;
-      } else if (rangeY < rangeX) {
+      } else if (rangeY > rangeX) {
         this.maxX += diff / 2;
         this.minX -= diff / 2;
       }
