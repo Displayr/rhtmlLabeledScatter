@@ -234,7 +234,7 @@ PlotData = (function() {
             lpj = legendPts[j];
             lpj.r = legendDim.ptMovedRadius;
             lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing;
-            lpj.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
+            lpj.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow + (legendDim.ptRadius - legendDim.ptMovedRadius);
             lpj.yOffset = legendDim.yPtOffset;
             lpj.x = lpj.cx + legendDim.ptToTextSpace;
             lpj.y = lpj.cy + lpj.r;
@@ -263,7 +263,7 @@ PlotData = (function() {
     })).width : 0;
     maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
     spacingAroundMaxTextWidth = this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
-    if ((totalLegendItems * this.legendDim.heightOfRow) < this.viewBoxDim.height) {
+    if (((totalLegendItems - 1) * this.legendDim.heightOfRow) < this.viewBoxDim.height) {
       this.legendDim.cols = 1;
       this.legendDim.width = maxTextWidth + spacingAroundMaxTextWidth;
     } else {

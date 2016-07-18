@@ -212,11 +212,12 @@ class PlotData
         i = 0
         j = 0
         while i < totalLegendItems
-          if legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+          if legendStartY + (i)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
             colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
             numItemsCol1 = i if numItemsCol1 == 0
 
           if legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+            # break out of too many items, can't fit all
             break
 
           if i < legendGroups.length
@@ -233,7 +234,7 @@ class PlotData
             lpj = legendPts[j]
             lpj.r = legendDim.ptMovedRadius
             lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing
-            lpj.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
+            lpj.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow + (legendDim.ptRadius - legendDim.ptMovedRadius)
             lpj.yOffset = legendDim.yPtOffset
             lpj.x = lpj.cx + legendDim.ptToTextSpace
             lpj.y = lpj.cy + lpj.r
@@ -261,7 +262,7 @@ class PlotData
                                 @legendDim.rightPadding +
                                 @legendDim.ptToTextSpace
 
-    if (totalLegendItems*@legendDim.heightOfRow) < @viewBoxDim.height
+    if ((totalLegendItems - 1)*@legendDim.heightOfRow) < @viewBoxDim.height
       @legendDim.cols = 1
       @legendDim.width = maxTextWidth + spacingAroundMaxTextWidth
     else
