@@ -29,7 +29,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function() {
-    var i, notMovedX, notMovedY, ptsOut, thres, xThres, yThres, _results;
+    var diff, i, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres, _results;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
@@ -48,6 +48,18 @@ PlotData = (function() {
     yThres = thres * (this.maxY - this.minY);
     this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres;
     this.minY = this.minY > 0 ? 0 : this.minY - yThres;
+    if (this.fixedRatio) {
+      rangeX = this.maxX - this.minX;
+      rangeY = this.maxY - this.minY;
+      diff = Math.abs(rangeX - rangeY);
+      if (rangeX > rangeY) {
+        this.maxY += diff / 2;
+        this.minY -= diff / 2;
+      } else if (rangeY < rangeX) {
+        this.maxX += diff / 2;
+        this.minX -= diff / 2;
+      }
+    }
     i = 0;
     _results = [];
     while (i < this.origLen) {

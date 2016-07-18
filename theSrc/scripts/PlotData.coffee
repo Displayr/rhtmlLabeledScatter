@@ -63,11 +63,16 @@ class PlotData
     @maxY = if @maxY < 0 then 0 else @maxY+yThres
     @minY = if @minY > 0 then 0 else @minY-yThres
 
-    # if @fixedRatio
-    #   rangeX = @maxX - @minX
-    #   rangeY = @maxY - @minY
-    #   if rangeX > rangeY
-    #     @maxY = @maxX
+    if @fixedRatio
+      rangeX = @maxX - @minX
+      rangeY = @maxY - @minY
+      diff = Math.abs(rangeX - rangeY)
+      if rangeX > rangeY
+        @maxY += diff/2
+        @minY -= diff/2
+      else if rangeY < rangeX
+        @maxX += diff/2
+        @minX -= diff/2
 
     i = 0
     while i < @origLen
