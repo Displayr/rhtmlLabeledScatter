@@ -281,7 +281,7 @@ class RectPlot
              .style('font-weight', 'bold')
 
   drawLegend: (plot, data)->
-    data.calcLegendDisplayPtsAndGroups(data.legendGroups, data.legendDim, data.legendPts)
+    data.setupLegendGroupsAndPts(data.legendGroups, data.legendDim, data.legendPts)
 
     @svg.selectAll('.legend-groups-pts').remove()
     @svg.selectAll('.legend-groups-pts')

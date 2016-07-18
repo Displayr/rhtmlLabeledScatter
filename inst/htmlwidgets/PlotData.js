@@ -170,7 +170,7 @@ PlotData = (function() {
     }
   };
 
-  PlotData.prototype.calcLegendDisplayPtsAndGroups = function(legendGroups, legendDim, legendPts) {
+  PlotData.prototype.setupLegendGroupsAndPts = function(legendGroups, legendDim, legendPts) {
     var colSpacing, exceededCol1, i, itemsSpacingExceedLegendArea, j, legendStartY, lgi, lpj, numItemsCol1, startOfCenteredLegendItems, startOfViewBox, totalLegendItems, _results, _results1;
     if (legendPts.length > 0) {
       totalLegendItems = legendGroups.length + legendPts.length;
@@ -277,7 +277,7 @@ PlotData = (function() {
     }
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    this.calcLegendDisplayPtsAndGroups(this.legendGroups, this.legendDim, this.legendPts);
+    this.setupLegendGroupsAndPts(this.legendGroups, this.legendDim, this.legendPts);
     return initWidth !== this.viewBoxDim.width;
   };
 
@@ -314,7 +314,7 @@ PlotData = (function() {
     this.len--;
     this.normalizeData();
     this.calcDataArrays();
-    return this.calcLegendDisplayPtsAndGroups(this.legendGroups, this.legendDim, legendPts);
+    return this.setupLegendGroupsAndPts(this.legendGroups, this.legendDim, legendPts);
   };
 
   return PlotData;

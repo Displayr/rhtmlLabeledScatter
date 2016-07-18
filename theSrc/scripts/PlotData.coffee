@@ -164,7 +164,7 @@ class PlotData
 
 
   # determine positions of items in legend (groups and/or pts dragged off plot)
-  calcLegendDisplayPtsAndGroups: (legendGroups, legendDim, legendPts) ->
+  setupLegendGroupsAndPts: (legendGroups, legendDim, legendPts) ->
     if legendPts.length > 0
 
       totalLegendItems = legendGroups.length + legendPts.length
@@ -214,7 +214,6 @@ class PlotData
         j = 0
         while i < totalLegendItems
           exceededCol1 = legendStartY + (i)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
-
           if i >= totalLegendItems/2 and colSpacing == 0 or exceededCol1
             colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
             numItemsCol1 = i if numItemsCol1 == 0
@@ -243,8 +242,6 @@ class PlotData
             lpj.color = lpj.pt.color
             lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
             lpj.anchor = 'start'
-
-
           i++
 
     else
@@ -274,7 +271,7 @@ class PlotData
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
-    @calcLegendDisplayPtsAndGroups(@legendGroups, @legendDim, @legendPts)
+    @setupLegendGroupsAndPts(@legendGroups, @legendDim, @legendPts)
 
     initWidth != @viewBoxDim.width
 
@@ -308,4 +305,4 @@ class PlotData
     @len--
     @normalizeData()
     @calcDataArrays()
-    @calcLegendDisplayPtsAndGroups(@legendGroups, @legendDim, legendPts)
+    @setupLegendGroupsAndPts(@legendGroups, @legendDim, legendPts)
