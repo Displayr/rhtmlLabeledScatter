@@ -126,10 +126,12 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setLegendItemsPositions = function(data, numItems, itemsArray, cols) {
-    var colSpacing, exceededCurrentCol, i, legendDim, legendStartY, li, numItemsInPrevCols, plottedHalfOfItems, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
+    var colSpacing, exceededCurrentCol, i, legendDim, legendStartY, li, numItemsInPrevCols, plottedHalfOfItems, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
     legendDim = data.legendDim;
     viewBoxDim = data.viewBoxDim;
-    legendStartY = Math.max(viewBoxDim.y + viewBoxDim.height / 2 - legendDim.heightOfRow * (numItems / cols) / 2 + legendDim.ptRadius, viewBoxDim.y + legendDim.ptRadius);
+    startOfCenteredLegendItems = viewBoxDim.y + viewBoxDim.height / 2 - legendDim.heightOfRow * (numItems / cols) / 2 + legendDim.ptRadius;
+    startOfViewBox = viewBoxDim.y + legendDim.ptRadius;
+    legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox);
     colSpacing = 0;
     numItemsInPrevCols = 0;
     i = 0;
@@ -160,65 +162,25 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setupLegendGroupsAndPts = function(data) {
-    var colSpacing, exceededCol1, i, itemsSpacingExceedLegendArea, j, legendDim, legendGroups, legendItemArray, legendPts, legendStartY, lgi, lpj, numItemsCol1, startOfCenteredLegendItems, startOfViewBox, totalLegendItems, _results;
+    var i, j, legendDim, legendGroups, legendItemArray, legendPts, totalLegendItems;
     legendGroups = data.legendGroups;
     legendDim = data.legendDim;
     legendPts = data.legendPts;
     if (legendPts.length > 0) {
       totalLegendItems = legendGroups.length + legendPts.length;
-      if (legendDim.cols === 1) {
-        legendItemArray = [];
-        i = 0;
-        j = 0;
-        while (i < totalLegendItems) {
-          if (i < legendGroups.length) {
-            legendItemArray.push(legendGroups[i]);
-          } else {
-            j = i - legendGroups.length;
-            legendItemArray.push(legendPts[j]);
-          }
-          i++;
+      legendItemArray = [];
+      i = 0;
+      j = 0;
+      while (i < totalLegendItems) {
+        if (i < legendGroups.length) {
+          legendItemArray.push(legendGroups[i]);
+        } else {
+          j = i - legendGroups.length;
+          legendItemArray.push(legendPts[j]);
         }
-        return data.setLegendItemsPositions(data, totalLegendItems, legendItemArray, legendDim.cols);
-      } else if (legendDim.cols === 2) {
-        startOfCenteredLegendItems = this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * (totalLegendItems / 2) / 2 + legendDim.ptRadius;
-        startOfViewBox = this.viewBoxDim.y + legendDim.ptRadius;
-        legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox);
-        colSpacing = 0;
-        numItemsCol1 = 0;
-        i = 0;
-        j = 0;
-        _results = [];
-        while (i < totalLegendItems) {
-          exceededCol1 = legendStartY + i * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height;
-          if (i >= totalLegendItems / 2 && colSpacing === 0 || exceededCol1) {
-            colSpacing = legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace;
-            if (numItemsCol1 === 0) {
-              numItemsCol1 = i;
-            }
-          }
-          itemsSpacingExceedLegendArea = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow > this.viewBoxDim.y + this.viewBoxDim.height;
-          if (itemsSpacingExceedLegendArea) {
-            break;
-          }
-          if (i < legendGroups.length) {
-            lgi = legendGroups[i];
-            lgi.cx = legendDim.x + legendDim.leftPadding + colSpacing;
-            lgi.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
-            lgi.x = lgi.cx + legendDim.ptToTextSpace;
-            lgi.y = lgi.cy + lgi.r;
-          } else {
-            j = i - legendGroups.length;
-            lpj = legendPts[j];
-            lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing;
-            lpj.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow + (legendDim.ptRadius - legendDim.ptMovedRadius);
-            lpj.x = lpj.cx + legendDim.ptToTextSpace;
-            lpj.y = lpj.cy + lpj.r;
-          }
-          _results.push(i++);
-        }
-        return _results;
+        i++;
       }
+      return data.setLegendItemsPositions(data, totalLegendItems, legendItemArray, legendDim.cols);
     } else {
       return this.setLegendItemsPositions(this, legendGroups.length, legendGroups, legendDim.cols);
     }
