@@ -145,7 +145,8 @@ class PlotData
       numItemsCol1 = 0
       i = 0
       while i < legendGroups.length
-        if i >= legendGroups.length/2 and colSpacing == 0
+        exceededCol1 = legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+        if i >= legendGroups.length/2 and colSpacing == 0 or exceededCol1
           colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
           numItemsCol1 = i if numItemsCol1 == 0
 
@@ -212,7 +213,9 @@ class PlotData
         i = 0
         j = 0
         while i < totalLegendItems
-          if i >= totalLegendItems/2 and colSpacing == 0
+          exceededCol1 = legendStartY + (i)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+
+          if i >= totalLegendItems/2 and colSpacing == 0 or exceededCol1
             colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
             numItemsCol1 = i if numItemsCol1 == 0
 
