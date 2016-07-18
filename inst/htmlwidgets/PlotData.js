@@ -73,7 +73,9 @@ PlotData = (function() {
         newColor = this.getDefaultColor();
         this.legendGroups.push({
           text: this.group[i],
-          color: newColor
+          color: newColor,
+          r: this.legendDim.ptRadius,
+          anchor: 'start'
         });
         this.groupToColorMap[this.group[i]] = newColor;
       }
@@ -123,6 +125,17 @@ PlotData = (function() {
     return _results;
   };
 
+  PlotData.prototype.setLegendItemPosition = function(numItems, itemsArray) {
+    var i, li, _results;
+    i = 0;
+    _results = [];
+    while (i < numItems) {
+      li = itemsArray[i];
+      _results.push(i++);
+    }
+    return _results;
+  };
+
   PlotData.prototype.setupLegendGroups = function(legendGroups, legendDim) {
     var colSpacing, exceededCol1, i, itemsSpacingExceedLegendArea, legendStartY, li, numItemsCol1, _results, _results1;
     legendStartY = Math.max(this.viewBoxDim.y + this.viewBoxDim.height / 2 - legendDim.heightOfRow * (legendGroups.length / 2) / 2 + legendDim.ptRadius, this.viewBoxDim.y + legendDim.ptRadius);
@@ -131,12 +144,10 @@ PlotData = (function() {
       _results = [];
       while (i < legendGroups.length) {
         li = legendGroups[i];
-        li.r = legendDim.ptRadius;
         li.cx = legendDim.x + legendDim.leftPadding;
         li.cy = legendStartY + i * legendDim.heightOfRow;
         li.x = li.cx + legendDim.ptToTextSpace;
         li.y = li.cy + li.r;
-        li.anchor = 'start';
         _results.push(i++);
       }
       return _results;
@@ -158,12 +169,10 @@ PlotData = (function() {
           break;
         }
         li = legendGroups[i];
-        li.r = legendDim.ptRadius;
         li.cx = legendDim.x + legendDim.leftPadding + colSpacing;
         li.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
         li.x = li.cx + legendDim.ptToTextSpace;
         li.y = li.cy + li.r;
-        li.anchor = 'start';
         _results1.push(i++);
       }
       return _results1;
@@ -182,24 +191,17 @@ PlotData = (function() {
         while (i < legendGroups.length + legendPts.length) {
           if (i < legendGroups.length) {
             lgi = legendGroups[i];
-            lgi.r = legendDim.ptRadius;
             lgi.cx = legendDim.x + legendDim.leftPadding;
             lgi.cy = legendStartY + i * legendDim.heightOfRow;
             lgi.x = lgi.cx + legendDim.ptToTextSpace;
             lgi.y = lgi.cy + lgi.r;
-            lgi.anchor = 'start';
           } else {
             j = i - legendGroups.length;
             lpj = legendPts[j];
-            lpj.r = legendDim.ptMovedRadius;
             lpj.cx = legendDim.x + legendDim.leftPadding;
             lpj.cy = legendStartY + i * legendDim.heightOfRow;
-            lpj.yOffset = legendDim.yPtOffset;
             lpj.x = lpj.cx + legendDim.ptToTextSpace;
             lpj.y = lpj.cy + lpj.r;
-            lpj.color = lpj.pt.color;
-            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')';
-            lpj.anchor = 'start';
           }
           _results.push(i++);
         }
@@ -227,24 +229,17 @@ PlotData = (function() {
           }
           if (i < legendGroups.length) {
             lgi = legendGroups[i];
-            lgi.r = legendDim.ptRadius;
             lgi.cx = legendDim.x + legendDim.leftPadding + colSpacing;
             lgi.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow;
             lgi.x = lgi.cx + legendDim.ptToTextSpace;
             lgi.y = lgi.cy + lgi.r;
-            lgi.anchor = 'start';
           } else {
             j = i - legendGroups.length;
             lpj = legendPts[j];
-            lpj.r = legendDim.ptMovedRadius;
             lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing;
             lpj.cy = legendStartY + (i - numItemsCol1) * legendDim.heightOfRow + (legendDim.ptRadius - legendDim.ptMovedRadius);
-            lpj.yOffset = legendDim.yPtOffset;
             lpj.x = lpj.cx + legendDim.ptToTextSpace;
             lpj.y = lpj.cy + lpj.r;
-            lpj.color = lpj.pt.color;
-            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')';
-            lpj.anchor = 'start';
           }
           _results1.push(i++);
         }
@@ -308,7 +303,12 @@ PlotData = (function() {
     legendPts.push({
       pt: movedPt[0],
       lab: movedLab[0],
-      anc: movedAnc[0]
+      anc: movedAnc[0],
+      r: this.legendDim.ptMovedRadius,
+      anchor: 'start',
+      text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
+      yOffset: this.legendDim.yPtOffset,
+      color: movedPt[0].color
     });
     this.draggedOutPtsId.push(id);
     this.len--;

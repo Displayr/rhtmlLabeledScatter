@@ -78,8 +78,10 @@ class PlotData
       unless (_.some @legendGroups, (e) -> e.text is group[i])
         newColor = @getDefaultColor()
         @legendGroups.push {
-          text: @group[i]
-          color: newColor
+          text:   @group[i]
+          color:  newColor
+          r:      @legendDim.ptRadius
+          anchor: 'start'
         }
         @groupToColorMap[@group[i]] = newColor
       i++
@@ -120,6 +122,12 @@ class PlotData
         })
       i++
 
+  setLegendItemPosition: (numItems, itemsArray) ->
+    i = 0
+    while i < numItems
+      li = itemsArray[i]
+      i++
+
   setupLegendGroups: (legendGroups, legendDim) ->
     legendStartY =
       Math.max((@viewBoxDim.y +
@@ -133,12 +141,10 @@ class PlotData
       i = 0
       while i < legendGroups.length
         li = legendGroups[i]
-        li.r = legendDim.ptRadius
         li.cx = legendDim.x + legendDim.leftPadding
         li.cy = legendStartY + i*legendDim.heightOfRow
         li.x = li.cx + legendDim.ptToTextSpace
         li.y = li.cy + li.r
-        li.anchor = 'start'
         i++
     else if legendDim.cols is 2
       colSpacing = 0
@@ -154,12 +160,10 @@ class PlotData
         break if itemsSpacingExceedLegendArea
 
         li = legendGroups[i]
-        li.r = legendDim.ptRadius
         li.cx = legendDim.x + legendDim.leftPadding + colSpacing
         li.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
         li.x = li.cx + legendDim.ptToTextSpace
         li.y = li.cy + li.r
-        li.anchor = 'start'
         i++
 
 
@@ -182,24 +186,17 @@ class PlotData
         while i < legendGroups.length + legendPts.length
           if i < legendGroups.length
             lgi = legendGroups[i]
-            lgi.r = legendDim.ptRadius
             lgi.cx = legendDim.x + legendDim.leftPadding
             lgi.cy = legendStartY + i*legendDim.heightOfRow
             lgi.x = lgi.cx + legendDim.ptToTextSpace
             lgi.y = lgi.cy + lgi.r
-            lgi.anchor = 'start'
           else
             j = i - legendGroups.length
             lpj = legendPts[j]
-            lpj.r = legendDim.ptMovedRadius
             lpj.cx = legendDim.x + legendDim.leftPadding
             lpj.cy = legendStartY + i*legendDim.heightOfRow
-            lpj.yOffset = legendDim.yPtOffset
             lpj.x = lpj.cx + legendDim.ptToTextSpace
             lpj.y = lpj.cy + lpj.r
-            lpj.color = lpj.pt.color
-            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
-            lpj.anchor = 'start'
           i++
       else if legendDim.cols is 2
         startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
@@ -223,25 +220,18 @@ class PlotData
 
           if i < legendGroups.length
             lgi = legendGroups[i]
-            lgi.r = legendDim.ptRadius
             lgi.cx = legendDim.x + legendDim.leftPadding + colSpacing
             lgi.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
             lgi.x = lgi.cx + legendDim.ptToTextSpace
             lgi.y = lgi.cy + lgi.r
-            lgi.anchor = 'start'
 
           else
             j = i - legendGroups.length
             lpj = legendPts[j]
-            lpj.r = legendDim.ptMovedRadius
             lpj.cx = legendDim.x + legendDim.leftPadding + colSpacing
             lpj.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow + (legendDim.ptRadius - legendDim.ptMovedRadius)
-            lpj.yOffset = legendDim.yPtOffset
             lpj.x = lpj.cx + legendDim.ptToTextSpace
             lpj.y = lpj.cy + lpj.r
-            lpj.color = lpj.pt.color
-            lpj.text = lpj.pt.label + ' (' + lpj.pt.labelX + ', ' + lpj.pt.labelY + ')'
-            lpj.anchor = 'start'
           i++
 
     else
@@ -300,6 +290,11 @@ class PlotData
       pt: movedPt[0]
       lab: movedLab[0]
       anc: movedAnc[0]
+      r: @legendDim.ptMovedRadius
+      anchor: 'start'
+      text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
+      yOffset: @legendDim.yPtOffset
+      color: movedPt[0].color
     }
     @draggedOutPtsId.push id
     @len--
