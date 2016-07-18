@@ -122,50 +122,37 @@ class PlotData
         })
       i++
 
-  setLegendItemPosition: (numItems, itemsArray) ->
+  setLegendItemsPositions: (data, numItems, itemsArray, cols) ->
+    legendDim = data.legendDim
+    viewBoxDim = data.viewBoxDim
+
+    legendStartY =
+      Math.max((viewBoxDim.y + viewBoxDim.height/2 -
+        legendDim.heightOfRow*(numItems/cols)/2 +
+        legendDim.ptRadius),
+        viewBoxDim.y + legendDim.ptRadius)
+
+    colSpacing = 0
+    numItemsInPrevCols = 0
+
     i = 0
     while i < numItems
+      if cols > 1
+        exceededCurrentCol = legendStartY + i*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
+        plottedHalfOfItems = i >= numItems/2
+        if exceededCurrentCol or plottedHalfOfItems
+           colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
+           numItemsInPrevCols = i if numItemsInPrevCols == 0
+
+        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
+        break if totalItemsSpacingExceedLegendArea
+
       li = itemsArray[i]
+      li.cx = legendDim.x + legendDim.leftPadding + colSpacing
+      li.cy = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
+      li.x = li.cx + legendDim.ptToTextSpace
+      li.y = li.cy + li.r
       i++
-
-  setupLegendGroups: (legendGroups, legendDim) ->
-    legendStartY =
-      Math.max((@viewBoxDim.y +
-        @viewBoxDim.height/2 -
-        legendDim.heightOfRow*(legendGroups.length/2)/2 +
-        legendDim.ptRadius),
-        @viewBoxDim.y + legendDim.ptRadius)
-
-
-    if legendDim.cols is 1
-      i = 0
-      while i < legendGroups.length
-        li = legendGroups[i]
-        li.cx = legendDim.x + legendDim.leftPadding
-        li.cy = legendStartY + i*legendDim.heightOfRow
-        li.x = li.cx + legendDim.ptToTextSpace
-        li.y = li.cy + li.r
-        i++
-    else if legendDim.cols is 2
-      colSpacing = 0
-      numItemsCol1 = 0
-      i = 0
-      while i < legendGroups.length
-        exceededCol1 = legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
-        if i >= legendGroups.length/2 and colSpacing == 0 or exceededCol1
-          colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
-          numItemsCol1 = i if numItemsCol1 == 0
-
-        itemsSpacingExceedLegendArea = legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
-        break if itemsSpacingExceedLegendArea
-
-        li = legendGroups[i]
-        li.cx = legendDim.x + legendDim.leftPadding + colSpacing
-        li.cy = legendStartY + (i - numItemsCol1)*legendDim.heightOfRow
-        li.x = li.cx + legendDim.ptToTextSpace
-        li.y = li.cy + li.r
-        i++
-
 
   # determine positions of items in legend (groups and/or pts dragged off plot)
   setupLegendGroupsAndPts: (legendGroups, legendDim, legendPts) ->
@@ -235,7 +222,7 @@ class PlotData
           i++
 
     else
-      @setupLegendGroups(legendGroups, legendDim)
+      @setLegendItemsPositions(@, legendGroups.length, legendGroups, legendDim.cols)
 
 
   resizedAfterLegendGroupsDrawn: ->
