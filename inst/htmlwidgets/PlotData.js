@@ -126,7 +126,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setLegendItemsPositions = function(data, numItems, itemsArray, cols) {
-    var c, colSpacing, exceededCurrentCol, i, legendDim, legendStartY, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
+    var colSpacing, currentCol, exceededCurrentCol, i, legendDim, legendStartY, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
     legendDim = data.legendDim;
     viewBoxDim = data.viewBoxDim;
     startOfCenteredLegendItems = viewBoxDim.y + viewBoxDim.height / 2 - legendDim.heightOfRow * (numItems / cols) / 2 + legendDim.ptRadius;
@@ -135,17 +135,17 @@ PlotData = (function() {
     colSpacing = 0;
     numItemsInPrevCols = 0;
     i = 0;
-    c = 1;
+    currentCol = 1;
     _results = [];
     while (i < numItems) {
       if (cols > 1) {
         exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
         numElemsInCol = numItems / cols;
-        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * c;
+        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * currentCol;
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
-          colSpacing = (legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace) * c;
+          colSpacing = (legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace) * currentCol;
           numItemsInPrevCols = i;
-          c++;
+          currentCol++;
         }
         totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
         if (totalItemsSpacingExceedLegendArea) {

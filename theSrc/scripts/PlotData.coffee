@@ -136,16 +136,16 @@ class PlotData
     numItemsInPrevCols = 0
 
     i = 0
-    c = 1
+    currentCol = 1
     while i < numItems
       if cols > 1
         exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
         numElemsInCol = numItems/cols
-        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*c
+        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
-          colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*c
+          colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*currentCol
           numItemsInPrevCols = i
-          c++
+          currentCol++
 
         totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
         break if totalItemsSpacingExceedLegendArea
