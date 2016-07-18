@@ -136,13 +136,16 @@ class PlotData
     numItemsInPrevCols = 0
 
     i = 0
+    c = 1
     while i < numItems
       if cols > 1
-        exceededCurrentCol = legendStartY + i*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
-        plottedHalfOfItems = i >= numItems/2
-        if exceededCurrentCol or plottedHalfOfItems
-           colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
-           numItemsInPrevCols = i if numItemsInPrevCols == 0
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
+        numElemsInCol = numItems/cols
+        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*c
+        if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
+          colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*c
+          numItemsInPrevCols = i
+          c++
 
         totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
         break if totalItemsSpacingExceedLegendArea
@@ -191,13 +194,9 @@ class PlotData
                                 @legendDim.rightPadding +
                                 @legendDim.ptToTextSpace
 
-    if ((totalLegendItems - 1)*@legendDim.heightOfRow) < @viewBoxDim.height
-      @legendDim.cols = 1
-      @legendDim.width = maxTextWidth + spacingAroundMaxTextWidth
-    else
-      @legendDim.cols = 2
-      @legendDim.width = maxTextWidth*2 + spacingAroundMaxTextWidth + @legendDim.centerPadding
-      @legendDim.colSpace = maxTextWidth
+    @legendDim.cols = Math.ceil((totalLegendItems)*@legendDim.heightOfRow/@viewBoxDim.height)
+    @legendDim.width = maxTextWidth*@legendDim.cols + spacingAroundMaxTextWidth + @legendDim.centerPadding*(@legendDim.cols-1)
+    @legendDim.colSpace = maxTextWidth
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width

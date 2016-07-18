@@ -126,7 +126,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setLegendItemsPositions = function(data, numItems, itemsArray, cols) {
-    var colSpacing, exceededCurrentCol, i, legendDim, legendStartY, li, numItemsInPrevCols, plottedHalfOfItems, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
+    var c, colSpacing, exceededCurrentCol, i, legendDim, legendStartY, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
     legendDim = data.legendDim;
     viewBoxDim = data.viewBoxDim;
     startOfCenteredLegendItems = viewBoxDim.y + viewBoxDim.height / 2 - legendDim.heightOfRow * (numItems / cols) / 2 + legendDim.ptRadius;
@@ -135,16 +135,17 @@ PlotData = (function() {
     colSpacing = 0;
     numItemsInPrevCols = 0;
     i = 0;
+    c = 1;
     _results = [];
     while (i < numItems) {
       if (cols > 1) {
-        exceededCurrentCol = legendStartY + i * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
-        plottedHalfOfItems = i >= numItems / 2;
-        if (exceededCurrentCol || plottedHalfOfItems) {
-          colSpacing = legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace;
-          if (numItemsInPrevCols === 0) {
-            numItemsInPrevCols = i;
-          }
+        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
+        numElemsInCol = numItems / cols;
+        plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * c;
+        if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
+          colSpacing = (legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace) * c;
+          numItemsInPrevCols = i;
+          c++;
         }
         totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
         if (totalItemsSpacingExceedLegendArea) {
@@ -198,14 +199,9 @@ PlotData = (function() {
     })).width : 0;
     maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
     spacingAroundMaxTextWidth = this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
-    if (((totalLegendItems - 1) * this.legendDim.heightOfRow) < this.viewBoxDim.height) {
-      this.legendDim.cols = 1;
-      this.legendDim.width = maxTextWidth + spacingAroundMaxTextWidth;
-    } else {
-      this.legendDim.cols = 2;
-      this.legendDim.width = maxTextWidth * 2 + spacingAroundMaxTextWidth + this.legendDim.centerPadding;
-      this.legendDim.colSpace = maxTextWidth;
-    }
+    this.legendDim.cols = Math.ceil(totalLegendItems * this.legendDim.heightOfRow / this.viewBoxDim.height);
+    this.legendDim.width = maxTextWidth * this.legendDim.cols + spacingAroundMaxTextWidth + this.legendDim.centerPadding * (this.legendDim.cols - 1);
+    this.legendDim.colSpace = maxTextWidth;
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.setupLegendGroupsAndPts(this);
