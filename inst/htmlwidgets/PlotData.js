@@ -2,7 +2,7 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors, fixedRatio) {
     this.X = X;
     this.Y = Y;
     this.origX = X.slice(0);
@@ -13,6 +13,7 @@ PlotData = (function() {
     this.label = label;
     this.viewBoxDim = viewBoxDim;
     this.legendDim = legendDim;
+    this.fixedRatio = fixedRatio;
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
@@ -139,8 +140,8 @@ PlotData = (function() {
     _results = [];
     while (i < numItems) {
       if (cols > 1) {
-        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
         numElemsInCol = numItems / cols;
+        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * currentCol;
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
           colSpacing = (legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace) * currentCol;

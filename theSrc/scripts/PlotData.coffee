@@ -1,5 +1,5 @@
 class PlotData
-  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors) ->
+  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors, fixedRatio) ->
     @X = X
     @Y = Y
     @origX = X.slice(0)
@@ -10,6 +10,7 @@ class PlotData
     @label = label
     @viewBoxDim = viewBoxDim
     @legendDim = legendDim
+    @fixedRatio = fixedRatio
     @draggedOutPtsId = []
     @legendPts = []
 
@@ -61,6 +62,12 @@ class PlotData
     yThres = thres*(@maxY - @minY)
     @maxY = if @maxY < 0 then 0 else @maxY+yThres
     @minY = if @minY > 0 then 0 else @minY-yThres
+
+    # if @fixedRatio
+    #   rangeX = @maxX - @minX
+    #   rangeY = @maxY - @minY
+    #   if rangeX > rangeY
+    #     @maxY = @maxX
 
     i = 0
     while i < @origLen
@@ -139,8 +146,8 @@ class PlotData
     currentCol = 1
     while i < numItems
       if cols > 1
-        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
         numElemsInCol = numItems/cols
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
           colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*currentCol

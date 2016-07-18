@@ -23,6 +23,6 @@ class LabeledScatter extends RhtmlSvgWidget
 
   _redraw: () ->
     console.log '_redraw'
-    data = testData4
-    plot = new RectPlot(@width, @height, data.X, data.Y, data.group, data.label, @outerSvg)
+    data = testData5
+    plot = new RectPlot(@width, @height, data.X, data.Y, data.group, data.label, @outerSvg, data.fixedRatio)
     plot.draw()
