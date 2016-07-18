@@ -124,7 +124,7 @@ class PlotData
     legendStartY =
       Math.max((@viewBoxDim.y +
         @viewBoxDim.height/2 -
-        legendDim.heightOfRow*(legendGroups.length)/2 +
+        legendDim.heightOfRow*(legendGroups.length/2)/2 +
         legendDim.ptRadius),
         @viewBoxDim.y + legendDim.ptRadius)
 
@@ -140,17 +140,17 @@ class PlotData
         li.y = li.cy + li.r
         li.anchor = 'start'
         i++
-    else
+    else if legendDim.cols is 2
       colSpacing = 0
       numItemsCol1 = 0
       i = 0
       while i < legendGroups.length
-        if legendStartY + i*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+        if i >= legendGroups.length/2 and colSpacing == 0
           colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
           numItemsCol1 = i if numItemsCol1 == 0
 
-        if legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
-          break
+        itemsSpacingExceedLegendArea = legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+        break if itemsSpacingExceedLegendArea
 
         li = legendGroups[i]
         li.r = legendDim.ptRadius
@@ -172,7 +172,7 @@ class PlotData
         legendStartY =
           Math.max((@viewBoxDim.y +
             @viewBoxDim.height/2 -
-            legendDim.heightOfRow*totalLegendItems/2 +
+            legendDim.heightOfRow*(totalLegendItems)/2 +
             legendDim.ptRadius),
             @viewBoxDim.y + legendDim.ptRadius)
 
@@ -202,7 +202,7 @@ class PlotData
           i++
       else if legendDim.cols is 2
         startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
-                                      legendDim.heightOfRow*totalLegendItems/2 +
+                                      legendDim.heightOfRow*(totalLegendItems/2)/2 +
                                       legendDim.ptRadius)
         startOfViewBox = @viewBoxDim.y + legendDim.ptRadius
         legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
@@ -212,13 +212,12 @@ class PlotData
         i = 0
         j = 0
         while i < totalLegendItems
-          if legendStartY + (i)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+          if i >= totalLegendItems/2 and colSpacing == 0
             colSpacing = legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace
             numItemsCol1 = i if numItemsCol1 == 0
 
-          if legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
-            # break out of too many items, can't fit all
-            break
+          itemsSpacingExceedLegendArea = legendStartY + (i-numItemsCol1)*legendDim.heightOfRow > @viewBoxDim.y + @viewBoxDim.height
+          break if itemsSpacingExceedLegendArea
 
           if i < legendGroups.length
             lgi = legendGroups[i]
