@@ -315,8 +315,19 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function(plot, data) {
-    var i, legendGroupsLab, legendPtsLab;
+    var getSuperscript, i, legendGroupsLab, legendPtsLab, superscript;
     data.setupLegendGroupsAndPts(data);
+    superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+    getSuperscript = function(id) {
+      var digit, ss;
+      ss = '';
+      while (id > 0) {
+        digit = id % 10;
+        ss = superscript[id % 10] + ss;
+        id = (id - digit) / 10;
+      }
+      return ss;
+    };
     this.svg.selectAll('.legend-groups-pts').remove();
     this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
       return d.cx;
@@ -356,12 +367,16 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial').text(function(d) {
-      return d.text;
-    }).attr('text-anchor', function(d) {
+    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
       return d.anchor;
     }).attr('fill', function(d) {
       return d.color;
+    }).text(function(d) {
+      if (d.markerId != null) {
+        return getSuperscript(d.markerId + 1) + d.text;
+      } else {
+        return d.text;
+      }
     });
     legendGroupsLab = this.svg.selectAll('.legend-groups-text');
     legendPtsLab = this.svg.selectAll('.legend-pts-text');
@@ -396,6 +411,23 @@ RectPlot = (function() {
       return d.color;
     }).append('title').text(function(d) {
       return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
+    });
+  };
+
+  RectPlot.prototype.drawDraggedMarkers = function(data) {
+    this.svg.selectAll('.marker').remove();
+    return this.svg.selectAll('.marker').data(data.legendPts.marker).enter().append('line').attr('class', 'marker').attr('x1', function(d) {
+      return d.x1;
+    }).attr('y1', function(d) {
+      return d.y1;
+    }).attr('x2', function(d) {
+      return d.x2;
+    }).attr('y2', function(d) {
+      return d.y2;
+    }).attr('stroke-width', function(d) {
+      return d.width;
+    }).attr('stroke', function(d) {
+      return d.color;
     });
   };
 

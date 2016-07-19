@@ -1,5 +1,5 @@
 class PlotData
-  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors, fixedRatio) ->
+  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors, fixedAspectRatio) ->
     @X = X
     @Y = Y
     @origX = X.slice(0)
@@ -10,7 +10,7 @@ class PlotData
     @label = label
     @viewBoxDim = viewBoxDim
     @legendDim = legendDim
-    @fixedRatio = fixedRatio
+    @fixedAspectRatio = fixedAspectRatio
     @draggedOutPtsId = []
     @legendPts = []
 
@@ -31,6 +31,8 @@ class PlotData
       '#FF2323'
     ]
     @cIndex = 0 # color index
+
+    @superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
 
     if @X.length is @Y.length
       @len = @origLen= X.length
@@ -63,7 +65,7 @@ class PlotData
     @maxY = if @maxY < 0 then 0 else @maxY+yThres
     @minY = if @minY > 0 then 0 else @minY-yThres
 
-    if @fixedRatio
+    if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
       diff = Math.abs(rangeX - rangeY)
@@ -73,6 +75,21 @@ class PlotData
       else if rangeY > rangeX
         @maxX += diff/2
         @minX -= diff/2
+
+    #create list of movedOffPts that need markers
+    @draggedOutMarkers = []
+    for lp in @legendPts
+      id = lp.pt.id
+      draggedNormX = (@X[id] - @minX)/(@maxX - @minX)
+      draggedNormY = (@Y[id] - @minY)/(@maxY - @minY)
+      if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1
+        newMarkerId = @draggedOutMarkers.length
+        lp.markerId = newMarkerId
+        @draggedOutMarkers.push
+          labelId: newMarkerId
+          ptId: id
+          normX: draggedNormX
+          normY: draggedNormY
 
     i = 0
     while i < @origLen
@@ -169,7 +186,6 @@ class PlotData
       li.y = li.cy + li.r
       i++
 
-  # determine positions of items in legend (groups and/or pts dragged off plot)
   setupLegendGroupsAndPts: (data) ->
     legendGroups = data.legendGroups
     legendDim = data.legendDim
@@ -191,7 +207,6 @@ class PlotData
       data.setLegendItemsPositions(data, totalLegendItems, legendItemArray, legendDim.cols)
     else
       @setLegendItemsPositions(@, legendGroups.length, legendGroups, legendDim.cols)
-
 
   resizedAfterLegendGroupsDrawn: ->
     initWidth = @viewBoxDim.width

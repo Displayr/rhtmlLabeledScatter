@@ -71,7 +71,6 @@ class RectPlot
       .attr('stroke', 'black')
       .attr('stroke-width', '1px')
 
-
   drawDimensionMarkers: ->
     data = @data
     viewBoxDim = @viewBoxDim
@@ -285,6 +284,15 @@ class RectPlot
   drawLegend: (plot, data)->
     data.setupLegendGroupsAndPts(data)
 
+    superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
+    getSuperscript = (id) ->
+      ss = ''
+      while id > 0
+        digit = id % 10
+        ss = superscript[id % 10] + ss
+        id = (id - digit)/10
+      ss
+
     @svg.selectAll('.legend-groups-pts').remove()
     @svg.selectAll('.legend-groups-pts')
              .data(data.legendGroups)
@@ -330,10 +338,9 @@ class RectPlot
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
-             .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
              .attr('fill', (d) -> d.color)
-
+             .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
 
     legendGroupsLab = @svg.selectAll('.legend-groups-text')
     legendPtsLab = @svg.selectAll('.legend-pts-text')
@@ -369,6 +376,20 @@ class RectPlot
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
+  drawDraggedMarkers: (data) ->
+    @svg.selectAll('.marker').remove()
+    @svg.selectAll('.marker')
+        .data(data.legendPts.marker)
+        .enter()
+        .append('line')
+        .attr('class', 'marker')
+        .attr('x1', (d) -> d.x1)
+        .attr('y1', (d) -> d.y1)
+        .attr('x2', (d) -> d.x2)
+        .attr('y2', (d) -> d.y2)
+        .attr('stroke-width', (d) -> d.width)
+        .attr('stroke', (d) -> d.color)
+
   elemDraggedOffPlot: (plot, data, id) ->
     data.moveElemToLegend(id, data.legendPts)
     plot.drawRect()
@@ -376,6 +397,7 @@ class RectPlot
     plot.drawDimensionMarkers()
     plot.drawAnc(data)
     plot.drawLabs(plot)
+    # plot.drawDraggedMarkers(data)
     plot.drawLegend(plot, data)
 
   drawLabs: (plot) ->

@@ -2,7 +2,7 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors, fixedRatio) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors, fixedAspectRatio) {
     this.X = X;
     this.Y = Y;
     this.origX = X.slice(0);
@@ -13,11 +13,12 @@ PlotData = (function() {
     this.label = label;
     this.viewBoxDim = viewBoxDim;
     this.legendDim = legendDim;
-    this.fixedRatio = fixedRatio;
+    this.fixedAspectRatio = fixedAspectRatio;
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
+    this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData();
@@ -29,7 +30,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function() {
-    var diff, i, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres, _results;
+    var diff, draggedNormX, draggedNormY, i, id, lp, newMarkerId, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres, _i, _len, _ref, _results;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
@@ -48,7 +49,7 @@ PlotData = (function() {
     yThres = thres * (this.maxY - this.minY);
     this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres;
     this.minY = this.minY > 0 ? 0 : this.minY - yThres;
-    if (this.fixedRatio) {
+    if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
       diff = Math.abs(rangeX - rangeY);
@@ -58,6 +59,24 @@ PlotData = (function() {
       } else if (rangeY > rangeX) {
         this.maxX += diff / 2;
         this.minX -= diff / 2;
+      }
+    }
+    this.draggedOutMarkers = [];
+    _ref = this.legendPts;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      lp = _ref[_i];
+      id = lp.pt.id;
+      draggedNormX = (this.X[id] - this.minX) / (this.maxX - this.minX);
+      draggedNormY = (this.Y[id] - this.minY) / (this.maxY - this.minY);
+      if (Math.abs(draggedNormX) > 1 || Math.abs(draggedNormY) > 1) {
+        newMarkerId = this.draggedOutMarkers.length;
+        lp.markerId = newMarkerId;
+        this.draggedOutMarkers.push({
+          labelId: newMarkerId,
+          ptId: id,
+          normX: draggedNormX,
+          normY: draggedNormY
+        });
       }
     }
     i = 0;
