@@ -36,13 +36,15 @@ class PlotData
 
     if @X.length is @Y.length
       @len = @origLen= X.length
-      @normalizeData()
+      @normalizeData(@)
       @setupColors()
       @calcDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
-  normalizeData: ->
+  normalizeData: (data) ->
+    viewBoxDim = data.viewBoxDim
+
     ptsOut = @draggedOutPtsId
     notMovedX = _.filter(@origX, (val, key) ->
       !(_.includes(ptsOut, key))
@@ -85,11 +87,32 @@ class PlotData
       if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1
         newMarkerId = @draggedOutMarkers.length
         lp.markerId = newMarkerId
+
+        draggedNormX = if draggedNormX > 1 then 1 else draggedNormX
+        draggedNormX = if draggedNormX < -1 then -1 else draggedNormX
+        draggedNormY = if draggedNormY > 1 then 1 else draggedNormY
+        draggedNormY = if draggedNormY < -1 then -1 else draggedNormY
+        x2 = draggedNormX*viewBoxDim.width + viewBoxDim.x
+        y2 = (1-draggedNormY)*viewBoxDim.height + viewBoxDim.y
+
+        if Math.abs(draggedNormX) is 1
+          x1 = x2 + draggedNormX*@legendDim.markerLen
+          y1 = y2
+        else if Math.abs(draggedNormY) is 1
+          x1 = x2
+          y1 = y2 + -draggedNormY*@legendDim.markerLen
+
         @draggedOutMarkers.push
-          labelId: newMarkerId
+          markerLabel: newMarkerId + 1
           ptId: id
-          normX: draggedNormX
-          normY: draggedNormY
+          x1: x1
+          y1: y1
+          x2: x2
+          y2: y2
+          markerTextX: x1
+          markerTextY: y1
+          width: @legendDim.markerWidth
+          color: lp.color
 
     i = 0
     while i < @origLen
@@ -247,12 +270,12 @@ class PlotData
       return true
     return false
 
-  moveElemToLegend: (id, legendPts) ->
+  moveElemToLegend: (id, data) ->
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
     movedAnc = _.remove @anc, checkId
-    legendPts.push {
+    data.legendPts.push {
       pt: movedPt[0]
       lab: movedLab[0]
       anc: movedAnc[0]
@@ -264,6 +287,6 @@ class PlotData
     }
     @draggedOutPtsId.push id
     @len--
-    @normalizeData()
+    @normalizeData(data)
     @calcDataArrays()
     @setupLegendGroupsAndPts(@)

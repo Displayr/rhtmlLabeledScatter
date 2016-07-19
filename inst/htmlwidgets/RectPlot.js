@@ -16,7 +16,9 @@ RectPlot = (function() {
       ptMovedRadius: 2,
       ptToTextSpace: 15,
       yPtOffset: 4,
-      cols: 1
+      cols: 1,
+      markerLen: 5,
+      markerWidth: 1
     };
     this.viewBoxDim = {
       svgWidth: width,
@@ -24,7 +26,7 @@ RectPlot = (function() {
       width: width - this.legendDim.width,
       height: height - this.xAxisPadding - 20,
       x: this.yAxisPadding + 25,
-      y: 10
+      y: 15
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     if (fixedRatio == null) {
@@ -36,6 +38,7 @@ RectPlot = (function() {
   RectPlot.prototype.draw = function() {
     this.drawLabs(this);
     this.drawLegend(this, this.data);
+    this.drawDraggedMarkers(this.data);
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
@@ -49,6 +52,7 @@ RectPlot = (function() {
       elem = plotElems[_i];
       this.svg.selectAll(elem).remove();
     }
+    data.normalizeData(data);
     data.calcDataArrays();
     return this.draw();
   };
@@ -416,7 +420,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawDraggedMarkers = function(data) {
     this.svg.selectAll('.marker').remove();
-    return this.svg.selectAll('.marker').data(data.legendPts.marker).enter().append('line').attr('class', 'marker').attr('x1', function(d) {
+    this.svg.selectAll('.marker').data(data.draggedOutMarkers).enter().append('line').attr('class', 'marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -429,15 +433,26 @@ RectPlot = (function() {
     }).attr('stroke', function(d) {
       return d.color;
     });
+    this.svg.selectAll('.marker-label').remove();
+    return this.svg.selectAll('.marker-label').data(data.draggedOutMarkers).enter().append('text').attr('class', 'marker-label').attr('x', function(d) {
+      return d.markerTextX;
+    }).attr('y', function(d) {
+      return d.markerTextY;
+    }).attr('font-family', 'Arial').attr('text-anchor', 'start').attr('font-size', 10).attr('fill', function(d) {
+      return d.color;
+    }).text(function(d) {
+      return d.markerLabel;
+    });
   };
 
   RectPlot.prototype.elemDraggedOffPlot = function(plot, data, id) {
-    data.moveElemToLegend(id, data.legendPts);
+    data.moveElemToLegend(id, data);
     plot.drawRect();
     plot.drawAxisLabels();
     plot.drawDimensionMarkers();
     plot.drawAnc(data);
     plot.drawLabs(plot);
+    plot.drawDraggedMarkers(data);
     return plot.drawLegend(plot, data);
   };
 

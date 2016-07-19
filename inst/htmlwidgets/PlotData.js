@@ -21,7 +21,7 @@ PlotData = (function() {
     this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
-      this.normalizeData();
+      this.normalizeData(this);
       this.setupColors();
       this.calcDataArrays();
     } else {
@@ -29,8 +29,9 @@ PlotData = (function() {
     }
   }
 
-  PlotData.prototype.normalizeData = function() {
-    var diff, draggedNormX, draggedNormY, i, id, lp, newMarkerId, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres, _i, _len, _ref, _results;
+  PlotData.prototype.normalizeData = function(data) {
+    var diff, draggedNormX, draggedNormY, i, id, lp, newMarkerId, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+    viewBoxDim = data.viewBoxDim;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
@@ -71,11 +72,30 @@ PlotData = (function() {
       if (Math.abs(draggedNormX) > 1 || Math.abs(draggedNormY) > 1) {
         newMarkerId = this.draggedOutMarkers.length;
         lp.markerId = newMarkerId;
+        draggedNormX = draggedNormX > 1 ? 1 : draggedNormX;
+        draggedNormX = draggedNormX < -1 ? -1 : draggedNormX;
+        draggedNormY = draggedNormY > 1 ? 1 : draggedNormY;
+        draggedNormY = draggedNormY < -1 ? -1 : draggedNormY;
+        x2 = draggedNormX * viewBoxDim.width + viewBoxDim.x;
+        y2 = (1 - draggedNormY) * viewBoxDim.height + viewBoxDim.y;
+        if (Math.abs(draggedNormX) === 1) {
+          x1 = x2 + draggedNormX * this.legendDim.markerLen;
+          y1 = y2;
+        } else if (Math.abs(draggedNormY) === 1) {
+          x1 = x2;
+          y1 = y2 + -draggedNormY * this.legendDim.markerLen;
+        }
         this.draggedOutMarkers.push({
-          labelId: newMarkerId,
+          markerLabel: newMarkerId + 1,
           ptId: id,
-          normX: draggedNormX,
-          normY: draggedNormY
+          x1: x1,
+          y1: y1,
+          x2: x2,
+          y2: y2,
+          markerTextX: x1,
+          markerTextY: y1,
+          width: this.legendDim.markerWidth,
+          color: lp.color
         });
       }
     }
@@ -256,7 +276,7 @@ PlotData = (function() {
     return false;
   };
 
-  PlotData.prototype.moveElemToLegend = function(id, legendPts) {
+  PlotData.prototype.moveElemToLegend = function(id, data) {
     var checkId, movedAnc, movedLab, movedPt;
     checkId = function(e) {
       return e.id === id;
@@ -264,7 +284,7 @@ PlotData = (function() {
     movedPt = _.remove(this.pts, checkId);
     movedLab = _.remove(this.lab, checkId);
     movedAnc = _.remove(this.anc, checkId);
-    legendPts.push({
+    data.legendPts.push({
       pt: movedPt[0],
       lab: movedLab[0],
       anc: movedAnc[0],
@@ -276,7 +296,7 @@ PlotData = (function() {
     });
     this.draggedOutPtsId.push(id);
     this.len--;
-    this.normalizeData();
+    this.normalizeData(data);
     this.calcDataArrays();
     return this.setupLegendGroupsAndPts(this);
   };

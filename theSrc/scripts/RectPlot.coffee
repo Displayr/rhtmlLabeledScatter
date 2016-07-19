@@ -16,7 +16,8 @@ class RectPlot
       ptToTextSpace: 15
       yPtOffset:     4
       cols:          1
-
+      markerLen:     5
+      markerWidth:   1
 
     @viewBoxDim =
       svgWidth: width
@@ -24,7 +25,7 @@ class RectPlot
       width: width - @legendDim.width
       height: height - @xAxisPadding - 20
       x: @yAxisPadding + 25
-      y: 10
+      y: 15
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
@@ -35,6 +36,7 @@ class RectPlot
   draw: ->
     @drawLabs(@)
     @drawLegend(@, @data)
+    @drawDraggedMarkers(@data)
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
@@ -56,6 +58,7 @@ class RectPlot
     ]
     for elem in plotElems
       @svg.selectAll(elem).remove()
+    data.normalizeData(data)
     data.calcDataArrays()
     @draw()
 
@@ -379,7 +382,7 @@ class RectPlot
   drawDraggedMarkers: (data) ->
     @svg.selectAll('.marker').remove()
     @svg.selectAll('.marker')
-        .data(data.legendPts.marker)
+        .data(data.draggedOutMarkers)
         .enter()
         .append('line')
         .attr('class', 'marker')
@@ -390,14 +393,28 @@ class RectPlot
         .attr('stroke-width', (d) -> d.width)
         .attr('stroke', (d) -> d.color)
 
+    @svg.selectAll('.marker-label').remove()
+    @svg.selectAll('.marker-label')
+        .data(data.draggedOutMarkers)
+        .enter()
+        .append('text')
+        .attr('class', 'marker-label')
+        .attr('x', (d) -> d.markerTextX)
+        .attr('y', (d) -> d.markerTextY)
+        .attr('font-family', 'Arial')
+        .attr('text-anchor', 'start')
+        .attr('font-size', 10)
+        .attr('fill', (d) -> d.color)
+        .text((d) -> d.markerLabel)
+
   elemDraggedOffPlot: (plot, data, id) ->
-    data.moveElemToLegend(id, data.legendPts)
+    data.moveElemToLegend(id, data)
     plot.drawRect()
     plot.drawAxisLabels()
     plot.drawDimensionMarkers()
     plot.drawAnc(data)
     plot.drawLabs(plot)
-    # plot.drawDraggedMarkers(data)
+    plot.drawDraggedMarkers(data)
     plot.drawLegend(plot, data)
 
   drawLabs: (plot) ->
