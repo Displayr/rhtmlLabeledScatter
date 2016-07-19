@@ -30,7 +30,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function(data) {
-    var diff, draggedNormX, draggedNormY, i, id, lp, newMarkerId, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+    var diff, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
     viewBoxDim = data.viewBoxDim;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
@@ -69,21 +69,37 @@ PlotData = (function() {
       id = lp.pt.id;
       draggedNormX = (this.X[id] - this.minX) / (this.maxX - this.minX);
       draggedNormY = (this.Y[id] - this.minY) / (this.maxY - this.minY);
-      if (Math.abs(draggedNormX) > 1 || Math.abs(draggedNormY) > 1) {
+      if (Math.abs(draggedNormX) > 1 || Math.abs(draggedNormY) > 1 || draggedNormX < 0 || draggedNormY < 0) {
         newMarkerId = this.draggedOutMarkers.length;
         lp.markerId = newMarkerId;
         draggedNormX = draggedNormX > 1 ? 1 : draggedNormX;
-        draggedNormX = draggedNormX < -1 ? -1 : draggedNormX;
+        draggedNormX = draggedNormX < 0 ? 0 : draggedNormX;
         draggedNormY = draggedNormY > 1 ? 1 : draggedNormY;
-        draggedNormY = draggedNormY < -1 ? -1 : draggedNormY;
+        draggedNormY = draggedNormY < 0 ? 0 : draggedNormY;
         x2 = draggedNormX * viewBoxDim.width + viewBoxDim.x;
         y2 = (1 - draggedNormY) * viewBoxDim.height + viewBoxDim.y;
-        if (Math.abs(draggedNormX) === 1) {
-          x1 = x2 + draggedNormX * this.legendDim.markerLen;
+        markerTextX = markerTextY = 0;
+        numDigitsInId = Math.ceil(Math.log10(newMarkerId + 1.1));
+        if (draggedNormX === 1) {
+          x1 = x2 + this.legendDim.markerLen;
           y1 = y2;
-        } else if (Math.abs(draggedNormY) === 1) {
+          markerTextX = x1;
+          markerTextY = y1 + this.legendDim.markerTextSize / 2;
+        } else if (draggedNormX === 0) {
+          x1 = x2 - this.legendDim.markerLen;
+          y1 = y2;
+          markerTextX = x1 - this.legendDim.markerCharWidth * (numDigitsInId + 1);
+          markerTextY = y1 + this.legendDim.markerTextSize / 2;
+        } else if (draggedNormY === 1) {
           x1 = x2;
           y1 = y2 + -draggedNormY * this.legendDim.markerLen;
+          markerTextX = x1 - this.legendDim.markerCharWidth * numDigitsInId;
+          markerTextY = y1;
+        } else if (draggedNormY === 0) {
+          x1 = x2;
+          y1 = y2 + this.legendDim.markerLen;
+          markerTextX = x1 - this.legendDim.markerCharWidth * numDigitsInId;
+          markerTextY = y1 + this.legendDim.markerTextSize;
         }
         this.draggedOutMarkers.push({
           markerLabel: newMarkerId + 1,
@@ -92,8 +108,8 @@ PlotData = (function() {
           y1: y1,
           x2: x2,
           y2: y2,
-          markerTextX: x1,
-          markerTextY: y1,
+          markerTextX: markerTextX,
+          markerTextY: markerTextY,
           width: this.legendDim.markerWidth,
           color: lp.color
         });

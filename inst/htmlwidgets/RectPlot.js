@@ -18,7 +18,9 @@ RectPlot = (function() {
       yPtOffset: 4,
       cols: 1,
       markerLen: 5,
-      markerWidth: 1
+      markerWidth: 1,
+      markerTextSize: 10,
+      markerCharWidth: 4
     };
     this.viewBoxDim = {
       svgWidth: width,
@@ -438,7 +440,7 @@ RectPlot = (function() {
       return d.markerTextX;
     }).attr('y', function(d) {
       return d.markerTextY;
-    }).attr('font-family', 'Arial').attr('text-anchor', 'start').attr('font-size', 10).attr('fill', function(d) {
+    }).attr('font-family', 'Arial').attr('text-anchor', 'start').attr('font-size', data.legendDim.markerTextSize).attr('fill', function(d) {
       return d.color;
     }).text(function(d) {
       return d.markerLabel;

@@ -6,18 +6,20 @@ class RectPlot
     @xAxisPadding = 40
 
     @legendDim =
-      width:         300 #init value
-      heightOfRow:   25 #init val
-      rightPadding:  10
-      leftPadding:   30
-      centerPadding: 30
-      ptRadius:      6
-      ptMovedRadius: 2
-      ptToTextSpace: 15
-      yPtOffset:     4
-      cols:          1
-      markerLen:     5
-      markerWidth:   1
+      width:          300 #init value
+      heightOfRow:    25 #init val
+      rightPadding:   10
+      leftPadding:    30
+      centerPadding:  30
+      ptRadius:       6
+      ptMovedRadius:  2
+      ptToTextSpace:  15
+      yPtOffset:      4
+      cols:           1
+      markerLen:      5
+      markerWidth:    1
+      markerTextSize: 10
+      markerCharWidth:4
 
     @viewBoxDim =
       svgWidth: width
@@ -403,7 +405,7 @@ class RectPlot
         .attr('y', (d) -> d.markerTextY)
         .attr('font-family', 'Arial')
         .attr('text-anchor', 'start')
-        .attr('font-size', 10)
+        .attr('font-size', data.legendDim.markerTextSize)
         .attr('fill', (d) -> d.color)
         .text((d) -> d.markerLabel)
 

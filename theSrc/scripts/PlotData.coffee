@@ -84,23 +84,41 @@ class PlotData
       id = lp.pt.id
       draggedNormX = (@X[id] - @minX)/(@maxX - @minX)
       draggedNormY = (@Y[id] - @minY)/(@maxY - @minY)
-      if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1
+      if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1 or
+         draggedNormX < 0 or draggedNormY < 0
+
         newMarkerId = @draggedOutMarkers.length
         lp.markerId = newMarkerId
 
         draggedNormX = if draggedNormX > 1 then 1 else draggedNormX
-        draggedNormX = if draggedNormX < -1 then -1 else draggedNormX
+        draggedNormX = if draggedNormX < 0 then 0 else draggedNormX
         draggedNormY = if draggedNormY > 1 then 1 else draggedNormY
-        draggedNormY = if draggedNormY < -1 then -1 else draggedNormY
+        draggedNormY = if draggedNormY < 0 then 0 else draggedNormY
         x2 = draggedNormX*viewBoxDim.width + viewBoxDim.x
         y2 = (1-draggedNormY)*viewBoxDim.height + viewBoxDim.y
 
-        if Math.abs(draggedNormX) is 1
-          x1 = x2 + draggedNormX*@legendDim.markerLen
+        markerTextX = markerTextY = 0
+        numDigitsInId = Math.ceil(Math.log10(newMarkerId+1.1))
+        if draggedNormX is 1 #right bound
+          x1 = x2 + @legendDim.markerLen
           y1 = y2
-        else if Math.abs(draggedNormY) is 1
+          markerTextX = x1
+          markerTextY = y1 + @legendDim.markerTextSize/2
+        else if draggedNormX is 0 #left bound
+          x1 = x2 - @legendDim.markerLen
+          y1 = y2
+          markerTextX = x1 - @legendDim.markerCharWidth*(numDigitsInId+1)
+          markerTextY = y1 + @legendDim.markerTextSize/2
+        else if draggedNormY is 1 # top bound
           x1 = x2
           y1 = y2 + -draggedNormY*@legendDim.markerLen
+          markerTextX = x1 - @legendDim.markerCharWidth*(numDigitsInId)
+          markerTextY = y1
+        else if draggedNormY is 0 # bot bound
+          x1 = x2
+          y1 = y2 + @legendDim.markerLen
+          markerTextX = x1 - @legendDim.markerCharWidth*(numDigitsInId)
+          markerTextY = y1 + @legendDim.markerTextSize
 
         @draggedOutMarkers.push
           markerLabel: newMarkerId + 1
@@ -109,8 +127,8 @@ class PlotData
           y1: y1
           x2: x2
           y2: y2
-          markerTextX: x1
-          markerTextY: y1
+          markerTextX: markerTextX
+          markerTextY: markerTextY
           width: @legendDim.markerWidth
           color: lp.color
 
