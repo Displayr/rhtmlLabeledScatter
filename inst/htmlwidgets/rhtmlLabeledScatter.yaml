@@ -7,6 +7,7 @@ dependencies:
      - jquery.min.js
      - lodash.min.js
      - d3.min.js
+     - random.min.js
      - rHtmlStatefulWidget.js
      - rHtmlSvgWidget.js
 
@@ -15,10 +16,14 @@ dependencies:
    src: htmlwidgets/
    script:
      - DisplayError.js
-     - Template.js
+     - LabeledScatter.js
+     - PlotData.js
+     - RectPlot.js
+     - rhtmlLabeledScatter.js
 
  - name: style
    version: 1.0.0
    src: htmlwidgets/lib/style
    stylesheet:
-     main.css
+   - main.css
+   - rhtmlLabeledScatter.css
