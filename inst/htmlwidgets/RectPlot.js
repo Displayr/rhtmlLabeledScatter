@@ -76,7 +76,7 @@ RectPlot = (function() {
       maxTicks = 8;
       range = max - min;
       unroundedTickSize = range / (maxTicks - 1);
-      x = Math.ceil(Math.log10(unroundedTickSize) - 1);
+      x = Math.ceil(Math.log(unroundedTickSize) / Math.LN10 - 1);
       pow10x = Math.pow(10, x);
       roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
       return roundedTickRange;
