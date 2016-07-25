@@ -68,11 +68,15 @@ gulp.task('copy', function () {
 
   gulp.src([
     'theSrc/scripts/lib/*.js'
-  ], {}).pipe(gulp.dest('browser/scripts/lib'));
+  ], {}).pipe(gulp.dest('browser/scripts/lib')
+        .pipe(gulp.dest('inst/htmlwidgets/lib'))
+  );
 
   gulp.src([
     'theSrc/scripts/data/*.js'
-  ], {}).pipe(gulp.dest('browser/scripts/data'));
+  ], {}).pipe(gulp.dest('browser/scripts/data')
+        .pipe(gulp.dest('inst/htmlwidgets/data'))
+  );
 
   gulp.src([
     'theSrc/images/**/*'
