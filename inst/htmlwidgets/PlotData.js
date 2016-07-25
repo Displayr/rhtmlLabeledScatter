@@ -79,7 +79,7 @@ PlotData = (function() {
         x2 = draggedNormX * viewBoxDim.width + viewBoxDim.x;
         y2 = (1 - draggedNormY) * viewBoxDim.height + viewBoxDim.y;
         markerTextX = markerTextY = 0;
-        numDigitsInId = Math.ceil(Math.log10(newMarkerId + 1.1));
+        numDigitsInId = Math.ceil(Math.log(newMarkerId + 1.1) / Math.LN(10));
         if (draggedNormX === 1) {
           x1 = x2 + this.legendDim.markerLen;
           y1 = y2;
