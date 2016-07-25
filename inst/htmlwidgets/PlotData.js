@@ -16,6 +16,7 @@ PlotData = (function() {
     this.fixedAspectRatio = fixedAspectRatio;
     this.draggedOutPtsId = [];
     this.legendPts = [];
+    this.draggedOutCondensedPts = [];
     this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
     this.cIndex = 0;
     this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
@@ -30,7 +31,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function(data) {
-    var diff, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+    var condensedPtsDataIdArray, diff, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
     viewBoxDim = data.viewBoxDim;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
@@ -63,15 +64,16 @@ PlotData = (function() {
       }
     }
     this.draggedOutMarkers = [];
+    this.draggedOutMarkersIter = 0;
     _ref = this.legendPts;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       lp = _ref[_i];
       id = lp.pt.id;
       draggedNormX = (this.X[id] - this.minX) / (this.maxX - this.minX);
       draggedNormY = (this.Y[id] - this.minY) / (this.maxY - this.minY);
+      newMarkerId = this.draggedOutMarkersIter;
+      lp.markerId = newMarkerId;
       if (Math.abs(draggedNormX) > 1 || Math.abs(draggedNormY) > 1 || draggedNormX < 0 || draggedNormY < 0) {
-        newMarkerId = this.draggedOutMarkers.length;
-        lp.markerId = newMarkerId;
         draggedNormX = draggedNormX > 1 ? 1 : draggedNormX;
         draggedNormX = draggedNormX < 0 ? 0 : draggedNormX;
         draggedNormY = draggedNormY > 1 ? 1 : draggedNormY;
@@ -113,15 +115,29 @@ PlotData = (function() {
           width: this.legendDim.markerWidth,
           color: lp.color
         });
+        this.draggedOutCondensedPts = _.filter(this.draggedOutCondensedPts, function(e) {
+          return e.dataId !== id;
+        });
+        this.len = this.origLen - this.draggedOutMarkers.length;
+      } else {
+        console.log("Condensed point added");
+        condensedPtsDataIdArray = _.map(this.draggedOutCondensedPts, function(e) {
+          return e.dataId;
+        });
+        if (!_.includes(condensedPtsDataIdArray, id)) {
+          this.draggedOutCondensedPts.push({
+            dataId: id,
+            markerId: newMarkerId
+          });
+        }
       }
+      this.draggedOutMarkersIter++;
     }
     i = 0;
     _results = [];
     while (i < this.origLen) {
-      if (!_.includes(ptsOut, i)) {
-        this.normX[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
-        this.normY[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
-      }
+      this.normX[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
+      this.normY[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
       _results.push(i++);
     }
     return _results;
@@ -153,21 +169,34 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var i, x, y, _results;
+    var fontSize, i, label, pt, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
     i = 0;
     _results = [];
     while (i < this.origLen) {
-      if (!_.includes(this.draggedOutPtsId, i)) {
+      if ((!_.includes(this.draggedOutPtsId, i)) || _.includes(_.map(this.draggedOutCondensedPts, function(e) {
+        return e.dataId;
+      }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
+        label = this.label[i];
+        fontSize = this.viewBoxDim.labelFontSize;
+        if (_.includes(_.map(this.draggedOutCondensedPts, function(e) {
+          return e.dataId;
+        }), i)) {
+          pt = _.find(this.draggedOutCondensedPts, function(e) {
+            return e.dataId === i;
+          });
+          label = pt.markerId + 1;
+          fontSize = this.viewBoxDim.labelSmallFontSize;
+        }
         this.pts.push({
           x: x,
           y: y,
           r: 2,
-          label: this.label[i],
+          label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
           group: this.group[i],
@@ -177,9 +206,10 @@ PlotData = (function() {
         this.lab.push({
           x: x,
           y: y,
-          text: this.label[i],
+          text: label,
           color: this.groupToColorMap[this.group[i]],
-          id: i
+          id: i,
+          fontSize: fontSize
         });
         this.anc.push({
           x: x,
@@ -309,7 +339,6 @@ PlotData = (function() {
       pt: movedPt[0],
       lab: movedLab[0],
       anc: movedAnc[0],
-      r: this.legendDim.ptMovedRadius,
       anchor: 'start',
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
       yOffset: this.legendDim.yPtOffset,
@@ -317,7 +346,6 @@ PlotData = (function() {
       isDraggedPt: true
     });
     this.draggedOutPtsId.push(id);
-    this.len--;
     this.normalizeData(data);
     this.calcDataArrays();
     return this.setupLegendGroupsAndPts(this);

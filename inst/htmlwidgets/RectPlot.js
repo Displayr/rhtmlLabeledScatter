@@ -13,7 +13,6 @@ RectPlot = (function() {
       leftPadding: 20,
       centerPadding: 30,
       ptRadius: 6,
-      ptMovedRadius: 2,
       ptToTextSpace: 15,
       yPtOffset: 4,
       cols: 1,
@@ -28,7 +27,9 @@ RectPlot = (function() {
       width: width - this.legendDim.width,
       height: height - this.xAxisPadding - 20,
       x: this.yAxisPadding + 25,
-      y: 15
+      y: 15,
+      labelFontSize: 16,
+      labelSmallFontSize: 12
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     if (fixedRatio == null) {
@@ -496,6 +497,8 @@ RectPlot = (function() {
       return d.text;
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;
+    }).attr('font-size', function(d) {
+      return d.fontSize;
     }).call(drag);
     labels_svg = plot.svg.selectAll('.lab');
     i = 0;

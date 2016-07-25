@@ -13,6 +13,7 @@ class PlotData
     @fixedAspectRatio = fixedAspectRatio
     @draggedOutPtsId = []
     @legendPts = []
+    @draggedOutCondensedPts = []
 
     @colorWheel = if colors then colors else [ # default qColors
       '#5B9BD5'
@@ -80,15 +81,17 @@ class PlotData
 
     #create list of movedOffPts that need markers
     @draggedOutMarkers = []
+    @draggedOutMarkersIter = 0
+
     for lp in @legendPts
       id = lp.pt.id
       draggedNormX = (@X[id] - @minX)/(@maxX - @minX)
       draggedNormY = (@Y[id] - @minY)/(@maxY - @minY)
+      newMarkerId = @draggedOutMarkersIter
+      lp.markerId = newMarkerId
+
       if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1 or
          draggedNormX < 0 or draggedNormY < 0
-
-        newMarkerId = @draggedOutMarkers.length
-        lp.markerId = newMarkerId
 
         draggedNormX = if draggedNormX > 1 then 1 else draggedNormX
         draggedNormX = if draggedNormX < 0 then 0 else draggedNormX
@@ -132,11 +135,24 @@ class PlotData
           width: @legendDim.markerWidth
           color: lp.color
 
+        # if the points were condensed, remove point
+        @draggedOutCondensedPts = _.filter @draggedOutCondensedPts, (e) -> e.dataId != id
+        @len = @origLen - @draggedOutMarkers.length
+
+      else # no marker required, but still inside plot window
+        console.log "Condensed point added"
+        condensedPtsDataIdArray = _.map @draggedOutCondensedPts, (e) -> e.dataId
+        unless _.includes condensedPtsDataIdArray, id
+          @draggedOutCondensedPts.push(
+            dataId: id
+            markerId: newMarkerId
+          )
+      @draggedOutMarkersIter++
+
     i = 0
     while i < @origLen
-      unless _.includes ptsOut, i
-        @normX[i] = (@X[i] - @minX)/(@maxX - @minX)
-        @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
+      @normX[i] = (@X[i] - @minX)/(@maxX - @minX)
+      @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
   setupColors: ->
@@ -163,14 +179,23 @@ class PlotData
 
     i = 0
     while i < @origLen
-      unless _.includes @draggedOutPtsId, i
+      if (not _.includes(@draggedOutPtsId, i)) or
+         _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
+        label = @label[i]
+        fontSize = @viewBoxDim.labelFontSize
+
+        if _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
+          pt = _.find @draggedOutCondensedPts, (e) -> e.dataId == i
+          label = pt.markerId + 1
+          fontSize = @viewBoxDim.labelSmallFontSize
+
         @pts.push({
           x: x
           y: y
           r: 2
-          label: @label[i]
+          label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
           group: @group[i]
@@ -180,9 +205,10 @@ class PlotData
         @lab.push({
           x: x
           y: y
-          text: @label[i]
+          text: label
           color: @groupToColorMap[@group[i]]
           id: i
+          fontSize: fontSize
         })
         @anc.push({
           x: x
@@ -301,7 +327,6 @@ class PlotData
       pt: movedPt[0]
       lab: movedLab[0]
       anc: movedAnc[0]
-      r: @legendDim.ptMovedRadius
       anchor: 'start'
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
       yOffset: @legendDim.yPtOffset
@@ -309,7 +334,6 @@ class PlotData
       isDraggedPt: true
     }
     @draggedOutPtsId.push id
-    @len--
     @normalizeData(data)
     @calcDataArrays()
     @setupLegendGroupsAndPts(@)

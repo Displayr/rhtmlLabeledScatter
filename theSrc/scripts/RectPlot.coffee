@@ -12,7 +12,6 @@ class RectPlot
       leftPadding:    20
       centerPadding:  30
       ptRadius:       6
-      ptMovedRadius:  2
       ptToTextSpace:  15
       yPtOffset:      4
       cols:           1
@@ -22,12 +21,14 @@ class RectPlot
       markerCharWidth:4
 
     @viewBoxDim =
-      svgWidth: width
-      svgHeight: height
-      width: width - @legendDim.width
-      height: height - @xAxisPadding - 20
-      x: @yAxisPadding + 25
-      y: 15
+      svgWidth:           width
+      svgHeight:          height
+      width:              width - @legendDim.width
+      height:             height - @xAxisPadding - 20
+      x:                  @yAxisPadding + 25
+      y:                  15
+      labelFontSize:      16
+      labelSmallFontSize: 12
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
@@ -458,14 +459,17 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
              .attr('fill', (d) -> d.color)
+             .attr('font-size', (d) -> d.fontSize)
              .call(drag)
 
     labels_svg = plot.svg.selectAll('.lab')
+
     i = 0
     while i < plot.data.len
       plot.data.lab[i].width = labels_svg[0][i].getBBox().width
       plot.data.lab[i].height = labels_svg[0][i].getBBox().height
       i++
+
 
     labeler = d3.labeler()
                 .svg(plot.svg)
