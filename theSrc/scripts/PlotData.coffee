@@ -98,7 +98,7 @@ class PlotData
         y2 = (1-draggedNormY)*viewBoxDim.height + viewBoxDim.y
 
         markerTextX = markerTextY = 0
-        numDigitsInId = Math.ceil(Math.log(newMarkerId+1.1)/Math.LN(10))
+        numDigitsInId = Math.ceil(Math.log(newMarkerId+1.1)/Math.LN10)
         if draggedNormX is 1 #right bound
           x1 = x2 + @legendDim.markerLen
           y1 = y2
