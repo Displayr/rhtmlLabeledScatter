@@ -221,10 +221,14 @@ class PlotData
         break if totalItemsSpacingExceedLegendArea
 
       li = itemsArray[i]
-      li.cx = legendDim.x + legendDim.leftPadding + colSpacing
-      li.cy = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
-      li.x = li.cx + legendDim.ptToTextSpace
-      li.y = li.cy + li.r
+      if li.isDraggedPt
+        li.x = legendDim.x + legendDim.leftPadding + colSpacing
+        li.y = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
+      else
+        li.cx = legendDim.x + legendDim.leftPadding + colSpacing + li.r
+        li.cy = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
+        li.x = li.cx + legendDim.ptToTextSpace
+        li.y = li.cy + li.r
       i++
 
   setupLegendGroupsAndPts: (data) ->
@@ -302,6 +306,7 @@ class PlotData
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
       yOffset: @legendDim.yPtOffset
       color: movedPt[0].color
+      isDraggedPt: true
     }
     @draggedOutPtsId.push id
     @len--

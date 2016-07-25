@@ -221,10 +221,15 @@ PlotData = (function() {
         }
       }
       li = itemsArray[i];
-      li.cx = legendDim.x + legendDim.leftPadding + colSpacing;
-      li.cy = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow;
-      li.x = li.cx + legendDim.ptToTextSpace;
-      li.y = li.cy + li.r;
+      if (li.isDraggedPt) {
+        li.x = legendDim.x + legendDim.leftPadding + colSpacing;
+        li.y = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow;
+      } else {
+        li.cx = legendDim.x + legendDim.leftPadding + colSpacing + li.r;
+        li.cy = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow;
+        li.x = li.cx + legendDim.ptToTextSpace;
+        li.y = li.cy + li.r;
+      }
       _results.push(i++);
     }
     return _results;
@@ -308,7 +313,8 @@ PlotData = (function() {
       anchor: 'start',
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
       yOffset: this.legendDim.yPtOffset,
-      color: movedPt[0].color
+      color: movedPt[0].color,
+      isDraggedPt: true
     });
     this.draggedOutPtsId.push(id);
     this.len--;

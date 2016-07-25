@@ -9,7 +9,7 @@ class RectPlot
       width:          300 #init value
       heightOfRow:    25 #init val
       rightPadding:   10
-      leftPadding:    30
+      leftPadding:    20
       centerPadding:  30
       ptRadius:       6
       ptMovedRadius:  2
@@ -323,23 +323,12 @@ class RectPlot
              .text((d) -> d.text)
              .attr('text-anchor', (d) -> d.anchor)
 
-    @svg.selectAll('.legend-pts-pts').remove()
-    @svg.selectAll('.legend-pts-pts')
-             .data(data.legendPts)
-             .enter()
-             .append('circle')
-             .attr('class', 'legend-pts-pts')
-             .attr('cx', (d) -> d.cx)
-             .attr('cy', (d) -> d.cy - d.yOffset)
-             .attr('r', (d) -> d.r)
-             .attr('fill', (d) -> d.color)
-
-    @svg.selectAll('.legend-pts-text').remove()
-    @svg.selectAll('.legend-pts-text')
+    @svg.selectAll('.legend-dragged-pts-text').remove()
+    @svg.selectAll('.legend-dragged-pts-text')
              .data(data.legendPts)
              .enter()
              .append('text')
-             .attr('class', 'legend-pts-text')
+             .attr('class', 'legend-dragged-pts-text')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', 'Arial')
@@ -348,7 +337,7 @@ class RectPlot
              .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
 
     legendGroupsLab = @svg.selectAll('.legend-groups-text')
-    legendPtsLab = @svg.selectAll('.legend-pts-text')
+    legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
 
     i = 0
     while i < data.legendGroups.length
@@ -358,8 +347,8 @@ class RectPlot
 
     i = 0
     while i < data.legendPts.length
-      data.legendPts[i].width = legendPtsLab[0][i].getBBox().width
-      data.legendPts[i].height = legendPtsLab[0][i].getBBox().height
+      data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width
+      data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height
       i++
 
     if data.resizedAfterLegendGroupsDrawn()

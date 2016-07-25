@@ -10,7 +10,7 @@ RectPlot = (function() {
       width: 300,
       heightOfRow: 25,
       rightPadding: 10,
-      leftPadding: 30,
+      leftPadding: 20,
       centerPadding: 30,
       ptRadius: 6,
       ptMovedRadius: 2,
@@ -321,7 +321,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function(plot, data) {
-    var getSuperscript, i, legendGroupsLab, legendPtsLab, superscript;
+    var getSuperscript, i, legendDraggedPtsLab, legendGroupsLab, superscript;
     data.setupLegendGroupsAndPts(data);
     superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     getSuperscript = function(id) {
@@ -358,18 +358,8 @@ RectPlot = (function() {
     }).attr('text-anchor', function(d) {
       return d.anchor;
     });
-    this.svg.selectAll('.legend-pts-pts').remove();
-    this.svg.selectAll('.legend-pts-pts').data(data.legendPts).enter().append('circle').attr('class', 'legend-pts-pts').attr('cx', function(d) {
-      return d.cx;
-    }).attr('cy', function(d) {
-      return d.cy - d.yOffset;
-    }).attr('r', function(d) {
-      return d.r;
-    }).attr('fill', function(d) {
-      return d.color;
-    });
-    this.svg.selectAll('.legend-pts-text').remove();
-    this.svg.selectAll('.legend-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-pts-text').attr('x', function(d) {
+    this.svg.selectAll('.legend-dragged-pts-text').remove();
+    this.svg.selectAll('.legend-dragged-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -385,7 +375,7 @@ RectPlot = (function() {
       }
     });
     legendGroupsLab = this.svg.selectAll('.legend-groups-text');
-    legendPtsLab = this.svg.selectAll('.legend-pts-text');
+    legendDraggedPtsLab = this.svg.selectAll('.legend-dragged-pts-text');
     i = 0;
     while (i < data.legendGroups.length) {
       data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
@@ -394,8 +384,8 @@ RectPlot = (function() {
     }
     i = 0;
     while (i < data.legendPts.length) {
-      data.legendPts[i].width = legendPtsLab[0][i].getBBox().width;
-      data.legendPts[i].height = legendPtsLab[0][i].getBBox().height;
+      data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width;
+      data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height;
       i++;
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
