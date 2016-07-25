@@ -10,6 +10,8 @@ dependencies:
      - random.min.js
      - rHtmlStatefulWidget.js
      - rHtmlSvgWidget.js
+     - labeler.js
+     - rColor.js
 
  - name: Local
    version: 0.0.1
