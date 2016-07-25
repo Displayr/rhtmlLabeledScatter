@@ -21,6 +21,23 @@ dependencies:
      - RectPlot.js
      - rhtmlLabeledScatter.js
 
+ - name: Data
+   version: 0.0.1
+   src: htmlwidgets/data/
+   script:
+     - testData.js
+     - testData2.js
+     - testData3.js
+     - testData4.js
+     - testData2.js
+     - testData2.js
+     - testData2.js
+     - testData2.js
+     - testData2.js
+     - testData2.js
+     - testData2.js
+
+
  - name: style
    version: 1.0.0
    src: htmlwidgets/lib/style
