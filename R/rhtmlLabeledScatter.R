@@ -21,7 +21,6 @@
 #' @export
 #'
 
-# TEMPLATE! - update the function name
 LabeledScatter <- function(
   X = NULL,
   Y = NULL,
