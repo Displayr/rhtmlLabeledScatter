@@ -18,30 +18,30 @@ HTMLWidgets.widget
 
     console.log 'renderValue'
     console.log el
-    # try
-    #   if _.isString config
-    #     config = JSON.parse config
-    #
-    # catch err
-    #   readableError = new Error "LabeledScatter error : Cannot parse 'settingsJsonString': #{err}"
-    #   console.error readableError
-    #   errorHandler = new DisplayError el, readableError
-    #   errorHandler.draw()
-    #
-    #   throw new Error err
-    #
-    # #@TODO for now ignore the width height that come through from config and use the ones passed to constructor
-    # delete config['width']
-    # delete config['height']
+    try
+      if _.isString config
+        config = JSON.parse config
 
-    # try
-    #   instance.setConfig config
-    #   instance.draw()
-    #
-    # catch err
-    #   console.error err.stack
-    #   errorHandler = new DisplayError el, err
-    #   errorHandler.draw()
-    #   throw new Error err
+    catch err
+      readableError = new Error "LabeledScatter error : Cannot parse 'settingsJsonString': #{err}"
+      console.error readableError
+      errorHandler = new DisplayError el, readableError
+      errorHandler.draw()
+
+      throw new Error err
+
+    #@TODO for now ignore the width height that come through from config and use the ones passed to constructor
+    delete config['width']
+    delete config['height']
+
+    try
+      instance.setConfig config
+      instance.draw()
+
+    catch err
+      console.error err.stack
+      errorHandler = new DisplayError el, err
+      errorHandler.draw()
+      throw new Error err
 
     instance.draw()
