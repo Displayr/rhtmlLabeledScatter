@@ -145,4 +145,6 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('theSrc/styles/**/*.less', ['less']);
   gulp.watch('theSrc/scripts/**/*.coffee', ['compile-coffee']);
   gulp.watch('theSrc/scripts/lib/*.js', ['copy']);
+  gulp.watch('theSrc/R/*.R', ['copy', 'makeDocs', 'makeExample']);
+  gulp.watch('theSrc/R/*.yaml', ['copy', 'makeDocs', 'makeExample'])
 });

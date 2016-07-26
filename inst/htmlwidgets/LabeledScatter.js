@@ -30,8 +30,14 @@ LabeledScatter = (function(_super) {
   LabeledScatter.prototype._redraw = function() {
     var data, plot;
     console.log('_redraw');
-    data = testData;
-    plot = new RectPlot(this.width, this.height, data.X, data.Y, data.group, data.label, this.outerSvg, false);
+    data = null;
+    if ((this.config.X != null) && (this.config.Y != null)) {
+      data = this.config;
+    } else {
+      data = testData;
+      data.fixedAspectRatio = false;
+    }
+    plot = new RectPlot(this.width, this.height, data.X, data.Y, data.group, data.label, this.outerSvg, data.fixedAspectRatio);
     return plot.draw();
   };
 

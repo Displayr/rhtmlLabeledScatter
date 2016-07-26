@@ -60,13 +60,49 @@ LabeledScatter <- function(
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial",
   tooltip.title.font.size = 10,
-  width = 600,
-  height = 600
+  width = NULL,
+  height = NULL
   ) {
 
-  print("here")
   x = list(
-    X = jsonlite::toJSON(X)
+    X = jsonlite::toJSON(X),
+    Y = jsonlite::toJSON(Y),
+    Z = jsonlite::toJSON(Z),
+    label = jsonlite::toJSON(label),
+    group = jsonlite::toJSON(group),
+    fixedAspect = jsonlite::toJSON(fixedAspect),
+    colors = jsonlite::toJSON(colors),
+    grid = grid,
+    origin = origin,
+    xTitle = x.title,
+    yTitle = y.title,
+    zTitle = z.title,
+    title = title,
+    xDecimals = x.decimals,
+    yDecimals = y.decimals,
+    zDecimals = z.decimals,
+    xPrefix = x.prefix,
+    yPrefix = y.prefix,
+    zPrefix = z.prefix,
+    titleFontFamily = title.font.family,
+    titleFontColor = title.font.color,
+    titleFontSize = title.font.size,
+    labelsFontFamily = labels.font.family,
+    labelsFontColor = labels.font.color,
+    labelsFontSize = labels.font.size,
+    legendShow = legend.show,
+    legendFontColor = legend.font.color,
+    legendFontFamily = legend.font.family,
+    legendFontSize = legend.font.size,
+    yTitleFontColor = y.title.font.color,
+    yTitleFontFamily = y.title.font.family,
+    yTitleFontSize = y.title.font.size,
+    xTitleFontColor = x.title.font.color,
+    xTitleFontFamily = x.title.font.family,
+    xTitleFontSize = x.title.font.size,
+    tooltipTitleFontColor = tooltip.title.font.color,
+    toolTipTitleFontFamily = tooltip.title.font.family,
+    tooltipTitleFontSize = tooltip.title.font.size
   )
 
   htmlwidgets::createWidget(
@@ -75,11 +111,9 @@ LabeledScatter <- function(
     width = width,
     height = height,
     sizingPolicy = htmlwidgets::sizingPolicy(
-      defaultWidth = width,
-      defaultHeight = height,
       browser.fill = TRUE,
       viewer.fill = TRUE,
-      padding = 0
+      padding = 5
     ),
     package = 'rhtmlLabeledScatter'
   )

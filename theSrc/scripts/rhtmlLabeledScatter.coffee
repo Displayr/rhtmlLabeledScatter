@@ -15,9 +15,6 @@ HTMLWidgets.widget
     return new LabeledScatter el, width, height
 
   renderValue: (el, config, instance) ->
-
-    console.log 'renderValue'
-    console.log el
     try
       if _.isString config
         config = JSON.parse config

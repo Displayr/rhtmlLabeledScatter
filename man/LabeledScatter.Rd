@@ -23,7 +23,7 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   x.title.font.family = "Arial", x.title.font.size = 12,
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
-  width = 600, height = 600)
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{param1}{is a good param}

@@ -11,8 +11,6 @@ HTMLWidgets.widget({
   },
   renderValue: function(el, config, instance) {
     var err, errorHandler, readableError;
-    console.log('renderValue');
-    console.log(el);
     try {
       if (_.isString(config)) {
         config = JSON.parse(config);
