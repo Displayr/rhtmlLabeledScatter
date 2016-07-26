@@ -10,30 +10,8 @@ HTMLWidgets.widget({
     return new LabeledScatter(el, width, height);
   },
   renderValue: function(el, config, instance) {
-    var err, errorHandler, readableError;
-    try {
-      if (_.isString(config)) {
-        config = JSON.parse(config);
-      }
-    } catch (_error) {
-      err = _error;
-      readableError = new Error("LabeledScatter error : Cannot parse 'settingsJsonString': " + err);
-      console.error(readableError);
-      errorHandler = new DisplayError(el, readableError);
-      errorHandler.draw();
-      throw new Error(err);
-    }
-    delete config['width'];
-    delete config['height'];
-    try {
-      instance.setConfig(config);
-      return instance.draw();
-    } catch (_error) {
-      err = _error;
-      console.error(err.stack);
-      errorHandler = new DisplayError(el, err);
-      errorHandler.draw();
-      throw new Error(err);
-    }
+    console.log('renderValue');
+    console.log(el);
+    return instance.draw();
   }
 });

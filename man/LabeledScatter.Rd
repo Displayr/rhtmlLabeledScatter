@@ -7,7 +7,7 @@
 https://github.com/NumbersInternational/rhtmlLabeledScatter
 }
 \usage{
-LabeledScatter(settingsJsonString = "{}")
+LabeledScatter(X = NULL)
 }
 \arguments{
 \item{param1}{is a good param}

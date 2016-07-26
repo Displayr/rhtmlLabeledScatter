@@ -22,37 +22,57 @@
 #'
 
 # TEMPLATE! - update the function name
-LabeledScatter <- function(settingsJsonString = '{}') {
+LabeledScatter <- function(
+  X = NULL
+  # Y = NULL,
+  # Z = NULL,
+  # label = NULL,
+  # group = NULL,
+  # fixedAspect = FALSE,
+  # colors = NULL,
+  # grid = TRUE,
+  # origin = TRUE,
+  # y.title = "",
+  # x.title = "",
+  # z.title = "",
+  # title = "",
+  # x.decimals = 2,
+  # y.decimals = 2,
+  # z.decimals = 2,
+  # x.prefix = "",
+  # y.prefix = "",
+  # z.prefix = "",
+  # title.font.family = "Arial",
+  # title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # title.font.size = 16,
+  # labels.font.family = "Arial",
+  # labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # labels.font.size = 10,
+  # legend.show = TRUE,
+  # legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # legend.font.family = "Arial",
+  # legend.font.size = 12,
+  # y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # y.title.font.family = "Arial",
+  # y.title.font.size = 12,
+  # x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # x.title.font.family = "Arial",
+  # x.title.font.size = 12,
+  # tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  # tooltip.title.font.family = "Arial",
+  # tooltip.title.font.size = 10,
+  # width = 600,
+  # height = 600
+  ) {
 
-  DEFAULT_WIDGET_WIDTH <- 600
-  DEFAULT_WIDGET_HEIGHT <- 600
-
-  parsedInput <- NULL
-  parsedInput = tryCatch({
-    jsonlite::fromJSON(settingsJsonString)
-  }, warning = function(w) {
-    print("warning while parsing JSON:")
-    print(w)
-  }, error = function(e) {
-    print("error while parsing JSON:")
-    print(e)
-    stop(e)
-  }, finally = {})
-
-  width <- DEFAULT_WIDGET_WIDTH
-  height <- DEFAULT_WIDGET_HEIGHT
-
-  if('width' %in% names(parsedInput)) {
-    width <- as.numeric(unlist(parsedInput['width']))
-  }
-
-  if('height' %in% names(parsedInput)) {
-    height <- as.numeric(unlist(parsedInput['height']))
-  }
+  x1 = list(
+      # X = jsonlite::toJSON(X)
+      X = X
+  )
 
   htmlwidgets::createWidget(
     name = 'rhtmlLabeledScatter',
-    settingsJsonString,
+    x1,
     width = width,
     height = height,
     sizingPolicy = htmlwidgets::sizingPolicy(
