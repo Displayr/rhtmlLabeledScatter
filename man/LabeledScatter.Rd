@@ -7,7 +7,7 @@
 https://github.com/NumbersInternational/rhtmlLabeledScatter
 }
 \usage{
-LabeledScatter(X = NULL)
+LabeledScatter(X = NULL, width = 600, height = 600)
 }
 \arguments{
 \item{param1}{is a good param}

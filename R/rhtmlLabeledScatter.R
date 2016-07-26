@@ -23,7 +23,7 @@
 
 # TEMPLATE! - update the function name
 LabeledScatter <- function(
-  X = NULL
+  X = NULL,
   # Y = NULL,
   # Z = NULL,
   # label = NULL,
@@ -61,8 +61,8 @@ LabeledScatter <- function(
   # tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   # tooltip.title.font.family = "Arial",
   # tooltip.title.font.size = 10,
-  # width = 600,
-  # height = 600
+  width = 600,
+  height = 600
   ) {
 
   x1 = list(
