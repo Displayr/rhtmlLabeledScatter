@@ -18,7 +18,7 @@ LabeledScatter = (function(_super) {
   LabeledScatter.prototype.resize = function(width, height) {
     this.width = width;
     this.height = height;
-    return _redraw();
+    return this._redraw();
   };
 
   LabeledScatter.prototype._processConfig = function() {

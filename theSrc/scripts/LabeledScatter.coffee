@@ -14,7 +14,7 @@ class LabeledScatter extends RhtmlSvgWidget
   resize: (width, height) ->
     @width = width
     @height = height
-    _redraw()
+    @_redraw()
 
   _processConfig: () ->
     console.log '_processConfig'
@@ -23,7 +23,6 @@ class LabeledScatter extends RhtmlSvgWidget
 
   _redraw: () ->
     console.log '_redraw'
-
     data = null
     if @config.X? and @config.Y?
       data = @config
