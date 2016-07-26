@@ -5,16 +5,19 @@
 
 class LabeledScatter extends RhtmlSvgWidget
 
+  @plot = null
+
   constructor: (el, width, height) ->
     super el, width, height
     @width = width
     @height = height
     @_initializeState { selected: null }
 
-  resize: (width, height) ->
+  resize: (el, width, height) ->
     @width = width
     @height = height
-    @_redraw()
+    console.log el
+    @plot.setDim(el[0], width, height)
 
   _processConfig: () ->
     console.log '_processConfig'
@@ -31,7 +34,7 @@ class LabeledScatter extends RhtmlSvgWidget
       data = testData
       data.fixedAspectRatio = false
 
-    plot = new RectPlot(@width,
+    @plot = new RectPlot(@width,
                         @height,
                         data.X,
                         data.Y,
@@ -39,4 +42,4 @@ class LabeledScatter extends RhtmlSvgWidget
                         data.label,
                         @outerSvg,
                         data.fixedAspectRatio)
-    plot.draw()
+    @plot.draw()

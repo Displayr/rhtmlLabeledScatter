@@ -45,6 +45,14 @@ class RectPlot
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc(@data)
 
+  setDim: (svg, width, height) ->
+    @svg = svg
+    @viewBoxDim.svgWidth = width
+    @viewBoxDim.svgHeight = height
+    @viewBoxDim.width = width - @legendDim.width
+    @viewBoxDim.height = height - @xAxisPadding + 25
+    @redraw(@data)
+
   redraw: (data) ->
     plotElems = [
       '.plot-viewbox'
@@ -61,6 +69,7 @@ class RectPlot
     ]
     for elem in plotElems
       @svg.selectAll(elem).remove()
+
     data.normalizeData(data)
     data.calcDataArrays()
     @draw()
@@ -354,7 +363,7 @@ class RectPlot
 
     if data.resizedAfterLegendGroupsDrawn()
       console.log 'Legend resize triggered'
-      plot.redraw(data)
+      plot.redraw(data, @viewBoxDim.svgWidth, @viewBoxDim.svgHeight)
       plot.drawLegend(plot, data)
 
   drawAnc: (data) ->

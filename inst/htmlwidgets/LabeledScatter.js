@@ -6,6 +6,8 @@ var LabeledScatter,
 LabeledScatter = (function(_super) {
   __extends(LabeledScatter, _super);
 
+  LabeledScatter.plot = null;
+
   function LabeledScatter(el, width, height) {
     LabeledScatter.__super__.constructor.call(this, el, width, height);
     this.width = width;
@@ -15,10 +17,11 @@ LabeledScatter = (function(_super) {
     });
   }
 
-  LabeledScatter.prototype.resize = function(width, height) {
+  LabeledScatter.prototype.resize = function(el, width, height) {
     this.width = width;
     this.height = height;
-    return this._redraw();
+    console.log(el);
+    return this.plot.setDim(el[0], width, height);
   };
 
   LabeledScatter.prototype._processConfig = function() {
@@ -28,7 +31,7 @@ LabeledScatter = (function(_super) {
   };
 
   LabeledScatter.prototype._redraw = function() {
-    var data, plot;
+    var data;
     console.log('_redraw');
     data = null;
     if ((this.config.X != null) && (this.config.Y != null)) {
@@ -37,8 +40,8 @@ LabeledScatter = (function(_super) {
       data = testData;
       data.fixedAspectRatio = false;
     }
-    plot = new RectPlot(this.width, this.height, data.X, data.Y, data.group, data.label, this.outerSvg, data.fixedAspectRatio);
-    return plot.draw();
+    this.plot = new RectPlot(this.width, this.height, data.X, data.Y, data.group, data.label, this.outerSvg, data.fixedAspectRatio);
+    return this.plot.draw();
   };
 
   return LabeledScatter;

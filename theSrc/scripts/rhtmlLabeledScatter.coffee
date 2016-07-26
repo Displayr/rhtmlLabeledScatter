@@ -8,7 +8,8 @@ HTMLWidgets.widget
 
   resize: (el, width, height, instance) ->
     #@TODO check if instance has resize before calling it
-    instance.resize width, height
+    instance.resize el, width, height
+    return instance
 
   initialize: (el, width, height) ->
     #TEMPLATE! - update the class name below to the name of your main class

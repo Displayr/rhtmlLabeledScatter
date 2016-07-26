@@ -48,6 +48,15 @@ RectPlot = (function() {
     return this.drawAnc(this.data);
   };
 
+  RectPlot.prototype.setDim = function(svg, width, height) {
+    this.svg = svg;
+    this.viewBoxDim.svgWidth = width;
+    this.viewBoxDim.svgHeight = height;
+    this.viewBoxDim.width = width - this.legendDim.width;
+    this.viewBoxDim.height = height - this.xAxisPadding + 25;
+    return this.redraw(this.data);
+  };
+
   RectPlot.prototype.redraw = function(data) {
     var elem, plotElems, _i, _len;
     plotElems = ['.plot-viewbox', '.origin', '.dim-marker', '.dim-marker-leader', '.dim-marker-label', '.axis-label', '.legend-pts', '.legend-text', '.anc', '.lab', '.link'];
@@ -391,7 +400,7 @@ RectPlot = (function() {
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
       console.log('Legend resize triggered');
-      plot.redraw(data);
+      plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
       return plot.drawLegend(plot, data);
     }
   };

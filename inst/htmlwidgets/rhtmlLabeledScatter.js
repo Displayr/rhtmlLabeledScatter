@@ -4,7 +4,8 @@ HTMLWidgets.widget({
   name: 'rhtmlLabeledScatter',
   type: 'output',
   resize: function(el, width, height, instance) {
-    return instance.resize(width, height);
+    instance.resize(el, width, height);
+    return instance;
   },
   initialize: function(el, width, height) {
     return new LabeledScatter(el, width, height);
