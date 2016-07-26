@@ -40,5 +40,3 @@ HTMLWidgets.widget
       errorHandler = new DisplayError el, err
       errorHandler.draw()
       throw new Error err
-
-    instance.draw()

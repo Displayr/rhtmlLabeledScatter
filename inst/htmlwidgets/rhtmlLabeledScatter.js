@@ -27,7 +27,7 @@ HTMLWidgets.widget({
     delete config['height'];
     try {
       instance.setConfig(config);
-      instance.draw();
+      return instance.draw();
     } catch (_error) {
       err = _error;
       console.error(err.stack);
@@ -35,6 +35,5 @@ HTMLWidgets.widget({
       errorHandler.draw();
       throw new Error(err);
     }
-    return instance.draw();
   }
 });
