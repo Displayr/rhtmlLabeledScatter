@@ -43,8 +43,6 @@ class PlotData
       throw new Error("Inputs X and Y lengths do not match!")
 
   normalizeData: (data) ->
-    console.log 'norm'
-    console.log data.viewBoxDim
     viewBoxDim = data.viewBoxDim
 
     ptsOut = @draggedOutPtsId

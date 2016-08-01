@@ -2,13 +2,15 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin) {
     this.svg = svg;
     this.yAxisPadding = 50;
     this.xAxisPadding = 40;
     this.xTitle = xTitle;
     this.yTitle = yTitle;
-    this.grid = grid;
+    this.grid = grid != null ? grid : true;
+    this.origin = origin != null ? origin : true;
+    fixedRatio = fixedRatio != null ? fixedRatio : true;
     this.legendDim = {
       width: 300,
       heightOfRow: 25,
@@ -35,9 +37,6 @@ RectPlot = (function() {
       labelSmallFontSize: 12
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    if (fixedRatio == null) {
-      fixedRatio = true;
-    }
     this.data = new PlotData(X, Y, group, label, this.viewBoxDim, this.legendDim, colors, fixedRatio);
   }
 
@@ -165,16 +164,6 @@ RectPlot = (function() {
     if (!((this.data.minX === 0) || (this.data.maxX === 0))) {
       originAxis.push(oay);
     }
-    this.svg.selectAll('.origin').remove();
-    this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black').style('stroke-dasharray', '4, 6');
     colsPositive = 0;
     colsNegative = 0;
     i = ticksX;
@@ -273,6 +262,19 @@ RectPlot = (function() {
       i++;
     }
     if (this.grid) {
+      this.svg.selectAll('.origin').remove();
+      this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+        return d.x1;
+      }).attr('y1', function(d) {
+        return d.y1;
+      }).attr('x2', function(d) {
+        return d.x2;
+      }).attr('y2', function(d) {
+        return d.y2;
+      }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+      if (this.origin) {
+        this.svg.selectAll('.origin').style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
+      }
       this.svg.selectAll('.dim-marker').remove();
       this.svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
         return d.x1;

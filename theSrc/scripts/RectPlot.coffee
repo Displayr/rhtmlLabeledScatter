@@ -10,14 +10,17 @@ class RectPlot
                 xTitle,
                 yTitle,
                 colors,
-                grid) ->
+                grid,
+                origin) ->
     @svg = svg
 
     @yAxisPadding = 50
     @xAxisPadding = 40
     @xTitle = xTitle
     @yTitle = yTitle
-    @grid = grid
+    @grid = if grid? then grid else true
+    @origin = if origin? then origin else true
+    fixedRatio = if fixedRatio? then fixedRatio else true
 
     @legendDim =
       width:          300 #init value
@@ -46,7 +49,6 @@ class RectPlot
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
-    fixedRatio = true unless fixedRatio?
     @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim, colors, fixedRatio)
 
   draw: ->
@@ -164,20 +166,6 @@ class RectPlot
     pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
     originAxis.push(oay) unless (@data.minX is 0) or (@data.maxX is 0)
 
-    @svg.selectAll('.origin').remove()
-    @svg.selectAll('.origin')
-        .data(originAxis)
-        .enter()
-        .append('line')
-        .attr('class', 'origin')
-        .attr('x1', (d) -> d.x1)
-        .attr('y1', (d) -> d.y1)
-        .attr('x2', (d) -> d.x2)
-        .attr('y2', (d) -> d.y2)
-        .attr('stroke-width', 1)
-        .attr('stroke', 'black')
-        .style('stroke-dasharray', ('4, 6'))
-
     #calculate number of dimension markers
     colsPositive = 0
     colsNegative = 0
@@ -243,6 +231,24 @@ class RectPlot
       i++
 
     if @grid
+      @svg.selectAll('.origin').remove()
+      @svg.selectAll('.origin')
+          .data(originAxis)
+          .enter()
+          .append('line')
+          .attr('class', 'origin')
+          .attr('x1', (d) -> d.x1)
+          .attr('y1', (d) -> d.y1)
+          .attr('x2', (d) -> d.x2)
+          .attr('y2', (d) -> d.y2)
+          .attr('stroke-width', 0.2)
+          .attr('stroke', 'grey')
+      if @origin
+        @svg.selectAll('.origin')
+            .style('stroke-dasharray', ('4, 6'))
+            .attr('stroke-width', 1)
+            .attr('stroke', 'black')
+
       @svg.selectAll('.dim-marker').remove()
       @svg.selectAll('.dim-marker')
                .data(dimensionMarkerStack)

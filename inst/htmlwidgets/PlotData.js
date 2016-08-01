@@ -32,8 +32,6 @@ PlotData = (function() {
 
   PlotData.prototype.normalizeData = function(data) {
     var condensedPtsDataIdArray, diff, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
-    console.log('norm');
-    console.log(data.viewBoxDim);
     viewBoxDim = data.viewBoxDim;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
