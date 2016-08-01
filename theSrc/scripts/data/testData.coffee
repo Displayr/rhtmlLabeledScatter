@@ -69,4 +69,7 @@ testData =
    'Cols'
    'Cols'
     'Cols'
-  ]
+  ],
+
+  xTitle: "Testing",
+  yTitle: "Blah2"

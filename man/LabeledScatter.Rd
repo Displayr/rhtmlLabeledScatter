@@ -8,7 +8,7 @@ https://github.com/NumbersInternational/rhtmlLabeledScatter
 }
 \usage{
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
-  group = NULL, fixedAspect = FALSE, colors = NULL, grid = TRUE,
+  group = NULL, fixed.aspect = FALSE, colors = NULL, grid = TRUE,
   origin = TRUE, y.title = "", x.title = "", z.title = "", title = "",
   x.decimals = 2, y.decimals = 2, z.decimals = 2, x.prefix = "",
   y.prefix = "", z.prefix = "", title.font.family = "Arial",

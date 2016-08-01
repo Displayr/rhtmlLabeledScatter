@@ -2,10 +2,12 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle) {
     this.svg = svg;
     this.yAxisPadding = 50;
     this.xAxisPadding = 40;
+    this.xTitle = xTitle;
+    this.yTitle = yTitle;
     this.legendDim = {
       width: 300,
       heightOfRow: 25,
@@ -307,13 +309,13 @@ RectPlot = (function() {
       {
         x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
         y: this.viewBoxDim.y + this.viewBoxDim.height + this.xAxisPadding,
-        text: 'Dimension 1 (64%)',
+        text: this.xTitle,
         anchor: 'middle',
         transform: 'rotate(0)'
       }, {
         x: this.viewBoxDim.x - this.yAxisPadding,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
-        text: 'Dimension 2 (24%)',
+        text: this.yTitle,
         anchor: 'middle',
         transform: 'rotate(270,' + (this.viewBoxDim.x - this.yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
       }

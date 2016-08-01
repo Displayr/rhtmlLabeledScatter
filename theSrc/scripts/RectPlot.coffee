@@ -1,9 +1,11 @@
 class RectPlot
-  constructor: (width, height, X, Y, group, label, svg, fixedRatio) ->
+  constructor: (width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle) ->
     @svg = svg
 
     @yAxisPadding = 50
     @xAxisPadding = 40
+    @xTitle = xTitle
+    @yTitle = yTitle
 
     @legendDim =
       width:          300 #init value
@@ -272,14 +274,14 @@ class RectPlot
       { # x axis label
         x: @viewBoxDim.x + @viewBoxDim.width/2
         y: @viewBoxDim.y + @viewBoxDim.height + @xAxisPadding
-        text: 'Dimension 1 (64%)'
+        text: @xTitle
         anchor: 'middle'
         transform: 'rotate(0)'
       },
       { # y axis label
         x: @viewBoxDim.x - @yAxisPadding
         y: @viewBoxDim.y + @viewBoxDim.height/2
-        text: 'Dimension 2 (24%)'
+        text: @yTitle
         anchor: 'middle'
         transform: 'rotate(270,'+(@viewBoxDim.x-@yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
       }

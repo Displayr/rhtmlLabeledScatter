@@ -39,5 +39,7 @@ class LabeledScatter
                         @data.group,
                         @data.label,
                         svg,
-                        @data.fixedAspectRatio)
+                        @data.fixedAspectRatio,
+                        @data.xTitle,
+                        @data.yTitle)
     @plot.draw()
