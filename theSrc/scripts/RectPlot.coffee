@@ -9,13 +9,15 @@ class RectPlot
                 fixedRatio,
                 xTitle,
                 yTitle,
-                colors) ->
+                colors,
+                grid) ->
     @svg = svg
 
     @yAxisPadding = 50
     @xAxisPadding = 40
     @xTitle = xTitle
     @yTitle = yTitle
+    @grid = grid
 
     @legendDim =
       width:          300 #init value
@@ -240,18 +242,19 @@ class RectPlot
           pushDimensionMarker 'r', x1, y1, x2, y2, val
       i++
 
-    @svg.selectAll('.dim-marker').remove()
-    @svg.selectAll('.dim-marker')
-             .data(dimensionMarkerStack)
-             .enter()
-             .append('line')
-             .attr('class', 'dim-marker')
-             .attr('x1', (d) -> d.x1)
-             .attr('y1', (d) -> d.y1)
-             .attr('x2', (d) -> d.x2)
-             .attr('y2', (d) -> d.y2)
-             .attr('stroke-width', 0.2)
-             .attr('stroke', 'grey')
+    if @grid
+      @svg.selectAll('.dim-marker').remove()
+      @svg.selectAll('.dim-marker')
+               .data(dimensionMarkerStack)
+               .enter()
+               .append('line')
+               .attr('class', 'dim-marker')
+               .attr('x1', (d) -> d.x1)
+               .attr('y1', (d) -> d.y1)
+               .attr('x2', (d) -> d.x2)
+               .attr('y2', (d) -> d.y2)
+               .attr('stroke-width', 0.2)
+               .attr('stroke', 'grey')
 
     @svg.selectAll('.dim-marker-leader').remove()
     @svg.selectAll('.dim-marker-leader')

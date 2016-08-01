@@ -42,5 +42,6 @@ class LabeledScatter
                         @data.fixedAspectRatio,
                         @data.xTitle,
                         @data.yTitle,
-                        @data.colors)
+                        @data.colors,
+                        @data.grid)
     @plot.draw()

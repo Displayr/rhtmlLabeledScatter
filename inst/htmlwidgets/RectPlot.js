@@ -2,12 +2,13 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid) {
     this.svg = svg;
     this.yAxisPadding = 50;
     this.xAxisPadding = 40;
     this.xTitle = xTitle;
     this.yTitle = yTitle;
+    this.grid = grid;
     this.legendDim = {
       width: 300,
       heightOfRow: 25,
@@ -271,16 +272,18 @@ RectPlot = (function() {
       }
       i++;
     }
-    this.svg.selectAll('.dim-marker').remove();
-    this.svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    if (this.grid) {
+      this.svg.selectAll('.dim-marker').remove();
+      this.svg.selectAll('.dim-marker').data(dimensionMarkerStack).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
+        return d.x1;
+      }).attr('y1', function(d) {
+        return d.y1;
+      }).attr('x2', function(d) {
+        return d.x2;
+      }).attr('y2', function(d) {
+        return d.y2;
+      }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    }
     this.svg.selectAll('.dim-marker-leader').remove();
     this.svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
       return d.x1;
