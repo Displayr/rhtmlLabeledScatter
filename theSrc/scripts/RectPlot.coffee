@@ -13,6 +13,11 @@ class RectPlot
                 grid,
                 origin) ->
     @svg = svg
+    @colors = colors
+    @X = X
+    @Y = Y
+    @group = group
+    @label = label
 
     @axisLeaderLineLength = 5
     @axisDimensionTextHeight = 15 #default, TODO: detect
@@ -21,15 +26,28 @@ class RectPlot
     @verticalPadding = 5
     @horizontalPadding = 5
 
-
     @yAxisPadding = 50
     @xTitle = xTitle
     @yTitle = yTitle
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
-    fixedRatio = if fixedRatio? then fixedRatio else true
+    @fixedRatio = if fixedRatio? then fixedRatio else true
+
+    @setDim(@svg, width, height)
 
 
+  draw: ->
+    @drawLabs(@)
+    @drawLegend(@, @data)
+    @drawDraggedMarkers(@data)
+    @drawRect(@svg, @viewBoxDim)
+    @drawDimensionMarkers()
+    @drawAxisLabels()
+    @drawAnc(@data)
+
+
+  setDim: (svg, width, height) ->
+    @svg = svg
     @legendDim =
       width:          300 #init value
       heightOfRow:    25 #init val
@@ -57,27 +75,15 @@ class RectPlot
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
-    @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim, colors, fixedRatio)
-
-  draw: ->
-    @drawLabs(@)
-    @drawLegend(@, @data)
-    @drawDraggedMarkers(@data)
-    @drawRect(@svg, @viewBoxDim)
-    @drawDimensionMarkers()
-    @drawAxisLabels()
-    @drawAnc(@data)
-
-
-  setDim: (svg, width, height) ->
-    @svg = svg
-    @viewBoxDim.svgWidth = width
-    @viewBoxDim.svgHeight = height
-    @viewBoxDim.width = width - @legendDim.width
-    @viewBoxDim.height = height - @yAxisPadding - 20
-    @data.viewBoxDim = @viewBoxDim
-    @data.legendDim = @legendDim
-    @draw()
+    @data = new PlotData(@X,
+                         @Y,
+                         @group,
+                         @label,
+                         @viewBoxDim,
+                         @legendDim,
+                         @colors,
+                         @fixedRatio)
+    # @draw()
 
   redraw: (data) ->
     plotElems = [

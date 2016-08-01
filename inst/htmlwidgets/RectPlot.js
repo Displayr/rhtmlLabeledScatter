@@ -4,6 +4,11 @@ var RectPlot;
 RectPlot = (function() {
   function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin) {
     this.svg = svg;
+    this.colors = colors;
+    this.X = X;
+    this.Y = Y;
+    this.group = group;
+    this.label = label;
     this.axisLeaderLineLength = 5;
     this.axisDimensionTextHeight = 15;
     this.axisTitleTextHeight = 15;
@@ -15,7 +20,22 @@ RectPlot = (function() {
     this.yTitle = yTitle;
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
-    fixedRatio = fixedRatio != null ? fixedRatio : true;
+    this.fixedRatio = fixedRatio != null ? fixedRatio : true;
+    this.setDim(this.svg, width, height);
+  }
+
+  RectPlot.prototype.draw = function() {
+    this.drawLabs(this);
+    this.drawLegend(this, this.data);
+    this.drawDraggedMarkers(this.data);
+    this.drawRect(this.svg, this.viewBoxDim);
+    this.drawDimensionMarkers();
+    this.drawAxisLabels();
+    return this.drawAnc(this.data);
+  };
+
+  RectPlot.prototype.setDim = function(svg, width, height) {
+    this.svg = svg;
     this.legendDim = {
       width: 300,
       heightOfRow: 25,
@@ -42,28 +62,7 @@ RectPlot = (function() {
       labelSmallFontSize: 12
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    this.data = new PlotData(X, Y, group, label, this.viewBoxDim, this.legendDim, colors, fixedRatio);
-  }
-
-  RectPlot.prototype.draw = function() {
-    this.drawLabs(this);
-    this.drawLegend(this, this.data);
-    this.drawDraggedMarkers(this.data);
-    this.drawRect(this.svg, this.viewBoxDim);
-    this.drawDimensionMarkers();
-    this.drawAxisLabels();
-    return this.drawAnc(this.data);
-  };
-
-  RectPlot.prototype.setDim = function(svg, width, height) {
-    this.svg = svg;
-    this.viewBoxDim.svgWidth = width;
-    this.viewBoxDim.svgHeight = height;
-    this.viewBoxDim.width = width - this.legendDim.width;
-    this.viewBoxDim.height = height - this.yAxisPadding - 20;
-    this.data.viewBoxDim = this.viewBoxDim;
-    this.data.legendDim = this.legendDim;
-    return this.draw();
+    return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio);
   };
 
   RectPlot.prototype.redraw = function(data) {

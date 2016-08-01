@@ -8,6 +8,7 @@ class LabeledScatter
   constructor: (@width, @height) ->
 
   resize: (el, width, height) ->
+    console.log 'resize'
     @width = width
     @height = height
     d3.select('.plot-container').remove()
@@ -17,6 +18,8 @@ class LabeledScatter
             .attr('height', @height)
             .attr('class', 'plot-container')
     @plot.setDim(svg, @width, @height)
+    @plot.draw()
+    return @
 
   draw: (data, el) ->
     svg = d3.select(el)
@@ -45,3 +48,4 @@ class LabeledScatter
                         @data.grid,
                         @data.origin)
     @plot.draw()
+    return @

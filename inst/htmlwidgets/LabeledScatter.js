@@ -14,11 +14,14 @@ LabeledScatter = (function() {
 
   LabeledScatter.prototype.resize = function(el, width, height) {
     var svg;
+    console.log('resize');
     this.width = width;
     this.height = height;
     d3.select('.plot-container').remove();
     svg = d3.select(el).append('svg').attr('width', this.width).attr('height', this.height).attr('class', 'plot-container');
-    return this.plot.setDim(svg, this.width, this.height);
+    this.plot.setDim(svg, this.width, this.height);
+    this.plot.draw();
+    return this;
   };
 
   LabeledScatter.prototype.draw = function(data, el) {
@@ -30,7 +33,8 @@ LabeledScatter = (function() {
       this.data = testData;
     }
     this.plot = new RectPlot(this.width, this.height, this.data.X, this.data.Y, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.colors, this.data.grid, this.data.origin);
-    return this.plot.draw();
+    this.plot.draw();
+    return this;
   };
 
   return LabeledScatter;
