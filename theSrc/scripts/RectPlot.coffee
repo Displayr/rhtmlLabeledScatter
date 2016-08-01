@@ -82,7 +82,6 @@ class RectPlot
                          @legendDim,
                          @colors,
                          @fixedRatio)
-    # @draw()
 
   redraw: (data) ->
     plotElems = [
