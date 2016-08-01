@@ -28,7 +28,6 @@ class PlotData
       '#997300'
       '#264478'
       '#43682B'
-      # '#FFFFFF' white in original color wheel but removed
       '#FF2323'
     ]
     @cIndex = 0 # color index

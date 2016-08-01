@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors) {
     this.svg = svg;
     this.yAxisPadding = 50;
     this.xAxisPadding = 40;
@@ -37,7 +37,7 @@ RectPlot = (function() {
     if (fixedRatio == null) {
       fixedRatio = true;
     }
-    this.data = new PlotData(X, Y, group, label, this.viewBoxDim, this.legendDim, null, fixedRatio);
+    this.data = new PlotData(X, Y, group, label, this.viewBoxDim, this.legendDim, colors, fixedRatio);
   }
 
   RectPlot.prototype.draw = function() {

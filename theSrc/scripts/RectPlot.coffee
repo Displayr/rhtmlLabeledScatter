@@ -1,5 +1,15 @@
 class RectPlot
-  constructor: (width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle) ->
+  constructor: (width,
+                height,
+                X,
+                Y,
+                group,
+                label,
+                svg,
+                fixedRatio,
+                xTitle,
+                yTitle,
+                colors) ->
     @svg = svg
 
     @yAxisPadding = 50
@@ -35,8 +45,7 @@ class RectPlot
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
     fixedRatio = true unless fixedRatio?
-    # colors set to null here
-    @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim, null, fixedRatio)
+    @data = new PlotData(X, Y, group, label,@viewBoxDim, @legendDim, colors, fixedRatio)
 
   draw: ->
     @drawLabs(@)

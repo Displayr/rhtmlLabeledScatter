@@ -41,5 +41,6 @@ class LabeledScatter
                         svg,
                         @data.fixedAspectRatio,
                         @data.xTitle,
-                        @data.yTitle)
+                        @data.yTitle,
+                        @data.colors)
     @plot.draw()

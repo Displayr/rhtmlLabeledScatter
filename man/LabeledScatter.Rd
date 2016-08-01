@@ -8,8 +8,10 @@ https://github.com/NumbersInternational/rhtmlLabeledScatter
 }
 \usage{
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
-  group = NULL, fixed.aspect = FALSE, colors = NULL, grid = TRUE,
-  origin = TRUE, y.title = "", x.title = "", z.title = "", title = "",
+  group = NULL, fixed.aspect = FALSE, colors = c("#5B9BD5", "#ED7D31",
+  "#A5A5A5", "#1EC000", "#4472C4", "#70AD47", "#255E91", "#9E480E", "#636363",
+  "#997300", "#264478", "#43682B", "#FF2323"), grid = TRUE, origin = TRUE,
+  y.title = "", x.title = "", z.title = "", title = "",
   x.decimals = 2, y.decimals = 2, z.decimals = 2, x.prefix = "",
   y.prefix = "", z.prefix = "", title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
