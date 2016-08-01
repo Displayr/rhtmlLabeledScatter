@@ -22,7 +22,7 @@
   <script>
     myWidgetDefinition = null;
     myWidgetInstance = null;
-    var container = $('.content-window');
+    var container = $('.content-window')[0];
 
     // This is a stub that will capture the widget definition,
     // so that we can use it once the page finishes loading
@@ -40,6 +40,9 @@
       myWidgetDefinition.renderValue(container, {}, myWidgetInstance);
 
     });
+    window.onresize = function() {
+      myWidgetDefinition.resize(container, window.innerWidth, window.innerHeight, myWidgetInstance);
+    };
 
   </script>
   <script src="../scripts/rhtmlLabeledScatter.js"></script>

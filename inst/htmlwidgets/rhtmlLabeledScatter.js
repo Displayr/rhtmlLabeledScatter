@@ -3,37 +3,17 @@
 HTMLWidgets.widget({
   name: 'rhtmlLabeledScatter',
   type: 'output',
-  resize: function(el, width, height, instance) {
-    return instance.resize(width, height);
-  },
   initialize: function(el, width, height) {
-    return new LabeledScatter(el, width, height);
+    console.log('initialize called');
+    return new LabeledScatter(width, height);
   },
-  renderValue: function(el, config, instance) {
-    var err, errorHandler, readableError;
-    try {
-      if (_.isString(config)) {
-        config = JSON.parse(config);
-      }
-    } catch (_error) {
-      err = _error;
-      readableError = new Error("LabeledScatter error : Cannot parse 'settingsJsonString': " + err);
-      console.error(readableError);
-      errorHandler = new DisplayError(el, readableError);
-      errorHandler.draw();
-      throw new Error(err);
-    }
-    delete config['width'];
-    delete config['height'];
-    try {
-      instance.setConfig(config);
-      return instance.draw();
-    } catch (_error) {
-      err = _error;
-      console.error(err.stack);
-      errorHandler = new DisplayError(el, err);
-      errorHandler.draw();
-      throw new Error(err);
-    }
+  resize: function(el, width, height, instance) {
+    console.log('resize called');
+    instance.resize(el, width, height);
+    return instance;
+  },
+  renderValue: function(el, params, instance) {
+    console.log('renderValue called');
+    return instance.draw(params, el);
   }
 });

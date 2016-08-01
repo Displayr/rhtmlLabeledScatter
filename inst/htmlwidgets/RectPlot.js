@@ -25,7 +25,7 @@ RectPlot = (function() {
       svgWidth: width,
       svgHeight: height,
       width: width - this.legendDim.width,
-      height: height - this.xAxisPadding - 20,
+      height: height - this.yAxisPadding - 20,
       x: this.yAxisPadding + 25,
       y: 15,
       labelFontSize: 16,
@@ -46,6 +46,17 @@ RectPlot = (function() {
     this.drawDimensionMarkers();
     this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
     return this.drawAnc(this.data);
+  };
+
+  RectPlot.prototype.setDim = function(svg, width, height) {
+    this.svg = svg;
+    this.viewBoxDim.svgWidth = width;
+    this.viewBoxDim.svgHeight = height;
+    this.viewBoxDim.width = width - this.legendDim.width;
+    this.viewBoxDim.height = height - this.yAxisPadding - 20;
+    this.data.viewBoxDim = this.viewBoxDim;
+    this.data.legendDim = this.legendDim;
+    return this.draw();
   };
 
   RectPlot.prototype.redraw = function(data) {
@@ -391,7 +402,7 @@ RectPlot = (function() {
     }
     if (data.resizedAfterLegendGroupsDrawn()) {
       console.log('Legend resize triggered');
-      plot.redraw(data);
+      plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
       return plot.drawLegend(plot, data);
     }
   };
