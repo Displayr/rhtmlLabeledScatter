@@ -9,15 +9,14 @@ RectPlot = (function() {
     this.Y = Y;
     this.group = group;
     this.label = label;
+    this.xTitle = xTitle;
+    this.yTitle = yTitle;
     this.axisLeaderLineLength = 5;
-    this.axisDimensionTextHeight = 15;
     this.axisTitleTextHeight = 15;
+    this.axisDimensionTextHeight = 15;
     this.axisDimensionTextWidth = 29;
     this.verticalPadding = 5;
     this.horizontalPadding = 5;
-    this.yAxisPadding = 50;
-    this.xTitle = xTitle;
-    this.yTitle = yTitle;
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
     this.fixedRatio = fixedRatio != null ? fixedRatio : true;

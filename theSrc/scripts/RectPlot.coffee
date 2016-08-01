@@ -19,16 +19,15 @@ class RectPlot
     @group = group
     @label = label
 
+    @xTitle = xTitle
+    @yTitle = yTitle
     @axisLeaderLineLength = 5
+    @axisTitleTextHeight = 15 #default, TODO: detect
     @axisDimensionTextHeight = 15 #default, TODO: detect
-    @axisTitleTextHeight = 15
     @axisDimensionTextWidth = 29 # default, TODO: detect
     @verticalPadding = 5
     @horizontalPadding = 5
 
-    @yAxisPadding = 50
-    @xTitle = xTitle
-    @yTitle = yTitle
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
     @fixedRatio = if fixedRatio? then fixedRatio else true
