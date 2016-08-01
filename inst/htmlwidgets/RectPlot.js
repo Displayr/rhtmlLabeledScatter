@@ -25,7 +25,7 @@ RectPlot = (function() {
       svgWidth: width,
       svgHeight: height,
       width: width - this.legendDim.width,
-      height: height - this.xAxisPadding - 20,
+      height: height - this.yAxisPadding - 20,
       x: this.yAxisPadding + 25,
       y: 15,
       labelFontSize: 16,
@@ -53,8 +53,10 @@ RectPlot = (function() {
     this.viewBoxDim.svgWidth = width;
     this.viewBoxDim.svgHeight = height;
     this.viewBoxDim.width = width - this.legendDim.width;
-    this.viewBoxDim.height = height - this.xAxisPadding + 25;
-    return this.redraw(this.data);
+    this.viewBoxDim.height = height - this.yAxisPadding - 20;
+    this.data.viewBoxDim = this.viewBoxDim;
+    this.data.legendDim = this.legendDim;
+    return this.draw();
   };
 
   RectPlot.prototype.redraw = function(data) {

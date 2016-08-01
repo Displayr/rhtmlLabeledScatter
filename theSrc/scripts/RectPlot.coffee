@@ -24,7 +24,7 @@ class RectPlot
       svgWidth:           width
       svgHeight:          height
       width:              width - @legendDim.width
-      height:             height - @xAxisPadding - 20
+      height:             height - @yAxisPadding - 20
       x:                  @yAxisPadding + 25
       y:                  15
       labelFontSize:      16
@@ -45,13 +45,16 @@ class RectPlot
     @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
     @drawAnc(@data)
 
+
   setDim: (svg, width, height) ->
     @svg = svg
     @viewBoxDim.svgWidth = width
     @viewBoxDim.svgHeight = height
     @viewBoxDim.width = width - @legendDim.width
-    @viewBoxDim.height = height - @xAxisPadding + 25
-    @redraw(@data)
+    @viewBoxDim.height = height - @yAxisPadding - 20
+    @data.viewBoxDim = @viewBoxDim
+    @data.legendDim = @legendDim
+    @draw()
 
   redraw: (data) ->
     plotElems = [

@@ -1,45 +1,43 @@
- # TEMPLATE! - update the method signature here
- #  -You will need to update most of this file, as this is where all the specific widget stuff goes
- #  -Simplest way to make a new widget is to extend RhtmlStatefulWidget (which also gives you RhtmlSvgWidget)
- #   then rewrite _processConfig and
+'use strict'
 
-class LabeledScatter extends RhtmlSvgWidget
+class LabeledScatter
 
   @plot = null
+  @data = null
 
-  constructor: (el, width, height) ->
-    super el, width, height
-    @width = width
-    @height = height
-    @_initializeState { selected: null }
+  constructor: (@width, @height) ->
 
   resize: (el, width, height) ->
     @width = width
     @height = height
-    console.log el
-    @plot.setDim(el[0], width, height)
+    d3.select('.plot-container').remove()
+    svg = d3.select(el)
+            .append('svg')
+            .attr('width', @width)
+            .attr('height', @height)
+            .attr('class', 'plot-container')
+    @plot.setDim(svg, @width, @height)
 
-  _processConfig: () ->
-    console.log '_processConfig'
-    console.log 'the config has already been added to the context at @config, you must now "process" it'
-    console.log @config
+  draw: (data, el) ->
+    svg = d3.select(el)
+            .append('svg')
+            .attr('width', @width)
+            .attr('height', @height)
+            .attr('class', 'plot-container')
 
-  _redraw: () ->
-    console.log '_redraw'
-    data = null
-    if @config.X? and @config.Y?
-      data = @config
+    if data.X? and data.Y?
+      @data = data
 
     else # For debuggning in browser
-      data = testData
-      data.fixedAspectRatio = false
+      @data = testData
+      @data.fixedAspectRatio = false
 
     @plot = new RectPlot(@width,
                         @height,
-                        data.X,
-                        data.Y,
-                        data.group,
-                        data.label,
-                        @outerSvg,
-                        data.fixedAspectRatio)
+                        @data.X,
+                        @data.Y,
+                        @data.group,
+                        @data.label,
+                        svg,
+                        @data.fixedAspectRatio)
     @plot.draw()
