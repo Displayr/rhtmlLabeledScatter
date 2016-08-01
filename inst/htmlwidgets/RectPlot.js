@@ -4,8 +4,13 @@ var RectPlot;
 RectPlot = (function() {
   function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin) {
     this.svg = svg;
+    this.axisLeaderLineLength = 5;
+    this.axisDimensionTextHeight = 15;
+    this.axisTitleTextHeight = 15;
+    this.axisDimensionTextWidth = 29;
+    this.verticalPadding = 5;
+    this.horizontalPadding = 5;
     this.yAxisPadding = 50;
-    this.xAxisPadding = 40;
     this.xTitle = xTitle;
     this.yTitle = yTitle;
     this.grid = grid != null ? grid : true;
@@ -29,10 +34,10 @@ RectPlot = (function() {
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width,
-      height: height - this.yAxisPadding - 20,
-      x: this.yAxisPadding + 25,
-      y: 15,
+      width: width - this.legendDim.width - this.horizontalPadding * 2 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.axisTitleTextHeight,
+      height: height - this.verticalPadding * 2 - this.axisDimensionTextHeight - this.axisTitleTextHeight - this.axisLeaderLineLength,
+      x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.axisTitleTextHeight,
+      y: this.verticalPadding,
       labelFontSize: 16,
       labelSmallFontSize: 12
     };
@@ -46,7 +51,7 @@ RectPlot = (function() {
     this.drawDraggedMarkers(this.data);
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
-    this.drawAxisLabels(this.svg, this.viewBoxDim, this.xAxisPadding, this.yAxisPadding);
+    this.drawAxisLabels();
     return this.drawAnc(this.data);
   };
 
@@ -98,10 +103,8 @@ RectPlot = (function() {
     between = function(num, min, max) {
       return num > min && num < max;
     };
-    pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
-      var labelHeight, leaderLineLen, numShown;
-      leaderLineLen = 5;
-      labelHeight = 15;
+    pushDimensionMarker = function(type, x1, y1, x2, y2, label, leaderLineLen, labelHeight) {
+      var numShown;
       numShown = label.toFixed(1);
       if (type === 'c') {
         dimensionMarkerLeaderStack.push({
@@ -150,7 +153,7 @@ RectPlot = (function() {
       x2: this.viewBoxDim.x + this.viewBoxDim.width,
       y2: normalizeYCoords(0)
     };
-    pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0);
+    pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight);
     if (!((this.data.minY === 0) || (this.data.maxY === 0))) {
       originAxis.push(oax);
     }
@@ -160,7 +163,7 @@ RectPlot = (function() {
       x2: normalizeXCoords(0),
       y2: this.viewBoxDim.y + this.viewBoxDim.height
     };
-    pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0);
+    pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight);
     if (!((this.data.minX === 0) || (this.data.maxX === 0))) {
       originAxis.push(oay);
     }
@@ -203,7 +206,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val);
+          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight);
         }
       }
       if (i < colsNegative) {
@@ -219,7 +222,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val);
+          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight);
         }
       }
       i++;
@@ -240,7 +243,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
+          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight);
         }
       }
       if (i < rowsNegative) {
@@ -256,7 +259,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val);
+          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight);
         }
       }
       i++;
@@ -313,16 +316,16 @@ RectPlot = (function() {
     axisLabels = [
       {
         x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
-        y: this.viewBoxDim.y + this.viewBoxDim.height + this.xAxisPadding,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + this.axisLeaderLineLength + this.axisDimensionTextHeight + this.axisTitleTextHeight,
         text: this.xTitle,
         anchor: 'middle',
         transform: 'rotate(0)'
       }, {
-        x: this.viewBoxDim.x - this.yAxisPadding,
+        x: this.horizontalPadding + this.axisTitleTextHeight,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
         text: this.yTitle,
         anchor: 'middle',
-        transform: 'rotate(270,' + (this.viewBoxDim.x - this.yAxisPadding) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
+        transform: 'rotate(270,' + (this.horizontalPadding + this.axisTitleTextHeight) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
       }
     ];
     this.svg.selectAll('.axis-label').remove();

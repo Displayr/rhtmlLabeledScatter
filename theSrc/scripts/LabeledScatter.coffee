@@ -30,7 +30,6 @@ class LabeledScatter
 
     else # For debuggning in browser
       @data = testData
-      @data.fixedAspectRatio = false
 
     @plot = new RectPlot(@width,
                         @height,

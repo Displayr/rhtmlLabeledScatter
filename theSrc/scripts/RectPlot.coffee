@@ -14,13 +14,21 @@ class RectPlot
                 origin) ->
     @svg = svg
 
+    @axisLeaderLineLength = 5
+    @axisDimensionTextHeight = 15 #default, TODO: detect
+    @axisTitleTextHeight = 15
+    @axisDimensionTextWidth = 29 # default, TODO: detect
+    @verticalPadding = 5
+    @horizontalPadding = 5
+
+
     @yAxisPadding = 50
-    @xAxisPadding = 40
     @xTitle = xTitle
     @yTitle = yTitle
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
     fixedRatio = if fixedRatio? then fixedRatio else true
+
 
     @legendDim =
       width:          300 #init value
@@ -40,10 +48,10 @@ class RectPlot
     @viewBoxDim =
       svgWidth:           width
       svgHeight:          height
-      width:              width - @legendDim.width
-      height:             height - @yAxisPadding - 20
-      x:                  @yAxisPadding + 25
-      y:                  15
+      width:              width - @legendDim.width - @horizontalPadding*2 - @axisLeaderLineLength - @axisDimensionTextWidth - @axisTitleTextHeight
+      height:             height - @verticalPadding*2 - @axisDimensionTextHeight - @axisTitleTextHeight - @axisLeaderLineLength
+      x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @axisTitleTextHeight
+      y:                  @verticalPadding
       labelFontSize:      16
       labelSmallFontSize: 12
 
@@ -57,7 +65,7 @@ class RectPlot
     @drawDraggedMarkers(@data)
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
-    @drawAxisLabels(@svg, @viewBoxDim, @xAxisPadding, @yAxisPadding)
+    @drawAxisLabels()
     @drawAnc(@data)
 
 
@@ -123,9 +131,7 @@ class RectPlot
     between = (num, min, max) ->
       num > min and num < max
 
-    pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
-      leaderLineLen = 5
-      labelHeight = 15
+    pushDimensionMarker = (type, x1, y1, x2, y2, label, leaderLineLen, labelHeight) ->
       numShown = label.toFixed(1)
       if type == 'c'
         dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
@@ -154,7 +160,7 @@ class RectPlot
       x2: @viewBoxDim.x + @viewBoxDim.width
       y2: normalizeYCoords 0
     }
-    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
+    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight
     originAxis.push(oax) unless (@data.minY is 0) or (@data.maxY is 0)
 
     oay = {
@@ -163,7 +169,7 @@ class RectPlot
       x2: normalizeXCoords 0
       y2: @viewBoxDim.y + @viewBoxDim.height
     }
-    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
+    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight
     originAxis.push(oay) unless (@data.minX is 0) or (@data.maxX is 0)
 
     #calculate number of dimension markers
@@ -194,7 +200,7 @@ class RectPlot
         y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val
+          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight
 
       if i < colsNegative
         val = -(i+1)*ticksX
@@ -204,7 +210,7 @@ class RectPlot
         y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val
+          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight
       i++
 
     i = 0
@@ -218,7 +224,7 @@ class RectPlot
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val
+          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight
       if i < rowsNegative
         val = (i+1)*ticksY
         x1 = @viewBoxDim.x
@@ -227,7 +233,7 @@ class RectPlot
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val
+          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight
       i++
 
     if @grid
@@ -291,17 +297,20 @@ class RectPlot
     axisLabels = [
       { # x axis label
         x: @viewBoxDim.x + @viewBoxDim.width/2
-        y: @viewBoxDim.y + @viewBoxDim.height + @xAxisPadding
+        y: @viewBoxDim.y + @viewBoxDim.height +
+           @axisLeaderLineLength +
+           @axisDimensionTextHeight +
+           @axisTitleTextHeight
         text: @xTitle
         anchor: 'middle'
         transform: 'rotate(0)'
       },
       { # y axis label
-        x: @viewBoxDim.x - @yAxisPadding
+        x: @horizontalPadding + @axisTitleTextHeight
         y: @viewBoxDim.y + @viewBoxDim.height/2
         text: @yTitle
         anchor: 'middle'
-        transform: 'rotate(270,'+(@viewBoxDim.x-@yAxisPadding) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+        transform: 'rotate(270,'+(@horizontalPadding+ @axisTitleTextHeight) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
       }
     ]
 

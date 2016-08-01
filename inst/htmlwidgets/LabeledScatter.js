@@ -28,7 +28,6 @@ LabeledScatter = (function() {
       this.data = data;
     } else {
       this.data = testData;
-      this.data.fixedAspectRatio = false;
     }
     this.plot = new RectPlot(this.width, this.height, this.data.X, this.data.Y, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.colors, this.data.grid, this.data.origin);
     return this.plot.draw();
