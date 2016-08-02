@@ -113,7 +113,7 @@ LabeledScatter <- function(
     sizingPolicy = htmlwidgets::sizingPolicy(
       browser.fill = TRUE,
       viewer.fill = TRUE,
-      padding = 5
+      padding = 0
     ),
     package = 'rhtmlLabeledScatter'
   )
