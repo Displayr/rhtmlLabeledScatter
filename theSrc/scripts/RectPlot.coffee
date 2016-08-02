@@ -20,10 +20,17 @@ class RectPlot
     @group = group
     @label = label
 
-    @xTitle = xTitle
-    @yTitle = yTitle
+    @xTitle =
+      text:       xTitle
+      textHeight: 15      #default, TODO: detect
+    @xTitle.textHeight = 0 if @xTitle.text is ''
+
+    @yTitle =
+      text:       yTitle
+      textHeight: 15      #default, TODO: detect
+    @yTitle.textHeight = 0 if @yTitle.text is ''
+
     @axisLeaderLineLength = 5
-    @axisTitleTextHeight = 15 #default, TODO: detect
     @axisDimensionTextHeight = 15 #default, TODO: detect
     @axisDimensionTextWidth = 29 # default, TODO: detect
     @verticalPadding = 5
@@ -82,9 +89,9 @@ class RectPlot
     @viewBoxDim =
       svgWidth:           width
       svgHeight:          height
-      width:              width - @legendDim.width - @horizontalPadding*2 - @axisLeaderLineLength - @axisDimensionTextWidth - @axisTitleTextHeight
-      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @axisTitleTextHeight - @axisLeaderLineLength
-      x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @axisTitleTextHeight
+      width:              width - @legendDim.width - @horizontalPadding*2 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight
+      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength
+      x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
       labelFontSize:      16
       labelSmallFontSize: 12
@@ -352,17 +359,19 @@ class RectPlot
         y: @viewBoxDim.y + @viewBoxDim.height +
            @axisLeaderLineLength +
            @axisDimensionTextHeight +
-           @axisTitleTextHeight
-        text: @xTitle
+           @xTitle.textHeight
+        text: @xTitle.text
         anchor: 'middle'
         transform: 'rotate(0)'
+        display: if @xTitle is '' then 'none' else ''
       },
       { # y axis label
-        x: @horizontalPadding + @axisTitleTextHeight
+        x: @horizontalPadding + @yTitle.textHeight
         y: @viewBoxDim.y + @viewBoxDim.height/2
-        text: @yTitle
+        text: @yTitle.text
         anchor: 'middle'
-        transform: 'rotate(270,'+(@horizontalPadding+ @axisTitleTextHeight) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+        transform: 'rotate(270,'+(@horizontalPadding+@yTitle.textHeight) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
+        display: if @yTitle is '' then 'none' else ''
       }
     ]
 
@@ -379,6 +388,7 @@ class RectPlot
              .attr('transform', (d) -> d.transform)
              .text((d) -> d.text)
              .style('font-weight', 'bold')
+             .style('display', (d) -> d.display)
 
   drawLegend: (plot, data)->
     data.setupLegendGroupsAndPts(data)

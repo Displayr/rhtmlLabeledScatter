@@ -71,8 +71,8 @@ testData =
     'Cols'
   ],
 
-  xTitle: "Testing",
-  yTitle: "Blah2123123",
+  xTitle: "Axis 2",
+  yTitle: "",
   fixedAspectRatio: false,
   grid: false,
   origin: true,

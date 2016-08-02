@@ -9,10 +9,21 @@ RectPlot = (function() {
     this.Y = Y;
     this.group = group;
     this.label = label;
-    this.xTitle = xTitle;
-    this.yTitle = yTitle;
+    this.xTitle = {
+      text: xTitle,
+      textHeight: 15
+    };
+    if (this.xTitle.text === '') {
+      this.xTitle.textHeight = 0;
+    }
+    this.yTitle = {
+      text: yTitle,
+      textHeight: 15
+    };
+    if (this.yTitle.text === '') {
+      this.yTitle.textHeight = 0;
+    }
     this.axisLeaderLineLength = 5;
-    this.axisTitleTextHeight = 15;
     this.axisDimensionTextHeight = 15;
     this.axisDimensionTextWidth = 29;
     this.verticalPadding = 5;
@@ -71,9 +82,9 @@ RectPlot = (function() {
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width - this.horizontalPadding * 2 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.axisTitleTextHeight,
-      height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.axisTitleTextHeight - this.axisLeaderLineLength,
-      x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.axisTitleTextHeight,
+      width: width - this.legendDim.width - this.horizontalPadding * 2 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight,
+      height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.xTitle.textHeight - this.axisLeaderLineLength,
+      x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
       labelFontSize: 16,
       labelSmallFontSize: 12
@@ -350,16 +361,18 @@ RectPlot = (function() {
     axisLabels = [
       {
         x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
-        y: this.viewBoxDim.y + this.viewBoxDim.height + this.axisLeaderLineLength + this.axisDimensionTextHeight + this.axisTitleTextHeight,
-        text: this.xTitle,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + this.axisLeaderLineLength + this.axisDimensionTextHeight + this.xTitle.textHeight,
+        text: this.xTitle.text,
         anchor: 'middle',
-        transform: 'rotate(0)'
+        transform: 'rotate(0)',
+        display: this.xTitle === '' ? 'none' : ''
       }, {
-        x: this.horizontalPadding + this.axisTitleTextHeight,
+        x: this.horizontalPadding + this.yTitle.textHeight,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
-        text: this.yTitle,
+        text: this.yTitle.text,
         anchor: 'middle',
-        transform: 'rotate(270,' + (this.horizontalPadding + this.axisTitleTextHeight) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')'
+        transform: 'rotate(270,' + (this.horizontalPadding + this.yTitle.textHeight) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')',
+        display: this.yTitle === '' ? 'none' : ''
       }
     ];
     this.svg.selectAll('.axis-label').remove();
@@ -373,7 +386,9 @@ RectPlot = (function() {
       return d.transform;
     }).text(function(d) {
       return d.text;
-    }).style('font-weight', 'bold');
+    }).style('font-weight', 'bold').style('display', function(d) {
+      return d.display;
+    });
   };
 
   RectPlot.prototype.drawLegend = function(plot, data) {
