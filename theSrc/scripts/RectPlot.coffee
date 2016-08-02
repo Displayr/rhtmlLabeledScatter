@@ -47,12 +47,12 @@ class RectPlot
     @setDim(@svg, width, height)
 
   draw: ->
+    @drawTitle()
     @drawLabs(@)
     @drawLegend(@, @data)
     @drawDraggedMarkers(@data)
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
-    @drawTitle()
     @drawAxisLabels()
     @drawAnc(@data)
 
@@ -128,6 +128,9 @@ class RectPlot
           .attr('font-size', @title.fontSize)
           .attr('font-weight', @title.fontWeight)
           .text(@title.text)
+    else
+      @title.textHeight = 0
+      @title.paddingBot = 0
 
 
   drawRect: ->
@@ -297,6 +300,23 @@ class RectPlot
                .attr('y2', (d) -> d.y2)
                .attr('stroke-width', 0.2)
                .attr('stroke', 'grey')
+
+
+    else if not @grid and @origin
+      @svg.selectAll('.origin').remove()
+      @svg.selectAll('.origin')
+          .data(originAxis)
+          .enter()
+          .append('line')
+          .attr('class', 'origin')
+          .attr('x1', (d) -> d.x1)
+          .attr('y1', (d) -> d.y1)
+          .attr('x2', (d) -> d.x2)
+          .attr('y2', (d) -> d.y2)
+          .style('stroke-dasharray', ('4, 6'))
+          .attr('stroke-width', 1)
+          .attr('stroke', 'black')
+
 
     @svg.selectAll('.dim-marker-leader').remove()
     @svg.selectAll('.dim-marker-leader')

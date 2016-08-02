@@ -8,6 +8,8 @@ testData = {
   group: ['Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols'],
   xTitle: "Testing",
   yTitle: "Blah2123123",
-  origin: false,
+  fixedAspectRatio: false,
+  grid: false,
+  origin: true,
   title: "Big Title - Basic Test Data"
 };

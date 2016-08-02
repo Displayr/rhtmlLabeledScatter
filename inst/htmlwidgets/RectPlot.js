@@ -36,12 +36,12 @@ RectPlot = (function() {
   }
 
   RectPlot.prototype.draw = function() {
+    this.drawTitle();
     this.drawLabs(this);
     this.drawLegend(this, this.data);
     this.drawDraggedMarkers(this.data);
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
-    this.drawTitle();
     this.drawAxisLabels();
     return this.drawAnc(this.data);
   };
@@ -93,6 +93,9 @@ RectPlot = (function() {
     if (this.title.text !== '') {
       this.svg.selectAll('.plot-title').remove();
       return this.svg.append('text').attr('class', 'plot-title').attr('font-family', this.title.fontFamily).attr('x', this.title.x).attr('y', this.title.y).attr('text-anchor', this.title.anchor).attr('fill', this.title.color).attr('font-size', this.title.fontSize).attr('font-weight', this.title.fontWeight).text(this.title.text);
+    } else {
+      this.title.textHeight = 0;
+      return this.title.paddingBot = 0;
     }
   };
 
@@ -306,6 +309,17 @@ RectPlot = (function() {
       }).attr('y2', function(d) {
         return d.y2;
       }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+    } else if (!this.grid && this.origin) {
+      this.svg.selectAll('.origin').remove();
+      this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+        return d.x1;
+      }).attr('y1', function(d) {
+        return d.y1;
+      }).attr('x2', function(d) {
+        return d.x2;
+      }).attr('y2', function(d) {
+        return d.y2;
+      }).style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
     }
     this.svg.selectAll('.dim-marker-leader').remove();
     this.svg.selectAll('.dim-marker-leader').data(dimensionMarkerLeaderStack).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {

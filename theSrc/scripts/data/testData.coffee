@@ -73,5 +73,7 @@ testData =
 
   xTitle: "Testing",
   yTitle: "Blah2123123",
-  origin: false,
+  fixedAspectRatio: false,
+  grid: false,
+  origin: true,
   title: "Big Title - Basic Test Data"
