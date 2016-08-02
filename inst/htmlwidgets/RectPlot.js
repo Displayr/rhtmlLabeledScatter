@@ -2,13 +2,18 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily, labelsFontFamily, labelsFontSize, labelsFontColor) {
     this.svg = svg;
     this.colors = colors;
     this.X = X;
     this.Y = Y;
     this.group = group;
     this.label = label;
+    this.labelsFont = {
+      size: labelsFontSize,
+      color: labelsFontColor,
+      family: labelsFontFamily
+    };
     this.xTitle = {
       text: xTitle,
       textHeight: 15,
@@ -88,8 +93,10 @@ RectPlot = (function() {
       height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.xTitle.textHeight - this.axisLeaderLineLength,
       x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
-      labelFontSize: 16,
-      labelSmallFontSize: 12
+      labelFontSize: this.labelsFont.size,
+      labelSmallFontSize: this.labelsFont.size * 0.75,
+      labelFontColor: this.labelsFont.color,
+      labelFontFamily: this.labelsFont.family
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio);
@@ -569,7 +576,9 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial').text(function(d) {
+    }).attr('font-family', function(d) {
+      return d.fontFamily;
+    }).text(function(d) {
       return d.text;
     }).attr('text-anchor', 'middle').attr('fill', function(d) {
       return d.color;

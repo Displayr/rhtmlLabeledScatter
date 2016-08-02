@@ -15,13 +15,21 @@ class RectPlot
                 title,
                 titleFontFamily,
                 yTitleFontFamily,
-                xTitleFontFamily) ->
+                xTitleFontFamily,
+                labelsFontFamily,
+                labelsFontSize,
+                labelsFontColor) ->
     @svg = svg
     @colors = colors
     @X = X
     @Y = Y
     @group = group
+
     @label = label
+    @labelsFont =
+      size:            labelsFontSize
+      color:           labelsFontColor
+      family:          labelsFontFamily
 
     @xTitle =
       text:       xTitle
@@ -98,8 +106,10 @@ class RectPlot
       height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength
       x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
-      labelFontSize:      16
-      labelSmallFontSize: 12
+      labelFontSize:      @labelsFont.size
+      labelSmallFontSize: @labelsFont.size * 0.75
+      labelFontColor:     @labelsFont.color
+      labelFontFamily:    @labelsFont.family
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
@@ -565,7 +575,7 @@ class RectPlot
              .attr('id', (d) -> d.id)
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
+             .attr('font-family', (d) -> d.fontFamily)
              .text((d) -> d.text)
              .attr('text-anchor', 'middle')
              .attr('fill', (d) -> d.color)

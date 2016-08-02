@@ -169,7 +169,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fontSize, i, label, pt, x, y, _results;
+    var fontColor, fontSize, i, label, pt, ptColor, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
@@ -192,6 +192,10 @@ PlotData = (function() {
           label = pt.markerId + 1;
           fontSize = this.viewBoxDim.labelSmallFontSize;
         }
+        fontColor = ptColor = this.groupToColorMap[this.group[i]];
+        if ((this.viewBoxDim.labelFontColor != null) && !(this.viewBoxDim.labelFontColor === '')) {
+          fontColor = this.viewBoxDim.labelFontColor;
+        }
         this.pts.push({
           x: x,
           y: y,
@@ -200,16 +204,17 @@ PlotData = (function() {
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
           group: this.group[i],
-          color: this.groupToColorMap[this.group[i]],
+          color: ptColor,
           id: i
         });
         this.lab.push({
           x: x,
           y: y,
           text: label,
-          color: this.groupToColorMap[this.group[i]],
+          color: fontColor,
           id: i,
-          fontSize: fontSize
+          fontSize: fontSize,
+          fontFamily: this.viewBoxDim.labelFontFamily
         });
         this.anc.push({
           x: x,

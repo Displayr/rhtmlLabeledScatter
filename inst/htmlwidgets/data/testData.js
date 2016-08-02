@@ -14,5 +14,8 @@ testData = {
   title: "TEST of the font, please look and cook carefully",
   titleFontFamily: 'Impact',
   yTitleFontFamily: 'Verdana',
-  xTitleFontFamily: 'Times New Roman'
+  xTitleFontFamily: 'Times New Roman',
+  labelsFontFamily: 'Times New Roman',
+  labelsFontSize: 16,
+  labelsFontColor: null
 };

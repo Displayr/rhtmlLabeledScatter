@@ -190,6 +190,8 @@ class PlotData
           label = pt.markerId + 1
           fontSize = @viewBoxDim.labelSmallFontSize
 
+        fontColor = ptColor = @groupToColorMap[@group[i]]
+        fontColor = @viewBoxDim.labelFontColor if @viewBoxDim.labelFontColor? and !(@viewBoxDim.labelFontColor == '')
         @pts.push({
           x: x
           y: y
@@ -198,16 +200,17 @@ class PlotData
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
           group: @group[i]
-          color: @groupToColorMap[@group[i]]
+          color: ptColor
           id: i
         })
         @lab.push({
           x: x
           y: y
           text: label
-          color: @groupToColorMap[@group[i]]
+          color: fontColor
           id: i
           fontSize: fontSize
+          fontFamily: @viewBoxDim.labelFontFamily
         })
         @anc.push({
           x: x
