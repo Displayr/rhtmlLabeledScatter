@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily) {
     this.svg = svg;
     this.colors = colors;
     this.X = X;
@@ -11,14 +11,16 @@ RectPlot = (function() {
     this.label = label;
     this.xTitle = {
       text: xTitle,
-      textHeight: 15
+      textHeight: 15,
+      fontFamily: xTitleFontFamily
     };
     if (this.xTitle.text === '') {
       this.xTitle.textHeight = 0;
     }
     this.yTitle = {
       text: yTitle,
-      textHeight: 15
+      textHeight: 15,
+      fontFamily: yTitleFontFamily
     };
     if (this.yTitle.text === '') {
       this.yTitle.textHeight = 0;
@@ -35,7 +37,7 @@ RectPlot = (function() {
       anchor: 'middle',
       fontSize: 18,
       fontWeight: 'bold',
-      fontFamily: 'Arial'
+      fontFamily: titleFontFamily
     };
     if (this.title.text === '') {
       this.title.textHeight = 0;
@@ -365,14 +367,16 @@ RectPlot = (function() {
         text: this.xTitle.text,
         anchor: 'middle',
         transform: 'rotate(0)',
-        display: this.xTitle === '' ? 'none' : ''
+        display: this.xTitle === '' ? 'none' : '',
+        fontFamily: this.xTitle.fontFamily
       }, {
         x: this.horizontalPadding + this.yTitle.textHeight,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
         text: this.yTitle.text,
         anchor: 'middle',
         transform: 'rotate(270,' + (this.horizontalPadding + this.yTitle.textHeight) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')',
-        display: this.yTitle === '' ? 'none' : ''
+        display: this.yTitle === '' ? 'none' : '',
+        fontFamily: this.yTitle.fontFamily
       }
     ];
     this.svg.selectAll('.axis-label').remove();
@@ -380,7 +384,9 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
+    }).attr('font-family', function(d) {
+      return d.fontFamily;
+    }).attr('text-anchor', function(d) {
       return d.anchor;
     }).attr('transform', function(d) {
       return d.transform;

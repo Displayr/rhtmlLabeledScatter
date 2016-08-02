@@ -47,6 +47,9 @@ class LabeledScatter
                         @data.colors,
                         @data.grid,
                         @data.origin,
-                        @data.title)
+                        @data.title,
+                        @data.titleFontFamily,
+                        @data.yTitleFontFamily,
+                        @data.xTitleFontFamily)
     @plot.draw()
     return @

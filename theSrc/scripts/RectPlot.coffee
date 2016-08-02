@@ -12,7 +12,10 @@ class RectPlot
                 colors,
                 grid,
                 origin,
-                title) ->
+                title,
+                titleFontFamily,
+                yTitleFontFamily,
+                xTitleFontFamily) ->
     @svg = svg
     @colors = colors
     @X = X
@@ -23,11 +26,13 @@ class RectPlot
     @xTitle =
       text:       xTitle
       textHeight: 15      #default, TODO: detect
+      fontFamily: xTitleFontFamily
     @xTitle.textHeight = 0 if @xTitle.text is ''
 
     @yTitle =
       text:       yTitle
       textHeight: 15      #default, TODO: detect
+      fontFamily: yTitleFontFamily
     @yTitle.textHeight = 0 if @yTitle.text is ''
 
     @axisLeaderLineLength = 5
@@ -42,7 +47,7 @@ class RectPlot
       anchor:       'middle'
       fontSize:     18
       fontWeight:   'bold'
-      fontFamily:   'Arial'
+      fontFamily:   titleFontFamily
 
     if @title.text is ''
       @title.textHeight = 0
@@ -364,6 +369,7 @@ class RectPlot
         anchor: 'middle'
         transform: 'rotate(0)'
         display: if @xTitle is '' then 'none' else ''
+        fontFamily: @xTitle.fontFamily
       },
       { # y axis label
         x: @horizontalPadding + @yTitle.textHeight
@@ -372,6 +378,7 @@ class RectPlot
         anchor: 'middle'
         transform: 'rotate(270,'+(@horizontalPadding+@yTitle.textHeight) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
         display: if @yTitle is '' then 'none' else ''
+        fontFamily: @yTitle.fontFamily
       }
     ]
 
@@ -383,7 +390,7 @@ class RectPlot
              .attr('class', 'axis-label')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
+             .attr('font-family', (d) -> d.fontFamily)
              .attr('text-anchor', (d) -> d.anchor)
              .attr('transform', (d) -> d.transform)
              .text((d) -> d.text)

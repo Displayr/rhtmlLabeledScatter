@@ -6,10 +6,13 @@ testData = {
   X: [-1.16, .38, .42, -.95, .54, .22, .46, .57, .27, -1, .04, -.24, .1, -1.3, .75],
   Y: [-.05, -.36, .39, -.1, -.37, .71, -.44, .01, -.37, -.2, .68, .75, -.36, -.18, -.02],
   group: ['Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols'],
-  xTitle: "Axis 2",
-  yTitle: "",
+  xTitle: "Axis 1",
+  yTitle: "Axis 2",
   fixedAspectRatio: false,
-  grid: false,
+  grid: true,
   origin: true,
-  title: ""
+  title: "TEST of the font, please look and cook carefully",
+  titleFontFamily: 'Impact',
+  yTitleFontFamily: 'Verdana',
+  xTitleFontFamily: 'Times New Roman'
 };

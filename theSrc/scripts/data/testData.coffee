@@ -71,9 +71,12 @@ testData =
     'Cols'
   ],
 
-  xTitle: "Axis 2",
-  yTitle: "",
+  xTitle: "Axis 1",
+  yTitle: "Axis 2",
   fixedAspectRatio: false,
-  grid: false,
+  grid: true,
   origin: true,
-  title: ""
+  title: "TEST of the font, please look and cook carefully",
+  titleFontFamily: 'Impact',
+  yTitleFontFamily: 'Verdana',
+  xTitleFontFamily: 'Times New Roman'

@@ -32,7 +32,7 @@ LabeledScatter = (function() {
     } else {
       this.data = testData;
     }
-    this.plot = new RectPlot(this.width, this.height, this.data.X, this.data.Y, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.colors, this.data.grid, this.data.origin, this.data.title);
+    this.plot = new RectPlot(this.width, this.height, this.data.X, this.data.Y, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.colors, this.data.grid, this.data.origin, this.data.title, this.data.titleFontFamily, this.data.yTitleFontFamily, this.data.xTitleFontFamily);
     this.plot.draw();
     return this;
   };
