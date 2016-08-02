@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title) {
     this.svg = svg;
     this.colors = colors;
     this.X = X;
@@ -17,6 +17,18 @@ RectPlot = (function() {
     this.axisDimensionTextWidth = 29;
     this.verticalPadding = 5;
     this.horizontalPadding = 5;
+    this.title = {
+      text: title,
+      textHeight: 15,
+      x: width / 2,
+      color: 'black',
+      anchor: 'middle',
+      fontSize: 18,
+      fontWeight: 'bold',
+      fontFamily: 'Arial',
+      paddingBot: 10
+    };
+    this.title.y = this.verticalPadding + this.title.textHeight;
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
     this.fixedRatio = fixedRatio != null ? fixedRatio : true;
@@ -29,6 +41,7 @@ RectPlot = (function() {
     this.drawDraggedMarkers(this.data);
     this.drawRect(this.svg, this.viewBoxDim);
     this.drawDimensionMarkers();
+    this.drawTitle();
     this.drawAxisLabels();
     return this.drawAnc(this.data);
   };
@@ -54,9 +67,9 @@ RectPlot = (function() {
       svgWidth: width,
       svgHeight: height,
       width: width - this.legendDim.width - this.horizontalPadding * 2 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.axisTitleTextHeight,
-      height: height - this.verticalPadding * 2 - this.axisDimensionTextHeight - this.axisTitleTextHeight - this.axisLeaderLineLength,
+      height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.axisTitleTextHeight - this.axisLeaderLineLength,
       x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.axisTitleTextHeight,
-      y: this.verticalPadding,
+      y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
       labelFontSize: 16,
       labelSmallFontSize: 12
     };
@@ -74,6 +87,13 @@ RectPlot = (function() {
     data.normalizeData(data);
     data.calcDataArrays();
     return this.draw();
+  };
+
+  RectPlot.prototype.drawTitle = function() {
+    if (this.title.text !== '') {
+      this.svg.selectAll('.plot-title').remove();
+      return this.svg.append('text').attr('class', 'plot-title').attr('font-family', this.title.fontFamily).attr('x', this.title.x).attr('y', this.title.y).attr('text-anchor', this.title.anchor).attr('fill', this.title.color).attr('font-size', this.title.fontSize).attr('font-weight', this.title.fontWeight).text(this.title.text);
+    }
   };
 
   RectPlot.prototype.drawRect = function() {

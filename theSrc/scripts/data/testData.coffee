@@ -72,4 +72,6 @@ testData =
   ],
 
   xTitle: "Testing",
-  yTitle: "Blah2"
+  yTitle: "Blah2123123",
+  origin: false,
+  title: "Big Title - Basic Test Data"

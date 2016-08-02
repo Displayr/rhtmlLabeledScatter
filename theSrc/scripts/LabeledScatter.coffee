@@ -46,6 +46,7 @@ class LabeledScatter
                         @data.yTitle,
                         @data.colors,
                         @data.grid,
-                        @data.origin)
+                        @data.origin,
+                        @data.title)
     @plot.draw()
     return @

@@ -11,7 +11,8 @@ class RectPlot
                 yTitle,
                 colors,
                 grid,
-                origin) ->
+                origin,
+                title) ->
     @svg = svg
     @colors = colors
     @X = X
@@ -27,6 +28,17 @@ class RectPlot
     @axisDimensionTextWidth = 29 # default, TODO: detect
     @verticalPadding = 5
     @horizontalPadding = 5
+    @title =
+      text:         title
+      textHeight:   15 #init
+      x:            width/2
+      color:        'black'
+      anchor:       'middle'
+      fontSize:     18
+      fontWeight:   'bold'
+      fontFamily:   'Arial'
+      paddingBot:   10
+    @title.y = @verticalPadding + @title.textHeight
 
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
@@ -34,16 +46,15 @@ class RectPlot
 
     @setDim(@svg, width, height)
 
-
   draw: ->
     @drawLabs(@)
     @drawLegend(@, @data)
     @drawDraggedMarkers(@data)
     @drawRect(@svg, @viewBoxDim)
     @drawDimensionMarkers()
+    @drawTitle()
     @drawAxisLabels()
     @drawAnc(@data)
-
 
   setDim: (svg, width, height) ->
     @svg = svg
@@ -66,9 +77,9 @@ class RectPlot
       svgWidth:           width
       svgHeight:          height
       width:              width - @legendDim.width - @horizontalPadding*2 - @axisLeaderLineLength - @axisDimensionTextWidth - @axisTitleTextHeight
-      height:             height - @verticalPadding*2 - @axisDimensionTextHeight - @axisTitleTextHeight - @axisLeaderLineLength
+      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @axisTitleTextHeight - @axisLeaderLineLength
       x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @axisTitleTextHeight
-      y:                  @verticalPadding
+      y:                  @verticalPadding + @title.textHeight + @title.paddingBot
       labelFontSize:      16
       labelSmallFontSize: 12
 
@@ -104,17 +115,32 @@ class RectPlot
     data.calcDataArrays()
     @draw()
 
+  drawTitle: ->
+    if @title.text != ''
+      @svg.selectAll('.plot-title').remove()
+      @svg.append('text')
+          .attr('class', 'plot-title')
+          .attr('font-family', @title.fontFamily)
+          .attr('x', @title.x)
+          .attr('y', @title.y)
+          .attr('text-anchor', @title.anchor)
+          .attr('fill', @title.color)
+          .attr('font-size', @title.fontSize)
+          .attr('font-weight', @title.fontWeight)
+          .text(@title.text)
+
+
   drawRect: ->
     @svg.selectAll('.plot-viewbox').remove()
     @svg.append('rect')
-      .attr('class', 'plot-viewbox')
-      .attr('x', @viewBoxDim.x)
-      .attr('y', @viewBoxDim.y)
-      .attr('width', @viewBoxDim.width)
-      .attr('height', @viewBoxDim.height)
-      .attr('fill', 'none')
-      .attr('stroke', 'black')
-      .attr('stroke-width', '1px')
+        .attr('class', 'plot-viewbox')
+        .attr('x', @viewBoxDim.x)
+        .attr('y', @viewBoxDim.y)
+        .attr('width', @viewBoxDim.width)
+        .attr('height', @viewBoxDim.height)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', '1px')
 
   drawDimensionMarkers: ->
     data = @data

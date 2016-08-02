@@ -7,5 +7,7 @@ testData = {
   Y: [-.05, -.36, .39, -.1, -.37, .71, -.44, .01, -.37, -.2, .68, .75, -.36, -.18, -.02],
   group: ['Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols'],
   xTitle: "Testing",
-  yTitle: "Blah2"
+  yTitle: "Blah2123123",
+  origin: false,
+  title: "Big Title - Basic Test Data"
 };
