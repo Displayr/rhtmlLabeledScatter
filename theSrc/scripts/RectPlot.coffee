@@ -30,14 +30,20 @@ class RectPlot
     @horizontalPadding = 5
     @title =
       text:         title
-      textHeight:   15 #init
       x:            width/2
       color:        'black'
       anchor:       'middle'
       fontSize:     18
       fontWeight:   'bold'
       fontFamily:   'Arial'
-      paddingBot:   10
+
+    if @title.text is ''
+      @title.textHeight = 0
+      @title.paddingBot = 0
+    else
+      @title.textHeight = 15
+      @title.paddingBot = 10
+
     @title.y = @verticalPadding + @title.textHeight
 
     @grid = if grid? then grid else true
@@ -128,10 +134,6 @@ class RectPlot
           .attr('font-size', @title.fontSize)
           .attr('font-weight', @title.fontWeight)
           .text(@title.text)
-    else
-      @title.textHeight = 0
-      @title.paddingBot = 0
-
 
   drawRect: ->
     @svg.selectAll('.plot-viewbox').remove()

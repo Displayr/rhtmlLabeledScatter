@@ -76,4 +76,4 @@ testData =
   fixedAspectRatio: false,
   grid: false,
   origin: true,
-  title: "Big Title - Basic Test Data"
+  title: ""

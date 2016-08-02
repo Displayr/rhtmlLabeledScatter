@@ -19,15 +19,20 @@ RectPlot = (function() {
     this.horizontalPadding = 5;
     this.title = {
       text: title,
-      textHeight: 15,
       x: width / 2,
       color: 'black',
       anchor: 'middle',
       fontSize: 18,
       fontWeight: 'bold',
-      fontFamily: 'Arial',
-      paddingBot: 10
+      fontFamily: 'Arial'
     };
+    if (this.title.text === '') {
+      this.title.textHeight = 0;
+      this.title.paddingBot = 0;
+    } else {
+      this.title.textHeight = 15;
+      this.title.paddingBot = 10;
+    }
     this.title.y = this.verticalPadding + this.title.textHeight;
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
@@ -93,9 +98,6 @@ RectPlot = (function() {
     if (this.title.text !== '') {
       this.svg.selectAll('.plot-title').remove();
       return this.svg.append('text').attr('class', 'plot-title').attr('font-family', this.title.fontFamily).attr('x', this.title.x).attr('y', this.title.y).attr('text-anchor', this.title.anchor).attr('fill', this.title.color).attr('font-size', this.title.fontSize).attr('font-weight', this.title.fontWeight).text(this.title.text);
-    } else {
-      this.title.textHeight = 0;
-      return this.title.paddingBot = 0;
     }
   };
 
