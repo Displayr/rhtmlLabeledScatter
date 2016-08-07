@@ -17,5 +17,6 @@ testData = {
   xTitleFontFamily: 'Times New Roman',
   labelsFontFamily: 'Times New Roman',
   labelsFontSize: 16,
-  labelsFontColor: null
+  labelsFontColor: null,
+  colors: ['#5F00D5', '#ED7D31', '#A5A5A5']
 };

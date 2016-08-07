@@ -17,7 +17,7 @@ PlotData = (function() {
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
-    this.colorWheel = colors ? colors : ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'];
+    this.colorWheel = colors;
     this.cIndex = 0;
     this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     if (this.X.length === this.Y.length) {
