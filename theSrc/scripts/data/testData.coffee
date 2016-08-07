@@ -83,4 +83,6 @@ testData =
   labelsFontFamily: 'Times New Roman',
   labelsFontSize: 16,
   labelsFontColor: null,
-  colors: ['#5F00D5', '#ED7D31', '#A5A5A5']
+  colors: ['#5F00D5', '#ED7D31', '#A5A5A5'],
+  xDecimals: 1,
+  yDecimals: 1
