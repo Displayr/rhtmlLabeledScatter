@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix) {
     this.svg = svg;
     this.colors = colors;
     this.X = X;
@@ -10,6 +10,8 @@ RectPlot = (function() {
     this.group = group;
     this.xDecimals = xDecimals;
     this.yDecimals = yDecimals;
+    this.xPrefix = xPrefix;
+    this.yPrefix = yPrefix;
     this.label = label;
     this.labelsFont = {
       size: labelsFontSize,
@@ -148,7 +150,7 @@ RectPlot = (function() {
     between = function(num, min, max) {
       return num > min && num < max;
     };
-    pushDimensionMarker = function(type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals) {
+    pushDimensionMarker = function(type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) {
       if (type === 'c') {
         dimensionMarkerLeaderStack.push({
           x1: x1,
@@ -159,7 +161,7 @@ RectPlot = (function() {
         dimensionMarkerLabelStack.push({
           x: x1,
           y: y2 + leaderLineLen + labelHeight,
-          label: label.toFixed(xDecimals),
+          label: xPrefix + label.toFixed(xDecimals),
           anchor: 'middle'
         });
       }
@@ -173,7 +175,7 @@ RectPlot = (function() {
         return dimensionMarkerLabelStack.push({
           x: x1 - leaderLineLen,
           y: y2 + labelHeight / 3,
-          label: label.toFixed(yDecimals),
+          label: yPrefix + label.toFixed(yDecimals),
           anchor: 'end'
         });
       }
@@ -196,7 +198,7 @@ RectPlot = (function() {
       x2: this.viewBoxDim.x + this.viewBoxDim.width,
       y2: normalizeYCoords(0)
     };
-    pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+    pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
     if (!((this.data.minY === 0) || (this.data.maxY === 0))) {
       originAxis.push(oax);
     }
@@ -206,7 +208,7 @@ RectPlot = (function() {
       x2: normalizeXCoords(0),
       y2: this.viewBoxDim.y + this.viewBoxDim.height
     };
-    pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+    pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
     if (!((this.data.minX === 0) || (this.data.maxX === 0))) {
       originAxis.push(oay);
     }
@@ -249,7 +251,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
         }
       }
       if (i < colsNegative) {
@@ -265,7 +267,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+          pushDimensionMarker('c', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
         }
       }
       i++;
@@ -286,7 +288,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
         }
       }
       if (i < rowsNegative) {
@@ -302,7 +304,7 @@ RectPlot = (function() {
           y2: y2
         });
         if (i % 2) {
-          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals);
+          pushDimensionMarker('r', x1, y1, x2, y2, val, this.axisLeaderLineLength, this.axisDimensionTextHeight, this.xDecimals, this.yDecimals, this.xPrefix, this.yPrefix);
         }
       }
       i++;

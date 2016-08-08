@@ -55,6 +55,8 @@ class LabeledScatter
                         @data.labelsFontSize,
                         @data.labelsFontColor,
                         @data.xDecimals,
-                        @data.yDecimals)
+                        @data.yDecimals,
+                        @data.xPrefix,
+                        @data.yPrefix)
     @plot.draw()
     return @

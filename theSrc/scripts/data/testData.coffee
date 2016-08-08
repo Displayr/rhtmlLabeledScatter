@@ -85,4 +85,6 @@ testData =
   labelsFontColor: null,
   colors: ['#5F00D5', '#ED7D31', '#A5A5A5'],
   xDecimals: 1,
-  yDecimals: 1
+  yDecimals: 1,
+  xPrefix: '#',
+  yPrefix: '$'

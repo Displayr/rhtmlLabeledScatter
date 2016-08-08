@@ -20,7 +20,9 @@ class RectPlot
                 labelsFontSize,
                 labelsFontColor,
                 xDecimals,
-                yDecimals) ->
+                yDecimals,
+                xPrefix,
+                yPrefix) ->
     @svg = svg
     @colors = colors
     @X = X
@@ -29,6 +31,9 @@ class RectPlot
 
     @xDecimals = xDecimals
     @yDecimals = yDecimals
+
+    @xPrefix = xPrefix
+    @yPrefix = yPrefix
 
     @label = label
     @labelsFont =
@@ -193,13 +198,13 @@ class RectPlot
     between = (num, min, max) ->
       num > min and num < max
 
-    pushDimensionMarker = (type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals) ->
+    pushDimensionMarker = (type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) ->
       if type == 'c'
         dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
-        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: label.toFixed(xDecimals), anchor: 'middle'})
+        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: xPrefix + label.toFixed(xDecimals), anchor: 'middle'})
       if type == 'r'
         dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
-        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: label.toFixed(yDecimals), anchor: 'end'})
+        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: yPrefix + label.toFixed(yDecimals), anchor: 'end'})
 
     normalizeXCoords = (Xcoord) ->
       (Xcoord-data.minX)/(data.maxX - data.minX)*viewBoxDim.width + viewBoxDim.x
@@ -221,7 +226,7 @@ class RectPlot
       x2: @viewBoxDim.x + @viewBoxDim.width
       y2: normalizeYCoords 0
     }
-    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
     originAxis.push(oax) unless (@data.minY is 0) or (@data.maxY is 0)
 
     oay = {
@@ -230,7 +235,7 @@ class RectPlot
       x2: normalizeXCoords 0
       y2: @viewBoxDim.y + @viewBoxDim.height
     }
-    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
     originAxis.push(oay) unless (@data.minX is 0) or (@data.maxX is 0)
 
     #calculate number of dimension markers
@@ -261,7 +266,7 @@ class RectPlot
         y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
 
       if i < colsNegative
         val = -(i+1)*ticksX
@@ -271,7 +276,7 @@ class RectPlot
         y2 = @viewBoxDim.y + @viewBoxDim.height
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
       i++
 
     i = 0
@@ -285,7 +290,7 @@ class RectPlot
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
       if i < rowsNegative
         val = (i+1)*ticksY
         x1 = @viewBoxDim.x
@@ -294,7 +299,7 @@ class RectPlot
         y2 = normalizeYCoords val
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals
+          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
       i++
 
     if @grid
