@@ -1,16 +1,9 @@
 class PlotData
-  constructor: (X, Y, group, label, viewBoxDim, legendDim, colors, fixedAspectRatio) ->
-    @X = X
-    @Y = Y
+  constructor: (@X, @Y, @group, @label, @viewBoxDim, @legendDim, colors, @fixedAspectRatio) ->
     @origX = X.slice(0)
     @origY = Y.slice(0)
     @normX = X.slice(0)
     @normY = Y.slice(0)
-    @group = group
-    @label = label
-    @viewBoxDim = viewBoxDim
-    @legendDim = legendDim
-    @fixedAspectRatio = fixedAspectRatio
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []

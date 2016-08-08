@@ -1,15 +1,15 @@
 class RectPlot
   constructor: (width,
                 height,
-                X,
-                Y,
-                group,
-                label,
-                svg,
+                @X,
+                @Y,
+                @group,
+                @label,
+                @svg,
                 fixedRatio,
                 xTitle,
                 yTitle,
-                colors,
+                @colors,
                 grid,
                 origin,
                 title,
@@ -19,23 +19,11 @@ class RectPlot
                 labelsFontFamily,
                 labelsFontSize,
                 labelsFontColor,
-                xDecimals,
-                yDecimals,
-                xPrefix,
-                yPrefix) ->
-    @svg = svg
-    @colors = colors
-    @X = X
-    @Y = Y
-    @group = group
+                @xDecimals,
+                @yDecimals,
+                @xPrefix,
+                @yPrefix) ->
 
-    @xDecimals = xDecimals
-    @yDecimals = yDecimals
-
-    @xPrefix = xPrefix
-    @yPrefix = yPrefix
-
-    @label = label
     @labelsFont =
       size:            labelsFontSize
       color:           labelsFontColor
