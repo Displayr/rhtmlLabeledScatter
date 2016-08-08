@@ -104,6 +104,7 @@ class RectPlot
       centerPadding:  @legendFontSize / 0.53
       ptRadius:       @legendFontSize / 2.67
       ptToTextSpace:  @legendFontSize
+      vertPtPadding:  5
       cols:           1
       markerLen:      5
       markerWidth:    1

@@ -230,7 +230,7 @@ class PlotData
       li = itemsArray[i]
       if li.isDraggedPt
         li.x = legendDim.x + legendDim.leftPadding + colSpacing
-        li.y = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
+        li.y = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow + legendDim.vertPtPadding
       else
         li.cx = legendDim.x + legendDim.leftPadding + colSpacing + li.r
         li.cy = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow

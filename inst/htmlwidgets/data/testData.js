@@ -31,6 +31,6 @@ testData = {
   yTitleFontSize: 16,
   legendShow: true,
   legendFontFamily: 'Arial',
-  legendFontSize: 12,
+  legendFontSize: 16,
   legendFontColor: 'blue'
 };

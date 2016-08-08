@@ -93,6 +93,7 @@ RectPlot = (function() {
       centerPadding: this.legendFontSize / 0.53,
       ptRadius: this.legendFontSize / 2.67,
       ptToTextSpace: this.legendFontSize,
+      vertPtPadding: 5,
       cols: 1,
       markerLen: 5,
       markerWidth: 1,
