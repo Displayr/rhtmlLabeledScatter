@@ -82,6 +82,14 @@ class RectPlot
     @origin = if origin? then origin else true
     @fixedRatio = if fixedRatio? then fixedRatio else true
 
+    unless @label?
+      @label = []
+      for x in @X
+        @label.push ''
+      @showLabels = false
+    else
+      @showLabels = true
+
     @setDim(@svg, @width, @height)
 
   draw: ->
@@ -604,48 +612,49 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    drag = labelDragAndDrop()
-    plot.svg.selectAll('.lab').remove()
-    plot.svg.selectAll('.lab')
-             .data(plot.data.lab)
-             .enter()
-             .append('text')
-             .attr('class', 'lab')
-             .attr('id', (d) -> d.id)
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', (d) -> d.fontFamily)
-             .text((d) -> d.text)
-             .attr('text-anchor', 'middle')
-             .attr('fill', (d) -> d.color)
-             .attr('font-size', (d) -> d.fontSize)
-             .call(drag)
+    if @showLabels
+      drag = labelDragAndDrop()
+      plot.svg.selectAll('.lab').remove()
+      plot.svg.selectAll('.lab')
+               .data(plot.data.lab)
+               .enter()
+               .append('text')
+               .attr('class', 'lab')
+               .attr('id', (d) -> d.id)
+               .attr('x', (d) -> d.x)
+               .attr('y', (d) -> d.y)
+               .attr('font-family', (d) -> d.fontFamily)
+               .text((d) -> d.text)
+               .attr('text-anchor', 'middle')
+               .attr('fill', (d) -> d.color)
+               .attr('font-size', (d) -> d.fontSize)
+               .call(drag)
 
-    labels_svg = plot.svg.selectAll('.lab')
+      labels_svg = plot.svg.selectAll('.lab')
 
-    i = 0
-    while i < plot.data.len
-      plot.data.lab[i].width = labels_svg[0][i].getBBox().width
-      plot.data.lab[i].height = labels_svg[0][i].getBBox().height
-      i++
+      i = 0
+      while i < plot.data.len
+        plot.data.lab[i].width = labels_svg[0][i].getBBox().width
+        plot.data.lab[i].height = labels_svg[0][i].getBBox().height
+        i++
 
 
-    labeler = d3.labeler()
-                .svg(plot.svg)
-                .w1(plot.viewBoxDim.x)
-                .w2(plot.viewBoxDim.x + plot.viewBoxDim.width)
-                .h1(plot.viewBoxDim.y)
-                .h2(plot.viewBoxDim.y + plot.viewBoxDim.height)
-                .anchor(plot.data.anc)
-                .label(plot.data.lab)
-                .start(500)
+      labeler = d3.labeler()
+                  .svg(plot.svg)
+                  .w1(plot.viewBoxDim.x)
+                  .w2(plot.viewBoxDim.x + plot.viewBoxDim.width)
+                  .h1(plot.viewBoxDim.y)
+                  .h2(plot.viewBoxDim.y + plot.viewBoxDim.height)
+                  .anchor(plot.data.anc)
+                  .label(plot.data.lab)
+                  .start(500)
 
-    labels_svg.transition()
-              .duration(800)
-              .attr('x', (d) -> d.x)
-              .attr('y', (d) -> d.y)
+      labels_svg.transition()
+                .duration(800)
+                .attr('x', (d) -> d.x)
+                .attr('y', (d) -> d.y)
 
-    plot.drawLinks(plot.svg, plot.data)
+      plot.drawLinks(plot.svg, plot.data)
 
   drawLinks: (svg, data) ->
     # calc the links from anc to label text if ambiguous

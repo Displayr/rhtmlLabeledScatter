@@ -3,6 +3,7 @@ var RectPlot;
 
 RectPlot = (function() {
   function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
+    var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
     this.X = X;
@@ -69,6 +70,17 @@ RectPlot = (function() {
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
     this.fixedRatio = fixedRatio != null ? fixedRatio : true;
+    if (this.label == null) {
+      this.label = [];
+      _ref = this.X;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        x = _ref[_i];
+        this.label.push('');
+      }
+      this.showLabels = false;
+    } else {
+      this.showLabels = true;
+    }
     this.setDim(this.svg, this.width, this.height);
   }
 
@@ -608,37 +620,39 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
-    drag = labelDragAndDrop();
-    plot.svg.selectAll('.lab').remove();
-    plot.svg.selectAll('.lab').data(plot.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
-      return d.id;
-    }).attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', function(d) {
-      return d.fontFamily;
-    }).text(function(d) {
-      return d.text;
-    }).attr('text-anchor', 'middle').attr('fill', function(d) {
-      return d.color;
-    }).attr('font-size', function(d) {
-      return d.fontSize;
-    }).call(drag);
-    labels_svg = plot.svg.selectAll('.lab');
-    i = 0;
-    while (i < plot.data.len) {
-      plot.data.lab[i].width = labels_svg[0][i].getBBox().width;
-      plot.data.lab[i].height = labels_svg[0][i].getBBox().height;
-      i++;
+    if (this.showLabels) {
+      drag = labelDragAndDrop();
+      plot.svg.selectAll('.lab').remove();
+      plot.svg.selectAll('.lab').data(plot.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+        return d.id;
+      }).attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      }).attr('font-family', function(d) {
+        return d.fontFamily;
+      }).text(function(d) {
+        return d.text;
+      }).attr('text-anchor', 'middle').attr('fill', function(d) {
+        return d.color;
+      }).attr('font-size', function(d) {
+        return d.fontSize;
+      }).call(drag);
+      labels_svg = plot.svg.selectAll('.lab');
+      i = 0;
+      while (i < plot.data.len) {
+        plot.data.lab[i].width = labels_svg[0][i].getBBox().width;
+        plot.data.lab[i].height = labels_svg[0][i].getBBox().height;
+        i++;
+      }
+      labeler = d3.labeler().svg(plot.svg).w1(plot.viewBoxDim.x).w2(plot.viewBoxDim.x + plot.viewBoxDim.width).h1(plot.viewBoxDim.y).h2(plot.viewBoxDim.y + plot.viewBoxDim.height).anchor(plot.data.anc).label(plot.data.lab).start(500);
+      labels_svg.transition().duration(800).attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      });
+      return plot.drawLinks(plot.svg, plot.data);
     }
-    labeler = d3.labeler().svg(plot.svg).w1(plot.viewBoxDim.x).w2(plot.viewBoxDim.x + plot.viewBoxDim.width).h1(plot.viewBoxDim.y).h2(plot.viewBoxDim.y + plot.viewBoxDim.height).anchor(plot.data.anc).label(plot.data.lab).start(500);
-    labels_svg.transition().duration(800).attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    });
-    return plot.drawLinks(plot.svg, plot.data);
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {

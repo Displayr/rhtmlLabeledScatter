@@ -1,21 +1,21 @@
 testData =
-  label: [
-    'Coke'
-   'Diet Coke'
-   'Coke Zero'
-   'Pepsi'
-   'Diet Pepsi'
-   'Pepsi Max'
-   'Feminine'
-   'Health-conscious'
-   'Innocent'
-   'Older'
-   'Open to new experiences'
-   'Rebellious'
-   'Sleepy'
-   'Traditional'
-    'Weight-conscious'
-  ]
+  # label: [
+  #   'Coke'
+  #  'Diet Coke'
+  #  'Coke Zero'
+  #  'Pepsi'
+  #  'Diet Pepsi'
+  #  'Pepsi Max'
+  #  'Feminine'
+  #  'Health-conscious'
+  #  'Innocent'
+  #  'Older'
+  #  'Open to new experiences'
+  #  'Rebellious'
+  #  'Sleepy'
+  #  'Traditional'
+  #   'Weight-conscious'
+  # ]
 
   X: [
     -1.16
@@ -97,4 +97,4 @@ testData =
   legendShow: true,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
-  legendFontColor: 'blue'
+  legendFontColor: 'black'
