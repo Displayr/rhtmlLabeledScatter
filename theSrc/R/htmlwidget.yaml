@@ -37,6 +37,7 @@ dependencies:
      - testData2.js
      - testData2.js
      - testData2.js
+     - testBubble1.js
 
 
  - name: style

@@ -2,12 +2,13 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
     this.X = X;
     this.Y = Y;
+    this.Z = Z;
     this.group = group;
     this.label = label;
     this.svg = svg;

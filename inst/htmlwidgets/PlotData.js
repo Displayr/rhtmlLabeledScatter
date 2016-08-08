@@ -146,30 +146,32 @@ PlotData = (function() {
   PlotData.prototype.setupColors = function() {
     var group, i, newColor, _results;
     this.legendGroups = [];
-    this.groupToColorMap = {};
-    group = this.group;
-    i = 0;
-    _results = [];
-    while (i < this.len) {
-      if (!(_.some(this.legendGroups, function(e) {
-        return e.text === group[i];
-      }))) {
-        newColor = this.getDefaultColor();
-        this.legendGroups.push({
-          text: this.group[i],
-          color: newColor,
-          r: this.legendDim.ptRadius,
-          anchor: 'start'
-        });
-        this.groupToColorMap[this.group[i]] = newColor;
+    if (this.group != null) {
+      this.groupToColorMap = {};
+      group = this.group;
+      i = 0;
+      _results = [];
+      while (i < this.group.length) {
+        if (!(_.some(this.legendGroups, function(e) {
+          return e.text === group[i];
+        }))) {
+          newColor = this.getDefaultColor();
+          this.legendGroups.push({
+            text: this.group[i],
+            color: newColor,
+            r: this.legendDim.ptRadius,
+            anchor: 'start'
+          });
+          this.groupToColorMap[this.group[i]] = newColor;
+        }
+        _results.push(i++);
       }
-      _results.push(i++);
+      return _results;
     }
-    return _results;
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fontColor, fontSize, i, label, pt, ptColor, x, y, _results;
+    var fontColor, fontSize, group, i, label, pt, ptColor, x, y, _results;
     this.pts = [];
     this.lab = [];
     this.anc = [];
@@ -192,10 +194,11 @@ PlotData = (function() {
           label = pt.markerId + 1;
           fontSize = this.viewBoxDim.labelSmallFontSize;
         }
-        fontColor = ptColor = this.groupToColorMap[this.group[i]];
+        fontColor = ptColor = this.groupToColorMap != null ? this.groupToColorMap[this.group[i]] : 'black';
         if ((this.viewBoxDim.labelFontColor != null) && !(this.viewBoxDim.labelFontColor === '')) {
           fontColor = this.viewBoxDim.labelFontColor;
         }
+        group = this.group != null ? this.group[i] : '';
         this.pts.push({
           x: x,
           y: y,
@@ -203,7 +206,7 @@ PlotData = (function() {
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
-          group: this.group[i],
+          group: group,
           color: ptColor,
           id: i
         });
@@ -299,9 +302,12 @@ PlotData = (function() {
     var initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems;
     initWidth = this.viewBoxDim.width;
     totalLegendItems = this.legendGroups.length + this.legendPts.length;
-    legendGrpsTextMax = (_.maxBy(this.legendGroups, function(e) {
-      return e.width;
-    })).width;
+    legendGrpsTextMax = 0;
+    if (this.legendGroups.length > 0) {
+      legendGrpsTextMax = (_.maxBy(this.legendGroups, function(e) {
+        return e.width;
+      })).width;
+    }
     legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
       return e.width;
     })).width : 0;

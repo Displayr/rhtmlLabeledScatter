@@ -38,6 +38,7 @@ class LabeledScatter
                         @height,
                         @data.X,
                         @data.Y,
+                        @data.Z,
                         @data.group,
                         @data.label,
                         svg,

@@ -3,6 +3,7 @@ class RectPlot
                 @height,
                 @X,
                 @Y,
+                @Z,
                 @group,
                 @label,
                 @svg,

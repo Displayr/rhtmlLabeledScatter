@@ -1,5 +1,13 @@
 class PlotData
-  constructor: (@X, @Y, @group, @label, @viewBoxDim, @legendDim, @colorWheel, @fixedAspectRatio) ->
+  constructor: (@X,
+                @Y,
+                @group,
+                @label,
+                @viewBoxDim,
+                @legendDim,
+                @colorWheel,
+                @fixedAspectRatio) ->
+
     @origX = X.slice(0)
     @origY = Y.slice(0)
     @normX = X.slice(0)
@@ -134,20 +142,21 @@ class PlotData
 
   setupColors: ->
     @legendGroups = []
-    @groupToColorMap = {}
-    group = @group
-    i = 0
-    while i < @len
-      unless (_.some @legendGroups, (e) -> e.text is group[i])
-        newColor = @getDefaultColor()
-        @legendGroups.push {
-          text:   @group[i]
-          color:  newColor
-          r:      @legendDim.ptRadius
-          anchor: 'start'
-        }
-        @groupToColorMap[@group[i]] = newColor
-      i++
+    if @group?
+      @groupToColorMap = {}
+      group = @group
+      i = 0
+      while i < @group.length
+        unless (_.some @legendGroups, (e) -> e.text is group[i])
+          newColor = @getDefaultColor()
+          @legendGroups.push {
+            text:   @group[i]
+            color:  newColor
+            r:      @legendDim.ptRadius
+            anchor: 'start'
+          }
+          @groupToColorMap[@group[i]] = newColor
+        i++
 
   calcDataArrays: () ->
     @pts = []
@@ -168,8 +177,9 @@ class PlotData
           label = pt.markerId + 1
           fontSize = @viewBoxDim.labelSmallFontSize
 
-        fontColor = ptColor = @groupToColorMap[@group[i]]
+        fontColor = ptColor = if @groupToColorMap? then @groupToColorMap[@group[i]] else 'black'
         fontColor = @viewBoxDim.labelFontColor if @viewBoxDim.labelFontColor? and !(@viewBoxDim.labelFontColor == '')
+        group = if @group? then @group[i] else ''
         @pts.push({
           x: x
           y: y
@@ -177,7 +187,7 @@ class PlotData
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
-          group: @group[i]
+          group: group
           color: ptColor
           id: i
         })
@@ -263,7 +273,9 @@ class PlotData
     initWidth = @viewBoxDim.width
 
     totalLegendItems = @legendGroups.length + @legendPts.length
-    legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
+    legendGrpsTextMax = 0
+    if @legendGroups.length > 0
+      legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
     legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
     maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax)
 

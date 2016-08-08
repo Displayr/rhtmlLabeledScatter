@@ -1,21 +1,21 @@
 testData =
-  # label: [
-  #   'Coke'
-  #  'Diet Coke'
-  #  'Coke Zero'
-  #  'Pepsi'
-  #  'Diet Pepsi'
-  #  'Pepsi Max'
-  #  'Feminine'
-  #  'Health-conscious'
-  #  'Innocent'
-  #  'Older'
-  #  'Open to new experiences'
-  #  'Rebellious'
-  #  'Sleepy'
-  #  'Traditional'
-  #   'Weight-conscious'
-  # ]
+  label: [
+    'Coke'
+   'Diet Coke'
+   'Coke Zero'
+   'Pepsi'
+   'Diet Pepsi'
+   'Pepsi Max'
+   'Feminine'
+   'Health-conscious'
+   'Innocent'
+   'Older'
+   'Open to new experiences'
+   'Rebellious'
+   'Sleepy'
+   'Traditional'
+    'Weight-conscious'
+  ]
 
   X: [
     -1.16
@@ -53,23 +53,23 @@ testData =
     -.02
   ]
 
-  group: [
-    'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Rows'
-   'Cols'
-   'Cols'
-   'Cols'
-   'Cols'
-   'Cols'
-    'Cols'
-  ],
+  # group: [
+  #   'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Rows'
+  #  'Cols'
+  #  'Cols'
+  #  'Cols'
+  #  'Cols'
+  #  'Cols'
+  #   'Cols'
+  # ],
 
   xTitle: "Axis 1",
   yTitle: "Axis 2",
@@ -86,12 +86,12 @@ testData =
   colors: ['#5F00D5', '#ED7D31', '#A5A5A5'],
   xDecimals: 1,
   yDecimals: 1,
-  xPrefix: '#',
-  yPrefix: '$',
+  xPrefix: '',
+  yPrefix: '',
   titleFontColor: 'black',
   titleFontSize: 40,
   xTitleFontColor: 'red',
-  xTitleFontSize: 30,
+  xTitleFontSize: 20,
   yTitleFontColor: 'green',
   yTitleFontSize: 16,
   legendShow: true,
