@@ -310,7 +310,6 @@ class PlotData
       anc: movedAnc[0]
       anchor: 'start'
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
-      yOffset: @legendDim.yPtOffset
       color: movedPt[0].color
       isDraggedPt: true
     }

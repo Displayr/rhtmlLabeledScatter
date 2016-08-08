@@ -64,6 +64,9 @@ class LabeledScatter
                         @data.yDecimals,
                         @data.xPrefix,
                         @data.yPrefix,
-                        @data.legendShow)
+                        @data.legendShow,
+                        @data.legendFontFamily,
+                        @data.legendFontSize,
+                        @data.legendFontColor)
     @plot.draw()
     return @

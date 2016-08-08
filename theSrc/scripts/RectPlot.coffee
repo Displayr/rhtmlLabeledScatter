@@ -29,7 +29,10 @@ class RectPlot
                 @yDecimals,
                 @xPrefix,
                 @yPrefix,
-                @legendShow) ->
+                @legendShow,
+                @legendFontFamily,
+                @legendFontSize,
+                @legendFontColor) ->
 
     @labelsFont =
       size:            labelsFontSize
@@ -95,13 +98,12 @@ class RectPlot
     @svg = svg
     @legendDim =
       width:          0  #init value
-      heightOfRow:    25 #init val
-      rightPadding:   10
-      leftPadding:    20
-      centerPadding:  30
-      ptRadius:       6
-      ptToTextSpace:  15
-      yPtOffset:      4
+      heightOfRow:    @legendFontSize + 9 #init val
+      rightPadding:   @legendFontSize / 1.6
+      leftPadding:    @legendFontSize / 0.8
+      centerPadding:  @legendFontSize / 0.53
+      ptRadius:       @legendFontSize / 2.67
+      ptToTextSpace:  @legendFontSize
       cols:           1
       markerLen:      5
       markerWidth:    1
@@ -473,7 +475,9 @@ class RectPlot
                .attr('class', 'legend-groups-text')
                .attr('x', (d) -> d.x)
                .attr('y', (d) -> d.y)
-               .attr('font-family', 'Arial')
+               .attr('font-family', @legendFontFamily)
+               .attr('fill', @legendFontColor)
+               .attr('font-size', @legendFontSize)
                .text((d) -> d.text)
                .attr('text-anchor', (d) -> d.anchor)
 
@@ -485,7 +489,8 @@ class RectPlot
                .attr('class', 'legend-dragged-pts-text')
                .attr('x', (d) -> d.x)
                .attr('y', (d) -> d.y)
-               .attr('font-family', 'Arial')
+               .attr('font-family', @legendFontFamily)
+               .attr('font-size', @legendFontSize)
                .attr('text-anchor', (d) -> d.anchor)
                .attr('fill', (d) -> d.color)
                .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)

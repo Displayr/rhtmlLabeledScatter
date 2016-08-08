@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
     this.width = width;
     this.height = height;
     this.X = X;
@@ -16,6 +16,9 @@ RectPlot = (function() {
     this.xPrefix = xPrefix;
     this.yPrefix = yPrefix;
     this.legendShow = legendShow;
+    this.legendFontFamily = legendFontFamily;
+    this.legendFontSize = legendFontSize;
+    this.legendFontColor = legendFontColor;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -84,13 +87,12 @@ RectPlot = (function() {
     this.svg = svg;
     this.legendDim = {
       width: 0,
-      heightOfRow: 25,
-      rightPadding: 10,
-      leftPadding: 20,
-      centerPadding: 30,
-      ptRadius: 6,
-      ptToTextSpace: 15,
-      yPtOffset: 4,
+      heightOfRow: this.legendFontSize + 9,
+      rightPadding: this.legendFontSize / 1.6,
+      leftPadding: this.legendFontSize / 0.8,
+      centerPadding: this.legendFontSize / 0.53,
+      ptRadius: this.legendFontSize / 2.67,
+      ptToTextSpace: this.legendFontSize,
       cols: 1,
       markerLen: 5,
       markerWidth: 1,
@@ -473,7 +475,7 @@ RectPlot = (function() {
         return d.x;
       }).attr('y', function(d) {
         return d.y;
-      }).attr('font-family', 'Arial').text(function(d) {
+      }).attr('font-family', this.legendFontFamily).attr('fill', this.legendFontColor).attr('font-size', this.legendFontSize).text(function(d) {
         return d.text;
       }).attr('text-anchor', function(d) {
         return d.anchor;
@@ -483,7 +485,7 @@ RectPlot = (function() {
         return d.x;
       }).attr('y', function(d) {
         return d.y;
-      }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
+      }).attr('font-family', this.legendFontFamily).attr('font-size', this.legendFontSize).attr('text-anchor', function(d) {
         return d.anchor;
       }).attr('fill', function(d) {
         return d.color;

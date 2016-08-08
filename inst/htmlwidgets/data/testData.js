@@ -29,5 +29,8 @@ testData = {
   xTitleFontSize: 30,
   yTitleFontColor: 'green',
   yTitleFontSize: 16,
-  legendShow: true
+  legendShow: true,
+  legendFontFamily: 'Arial',
+  legendFontSize: 12,
+  legendFontColor: 'blue'
 };
