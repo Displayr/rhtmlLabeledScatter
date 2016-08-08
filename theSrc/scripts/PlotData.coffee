@@ -1,5 +1,5 @@
 class PlotData
-  constructor: (@X, @Y, @group, @label, @viewBoxDim, @legendDim, colors, @fixedAspectRatio) ->
+  constructor: (@X, @Y, @group, @label, @viewBoxDim, @legendDim, @colorWheel, @fixedAspectRatio) ->
     @origX = X.slice(0)
     @origY = Y.slice(0)
     @normX = X.slice(0)
@@ -8,7 +8,6 @@ class PlotData
     @legendPts = []
     @draggedOutCondensedPts = []
 
-    @colorWheel = colors
     @cIndex = 0 # color index
 
     @superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'

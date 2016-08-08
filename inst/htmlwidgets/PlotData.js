@@ -2,13 +2,14 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colors, fixedAspectRatio) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio) {
     this.X = X;
     this.Y = Y;
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
     this.legendDim = legendDim;
+    this.colorWheel = colorWheel;
     this.fixedAspectRatio = fixedAspectRatio;
     this.origX = X.slice(0);
     this.origY = Y.slice(0);
@@ -17,7 +18,6 @@ PlotData = (function() {
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
-    this.colorWheel = colors;
     this.cIndex = 0;
     this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     if (this.X.length === this.Y.length) {
