@@ -9,13 +9,19 @@ class RectPlot
                 fixedRatio,
                 xTitle,
                 yTitle,
+                title,
                 @colors,
                 grid,
                 origin,
-                title,
                 titleFontFamily,
-                yTitleFontFamily,
+                titleFontSize,
+                titleFontColor,
                 xTitleFontFamily,
+                xTitleFontSize,
+                xTitleFontColor,
+                yTitleFontFamily,
+                yTitleFontSize,
+                yTitleFontColor,
                 labelsFontFamily,
                 labelsFontSize,
                 labelsFontColor,
@@ -33,6 +39,7 @@ class RectPlot
       text:       xTitle
       textHeight: 15      #default, TODO: detect
       fontFamily: xTitleFontFamily
+
     @xTitle.textHeight = 0 if @xTitle.text is ''
 
     @yTitle =
@@ -49,9 +56,9 @@ class RectPlot
     @title =
       text:         title
       x:            width/2
-      color:        'black'
+      color:        titleFontColor
       anchor:       'middle'
-      fontSize:     18
+      fontSize:     titleFontSize
       fontWeight:   'bold'
       fontFamily:   titleFontFamily
 

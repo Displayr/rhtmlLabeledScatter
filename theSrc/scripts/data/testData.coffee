@@ -87,4 +87,12 @@ testData =
   xDecimals: 1,
   yDecimals: 1,
   xPrefix: '#',
-  yPrefix: '$'
+  yPrefix: '$',
+  titleFontColor: 'blue',
+  titleFontSize: 18,
+  xTitleFontColor: 'black',
+  xTitleFontSize: 10,
+  yTitleFontColor: 'black',
+  yTitleFontSize: 10
+
+
