@@ -37,20 +37,23 @@ class RectPlot
 
     @xTitle =
       text:       xTitle
-      textHeight: 15      #default, TODO: detect
+      textHeight: xTitleFontSize
       fontFamily: xTitleFontFamily
-
+      fontSize:   xTitleFontSize
+      fontColor:  xTitleFontColor
     @xTitle.textHeight = 0 if @xTitle.text is ''
 
     @yTitle =
       text:       yTitle
-      textHeight: 15      #default, TODO: detect
+      textHeight: yTitleFontSize
       fontFamily: yTitleFontFamily
+      fontSize:   yTitleFontSize
+      fontColor:  yTitleFontColor
     @yTitle.textHeight = 0 if @yTitle.text is ''
 
     @axisLeaderLineLength = 5
     @axisDimensionTextHeight = 15 #default, TODO: detect
-    @axisDimensionTextWidth = 29 # default, TODO: detect
+    @axisDimensionTextWidth = 50 # default, TODO: detect
     @verticalPadding = 5
     @horizontalPadding = 5
     @title =
@@ -66,7 +69,7 @@ class RectPlot
       @title.textHeight = 0
       @title.paddingBot = 0
     else
-      @title.textHeight = 15
+      @title.textHeight = titleFontSize
       @title.paddingBot = 10
 
     @title.y = @verticalPadding + @title.textHeight
@@ -384,6 +387,8 @@ class RectPlot
         transform: 'rotate(0)'
         display: if @xTitle is '' then 'none' else ''
         fontFamily: @xTitle.fontFamily
+        fontSize: @xTitle.fontSize
+        fontColor: @xTitle.fontColor
       },
       { # y axis label
         x: @horizontalPadding + @yTitle.textHeight
@@ -393,6 +398,8 @@ class RectPlot
         transform: 'rotate(270,'+(@horizontalPadding+@yTitle.textHeight) + ', ' + (@viewBoxDim.y + @viewBoxDim.height/2)+ ')'
         display: if @yTitle is '' then 'none' else ''
         fontFamily: @yTitle.fontFamily
+        fontSize: @yTitle.fontSize
+        fontColor: @yTitle.fontColor
       }
     ]
 
@@ -405,6 +412,8 @@ class RectPlot
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
              .attr('font-family', (d) -> d.fontFamily)
+             .attr('font-size', (d) -> d.fontSize)
+             .attr('fill', (d) -> d.fontColor)
              .attr('text-anchor', (d) -> d.anchor)
              .attr('transform', (d) -> d.transform)
              .text((d) -> d.text)

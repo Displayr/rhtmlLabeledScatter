@@ -2,17 +2,17 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, colors, grid, origin, title, titleFontFamily, yTitleFontFamily, xTitleFontFamily, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix) {
-    this.svg = svg;
-    this.colors = colors;
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix) {
     this.X = X;
     this.Y = Y;
     this.group = group;
+    this.label = label;
+    this.svg = svg;
+    this.colors = colors;
     this.xDecimals = xDecimals;
     this.yDecimals = yDecimals;
     this.xPrefix = xPrefix;
     this.yPrefix = yPrefix;
-    this.label = label;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -20,31 +20,35 @@ RectPlot = (function() {
     };
     this.xTitle = {
       text: xTitle,
-      textHeight: 15,
-      fontFamily: xTitleFontFamily
+      textHeight: xTitleFontSize,
+      fontFamily: xTitleFontFamily,
+      fontSize: xTitleFontSize,
+      fontColor: xTitleFontColor
     };
     if (this.xTitle.text === '') {
       this.xTitle.textHeight = 0;
     }
     this.yTitle = {
       text: yTitle,
-      textHeight: 15,
-      fontFamily: yTitleFontFamily
+      textHeight: yTitleFontSize,
+      fontFamily: yTitleFontFamily,
+      fontSize: yTitleFontSize,
+      fontColor: yTitleFontColor
     };
     if (this.yTitle.text === '') {
       this.yTitle.textHeight = 0;
     }
     this.axisLeaderLineLength = 5;
     this.axisDimensionTextHeight = 15;
-    this.axisDimensionTextWidth = 29;
+    this.axisDimensionTextWidth = 50;
     this.verticalPadding = 5;
     this.horizontalPadding = 5;
     this.title = {
       text: title,
       x: width / 2,
-      color: 'black',
+      color: titleFontColor,
       anchor: 'middle',
-      fontSize: 18,
+      fontSize: titleFontSize,
       fontWeight: 'bold',
       fontFamily: titleFontFamily
     };
@@ -52,7 +56,7 @@ RectPlot = (function() {
       this.title.textHeight = 0;
       this.title.paddingBot = 0;
     } else {
-      this.title.textHeight = 15;
+      this.title.textHeight = titleFontSize;
       this.title.paddingBot = 10;
     }
     this.title.y = this.verticalPadding + this.title.textHeight;
@@ -377,7 +381,9 @@ RectPlot = (function() {
         anchor: 'middle',
         transform: 'rotate(0)',
         display: this.xTitle === '' ? 'none' : '',
-        fontFamily: this.xTitle.fontFamily
+        fontFamily: this.xTitle.fontFamily,
+        fontSize: this.xTitle.fontSize,
+        fontColor: this.xTitle.fontColor
       }, {
         x: this.horizontalPadding + this.yTitle.textHeight,
         y: this.viewBoxDim.y + this.viewBoxDim.height / 2,
@@ -385,7 +391,9 @@ RectPlot = (function() {
         anchor: 'middle',
         transform: 'rotate(270,' + (this.horizontalPadding + this.yTitle.textHeight) + ', ' + (this.viewBoxDim.y + this.viewBoxDim.height / 2) + ')',
         display: this.yTitle === '' ? 'none' : '',
-        fontFamily: this.yTitle.fontFamily
+        fontFamily: this.yTitle.fontFamily,
+        fontSize: this.yTitle.fontSize,
+        fontColor: this.yTitle.fontColor
       }
     ];
     this.svg.selectAll('.axis-label').remove();
@@ -395,6 +403,10 @@ RectPlot = (function() {
       return d.y;
     }).attr('font-family', function(d) {
       return d.fontFamily;
+    }).attr('font-size', function(d) {
+      return d.fontSize;
+    }).attr('fill', function(d) {
+      return d.fontColor;
     }).attr('text-anchor', function(d) {
       return d.anchor;
     }).attr('transform', function(d) {

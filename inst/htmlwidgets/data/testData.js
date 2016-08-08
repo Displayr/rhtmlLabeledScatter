@@ -11,10 +11,10 @@ testData = {
   fixedAspectRatio: false,
   grid: true,
   origin: true,
-  title: "TEST of the font, please look and cook carefully",
-  titleFontFamily: 'Impact',
+  title: "TEST of the font",
+  titleFontFamily: 'Arial',
   yTitleFontFamily: 'Verdana',
-  xTitleFontFamily: 'Times New Roman',
+  xTitleFontFamily: 'Arial',
   labelsFontFamily: 'Times New Roman',
   labelsFontSize: 16,
   labelsFontColor: null,
@@ -22,5 +22,11 @@ testData = {
   xDecimals: 1,
   yDecimals: 1,
   xPrefix: '#',
-  yPrefix: '$'
+  yPrefix: '$',
+  titleFontColor: 'black',
+  titleFontSize: 15,
+  xTitleFontColor: 'red',
+  xTitleFontSize: 30,
+  yTitleFontColor: 'green',
+  yTitleFontSize: 16
 };
