@@ -28,7 +28,8 @@ class RectPlot
                 @xDecimals,
                 @yDecimals,
                 @xPrefix,
-                @yPrefix) ->
+                @yPrefix,
+                @legendShow) ->
 
     @labelsFont =
       size:            labelsFontSize
@@ -93,7 +94,7 @@ class RectPlot
   setDim: (svg, width, height) ->
     @svg = svg
     @legendDim =
-      width:          300 #init value
+      width:          0  #init value
       heightOfRow:    25 #init val
       rightPadding:   10
       leftPadding:    20
@@ -450,63 +451,64 @@ class RectPlot
         id = (id - digit)/10
       ss
 
-    @svg.selectAll('.legend-groups-pts').remove()
-    @svg.selectAll('.legend-groups-pts')
-             .data(data.legendGroups)
-             .enter()
-             .append('circle')
-             .attr('class', 'legend-groups-pts')
-             .attr('cx', (d) -> d.cx)
-             .attr('cy', (d) -> d.cy)
-             .attr('r', (d) -> d.r)
-             .attr('fill', (d) -> d.color)
-             .attr('stroke', (d) -> d.stroke)
-             .attr('stroke-opacity', (d) -> d['stroke-opacity'])
+    if @legendShow
+      @svg.selectAll('.legend-groups-pts').remove()
+      @svg.selectAll('.legend-groups-pts')
+               .data(data.legendGroups)
+               .enter()
+               .append('circle')
+               .attr('class', 'legend-groups-pts')
+               .attr('cx', (d) -> d.cx)
+               .attr('cy', (d) -> d.cy)
+               .attr('r', (d) -> d.r)
+               .attr('fill', (d) -> d.color)
+               .attr('stroke', (d) -> d.stroke)
+               .attr('stroke-opacity', (d) -> d['stroke-opacity'])
 
-    @svg.selectAll('.legend-groups-text').remove()
-    @svg.selectAll('.legend-groups-text')
-             .data(data.legendGroups)
-             .enter()
-             .append('text')
-             .attr('class', 'legend-groups-text')
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
-             .text((d) -> d.text)
-             .attr('text-anchor', (d) -> d.anchor)
+      @svg.selectAll('.legend-groups-text').remove()
+      @svg.selectAll('.legend-groups-text')
+               .data(data.legendGroups)
+               .enter()
+               .append('text')
+               .attr('class', 'legend-groups-text')
+               .attr('x', (d) -> d.x)
+               .attr('y', (d) -> d.y)
+               .attr('font-family', 'Arial')
+               .text((d) -> d.text)
+               .attr('text-anchor', (d) -> d.anchor)
 
-    @svg.selectAll('.legend-dragged-pts-text').remove()
-    @svg.selectAll('.legend-dragged-pts-text')
-             .data(data.legendPts)
-             .enter()
-             .append('text')
-             .attr('class', 'legend-dragged-pts-text')
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
-             .attr('text-anchor', (d) -> d.anchor)
-             .attr('fill', (d) -> d.color)
-             .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
+      @svg.selectAll('.legend-dragged-pts-text').remove()
+      @svg.selectAll('.legend-dragged-pts-text')
+               .data(data.legendPts)
+               .enter()
+               .append('text')
+               .attr('class', 'legend-dragged-pts-text')
+               .attr('x', (d) -> d.x)
+               .attr('y', (d) -> d.y)
+               .attr('font-family', 'Arial')
+               .attr('text-anchor', (d) -> d.anchor)
+               .attr('fill', (d) -> d.color)
+               .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
 
-    legendGroupsLab = @svg.selectAll('.legend-groups-text')
-    legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
+      legendGroupsLab = @svg.selectAll('.legend-groups-text')
+      legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
 
-    i = 0
-    while i < data.legendGroups.length
-      data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
-      data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
-      i++
+      i = 0
+      while i < data.legendGroups.length
+        data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
+        data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
+        i++
 
-    i = 0
-    while i < data.legendPts.length
-      data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width
-      data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height
-      i++
+      i = 0
+      while i < data.legendPts.length
+        data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width
+        data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height
+        i++
 
-    if data.resizedAfterLegendGroupsDrawn()
-      console.log 'Legend resize triggered'
-      plot.redraw(data, @viewBoxDim.svgWidth, @viewBoxDim.svgHeight)
-      plot.drawLegend(plot, data)
+      if data.resizedAfterLegendGroupsDrawn()
+        console.log 'Legend resize triggered'
+        plot.redraw(data, @viewBoxDim.svgWidth, @viewBoxDim.svgHeight)
+        plot.drawLegend(plot, data)
 
   drawAnc: (data) ->
     @svg.selectAll('.anc').remove()

@@ -63,6 +63,7 @@ class LabeledScatter
                         @data.xDecimals,
                         @data.yDecimals,
                         @data.xPrefix,
-                        @data.yPrefix)
+                        @data.yPrefix,
+                        @data.legendShow)
     @plot.draw()
     return @

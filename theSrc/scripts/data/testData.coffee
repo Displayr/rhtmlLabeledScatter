@@ -80,7 +80,7 @@ testData =
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Verdana',
   xTitleFontFamily: 'Arial',
-  labelsFontFamily: 'Times New Roman',
+  labelsFontFamily: 'Arial',
   labelsFontSize: 16,
   labelsFontColor: null,
   colors: ['#5F00D5', '#ED7D31', '#A5A5A5'],
@@ -93,4 +93,5 @@ testData =
   xTitleFontColor: 'red',
   xTitleFontSize: 30,
   yTitleFontColor: 'green',
-  yTitleFontSize: 16
+  yTitleFontSize: 16,
+  legendShow: true

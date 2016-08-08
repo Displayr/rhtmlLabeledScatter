@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix) {
+  function RectPlot(width, height, X, Y, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow) {
     this.width = width;
     this.height = height;
     this.X = X;
@@ -15,6 +15,7 @@ RectPlot = (function() {
     this.yDecimals = yDecimals;
     this.xPrefix = xPrefix;
     this.yPrefix = yPrefix;
+    this.legendShow = legendShow;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -82,7 +83,7 @@ RectPlot = (function() {
   RectPlot.prototype.setDim = function(svg, width, height) {
     this.svg = svg;
     this.legendDim = {
-      width: 300,
+      width: 0,
       heightOfRow: 25,
       rightPadding: 10,
       leftPadding: 20,
@@ -452,64 +453,66 @@ RectPlot = (function() {
       }
       return ss;
     };
-    this.svg.selectAll('.legend-groups-pts').remove();
-    this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
-      return d.cx;
-    }).attr('cy', function(d) {
-      return d.cy;
-    }).attr('r', function(d) {
-      return d.r;
-    }).attr('fill', function(d) {
-      return d.color;
-    }).attr('stroke', function(d) {
-      return d.stroke;
-    }).attr('stroke-opacity', function(d) {
-      return d['stroke-opacity'];
-    });
-    this.svg.selectAll('.legend-groups-text').remove();
-    this.svg.selectAll('.legend-groups-text').data(data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial').text(function(d) {
-      return d.text;
-    }).attr('text-anchor', function(d) {
-      return d.anchor;
-    });
-    this.svg.selectAll('.legend-dragged-pts-text').remove();
-    this.svg.selectAll('.legend-dragged-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
-      return d.anchor;
-    }).attr('fill', function(d) {
-      return d.color;
-    }).text(function(d) {
-      if (d.markerId != null) {
-        return getSuperscript(d.markerId + 1) + d.text;
-      } else {
+    if (this.legendShow) {
+      this.svg.selectAll('.legend-groups-pts').remove();
+      this.svg.selectAll('.legend-groups-pts').data(data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
+        return d.cx;
+      }).attr('cy', function(d) {
+        return d.cy;
+      }).attr('r', function(d) {
+        return d.r;
+      }).attr('fill', function(d) {
+        return d.color;
+      }).attr('stroke', function(d) {
+        return d.stroke;
+      }).attr('stroke-opacity', function(d) {
+        return d['stroke-opacity'];
+      });
+      this.svg.selectAll('.legend-groups-text').remove();
+      this.svg.selectAll('.legend-groups-text').data(data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      }).attr('font-family', 'Arial').text(function(d) {
         return d.text;
+      }).attr('text-anchor', function(d) {
+        return d.anchor;
+      });
+      this.svg.selectAll('.legend-dragged-pts-text').remove();
+      this.svg.selectAll('.legend-dragged-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      }).attr('font-family', 'Arial').attr('text-anchor', function(d) {
+        return d.anchor;
+      }).attr('fill', function(d) {
+        return d.color;
+      }).text(function(d) {
+        if (d.markerId != null) {
+          return getSuperscript(d.markerId + 1) + d.text;
+        } else {
+          return d.text;
+        }
+      });
+      legendGroupsLab = this.svg.selectAll('.legend-groups-text');
+      legendDraggedPtsLab = this.svg.selectAll('.legend-dragged-pts-text');
+      i = 0;
+      while (i < data.legendGroups.length) {
+        data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
+        data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height;
+        i++;
       }
-    });
-    legendGroupsLab = this.svg.selectAll('.legend-groups-text');
-    legendDraggedPtsLab = this.svg.selectAll('.legend-dragged-pts-text');
-    i = 0;
-    while (i < data.legendGroups.length) {
-      data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width;
-      data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height;
-      i++;
-    }
-    i = 0;
-    while (i < data.legendPts.length) {
-      data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width;
-      data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height;
-      i++;
-    }
-    if (data.resizedAfterLegendGroupsDrawn()) {
-      console.log('Legend resize triggered');
-      plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
-      return plot.drawLegend(plot, data);
+      i = 0;
+      while (i < data.legendPts.length) {
+        data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width;
+        data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height;
+        i++;
+      }
+      if (data.resizedAfterLegendGroupsDrawn()) {
+        console.log('Legend resize triggered');
+        plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
+        return plot.drawLegend(plot, data);
+      }
     }
   };
 
