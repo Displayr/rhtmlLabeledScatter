@@ -89,7 +89,7 @@ testData =
   xPrefix: '#',
   yPrefix: '$',
   titleFontColor: 'black',
-  titleFontSize: 15,
+  titleFontSize: 40,
   xTitleFontColor: 'red',
   xTitleFontSize: 30,
   yTitleFontColor: 'green',

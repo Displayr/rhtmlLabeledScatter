@@ -1,6 +1,6 @@
 class RectPlot
-  constructor: (width,
-                height,
+  constructor: (@width,
+                @height,
                 @X,
                 @Y,
                 @group,
@@ -52,13 +52,13 @@ class RectPlot
     @yTitle.textHeight = 0 if @yTitle.text is ''
 
     @axisLeaderLineLength = 5
-    @axisDimensionTextHeight = 15 #default, TODO: detect
-    @axisDimensionTextWidth = 50 # default, TODO: detect
+    @axisDimensionTextHeight = 0 # This is set later
+    @axisDimensionTextWidth = 0  # This is set later
     @verticalPadding = 5
     @horizontalPadding = 5
     @title =
       text:         title
-      x:            width/2
+      x:            @width/2
       color:        titleFontColor
       anchor:       'middle'
       fontSize:     titleFontSize
@@ -78,7 +78,7 @@ class RectPlot
     @origin = if origin? then origin else true
     @fixedRatio = if fixedRatio? then fixedRatio else true
 
-    @setDim(@svg, width, height)
+    @setDim(@svg, @width, @height)
 
   draw: ->
     @drawTitle()
@@ -363,7 +363,7 @@ class RectPlot
              .attr('stroke', 'black')
 
     @svg.selectAll('.dim-marker-label').remove()
-    @svg.selectAll('.dim-marker-label')
+    ml = @svg.selectAll('.dim-marker-label')
              .data(dimensionMarkerLabelStack)
              .enter()
              .append('text')
@@ -373,6 +373,24 @@ class RectPlot
              .attr('font-family', 'Arial')
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
+
+    # Figure out the max width of the yaxis dimensional labels
+    @maxTextWidthOfDimensionMarkerLabels = 0
+    initWidth = @axisDimensionTextWidth
+    initHeight = @axisDimensionTextHeight
+    i = 0
+    while i < ml[0].length
+      bb = ml[0][i].getBBox()
+      if @axisDimensionTextWidth < bb.width
+        @axisDimensionTextWidth = bb.width
+      if @axisDimensionTextHeight < bb.height
+        @axisDimensionTextHeight = bb.height
+
+      i++
+
+    if initWidth != @axisDimensionTextWidth or initHeight != @axisDimensionTextHeight
+      @setDim(@svg, @width, @height)
+      @draw()
 
   drawAxisLabels: ->
     axisLabels = [
