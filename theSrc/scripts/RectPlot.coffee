@@ -14,6 +14,7 @@ class RectPlot
                 @colors,
                 grid,
                 origin,
+                @originAlign,
                 titleFontFamily,
                 titleFontSize,
                 titleFontColor,
@@ -141,7 +142,8 @@ class RectPlot
                          @viewBoxDim,
                          @legendDim,
                          @colors,
-                         @fixedRatio)
+                         @fixedRatio,
+                         @originAlign)
 
   redraw: (data) ->
     plotElems = [
@@ -207,7 +209,7 @@ class RectPlot
       roundedTickRange
 
     between = (num, min, max) ->
-      num > min and num < max
+      num >= min and num <= max
 
     pushDimensionMarker = (type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) ->
       if type == 'c'
@@ -252,7 +254,7 @@ class RectPlot
     #calculate number of dimension markers
     colsPositive = 0
     colsNegative = 0
-    i = ticksX
+    i = if between(0, @data.minX, @data.maxX) then ticksX else @data.minX
     while between(i, @data.minX, @data.maxX) or between(-i, @data.minX, @data.maxX)
       colsPositive++ if between(i, @data.minX, @data.maxX)
       colsNegative++ if between(-i, @data.minX, @data.maxX)
@@ -260,17 +262,21 @@ class RectPlot
 
     rowsPositive = 0
     rowsNegative = 0
-    i = ticksY
+    i = if between(0, @data.maxY, @data.minY) then ticksY else @data.minY
     while between(i, @data.minY, @data.maxY) or between(-i, @data.minY, @data.maxY)
       rowsNegative++ if between(i, @data.minY, @data.maxY) # y axis inversed svg
       rowsPositive++ if between(-i, @data.minY, @data.maxY)
       i += ticksY
+    console.log 'rowsNegative'
+    console.log rowsNegative
 
 
     i = 0
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
         val = (i+1)*ticksX
+        if not between(0, @data.minX, @data.maxX)
+          val = @data.minX + (i+1)*ticksX
         x1 = normalizeXCoords val
         y1 = @viewBoxDim.y
         x2 = normalizeXCoords val
@@ -302,8 +308,11 @@ class RectPlot
         dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
         if i % 2
           pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
+
       if i < rowsNegative
         val = (i+1)*ticksY
+        if not between(0, @data.minY, @data.maxY)
+          val = @data.minX + (i+1)*ticksY
         x1 = @viewBoxDim.x
         y1 = normalizeYCoords val
         x2 = @viewBoxDim.x + @viewBoxDim.width

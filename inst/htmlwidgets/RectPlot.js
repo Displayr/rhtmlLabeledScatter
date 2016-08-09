@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -13,6 +13,7 @@ RectPlot = (function() {
     this.label = label;
     this.svg = svg;
     this.colors = colors;
+    this.originAlign = originAlign;
     this.xDecimals = xDecimals;
     this.yDecimals = yDecimals;
     this.xPrefix = xPrefix;
@@ -126,7 +127,7 @@ RectPlot = (function() {
       labelFontFamily: this.labelsFont.family
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio);
+    return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign);
   };
 
   RectPlot.prototype.redraw = function(data) {
@@ -171,7 +172,7 @@ RectPlot = (function() {
       return roundedTickRange;
     };
     between = function(num, min, max) {
-      return num > min && num < max;
+      return num >= min && num <= max;
     };
     pushDimensionMarker = function(type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) {
       if (type === 'c') {
@@ -237,7 +238,7 @@ RectPlot = (function() {
     }
     colsPositive = 0;
     colsNegative = 0;
-    i = ticksX;
+    i = between(0, this.data.minX, this.data.maxX) ? ticksX : this.data.minX;
     while (between(i, this.data.minX, this.data.maxX) || between(-i, this.data.minX, this.data.maxX)) {
       if (between(i, this.data.minX, this.data.maxX)) {
         colsPositive++;
@@ -249,7 +250,7 @@ RectPlot = (function() {
     }
     rowsPositive = 0;
     rowsNegative = 0;
-    i = ticksY;
+    i = between(0, this.data.maxY, this.data.minY) ? ticksY : this.data.minY;
     while (between(i, this.data.minY, this.data.maxY) || between(-i, this.data.minY, this.data.maxY)) {
       if (between(i, this.data.minY, this.data.maxY)) {
         rowsNegative++;
@@ -259,10 +260,15 @@ RectPlot = (function() {
       }
       i += ticksY;
     }
+    console.log('rowsNegative');
+    console.log(rowsNegative);
     i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
       if (i < colsPositive) {
         val = (i + 1) * ticksX;
+        if (!between(0, this.data.minX, this.data.maxX)) {
+          val = this.data.minX + (i + 1) * ticksX;
+        }
         x1 = normalizeXCoords(val);
         y1 = this.viewBoxDim.y;
         x2 = normalizeXCoords(val);
@@ -316,6 +322,9 @@ RectPlot = (function() {
       }
       if (i < rowsNegative) {
         val = (i + 1) * ticksY;
+        if (!between(0, this.data.minY, this.data.maxY)) {
+          val = this.data.minX + (i + 1) * ticksY;
+        }
         x1 = this.viewBoxDim.x;
         y1 = normalizeYCoords(val);
         x2 = this.viewBoxDim.x + this.viewBoxDim.width;

@@ -32,7 +32,7 @@ class LabeledScatter
       @data = data
 
     else # For debuggning in browser
-      @data = testData
+      @data = bubble1
 
     @plot = new RectPlot(@width,
                         @height,
@@ -49,6 +49,7 @@ class LabeledScatter
                         @data.colors,
                         @data.grid,
                         @data.origin,
+                        @data.originAlign,
                         @data.titleFontFamily,
                         @data.titleFontSize,
                         @data.titleFontColor,

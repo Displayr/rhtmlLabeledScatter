@@ -2,7 +2,7 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign) {
     this.X = X;
     this.Y = Y;
     this.group = group;
@@ -11,6 +11,7 @@ PlotData = (function() {
     this.legendDim = legendDim;
     this.colorWheel = colorWheel;
     this.fixedAspectRatio = fixedAspectRatio;
+    this.originAlign = originAlign;
     this.origX = X.slice(0);
     this.origY = Y.slice(0);
     this.normX = X.slice(0);
@@ -46,11 +47,17 @@ PlotData = (function() {
     this.maxY = _.max(notMovedY);
     thres = 0.08;
     xThres = thres * (this.maxX - this.minX);
-    this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres;
-    this.minX = this.minX > 0 ? 0 : this.minX - xThres;
     yThres = thres * (this.maxY - this.minY);
-    this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres;
-    this.minY = this.minY > 0 ? 0 : this.minY - yThres;
+    this.maxX += xThres;
+    this.minX -= xThres;
+    this.maxY += yThres;
+    this.minY -= yThres;
+    if (this.originAlign) {
+      this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres;
+      this.minX = this.minX > 0 ? 0 : this.minX - xThres;
+      this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres;
+      this.minY = this.minY > 0 ? 0 : this.minY - yThres;
+    }
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;

@@ -6,7 +6,8 @@ class PlotData
                 @viewBoxDim,
                 @legendDim,
                 @colorWheel,
-                @fixedAspectRatio) ->
+                @fixedAspectRatio,
+                @originAlign) ->
 
     @origX = X.slice(0)
     @origY = Y.slice(0)
@@ -47,11 +48,17 @@ class PlotData
     # threshold used so pts are not right on border of plot
     thres = 0.08
     xThres = thres*(@maxX - @minX)
-    @maxX = if @maxX < 0 then 0 else @maxX+xThres # so axis can be on origin
-    @minX = if @minX > 0 then 0 else @minX-xThres
     yThres = thres*(@maxY - @minY)
-    @maxY = if @maxY < 0 then 0 else @maxY+yThres
-    @minY = if @minY > 0 then 0 else @minY-yThres
+    @maxX += xThres
+    @minX -= xThres
+    @maxY += yThres
+    @minY -= yThres
+    # originAlign: compensates to make sure origin lines are on axis
+    if @originAlign
+      @maxX = if @maxX < 0 then 0 else @maxX+xThres # so axis can be on origin
+      @minX = if @minX > 0 then 0 else @minX-xThres
+      @maxY = if @maxY < 0 then 0 else @maxY+yThres
+      @minY = if @minY > 0 then 0 else @minY-yThres
 
     if @fixedAspectRatio
       rangeX = @maxX - @minX
