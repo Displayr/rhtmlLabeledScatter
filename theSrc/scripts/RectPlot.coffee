@@ -267,16 +267,13 @@ class RectPlot
       rowsNegative++ if between(i, @data.minY, @data.maxY) # y axis inversed svg
       rowsPositive++ if between(-i, @data.minY, @data.maxY)
       i += ticksY
-    console.log 'rowsNegative'
-    console.log rowsNegative
-
 
     i = 0
     while i < Math.max(colsPositive, colsNegative)
       if i < colsPositive
         val = (i+1)*ticksX
         if not between(0, @data.minX, @data.maxX)
-          val = @data.minX + (i+1)*ticksX
+          val = @data.minX + i*ticksX
         x1 = normalizeXCoords val
         y1 = @viewBoxDim.y
         x2 = normalizeXCoords val
