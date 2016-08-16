@@ -206,6 +206,7 @@ class PlotData
         r = if @Z? then (@viewBoxDim.width/8)*@Z[i] else @pointRadius
         fillOpacity = if @Z? then 0.3 else 1
         label = @label[i]
+        labelZ = if @Z? then @Z[i].toString() else ''
         fontSize = @viewBoxDim.labelFontSize
 
         if _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
@@ -223,7 +224,7 @@ class PlotData
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
-          labelZ: @Z[i].toString()
+          labelZ: labelZ
           group: group
           color: ptColor
           id: i

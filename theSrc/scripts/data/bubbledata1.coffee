@@ -171,6 +171,49 @@ bubble1 =
     26832215
   ],
 
+  group: [
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+  ]
+
   xTitle: "Men's life expectancy",
   yTitle: "Women's life expectancy",
   fixedAspectRatio: false,

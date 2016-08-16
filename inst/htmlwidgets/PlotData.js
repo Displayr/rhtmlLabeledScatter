@@ -213,7 +213,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fillOpacity, fontColor, fontSize, group, i, label, pt, ptColor, r, x, y, _results;
+    var fillOpacity, fontColor, fontSize, group, i, label, labelZ, pt, ptColor, r, x, y, _results;
     this.pts = [];
     this.lab = [];
     i = 0;
@@ -227,6 +227,7 @@ PlotData = (function() {
         r = this.Z != null ? (this.viewBoxDim.width / 8) * this.Z[i] : this.pointRadius;
         fillOpacity = this.Z != null ? 0.3 : 1;
         label = this.label[i];
+        labelZ = this.Z != null ? this.Z[i].toString() : '';
         fontSize = this.viewBoxDim.labelFontSize;
         if (_.includes(_.map(this.draggedOutCondensedPts, function(e) {
           return e.dataId;
@@ -249,7 +250,7 @@ PlotData = (function() {
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
-          labelZ: this.Z[i].toString(),
+          labelZ: labelZ,
           group: group,
           color: ptColor,
           id: i,
