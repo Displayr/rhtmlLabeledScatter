@@ -117,9 +117,9 @@ RectPlot = (function() {
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width - this.horizontalPadding * 2 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight,
+      width: width - this.legendDim.width - this.horizontalPadding * 3 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight,
       height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.xTitle.textHeight - this.axisLeaderLineLength,
-      x: this.horizontalPadding + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
+      x: this.horizontalPadding * 2 + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
       labelFontSize: this.labelsFont.size,
       labelSmallFontSize: this.labelsFont.size * 0.75,

@@ -124,9 +124,9 @@ class RectPlot
     @viewBoxDim =
       svgWidth:           width
       svgHeight:          height
-      width:              width - @legendDim.width - @horizontalPadding*2 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight
+      width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight
       height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength
-      x:                  @horizontalPadding + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
+      x:                  @horizontalPadding*2 + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
       labelFontSize:      @labelsFont.size
       labelSmallFontSize: @labelsFont.size * 0.75
