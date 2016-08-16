@@ -91,7 +91,9 @@ RectPlot = (function() {
 
   RectPlot.prototype.draw = function() {
     this.drawTitle();
-    this.drawLabs(this);
+    if (this.Z == null) {
+      this.drawLabs(this);
+    }
     this.drawLegend(this, this.data);
     this.drawDraggedMarkers(this.data);
     this.drawRect();
@@ -588,6 +590,8 @@ RectPlot = (function() {
       return d.r;
     }).attr('fill', function(d) {
       return d.color;
+    }).attr('fill-opacity', function(d) {
+      return d.fillOpacity;
     }).append('title').text(function(d) {
       return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
     });

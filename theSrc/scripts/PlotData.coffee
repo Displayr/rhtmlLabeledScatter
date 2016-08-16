@@ -13,10 +13,10 @@ class PlotData
                 @originAlign,
                 @pointRadius) ->
 
-    @origX = X.slice(0)
-    @origY = Y.slice(0)
-    @normX = X.slice(0)
-    @normY = Y.slice(0)
+    @origX = @X.slice(0)
+    @origY = @Y.slice(0)
+    @normX = @X.slice(0)
+    @normY = @Y.slice(0)
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []
@@ -28,6 +28,7 @@ class PlotData
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData(@)
+      @normalizeZData(@) if @Z?
       @setupColors()
       @calcDataArrays()
     else
@@ -163,6 +164,17 @@ class PlotData
       @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
+  normalizeZData: (data) ->
+    data.origZ = data.Z.slice(0)
+    minZ = _.min data.Z
+    maxZ = _.max data.Z
+
+    i = 0
+    while i < data.Z.length
+      normalizedArea = data.Z[i]/maxZ
+      data.Z[i] = Math.sqrt(normalizedArea/Math.PI)
+      i++
+
   setupColors: ->
     @legendGroups = []
     if @group?
@@ -191,6 +203,8 @@ class PlotData
          _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
+        r = if @Z? then (@viewBoxDim.width/8)*@Z[i] else @pointRadius
+        fillOpacity = if @Z? then 0.3 else 1
         label = @label[i]
         fontSize = @viewBoxDim.labelFontSize
 
@@ -205,13 +219,14 @@ class PlotData
         @pts.push({
           x: x
           y: y
-          r: @pointRadius
+          r: r
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
           group: group
           color: ptColor
           id: i
+          fillOpacity: fillOpacity
         })
         @lab.push({
           x: x

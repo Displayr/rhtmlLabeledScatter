@@ -101,7 +101,7 @@ class RectPlot
 
   draw: ->
     @drawTitle()
-    @drawLabs(@)
+    @drawLabs(@) unless @Z?
     @drawLegend(@, @data)
     @drawDraggedMarkers(@data)
     @drawRect()
@@ -591,6 +591,7 @@ class RectPlot
              .attr('cy', (d) -> d.y)
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
+             .attr('fill-opacity', (d) -> d.fillOpacity)
              .append('title')
              .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 

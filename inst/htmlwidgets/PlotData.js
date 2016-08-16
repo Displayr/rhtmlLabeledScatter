@@ -15,10 +15,10 @@ PlotData = (function() {
     this.fixedAspectRatio = fixedAspectRatio;
     this.originAlign = originAlign;
     this.pointRadius = pointRadius;
-    this.origX = X.slice(0);
-    this.origY = Y.slice(0);
-    this.normX = X.slice(0);
-    this.normY = Y.slice(0);
+    this.origX = this.X.slice(0);
+    this.origY = this.Y.slice(0);
+    this.normX = this.X.slice(0);
+    this.normY = this.Y.slice(0);
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
@@ -27,6 +27,9 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData(this);
+      if (this.Z != null) {
+        this.normalizeZData(this);
+      }
       this.setupColors();
       this.calcDataArrays();
     } else {
@@ -165,6 +168,21 @@ PlotData = (function() {
     return _results;
   };
 
+  PlotData.prototype.normalizeZData = function(data) {
+    var i, maxZ, minZ, normalizedArea, _results;
+    data.origZ = data.Z.slice(0);
+    minZ = _.min(data.Z);
+    maxZ = _.max(data.Z);
+    i = 0;
+    _results = [];
+    while (i < data.Z.length) {
+      normalizedArea = data.Z[i] / maxZ;
+      data.Z[i] = Math.sqrt(normalizedArea / Math.PI);
+      _results.push(i++);
+    }
+    return _results;
+  };
+
   PlotData.prototype.setupColors = function() {
     var group, i, newColor, _results;
     this.legendGroups = [];
@@ -193,7 +211,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fontColor, fontSize, group, i, label, pt, ptColor, x, y, _results;
+    var fillOpacity, fontColor, fontSize, group, i, label, pt, ptColor, r, x, y, _results;
     this.pts = [];
     this.lab = [];
     i = 0;
@@ -204,6 +222,8 @@ PlotData = (function() {
       }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
+        r = this.Z != null ? (this.viewBoxDim.width / 8) * this.Z[i] : this.pointRadius;
+        fillOpacity = this.Z != null ? 0.3 : 1;
         label = this.label[i];
         fontSize = this.viewBoxDim.labelFontSize;
         if (_.includes(_.map(this.draggedOutCondensedPts, function(e) {
@@ -223,13 +243,14 @@ PlotData = (function() {
         this.pts.push({
           x: x,
           y: y,
-          r: this.pointRadius,
+          r: r,
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
           group: group,
           color: ptColor,
-          id: i
+          id: i,
+          fillOpacity: fillOpacity
         });
         this.lab.push({
           x: x,
