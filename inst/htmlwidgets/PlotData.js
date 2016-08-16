@@ -196,7 +196,6 @@ PlotData = (function() {
     var fontColor, fontSize, group, i, label, pt, ptColor, x, y, _results;
     this.pts = [];
     this.lab = [];
-    this.anc = [];
     i = 0;
     _results = [];
     while (i < this.origLen) {
@@ -240,12 +239,6 @@ PlotData = (function() {
           id: i,
           fontSize: fontSize,
           fontFamily: this.viewBoxDim.labelFontFamily
-        });
-        this.anc.push({
-          x: x,
-          y: y,
-          r: this.pointRadius,
-          id: i
         });
       }
       _results.push(i++);
@@ -373,18 +366,16 @@ PlotData = (function() {
   };
 
   PlotData.prototype.moveElemToLegend = function(id, data) {
-    var checkId, movedAnc, movedLab, movedPt;
+    var checkId, movedLab, movedPt;
     checkId = function(e) {
       return e.id === id;
     };
     movedPt = _.remove(this.pts, checkId);
     movedLab = _.remove(this.lab, checkId);
-    movedAnc = _.remove(this.anc, checkId);
     data.legendPts.push({
       id: id,
       pt: movedPt[0],
       lab: movedLab[0],
-      anc: movedAnc[0],
       anchor: 'start',
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
       color: movedPt[0].color,
@@ -404,7 +395,6 @@ PlotData = (function() {
     legendPt = _.remove(data.legendPts, checkId);
     this.pts.push(legendPt.pt);
     this.lab.push(legendPt.lab);
-    this.anc.push(legendPt.anc);
     _.remove(this.draggedOutPtsId, function(i) {
       return i === id;
     });

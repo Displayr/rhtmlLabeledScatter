@@ -184,7 +184,6 @@ class PlotData
   calcDataArrays: () ->
     @pts = []
     @lab = []
-    @anc = []
 
     i = 0
     while i < @origLen
@@ -222,12 +221,6 @@ class PlotData
           id: i
           fontSize: fontSize
           fontFamily: @viewBoxDim.labelFontFamily
-        })
-        @anc.push({
-          x: x
-          y: y
-          r: @pointRadius
-          id: i
         })
       i++
 
@@ -350,12 +343,10 @@ class PlotData
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
-    movedAnc = _.remove @anc, checkId
     data.legendPts.push {
       id: id
       pt: movedPt[0]
       lab: movedLab[0]
-      anc: movedAnc[0]
       anchor: 'start'
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
       color: movedPt[0].color
@@ -371,7 +362,6 @@ class PlotData
     legendPt = _.remove data.legendPts, checkId
     @pts.push legendPt.pt
     @lab.push legendPt.lab
-    @anc.push legendPt.anc
 
     _.remove @draggedOutPtsId, (i) -> i == id
     _.remove @draggedOutCondensedPts, (i) -> i.dataId == id

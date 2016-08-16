@@ -701,7 +701,7 @@ RectPlot = (function() {
         plot.data.lab[i].height = labels_svg[0][i].getBBox().height;
         i++;
       }
-      labeler = d3.labeler().svg(plot.svg).w1(plot.viewBoxDim.x).w2(plot.viewBoxDim.x + plot.viewBoxDim.width).h1(plot.viewBoxDim.y).h2(plot.viewBoxDim.y + plot.viewBoxDim.height).anchor(plot.data.anc).label(plot.data.lab).start(500);
+      labeler = d3.labeler().svg(plot.svg).w1(plot.viewBoxDim.x).w2(plot.viewBoxDim.x + plot.viewBoxDim.width).h1(plot.viewBoxDim.y).h2(plot.viewBoxDim.y + plot.viewBoxDim.height).anchor(plot.data.pts).label(plot.data.lab).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {
@@ -793,11 +793,11 @@ RectPlot = (function() {
     links = [];
     i = 0;
     while (i < data.len) {
-      newLinkPt = newPtOnLabelBorder(data.lab[i], data.anc[i], data.pts);
+      newLinkPt = newPtOnLabelBorder(data.lab[i], data.pts[i], data.pts);
       if (newLinkPt != null) {
         links.push({
-          x1: data.anc[i].x,
-          y1: data.anc[i].y,
+          x1: data.pts[i].x,
+          y1: data.pts[i].y,
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,

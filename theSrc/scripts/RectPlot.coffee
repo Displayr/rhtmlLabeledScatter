@@ -708,7 +708,7 @@ class RectPlot
                   .w2(plot.viewBoxDim.x + plot.viewBoxDim.width)
                   .h1(plot.viewBoxDim.y)
                   .h2(plot.viewBoxDim.y + plot.viewBoxDim.height)
-                  .anchor(plot.data.anc)
+                  .anchor(plot.data.pts)
                   .label(plot.data.lab)
                   .start(500)
 
@@ -796,10 +796,10 @@ class RectPlot
     links = []
     i = 0
     while i < data.len
-      newLinkPt = newPtOnLabelBorder data.lab[i], data.anc[i], data.pts
+      newLinkPt = newPtOnLabelBorder data.lab[i], data.pts[i], data.pts
       links.push({
-        x1: data.anc[i].x
-        y1: data.anc[i].y
+        x1: data.pts[i].x
+        y1: data.pts[i].y
         x2: newLinkPt[0]
         y2: newLinkPt[1]
         width: 1
