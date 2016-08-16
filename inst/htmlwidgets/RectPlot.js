@@ -250,7 +250,7 @@ RectPlot = (function() {
     }
     rowsPositive = 0;
     rowsNegative = 0;
-    i = between(0, this.data.maxY, this.data.minY) ? ticksY : this.data.minY;
+    i = between(0, this.data.minY, this.data.maxY) ? ticksY : this.data.minY;
     while (between(i, this.data.minY, this.data.maxY) || between(-i, this.data.minY, this.data.maxY)) {
       if (between(i, this.data.minY, this.data.maxY)) {
         rowsNegative++;
@@ -321,7 +321,7 @@ RectPlot = (function() {
       if (i < rowsNegative) {
         val = (i + 1) * ticksY;
         if (!between(0, this.data.minY, this.data.maxY)) {
-          val = this.data.minX + (i + 1) * ticksY;
+          val = this.data.minY + i * ticksY;
         }
         x1 = this.viewBoxDim.x;
         y1 = normalizeYCoords(val);

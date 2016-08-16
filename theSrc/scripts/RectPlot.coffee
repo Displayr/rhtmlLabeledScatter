@@ -262,7 +262,7 @@ class RectPlot
 
     rowsPositive = 0
     rowsNegative = 0
-    i = if between(0, @data.maxY, @data.minY) then ticksY else @data.minY
+    i = if between(0, @data.minY, @data.maxY) then ticksY else @data.minY
     while between(i, @data.minY, @data.maxY) or between(-i, @data.minY, @data.maxY)
       rowsNegative++ if between(i, @data.minY, @data.maxY) # y axis inversed svg
       rowsPositive++ if between(-i, @data.minY, @data.maxY)
@@ -309,7 +309,7 @@ class RectPlot
       if i < rowsNegative
         val = (i+1)*ticksY
         if not between(0, @data.minY, @data.maxY)
-          val = @data.minX + (i+1)*ticksY
+          val = @data.minY + i*ticksY
         x1 = @viewBoxDim.x
         y1 = normalizeYCoords val
         x2 = @viewBoxDim.x + @viewBoxDim.width

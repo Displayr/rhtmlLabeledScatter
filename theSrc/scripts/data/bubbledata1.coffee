@@ -171,13 +171,13 @@ bubble1 =
     26832215
   ],
 
-  xTitle: "Axis 1",
-  yTitle: "Axis 2",
+  xTitle: "Men's life expectancy",
+  yTitle: "Women's life expectancy",
   fixedAspectRatio: false,
   grid: true,
   origin: true,
   originAlign: false,
-  title: "TEST of the font",
+  title: "Life expectancy plot",
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Verdana',
   xTitleFontFamily: 'Arial',
