@@ -3,6 +3,7 @@
 class PlotData
   constructor: (@X,
                 @Y,
+                @Z,
                 @group,
                 @label,
                 @viewBoxDim,

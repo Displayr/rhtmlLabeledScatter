@@ -3,9 +3,10 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
+  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
     this.X = X;
     this.Y = Y;
+    this.Z = Z;
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;

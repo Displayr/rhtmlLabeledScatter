@@ -143,6 +143,7 @@ class RectPlot
 
     @data = new PlotData(@X,
                          @Y,
+                         @Z,
                          @group,
                          @label,
                          @viewBoxDim,
