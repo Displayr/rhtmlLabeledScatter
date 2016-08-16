@@ -17,6 +17,7 @@ class PlotData
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
+    @normZ = @Z.slice() if @Z?
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []
@@ -165,14 +166,13 @@ class PlotData
       i++
 
   normalizeZData: (data) ->
-    data.origZ = data.Z.slice(0)
     minZ = _.min data.Z
     maxZ = _.max data.Z
 
     i = 0
     while i < data.Z.length
       normalizedArea = data.Z[i]/maxZ
-      data.Z[i] = Math.sqrt(normalizedArea/Math.PI)
+      data.normZ[i] = Math.sqrt(normalizedArea/Math.PI)
       i++
 
   setupColors: ->
@@ -223,6 +223,7 @@ class PlotData
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
+          labelZ: @Z[i].toString()
           group: group
           color: ptColor
           id: i

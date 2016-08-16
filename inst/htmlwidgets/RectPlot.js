@@ -581,8 +581,9 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawAnc = function(data) {
+    var anc;
     this.svg.selectAll('.anc').remove();
-    return this.svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+    anc = this.svg.selectAll('.anc').data(data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -592,9 +593,16 @@ RectPlot = (function() {
       return d.color;
     }).attr('fill-opacity', function(d) {
       return d.fillOpacity;
-    }).append('title').text(function(d) {
-      return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
     });
+    if (this.Z != null) {
+      return anc.append('title').text(function(d) {
+        return "" + d.label + "\n" + d.labelZ + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
+      });
+    } else {
+      return anc.append('title').text(function(d) {
+        return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
+      });
+    }
   };
 
   RectPlot.prototype.drawDraggedMarkers = function(data) {

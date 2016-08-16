@@ -19,6 +19,9 @@ PlotData = (function() {
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
     this.normY = this.Y.slice(0);
+    if (this.Z != null) {
+      this.normZ = this.Z.slice();
+    }
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
@@ -170,14 +173,13 @@ PlotData = (function() {
 
   PlotData.prototype.normalizeZData = function(data) {
     var i, maxZ, minZ, normalizedArea, _results;
-    data.origZ = data.Z.slice(0);
     minZ = _.min(data.Z);
     maxZ = _.max(data.Z);
     i = 0;
     _results = [];
     while (i < data.Z.length) {
       normalizedArea = data.Z[i] / maxZ;
-      data.Z[i] = Math.sqrt(normalizedArea / Math.PI);
+      data.normZ[i] = Math.sqrt(normalizedArea / Math.PI);
       _results.push(i++);
     }
     return _results;
@@ -247,6 +249,7 @@ PlotData = (function() {
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
+          labelZ: this.Z[i].toString(),
           group: group,
           color: ptColor,
           id: i,

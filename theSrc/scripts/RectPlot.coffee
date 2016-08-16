@@ -582,7 +582,7 @@ class RectPlot
 
   drawAnc: (data) ->
     @svg.selectAll('.anc').remove()
-    @svg.selectAll('.anc')
+    anc = @svg.selectAll('.anc')
              .data(data.pts)
              .enter()
              .append('circle')
@@ -592,8 +592,12 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .attr('fill-opacity', (d) -> d.fillOpacity)
-             .append('title')
-             .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
+    if @Z?
+      anc.append('title')
+         .text((d) -> "#{d.label}\n#{d.labelZ}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
+    else
+      anc.append('title')
+         .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
   drawDraggedMarkers: (data) ->
     @svg.selectAll('.marker').remove()
