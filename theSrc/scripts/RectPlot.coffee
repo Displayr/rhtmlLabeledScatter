@@ -111,6 +111,7 @@ class RectPlot
 
   setDim: (svg, width, height) ->
     @svg = svg
+    @title.x = width/2
     @legendDim =
       width:          0  #init value
       heightOfRow:    @legendFontSize + 9 #init val

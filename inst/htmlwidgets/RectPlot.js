@@ -104,6 +104,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.setDim = function(svg, width, height) {
     this.svg = svg;
+    this.title.x = width / 2;
     this.legendDim = {
       width: 0,
       heightOfRow: this.legendFontSize + 9,
