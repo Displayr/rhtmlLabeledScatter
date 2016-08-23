@@ -90,6 +90,7 @@ There are example widget use in R in the [features.R file](examples/features.R),
 
 ## TODO
 - Bubble ability - label toggle
-- bubbles - labels position
+- bubbles - Link at perimeter of bubble
+- bubbles - labels positions not ideal (modify algo)
 - Tooltip coloring
 - Integration with displayR and testing

@@ -86,14 +86,13 @@ RectPlot = (function() {
     } else {
       this.showLabels = true;
     }
+    console.log(this.showLabels);
     this.setDim(this.svg, this.width, this.height);
   }
 
   RectPlot.prototype.draw = function() {
     this.drawTitle();
-    if (this.Z == null) {
-      this.drawLabs(this);
-    }
+    this.drawLabs(this);
     this.drawLegend(this, this.data);
     this.drawDraggedMarkers(this.data);
     this.drawRect();
@@ -689,7 +688,10 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
+    console.log('showl');
+    console.log(this.showLabels);
     if (this.showLabels) {
+      console.log('here');
       drag = labelDragAndDrop();
       plot.svg.selectAll('.lab').remove();
       plot.svg.selectAll('.lab').data(plot.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
@@ -725,16 +727,16 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {
-    var i, links, newLinkPt, newPtOnLabelBorder;
-    newPtOnLabelBorder = function(label, anchor, anchor_array) {
+    var getNewPtOnLabelBorder, i, links, newLinkPt;
+    getNewPtOnLabelBorder = function(label, anchor, anchor_array) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
       labelBorder = {
         botL: [label.x - label.width / 2, label.y],
         botC: [label.x, label.y],
         botR: [label.x + label.width / 2, label.y],
-        topL: [label.x - label.width / 2, label.y - label.height + 8],
-        topC: [label.x, label.y - label.height + 8],
-        topR: [label.x + label.width / 2, label.y - label.height + 8],
+        topL: [label.x - label.width / 2, label.y - label.height + 7],
+        topC: [label.x, label.y - label.height + 7],
+        topR: [label.x + label.width / 2, label.y - label.height + 7],
         midL: [label.x - label.width / 2, label.y - label.height / 2],
         midR: [label.x + label.width / 2, label.y - label.height / 2]
       };
@@ -806,7 +808,7 @@ RectPlot = (function() {
     links = [];
     i = 0;
     while (i < data.len) {
-      newLinkPt = newPtOnLabelBorder(data.lab[i], data.pts[i], data.pts);
+      newLinkPt = getNewPtOnLabelBorder(data.lab[i], data.pts[i], data.pts);
       if (newLinkPt != null) {
         links.push({
           x1: data.pts[i].x,

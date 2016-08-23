@@ -97,11 +97,13 @@ class RectPlot
     else
       @showLabels = true
 
+    console.log @showLabels
+
     @setDim(@svg, @width, @height)
 
   draw: ->
     @drawTitle()
-    @drawLabs(@) unless @Z?
+    @drawLabs(@)
     @drawLegend(@, @data)
     @drawDraggedMarkers(@data)
     @drawRect()
@@ -681,7 +683,10 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
+    console.log 'showl'
+    console.log @showLabels
     if @showLabels
+      console.log 'here'
       drag = labelDragAndDrop()
       plot.svg.selectAll('.lab').remove()
       plot.svg.selectAll('.lab')
@@ -727,14 +732,14 @@ class RectPlot
 
   drawLinks: (svg, data) ->
     # calc the links from anc to label text if ambiguous
-    newPtOnLabelBorder = (label, anchor, anchor_array) ->
+    getNewPtOnLabelBorder = (label, anchor, anchor_array) ->
       labelBorder =
         botL: [label.x - label.width/2,     label.y]
         botC: [label.x,                     label.y]
         botR: [label.x + label.width/2,     label.y]
-        topL: [label.x - label.width/2,     label.y - label.height + 8]
-        topC: [label.x,                     label.y - label.height + 8]
-        topR: [label.x + label.width/2,     label.y - label.height + 8]
+        topL: [label.x - label.width/2,     label.y - label.height + 7]
+        topC: [label.x,                     label.y - label.height + 7]
+        topR: [label.x + label.width/2,     label.y - label.height + 7]
         midL: [label.x - label.width/2,     label.y - label.height/2]
         midR: [label.x + label.width/2,     label.y - label.height/2]
 
@@ -802,7 +807,7 @@ class RectPlot
     links = []
     i = 0
     while i < data.len
-      newLinkPt = newPtOnLabelBorder data.lab[i], data.pts[i], data.pts
+      newLinkPt = getNewPtOnLabelBorder data.lab[i], data.pts[i], data.pts
       links.push({
         x1: data.pts[i].x
         y1: data.pts[i].y
