@@ -32,11 +32,20 @@
 #' @param x.title.font.color is the font color of the x axis title
 #' @param x.title.font.size is the font size of the x axis title
 #' @param x.title.font.family is the font family of the x axis title
+#' @param axis.font.family Font Family of the axis labels
+#' @param axis.font.size Font size of the axis labels
+#' @param axis.font.color Font color of the axis labels
 #' @param tooltip.font.color is the font color of the tooltips
 #' @param tooltip.font.family is the font family of the tooltips
 #' @param tooltip.font.size is the font size of the tooltips
 #' @param width is the width of the plot. Defaults to max of window
 #' @param height is the height of the plot. Defaults to the max of window
+#' @param x.decimals the number of decimals in the x axis
+#' @param y.decimals the number of decimals in the y axis
+#' @param z.decimals the number of decimals in the bubble size axis
+#' @param y.prefix A string that prefixes all y values(eg. "$")
+#' @param x.prefix A string that prefixes all x values(eg. "$")
+#' @param z.prefix A string that prefixes all bubble values(eg. "$")
 #'
 #' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
@@ -81,6 +90,9 @@ LabeledScatter <- function(
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   y.title.font.family = "Arial",
   y.title.font.size = 12,
+  axis.font.family = 'Arial',
+  axis.font.color = 'Black',
+  axis.font.size = 12,
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   x.title.font.family = "Arial",
   x.title.font.size = 12,
@@ -128,6 +140,9 @@ LabeledScatter <- function(
     xTitleFontColor = x.title.font.color,
     xTitleFontFamily = x.title.font.family,
     xTitleFontSize = x.title.font.size,
+    axisFontFamily = axis.font.family,
+    axisFontColor = axis.font.color,
+    axisFontSize = axis.font.size,
     tooltipTitleFontColor = tooltip.title.font.color,
     toolTipTitleFontFamily = tooltip.title.font.family,
     tooltipTitleFontSize = tooltip.title.font.size

@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -22,6 +22,9 @@ RectPlot = (function() {
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
+    this.axisFontFamily = axisFontFamily;
+    this.axisFontColor = axisFontColor;
+    this.axisFontSize = axisFontSize;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -390,7 +393,7 @@ RectPlot = (function() {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
-    }).attr('font-family', 'Arial').text(function(d) {
+    }).attr('font-family', this.axisFontFamily).attr('fill', this.axisFontColor).attr('font-size', this.axisFontSize).text(function(d) {
       return d.label;
     }).attr('text-anchor', function(d) {
       return d.anchor;

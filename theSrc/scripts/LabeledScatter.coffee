@@ -70,6 +70,9 @@ class LabeledScatter
                         @data.legendShow,
                         @data.legendFontFamily,
                         @data.legendFontSize,
-                        @data.legendFontColor)
+                        @data.legendFontColor,
+                        @data.axisFontFamily,
+                        @data.axisFontColor,
+                        @data.axisFontSize)
     @plot.draw()
     return @

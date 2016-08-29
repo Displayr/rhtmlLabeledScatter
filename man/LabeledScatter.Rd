@@ -21,8 +21,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   legend.font.family = "Arial", legend.font.size = 12,
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   y.title.font.family = "Arial", y.title.font.size = 12,
-  x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.title.font.family = "Arial", x.title.font.size = 12,
+  axis.font.family = "Arial", axis.font.color = "Black",
+  axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
+  255), x.title.font.family = "Arial", x.title.font.size = 12,
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
   width = NULL, height = NULL)
@@ -54,6 +55,18 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{z.title}{is the title text given to the bubble size}
 
+\item{x.decimals}{the number of decimals in the x axis}
+
+\item{y.decimals}{the number of decimals in the y axis}
+
+\item{z.decimals}{the number of decimals in the bubble size axis}
+
+\item{x.prefix}{A string that prefixes all x values(eg. "$")}
+
+\item{y.prefix}{A string that prefixes all y values(eg. "$")}
+
+\item{z.prefix}{A string that prefixes all bubble values(eg. "$")}
+
 \item{title.font.family}{is the font family of the plot title}
 
 \item{title.font.color}{is the font color of the plot title}
@@ -77,6 +90,12 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{y.title.font.family}{is the font family of the y axis title}
 
 \item{y.title.font.size}{is the font size of the y axis title}
+
+\item{axis.font.family}{Font Family of the axis labels}
+
+\item{axis.font.color}{Font color of the axis labels}
+
+\item{axis.font.size}{Font size of the axis labels}
 
 \item{x.title.font.color}{is the font color of the x axis title}
 

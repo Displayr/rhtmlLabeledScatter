@@ -34,7 +34,10 @@ class RectPlot
                 @legendShow,
                 @legendFontFamily,
                 @legendFontSize,
-                @legendFontColor) ->
+                @legendFontColor,
+                @axisFontFamily,
+                @axisFontColor,
+                @axisFontSize) ->
 
     @labelsFont =
       size:            labelsFontSize
@@ -389,7 +392,9 @@ class RectPlot
              .attr('class', 'dim-marker-label')
              .attr('x', (d) -> d.x)
              .attr('y', (d) -> d.y)
-             .attr('font-family', 'Arial')
+             .attr('font-family', @axisFontFamily)
+             .attr('fill', @axisFontColor)
+             .attr('font-size', @axisFontSize)
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
 
