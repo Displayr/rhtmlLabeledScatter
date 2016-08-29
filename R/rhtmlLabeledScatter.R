@@ -72,7 +72,7 @@ LabeledScatter <- function(
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title.font.size = 16,
   labels.font.family = "Arial",
-  labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  labels.font.color = NULL,
   labels.font.size = 10,
   legend.show = TRUE,
   legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
