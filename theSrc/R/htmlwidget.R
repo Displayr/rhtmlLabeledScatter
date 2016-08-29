@@ -2,15 +2,41 @@
 #'
 #' @description A HTMLWidget that creates a labeled scatter plot.
 #'
-#' @section Usage Scenarios:
 #'
-#' Scenario 1: Blah blah
-#'
-#' @param param1 is a good param
-#'
-#' @examples
-#'
-#' rhtmlLabeledScatter::template('{}')
+#' @param X is array of x coordinates of data set
+#' @param Y is array of y coordinates of data set
+#' @param Z is size coordinates of data set (for bubble charts). This is optional
+#' @param label is the array of text labels for the data set
+#' @param group is the array of group name for each data point
+#' @param fixed.aspect Default to FALSE.
+#' @param colors is the color wheel to be used when plotting the data points. Defaults to Q color wheel.
+#' @param grid Defaults to TRUE. Shows the grid lines.
+#' @param origin Defaults to FALSE. Shows the origin lines as dotted if not along axis.
+#' @param origin.align Defaults to FALSE. Aligns the origin lines as closely to axis as possible.
+#' @param x.title is the title text given to the x axis
+#' @param y.title is the title text given to the y axis
+#' @param z.title is the title text given to the bubble size
+#' @param title.font.family is the font family of the plot title
+#' @param title.font.color is the font color of the plot title
+#' @param title.font size is the font size of the plot title
+#' @param labels.font.family is the font family of the labels
+#' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
+#' @param labels.font.size is the font size of the labels
+#' @param legend.show is the toggle to show the legend. Defaults to TRUE
+#' @param legend.font.color is the font color of the legend. NOTE: Setting this overrides the color array given
+#' @param legend.font.size is the font size of the legend
+#' @param legend.font.family is the font family of the legend
+#' @param y.title.font.color is the font color of the y axis title
+#' @param y.title.font.size is the font size of the y axis title
+#' @param y.title.font.family is the font family of the y axis title
+#' @param x.title.font.color is the font color of the x axis title
+#' @param x.title.font.size is the font size of the x axis title
+#' @param x.title.font.family is the font family of the x axis title
+#' @param tooltip.font.color is the font color of the tooltips
+#' @param tooltip.font.family is the font family of the tooltips
+#' @param tooltip.font.size is the font size of the tooltips
+#' @param width is the width of the plot. Defaults to max of window
+#' @param height is the height of the plot. Defaults to the max of window
 #'
 #' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
