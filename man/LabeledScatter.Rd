@@ -28,20 +28,76 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   width = NULL, height = NULL)
 }
 \arguments{
-\item{param1}{is a good param}
+\item{X}{is array of x coordinates of data set}
+
+\item{Y}{is array of y coordinates of data set}
+
+\item{Z}{is size coordinates of data set (for bubble charts). This is optional}
+
+\item{label}{is the array of text labels for the data set}
+
+\item{group}{is the array of group name for each data point}
+
+\item{fixed.aspect}{Default to FALSE.}
+
+\item{colors}{is the color wheel to be used when plotting the data points. Defaults to Q color wheel.}
+
+\item{grid}{Defaults to TRUE. Shows the grid lines.}
+
+\item{origin}{Defaults to FALSE. Shows the origin lines as dotted if not along axis.}
+
+\item{origin.align}{Defaults to FALSE. Aligns the origin lines as closely to axis as possible.}
+
+\item{y.title}{is the title text given to the y axis}
+
+\item{x.title}{is the title text given to the x axis}
+
+\item{z.title}{is the title text given to the bubble size}
+
+\item{title.font.family}{is the font family of the plot title}
+
+\item{title.font.color}{is the font color of the plot title}
+
+\item{labels.font.family}{is the font family of the labels}
+
+\item{labels.font.color}{is the font color of the labels. NOTE: This overrides the color if it is set}
+
+\item{labels.font.size}{is the font size of the labels}
+
+\item{legend.show}{is the toggle to show the legend. Defaults to TRUE}
+
+\item{legend.font.color}{is the font color of the legend. NOTE: Setting this overrides the color array given}
+
+\item{legend.font.family}{is the font family of the legend}
+
+\item{legend.font.size}{is the font size of the legend}
+
+\item{y.title.font.color}{is the font color of the y axis title}
+
+\item{y.title.font.family}{is the font family of the y axis title}
+
+\item{y.title.font.size}{is the font size of the y axis title}
+
+\item{x.title.font.color}{is the font color of the x axis title}
+
+\item{x.title.font.family}{is the font family of the x axis title}
+
+\item{x.title.font.size}{is the font size of the x axis title}
+
+\item{width}{is the width of the plot. Defaults to max of window}
+
+\item{height}{is the height of the plot. Defaults to the max of window}
+
+\item{title.font}{size is the font size of the plot title}
+
+\item{tooltip.font.color}{is the font color of the tooltips}
+
+\item{tooltip.font.family}{is the font family of the tooltips}
+
+\item{tooltip.font.size}{is the font size of the tooltips}
 }
 \description{
 A HTMLWidget that creates a labeled scatter plot.
-}
-\section{Usage Scenarios}{
-
-
-Scenario 1: Blah blah
-}
-\examples{
-
-rhtmlLabeledScatter::template('{}')
-
 }
 \author{
 Po Liu <pliu0771@uni.sydney.edu.au>
