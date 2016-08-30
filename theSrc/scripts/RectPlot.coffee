@@ -83,7 +83,6 @@ class RectPlot
       @title.paddingBot = 10
 
     @title.y = @verticalPadding + @title.textHeight
-    @setTitlePosition(@title, width)
 
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
@@ -108,9 +107,6 @@ class RectPlot
     @drawDimensionMarkers()
     @drawAxisLabels()
     @drawAnc(@data)
-
-  setTitlePosition: (title, width) ->
-    title.x = width/2
 
   setDim: (svg, width, height) ->
     @svg = svg
@@ -142,6 +138,7 @@ class RectPlot
       labelFontFamily:    @labelsFont.family
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
+    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
 
     @data = new PlotData(@X,
                          @Y,

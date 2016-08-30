@@ -16,7 +16,6 @@ class LabeledScatter
             .attr('width', @width)
             .attr('height', @height)
             .attr('class', 'plot-container')
-    @plot.setTitlePosition(@plot.title, @width)
     @plot.setDim(svg, @width, @height)
     @plot.draw()
     return @

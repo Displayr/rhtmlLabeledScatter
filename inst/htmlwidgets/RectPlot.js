@@ -72,7 +72,6 @@ RectPlot = (function() {
       this.title.paddingBot = 10;
     }
     this.title.y = this.verticalPadding + this.title.textHeight;
-    this.setTitlePosition(this.title, width);
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
     this.fixedRatio = fixedRatio != null ? fixedRatio : true;
@@ -99,10 +98,6 @@ RectPlot = (function() {
     this.drawDimensionMarkers();
     this.drawAxisLabels();
     return this.drawAnc(this.data);
-  };
-
-  RectPlot.prototype.setTitlePosition = function(title, width) {
-    return title.x = width / 2;
   };
 
   RectPlot.prototype.setDim = function(svg, width, height) {
@@ -135,6 +130,7 @@ RectPlot = (function() {
       labelFontFamily: this.labelsFont.family
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
+    this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
     return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius);
   };
 
