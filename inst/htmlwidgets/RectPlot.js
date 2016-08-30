@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -25,6 +25,7 @@ RectPlot = (function() {
     this.axisFontFamily = axisFontFamily;
     this.axisFontColor = axisFontColor;
     this.axisFontSize = axisFontSize;
+    this.pointRadius = pointRadius != null ? pointRadius : 2;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -130,7 +131,7 @@ RectPlot = (function() {
       labelFontFamily: this.labelsFont.family
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign);
+    return this.data = new PlotData(this.X, this.Y, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius);
   };
 
   RectPlot.prototype.redraw = function(data) {

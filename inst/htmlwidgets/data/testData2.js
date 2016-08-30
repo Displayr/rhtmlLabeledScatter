@@ -36,5 +36,6 @@ testData2 = {
   legendFontColor: 'black',
   axisFontFamily: 'Times New Roman',
   axisFontColor: "red",
-  axisFontSize: '10'
+  axisFontSize: '10',
+  pointRadius: 7
 };

@@ -31,5 +31,9 @@ testData = {
   legendShow: true,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
-  legendFontColor: 'black'
+  legendFontColor: 'black',
+  axisFontFamily: 'Times New Roman',
+  axisFontColor: "red",
+  axisFontSize: '10',
+  pointRadius: 7
 };

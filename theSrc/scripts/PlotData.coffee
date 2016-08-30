@@ -7,7 +7,8 @@ class PlotData
                 @legendDim,
                 @colorWheel,
                 @fixedAspectRatio,
-                @originAlign) ->
+                @originAlign,
+                @pointRadius) ->
 
     @origX = X.slice(0)
     @origY = Y.slice(0)
@@ -190,7 +191,7 @@ class PlotData
         @pts.push({
           x: x
           y: y
-          r: 2
+          r: @pointRadius
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
@@ -210,7 +211,7 @@ class PlotData
         @anc.push({
           x: x
           y: y
-          r: 2
+          r: @pointRadius
           id: i
         })
       i++

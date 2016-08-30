@@ -101,3 +101,4 @@ testData2 =
   axisFontFamily: 'Times New Roman'
   axisFontColor: "red"
   axisFontSize: '10'
+  pointRadius: 7
