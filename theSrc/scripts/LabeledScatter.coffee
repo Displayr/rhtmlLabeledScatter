@@ -8,6 +8,7 @@ class LabeledScatter
   constructor: (@width, @height) ->
 
   resize: (el, width, height) ->
+    console.log 'resize'
     @width = width
     @height = height
     d3.select('.plot-container').remove()
@@ -16,7 +17,6 @@ class LabeledScatter
             .attr('width', @width)
             .attr('height', @height)
             .attr('class', 'plot-container')
-    @plot.setTitlePosition(@plot.title, @width)
     @plot.setDim(svg, @width, @height)
     @plot.draw()
     return @
@@ -33,7 +33,7 @@ class LabeledScatter
 
     else # For debuggning in browser
       # @data = bubble1
-      @data = testData2
+      @data = testData3
 
     @plot = new RectPlot(@width,
                         @height,
