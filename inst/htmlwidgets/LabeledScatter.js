@@ -19,7 +19,7 @@ LabeledScatter = (function() {
     this.height = height;
     d3.select('.plot-container').remove();
     svg = d3.select(el).append('svg').attr('width', this.width).attr('height', this.height).attr('class', 'plot-container');
-    this.plot.setDim(svg, this.width, this.height, this.plot.title, this.plot.viewBoxDim);
+    this.plot.setDim(svg, this.width, this.height);
     this.plot.draw();
     return this;
   };
