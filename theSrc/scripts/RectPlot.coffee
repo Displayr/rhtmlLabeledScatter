@@ -756,6 +756,7 @@ class RectPlot
         x2: newLinkPt[0]
         y2: newLinkPt[1]
         width: 1
+        color: data.pts[i].color
       }) if newLinkPt?
       i++
 
@@ -769,4 +770,5 @@ class RectPlot
              .attr('x2', (d) -> d.x2)
              .attr('y2', (d) -> d.y2)
              .attr('stroke-width', (d) -> d.width)
-             .attr('stroke', 'gray')
+             .attr('stroke', (d) -> d.color)
+             .style('stroke-opacity', 0.7)

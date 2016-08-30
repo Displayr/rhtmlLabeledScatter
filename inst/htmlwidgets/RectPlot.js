@@ -757,7 +757,8 @@ RectPlot = (function() {
           y1: data.anc[i].y,
           x2: newLinkPt[0],
           y2: newLinkPt[1],
-          width: 1
+          width: 1,
+          color: data.pts[i].color
         });
       }
       i++;
@@ -772,7 +773,9 @@ RectPlot = (function() {
       return d.y2;
     }).attr('stroke-width', function(d) {
       return d.width;
-    }).attr('stroke', 'gray');
+    }).attr('stroke', function(d) {
+      return d.color;
+    }).style('stroke-opacity', 0.7);
   };
 
   return RectPlot;
