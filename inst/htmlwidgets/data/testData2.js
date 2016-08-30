@@ -8,7 +8,7 @@ testData2 = {
   group: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'],
   xTitle: "",
   yTitle: "",
-  fixedAspectRatio: false,
+  fixedAspectRatio: true,
   grid: true,
   origin: true,
   originAlign: false,
@@ -37,5 +37,5 @@ testData2 = {
   axisFontFamily: 'Times New Roman',
   axisFontColor: "red",
   axisFontSize: '10',
-  pointRadius: 7
+  pointRadius: 2
 };

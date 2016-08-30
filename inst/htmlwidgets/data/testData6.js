@@ -8,7 +8,7 @@ testData6 = {
   group: ['Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Rows', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols', 'Cols'],
   xTitle: "",
   yTitle: "",
-  fixedAspectRatio: false,
+  fixedAspectRatio: true,
   grid: true,
   origin: true,
   originAlign: false,
@@ -37,5 +37,5 @@ testData6 = {
   axisFontFamily: 'Times New Roman',
   axisFontColor: "red",
   axisFontSize: '10',
-  pointRadius: 7
+  pointRadius: 2
 };

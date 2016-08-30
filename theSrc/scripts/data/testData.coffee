@@ -73,7 +73,7 @@ testData =
 
   xTitle: "Axis 1",
   yTitle: "Axis 2",
-  fixedAspectRatio: false,
+  fixedAspectRatio: true,
   grid: true,
   origin: true,
   title: "TEST of the font",
@@ -101,4 +101,4 @@ testData =
   axisFontFamily: 'Times New Roman'
   axisFontColor: "red"
   axisFontSize: '10'
-  pointRadius: 7
+  pointRadius: 2

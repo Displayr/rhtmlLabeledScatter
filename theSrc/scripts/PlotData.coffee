@@ -64,11 +64,23 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
+      diff = Math.abs(viewBoxDim.width - viewBoxDim.height)
+      if viewBoxDim.width > viewBoxDim.height
+        factor = rangeY*(diff/viewBoxDim.width)
+        @maxY += factor/2
+        @minY -= factor/2
+      else
+        factor = rangeX*(diff/viewBoxDim.height)
+        @maxX += factor/2
+        @minX -= factor/2
+
+      rangeX = @maxX - @minX
+      rangeY = @maxY - @minY
       diff = Math.abs(rangeX - rangeY)
       if rangeX > rangeY
         @maxY += diff/2
         @minY -= diff/2
-      else if rangeY > rangeX
+      else
         @maxX += diff/2
         @minX -= diff/2
 
