@@ -58,7 +58,6 @@ RectPlot = (function() {
     this.horizontalPadding = 5;
     this.title = {
       text: title,
-      x: this.width / 2,
       color: titleFontColor,
       anchor: 'middle',
       fontSize: titleFontSize,
@@ -73,6 +72,7 @@ RectPlot = (function() {
       this.title.paddingBot = 10;
     }
     this.title.y = this.verticalPadding + this.title.textHeight;
+    this.setTitlePosition(this.title, width);
     this.grid = grid != null ? grid : true;
     this.origin = origin != null ? origin : true;
     this.fixedRatio = fixedRatio != null ? fixedRatio : true;
@@ -99,6 +99,10 @@ RectPlot = (function() {
     this.drawDimensionMarkers();
     this.drawAxisLabels();
     return this.drawAnc(this.data);
+  };
+
+  RectPlot.prototype.setTitlePosition = function(title, width) {
+    return title.x = width / 2;
   };
 
   RectPlot.prototype.setDim = function(svg, width, height) {
