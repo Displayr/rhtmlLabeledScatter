@@ -180,7 +180,7 @@ testData4 =
   ],
   xTitle: "",
   yTitle: "",
-  fixedAspectRatio: false,
+  fixedAspectRatio: true,
   grid: true,
   origin: true,
   originAlign: false,
@@ -209,4 +209,4 @@ testData4 =
   axisFontFamily: 'Times New Roman'
   axisFontColor: "red"
   axisFontSize: '10'
-  pointRadius: 7
+  pointRadius: 2

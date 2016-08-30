@@ -8,7 +8,7 @@ testData3 = {
   group: ["Porsche", "Nike athletic shoes", "Mercedes", "Lexus", "Calvin Klein perfume", "Reebok athletic shoes", "Guess jeans", "Levi 's jeans", "American Express", "Three mobile phone network", "Michelin tires", "Visa", "Foxtel cable", "IBM computers", "Sony televisions", "Apple computers", "Lee jeans", "Telstra", "Qantas", "Revlon cosmetics", "Toyota", "Pepsi Cola", "Diet Coke", "SBS TV", "Kettle chips", "Thins chips", "Kodak film", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's", "Arnott's"],
   xTitle: "",
   yTitle: "",
-  fixedAspectRatio: false,
+  fixedAspectRatio: true,
   grid: true,
   origin: true,
   originAlign: false,
@@ -37,5 +37,5 @@ testData3 = {
   axisFontFamily: 'Times New Roman',
   axisFontColor: "red",
   axisFontSize: '10',
-  pointRadius: 7
+  pointRadius: 2
 };

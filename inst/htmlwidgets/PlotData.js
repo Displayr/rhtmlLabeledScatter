@@ -33,7 +33,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function(data) {
-    var condensedPtsDataIdArray, diff, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+    var condensedPtsDataIdArray, diff, draggedNormX, draggedNormY, factor, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, viewBoxDim, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
     viewBoxDim = data.viewBoxDim;
     ptsOut = this.draggedOutPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
@@ -62,11 +62,23 @@ PlotData = (function() {
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
+      diff = Math.abs(viewBoxDim.width - viewBoxDim.height);
+      if (viewBoxDim.width > viewBoxDim.height) {
+        factor = rangeY * (diff / viewBoxDim.width);
+        this.maxY += factor / 2;
+        this.minY -= factor / 2;
+      } else {
+        factor = rangeX * (diff / viewBoxDim.height);
+        this.maxX += factor / 2;
+        this.minX -= factor / 2;
+      }
+      rangeX = this.maxX - this.minX;
+      rangeY = this.maxY - this.minY;
       diff = Math.abs(rangeX - rangeY);
       if (rangeX > rangeY) {
         this.maxY += diff / 2;
         this.minY -= diff / 2;
-      } else if (rangeY > rangeX) {
+      } else {
         this.maxX += diff / 2;
         this.minX -= diff / 2;
       }
