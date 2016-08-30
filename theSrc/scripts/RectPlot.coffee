@@ -66,9 +66,9 @@ class RectPlot
     @axisDimensionTextWidth = 0  # This is set later
     @verticalPadding = 5
     @horizontalPadding = 5
+
     @title =
       text:         title
-      x:            @width/2
       color:        titleFontColor
       anchor:       'middle'
       fontSize:     titleFontSize
@@ -83,6 +83,7 @@ class RectPlot
       @title.paddingBot = 10
 
     @title.y = @verticalPadding + @title.textHeight
+    @setTitlePosition(@title, width)
 
     @grid = if grid? then grid else true
     @origin = if origin? then origin else true
@@ -107,6 +108,9 @@ class RectPlot
     @drawDimensionMarkers()
     @drawAxisLabels()
     @drawAnc(@data)
+
+  setTitlePosition: (title, width) ->
+    title.x = width/2
 
   setDim: (svg, width, height) ->
     @svg = svg
