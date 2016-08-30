@@ -46,6 +46,7 @@
 #' @param y.prefix A string that prefixes all y values(eg. "$")
 #' @param x.prefix A string that prefixes all x values(eg. "$")
 #' @param z.prefix A string that prefixes all bubble values(eg. "$")
+#' @param point.radius Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.
 #'
 #' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
@@ -99,6 +100,7 @@ LabeledScatter <- function(
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial",
   tooltip.title.font.size = 10,
+  point.radius = 2,
   width = NULL,
   height = NULL
   ) {
@@ -146,6 +148,7 @@ LabeledScatter <- function(
     tooltipTitleFontColor = tooltip.title.font.color,
     toolTipTitleFontFamily = tooltip.title.font.family,
     tooltipTitleFontSize = tooltip.title.font.size
+    pointRadius = point.radius
   )
 
   htmlwidgets::createWidget(

@@ -98,3 +98,7 @@ testData10 =
   legendFontFamily: 'Arial',
   legendFontSize: 16,
   legendFontColor: 'black'
+  axisFontFamily: 'Times New Roman'
+  axisFontColor: "red"
+  axisFontSize: '10'
+  pointRadius: 7

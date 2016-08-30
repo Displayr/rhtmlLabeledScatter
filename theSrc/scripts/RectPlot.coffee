@@ -37,7 +37,8 @@ class RectPlot
                 @legendFontColor,
                 @axisFontFamily,
                 @axisFontColor,
-                @axisFontSize) ->
+                @axisFontSize,
+                @pointRadius = 2) ->
 
     @labelsFont =
       size:            labelsFontSize
@@ -146,7 +147,8 @@ class RectPlot
                          @legendDim,
                          @colors,
                          @fixedRatio,
-                         @originAlign)
+                         @originAlign,
+                         @pointRadius)
 
   redraw: (data) ->
     plotElems = [

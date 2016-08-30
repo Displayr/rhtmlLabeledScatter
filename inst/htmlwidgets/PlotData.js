@@ -2,7 +2,7 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign) {
+  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
     this.X = X;
     this.Y = Y;
     this.group = group;
@@ -12,6 +12,7 @@ PlotData = (function() {
     this.colorWheel = colorWheel;
     this.fixedAspectRatio = fixedAspectRatio;
     this.originAlign = originAlign;
+    this.pointRadius = pointRadius;
     this.origX = X.slice(0);
     this.origY = Y.slice(0);
     this.normX = X.slice(0);
@@ -209,7 +210,7 @@ PlotData = (function() {
         this.pts.push({
           x: x,
           y: y,
-          r: 2,
+          r: this.pointRadius,
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
@@ -229,7 +230,7 @@ PlotData = (function() {
         this.anc.push({
           x: x,
           y: y,
-          r: 2,
+          r: this.pointRadius,
           id: i
         });
       }
