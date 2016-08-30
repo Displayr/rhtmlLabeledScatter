@@ -33,7 +33,7 @@ class LabeledScatter
 
     else # For debuggning in browser
       # @data = bubble1
-      @data = testData2
+      @data = testData
 
     @plot = new RectPlot(@width,
                         @height,

@@ -12,9 +12,11 @@
             w1 = 1,
             w2 = 1,
             labeler = {},
-            svg = {};
+            svg = {}
+            minLabWidth = Infinity;
 
-        var investigate = 13;
+        // var investigate = 7;
+        // var investigate2 = 14;
         var labelTopPadding = 5;
         var max_move = 5.0,
             max_angle = 2*3.1415,
@@ -178,13 +180,13 @@
 
             if (random.real(0,1) < Math.exp(-delta_energy / currT)) {
                 acc += 1;
-                // if (i == investigate)
+                // if (i == investigate || i == investigate2)
                 //    svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
                 //                  .attr('y', lab[i].y - lab[i].height)
                 //                  .attr('width', lab[i].width)
                 //                  .attr('height', lab[i].height)
                 //                  .attr('text-anchor', 'middle')
-                //                  .attr('fill', 'blue')
+                //                  .attr('fill', 'green')
                 //                  .attr('fill-opacity', 0.1);
             } else {
                 // move back to old coordinates
@@ -225,7 +227,7 @@
             var c = Math.cos(angle);
 
             // translate label (relative to anchor at origin):
-            lab[i].x -= anc[i].x + lab[i].width/2;
+            lab[i].x -= anc[i].x + minLabWidth/2;
             lab[i].y -= anc[i].y;
 
             // rotate label
@@ -261,24 +263,26 @@
             if (random.real(0,1) < Math.exp(-delta_energy / currT)) {
                 acc += 1;
 
-                //if (i == investigate)
-                // svg.append('rect').attr('x', lab[i].x)
+                // if (i == investigate || i == investigate2) {
+                //   console.log('here')
+                //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
                 //                   .attr('y', lab[i].y - lab[i].height)
                 //                   .attr('width', lab[i].width)
                 //                   .attr('height', lab[i].height)
-                //                   .attr('fill', 'red')
+                //                   .attr('fill', 'blue')
                 //                   .attr('fill-opacity', 0.1);
+                // }
             } else {
                 // move back to old coordinates
                 lab[i].x = x_old;
                 lab[i].y = y_old;
                 rej += 1;
-                //if (i == investigate)
-                // svg.append('rect').attr('x', lab[i].x)
+                // if (i == investigate)
+                //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
                 //                   .attr('y', lab[i].y - lab[i].height)
                 //                   .attr('width', lab[i].width)
                 //                   .attr('height', lab[i].height)
-                //                   .attr('fill', 'purple')
+                //                   .attr('fill', 'red')
                 //                   .attr('fill-opacity', 0.1);
             }
 
@@ -320,7 +324,7 @@
 
             for (i = 0; i < nsweeps; i++) {
                 for (var j = 0; j < m; j++) {
-                    if (random.real(0,1) < 0.5) { mcmove(currT); }
+                    if (random.real(0,1) < 0.8) { mcmove(currT); }
                     else { mcrotate(currT); }
                 }
                 currT = cooling_schedule(currT, initialT, nsweeps);
@@ -361,6 +365,9 @@
             lab = x;
             for(var i=0; i<lab.length;i++) {
                 lab[i].y -= 5;
+
+                // determine min labs width for mcrotate
+                if (lab[i].width < minLabWidth) minLabWidth = lab[i].width;
                 // svg.append('rect')
                 //    .attr('x', lab[i].x - lab[i].width/2)
                 //    .attr('y', lab[i].y - lab[i].height)

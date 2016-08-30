@@ -1,3 +1,4 @@
+
 class RectPlot
   constructor: (@width,
                 @height,
