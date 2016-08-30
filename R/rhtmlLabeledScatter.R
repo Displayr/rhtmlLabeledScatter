@@ -147,7 +147,7 @@ LabeledScatter <- function(
     axisFontSize = axis.font.size,
     tooltipTitleFontColor = tooltip.title.font.color,
     toolTipTitleFontFamily = tooltip.title.font.family,
-    tooltipTitleFontSize = tooltip.title.font.size
+    tooltipTitleFontSize = tooltip.title.font.size,
     pointRadius = point.radius
   )
 

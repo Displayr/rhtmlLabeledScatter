@@ -26,7 +26,7 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   255), x.title.font.family = "Arial", x.title.font.size = 12,
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
-  width = NULL, height = NULL)
+  point.radius = 2, width = NULL, height = NULL)
 }
 \arguments{
 \item{X}{is array of x coordinates of data set}
@@ -102,6 +102,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{x.title.font.family}{is the font family of the x axis title}
 
 \item{x.title.font.size}{is the font size of the x axis title}
+
+\item{point.radius}{Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.}
 
 \item{width}{is the width of the plot. Defaults to max of window}
 
