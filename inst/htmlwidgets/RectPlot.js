@@ -94,7 +94,7 @@ RectPlot = (function() {
     this.drawLabs(this);
     this.drawLegend(this, this.data);
     this.drawDraggedMarkers(this.data);
-    this.drawRect(this.svg, this.viewBoxDim);
+    this.drawRect();
     this.drawDimensionMarkers();
     this.drawAxisLabels();
     return this.drawAnc(this.data);
@@ -143,6 +143,7 @@ RectPlot = (function() {
     }
     data.normalizeData(data);
     data.calcDataArrays();
+    this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
     return this.draw();
   };
 

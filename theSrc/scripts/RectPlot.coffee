@@ -103,7 +103,7 @@ class RectPlot
     @drawLabs(@)
     @drawLegend(@, @data)
     @drawDraggedMarkers(@data)
-    @drawRect(@svg, @viewBoxDim)
+    @drawRect()
     @drawDimensionMarkers()
     @drawAxisLabels()
     @drawAnc(@data)
@@ -170,6 +170,7 @@ class RectPlot
 
     data.normalizeData(data)
     data.calcDataArrays()
+    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
     @draw()
 
   drawTitle: ->
