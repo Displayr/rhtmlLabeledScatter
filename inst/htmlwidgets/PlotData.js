@@ -358,6 +358,18 @@ PlotData = (function() {
     return false;
   };
 
+  PlotData.prototype.isLegendPtOutsideViewBox = function(lab) {
+    var bot, left, right, top;
+    left = lab.x;
+    right = lab.x + lab.width;
+    top = lab.y - lab.height;
+    bot = lab.y;
+    if (left < this.viewBoxDim.x || right > this.viewBoxDim.x + this.viewBoxDim.width || top < this.viewBoxDim.y || bot > this.viewBoxDim.y + this.viewBoxDim.height) {
+      return true;
+    }
+    return false;
+  };
+
   PlotData.prototype.moveElemToLegend = function(id, data) {
     var checkId, movedAnc, movedLab, movedPt;
     checkId = function(e) {
@@ -367,6 +379,7 @@ PlotData = (function() {
     movedLab = _.remove(this.lab, checkId);
     movedAnc = _.remove(this.anc, checkId);
     data.legendPts.push({
+      id: id,
       pt: movedPt[0],
       lab: movedLab[0],
       anc: movedAnc[0],
@@ -376,6 +389,26 @@ PlotData = (function() {
       isDraggedPt: true
     });
     this.draggedOutPtsId.push(id);
+    this.normalizeData(data);
+    this.calcDataArrays();
+    return this.setupLegendGroupsAndPts(this);
+  };
+
+  PlotData.prototype.removeElemFromLegend = function(id, data) {
+    var checkId, legendPt;
+    checkId = function(e) {
+      return e.id === id;
+    };
+    legendPt = _.remove(data.legendPts, checkId);
+    this.pts.push(legendPt.pt);
+    this.lab.push(legendPt.lab);
+    this.anc.push(legendPt.anc);
+    _.remove(this.draggedOutPtsId, function(i) {
+      return i === id;
+    });
+    _.remove(this.draggedOutCondensedPts, function(i) {
+      return i.dataId === id;
+    });
     this.normalizeData(data);
     this.calcDataArrays();
     return this.setupLegendGroupsAndPts(this);
