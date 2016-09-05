@@ -330,12 +330,26 @@ class PlotData
       return true
     return false
 
+  isLegendPtOutsideViewBox: (lab) ->
+    left  = lab.x
+    right = lab.x + lab.width
+    top   = lab.y - lab.height
+    bot   = lab.y
+
+    if left < @viewBoxDim.x or
+        right > @viewBoxDim.x + @viewBoxDim.width or
+        top < @viewBoxDim.y or
+        bot > @viewBoxDim.y + @viewBoxDim.height
+      return true
+    return false
+
   moveElemToLegend: (id, data) ->
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
     movedAnc = _.remove @anc, checkId
     data.legendPts.push {
+      id: id
       pt: movedPt[0]
       lab: movedLab[0]
       anc: movedAnc[0]
@@ -345,6 +359,20 @@ class PlotData
       isDraggedPt: true
     }
     @draggedOutPtsId.push id
+    @normalizeData(data)
+    @calcDataArrays()
+    @setupLegendGroupsAndPts(@)
+
+  removeElemFromLegend: (id, data) ->
+    checkId = (e) -> e.id == id
+    legendPt = _.remove data.legendPts, checkId
+    @pts.push legendPt.pt
+    @lab.push legendPt.lab
+    @anc.push legendPt.anc
+
+    _.remove @draggedOutPtsId, (i) -> i == id
+    _.remove @draggedOutCondensedPts, (i) -> i.dataId == id
+
     @normalizeData(data)
     @calcDataArrays()
     @setupLegendGroupsAndPts(@)

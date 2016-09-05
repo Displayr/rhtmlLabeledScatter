@@ -468,7 +468,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function(plot, data) {
-    var getSuperscript, i, legendDraggedPtsLab, legendGroupsLab, superscript;
+    var drag, getSuperscript, i, legendDraggedPtsLab, legendGroupsLab, legendLabelDragAndDrop, superscript;
     data.setupLegendGroupsAndPts(data);
     superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     getSuperscript = function(id) {
@@ -480,6 +480,38 @@ RectPlot = (function() {
         id = (id - digit) / 10;
       }
       return ss;
+    };
+    legendLabelDragAndDrop = function(plot, data) {
+      var dragEnd, dragMove, dragStart;
+      dragStart = function() {};
+      dragMove = function() {
+        var id, legendPt;
+        d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
+        id = d3.select(this).attr('id').split('legend-')[1];
+        legendPt = _.find(data.legendPts, function(l) {
+          return l.id === Number(id);
+        });
+        legendPt.lab.x = d3.event.x;
+        return legendPt.lab.y = d3.event.y;
+      };
+      dragEnd = function() {
+        var id, legendPt;
+        id = Number(d3.select(this).attr('id').split('legend-')[1]);
+        legendPt = _.find(data.legendPts, function(l) {
+          return l.id === Number(id);
+        });
+        if (plot.data.isLegendPtOutsideViewBox(legendPt.lab)) {
+          return d3.select(this).attr('x', d3.select(this).x = legendPt.x).attr('y', d3.select(this).y = legendPt.y);
+        } else {
+          return plot.elemDraggedOnPlot(plot, data, id);
+        }
+      };
+      return d3.behavior.drag().origin(function() {
+        return {
+          x: d3.select(this).attr("x"),
+          y: d3.select(this).attr("y")
+        };
+      }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
     if (this.legendShow) {
       this.svg.selectAll('.legend-groups-pts').remove();
@@ -506,8 +538,11 @@ RectPlot = (function() {
       }).attr('text-anchor', function(d) {
         return d.anchor;
       });
+      drag = legendLabelDragAndDrop(plot, data);
       this.svg.selectAll('.legend-dragged-pts-text').remove();
-      this.svg.selectAll('.legend-dragged-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('x', function(d) {
+      this.svg.selectAll('.legend-dragged-pts-text').data(data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
+        return "legend-" + d.id;
+      }).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {
         return d.y;
@@ -521,7 +556,7 @@ RectPlot = (function() {
         } else {
           return d.text;
         }
-      });
+      }).call(drag);
       legendGroupsLab = this.svg.selectAll('.legend-groups-text');
       legendDraggedPtsLab = this.svg.selectAll('.legend-dragged-pts-text');
       i = 0;
@@ -538,8 +573,7 @@ RectPlot = (function() {
       }
       if (data.resizedAfterLegendGroupsDrawn()) {
         console.log('Legend resize triggered');
-        plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
-        return plot.drawLegend(plot, data);
+        return plot.redraw(data, this.viewBoxDim.svgWidth, this.viewBoxDim.svgHeight);
       }
     }
   };
@@ -588,6 +622,15 @@ RectPlot = (function() {
 
   RectPlot.prototype.elemDraggedOffPlot = function(plot, data, id) {
     data.moveElemToLegend(id, data);
+    return plot.resetPlotAfterDragEvent(plot, data);
+  };
+
+  RectPlot.prototype.elemDraggedOnPlot = function(plot, data, id) {
+    data.removeElemFromLegend(id, data);
+    return plot.resetPlotAfterDragEvent(plot, data);
+  };
+
+  RectPlot.prototype.resetPlotAfterDragEvent = function(plot, data) {
     plot.drawRect();
     plot.drawAxisLabels();
     plot.drawDimensionMarkers();

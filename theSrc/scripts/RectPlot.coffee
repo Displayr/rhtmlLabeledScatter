@@ -478,6 +478,42 @@ class RectPlot
         id = (id - digit)/10
       ss
 
+    legendLabelDragAndDrop = (plot, data) ->
+      dragStart = ->
+
+      dragMove = ->
+        d3.select(this)
+        .attr('x', d3.select(this).x = d3.event.x)
+        .attr('y', d3.select(this).y = d3.event.y)
+
+        # Save the new location of text so links can be redrawn
+        id = d3.select(this).attr('id').split('legend-')[1]
+        legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
+        legendPt.lab.x = d3.event.x
+        legendPt.lab.y = d3.event.y
+
+      dragEnd = ->
+        id = Number(d3.select(this).attr('id').split('legend-')[1])
+        legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
+        if plot.data.isLegendPtOutsideViewBox(legendPt.lab)
+          d3.select(this)
+            .attr('x', d3.select(this).x = legendPt.x)
+            .attr('y', d3.select(this).y = legendPt.y)
+        else
+          plot.elemDraggedOnPlot(plot, data, id)
+
+
+      d3.behavior.drag()
+             .origin(() ->
+               {
+                 x: d3.select(this).attr("x")
+                 y: d3.select(this).attr("y")
+               }
+              )
+             .on('dragstart', dragStart)
+             .on('drag', dragMove)
+             .on('dragend', dragEnd)
+
     if @legendShow
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
@@ -506,12 +542,14 @@ class RectPlot
                .text((d) -> d.text)
                .attr('text-anchor', (d) -> d.anchor)
 
+      drag = legendLabelDragAndDrop(plot, data)
       @svg.selectAll('.legend-dragged-pts-text').remove()
       @svg.selectAll('.legend-dragged-pts-text')
                .data(data.legendPts)
                .enter()
                .append('text')
                .attr('class', 'legend-dragged-pts-text')
+               .attr('id', (d) -> "legend-#{d.id}")
                .attr('x', (d) -> d.x)
                .attr('y', (d) -> d.y)
                .attr('font-family', @legendFontFamily)
@@ -519,6 +557,7 @@ class RectPlot
                .attr('text-anchor', (d) -> d.anchor)
                .attr('fill', (d) -> d.color)
                .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
+               .call(drag)
 
       legendGroupsLab = @svg.selectAll('.legend-groups-text')
       legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
@@ -538,7 +577,6 @@ class RectPlot
       if data.resizedAfterLegendGroupsDrawn()
         console.log 'Legend resize triggered'
         plot.redraw(data, @viewBoxDim.svgWidth, @viewBoxDim.svgHeight)
-        plot.drawLegend(plot, data)
 
   drawAnc: (data) ->
     @svg.selectAll('.anc').remove()
@@ -584,6 +622,13 @@ class RectPlot
 
   elemDraggedOffPlot: (plot, data, id) ->
     data.moveElemToLegend(id, data)
+    plot.resetPlotAfterDragEvent(plot, data)
+
+  elemDraggedOnPlot: (plot, data, id) ->
+    data.removeElemFromLegend(id, data)
+    plot.resetPlotAfterDragEvent(plot, data)
+
+  resetPlotAfterDragEvent: (plot, data) ->
     plot.drawRect()
     plot.drawAxisLabels()
     plot.drawDimensionMarkers()
