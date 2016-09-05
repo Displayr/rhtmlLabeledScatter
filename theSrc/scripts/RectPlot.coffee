@@ -25,6 +25,7 @@ class RectPlot
                 yTitleFontFamily,
                 yTitleFontSize,
                 yTitleFontColor,
+                @showLabels = true,
                 labelsFontFamily,
                 labelsFontSize,
                 labelsFontColor,
@@ -94,8 +95,6 @@ class RectPlot
       for x in @X
         @label.push ''
       @showLabels = false
-    else
-      @showLabels = true
 
     @setDim(@svg, @width, @height)
 

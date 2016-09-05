@@ -60,6 +60,7 @@ class LabeledScatter
                         @data.yTitleFontFamily,
                         @data.yTitleFontSize,
                         @data.yTitleFontColor,
+                        @data.showLabels,
                         @data.labelsFontFamily,
                         @data.labelsFontSize,
                         @data.labelsFontColor,

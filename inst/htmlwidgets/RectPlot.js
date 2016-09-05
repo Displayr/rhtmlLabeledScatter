@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -14,6 +14,7 @@ RectPlot = (function() {
     this.svg = svg;
     this.colors = colors;
     this.originAlign = originAlign;
+    this.showLabels = showLabels != null ? showLabels : true;
     this.xDecimals = xDecimals;
     this.yDecimals = yDecimals;
     this.xPrefix = xPrefix;
@@ -83,8 +84,6 @@ RectPlot = (function() {
         this.label.push('');
       }
       this.showLabels = false;
-    } else {
-      this.showLabels = true;
     }
     this.setDim(this.svg, this.width, this.height);
   }

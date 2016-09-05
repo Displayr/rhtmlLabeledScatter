@@ -19,6 +19,7 @@
 #' @param title.font.family is the font family of the plot title
 #' @param title.font.color is the font color of the plot title
 #' @param title.font size is the font size of the plot title
+#' @param labels.show Toggle for showing labels. Defaults to true if labels array given
 #' @param labels.font.family is the font family of the labels
 #' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
 #' @param labels.font.size is the font size of the labels
@@ -81,6 +82,7 @@ LabeledScatter <- function(
   title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title.font.size = 16,
+  labels.show = TRUE,
   labels.font.family = "Arial",
   labels.font.color = NULL,
   labels.font.size = 10,
@@ -129,6 +131,7 @@ LabeledScatter <- function(
     titleFontFamily = title.font.family,
     titleFontColor = title.font.color,
     titleFontSize = title.font.size,
+    showLabels = labels.show,
     labelsFontFamily = labels.font.family,
     labelsFontColor = labels.font.color,
     labelsFontSize = labels.font.size,

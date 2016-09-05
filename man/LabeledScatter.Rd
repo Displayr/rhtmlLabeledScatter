@@ -15,12 +15,12 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   title = "", x.decimals = 1, y.decimals = 1, z.decimals = 1,
   x.prefix = "", y.prefix = "", z.prefix = "",
   title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title.font.size = 16, labels.font.family = "Arial",
-  labels.font.color = NULL, labels.font.size = 10, legend.show = TRUE,
-  legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.font.family = "Arial", legend.font.size = 12,
-  y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12,
+  maxColorValue = 255), title.font.size = 16, labels.show = TRUE,
+  labels.font.family = "Arial", labels.font.color = NULL,
+  labels.font.size = 10, legend.show = TRUE, legend.font.color = rgb(44,
+  44, 44, maxColorValue = 255), legend.font.family = "Arial",
+  legend.font.size = 12, y.title.font.color = rgb(44, 44, 44, maxColorValue
+  = 255), y.title.font.family = "Arial", y.title.font.size = 12,
   axis.font.family = "Arial", axis.font.color = "Black",
   axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
   255), x.title.font.family = "Arial", x.title.font.size = 12,
@@ -70,6 +70,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{title.font.family}{is the font family of the plot title}
 
 \item{title.font.color}{is the font color of the plot title}
+
+\item{labels.show}{Toggle for showing labels. Defaults to true if labels array given}
 
 \item{labels.font.family}{is the font family of the labels}
 

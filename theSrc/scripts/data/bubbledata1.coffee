@@ -224,6 +224,7 @@ bubble1 =
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Verdana',
   xTitleFontFamily: 'Arial',
+  showLabels: true,
   labelsFontFamily: 'Arial',
   labelsFontSize: 16,
   labelsFontColor: null,
