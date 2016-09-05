@@ -3,9 +3,10 @@
 var PlotData;
 
 PlotData = (function() {
-  function PlotData(X, Y, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
+  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
     this.X = X;
     this.Y = Y;
+    this.Z = Z;
     this.group = group;
     this.label = label;
     this.viewBoxDim = viewBoxDim;
@@ -14,10 +15,13 @@ PlotData = (function() {
     this.fixedAspectRatio = fixedAspectRatio;
     this.originAlign = originAlign;
     this.pointRadius = pointRadius;
-    this.origX = X.slice(0);
-    this.origY = Y.slice(0);
-    this.normX = X.slice(0);
-    this.normY = Y.slice(0);
+    this.origX = this.X.slice(0);
+    this.origY = this.Y.slice(0);
+    this.normX = this.X.slice(0);
+    this.normY = this.Y.slice(0);
+    if (this.Z != null) {
+      this.normZ = this.Z.slice();
+    }
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
@@ -26,6 +30,9 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData(this);
+      if (this.Z != null) {
+        this.normalizeZData(this);
+      }
       this.setupColors();
       this.calcDataArrays();
     } else {
@@ -164,6 +171,20 @@ PlotData = (function() {
     return _results;
   };
 
+  PlotData.prototype.normalizeZData = function(data) {
+    var i, maxZ, minZ, normalizedArea, _results;
+    minZ = _.min(data.Z);
+    maxZ = _.max(data.Z);
+    i = 0;
+    _results = [];
+    while (i < data.Z.length) {
+      normalizedArea = data.Z[i] / maxZ;
+      data.normZ[i] = Math.sqrt(normalizedArea / Math.PI);
+      _results.push(i++);
+    }
+    return _results;
+  };
+
   PlotData.prototype.setupColors = function() {
     var group, i, newColor, _results;
     this.legendGroups = [];
@@ -192,10 +213,9 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fontColor, fontSize, group, i, label, pt, ptColor, x, y, _results;
+    var fillOpacity, fontColor, fontSize, group, i, label, labelZ, pt, ptColor, r, x, y, _results;
     this.pts = [];
     this.lab = [];
-    this.anc = [];
     i = 0;
     _results = [];
     while (i < this.origLen) {
@@ -204,7 +224,10 @@ PlotData = (function() {
       }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
+        r = this.Z != null ? (this.viewBoxDim.width / 8) * this.normZ[i] : this.pointRadius;
+        fillOpacity = this.Z != null ? 0.3 : 1;
         label = this.label[i];
+        labelZ = this.Z != null ? this.Z[i].toString() : '';
         fontSize = this.viewBoxDim.labelFontSize;
         if (_.includes(_.map(this.draggedOutCondensedPts, function(e) {
           return e.dataId;
@@ -223,13 +246,15 @@ PlotData = (function() {
         this.pts.push({
           x: x,
           y: y,
-          r: this.pointRadius,
+          r: r,
           label: label,
           labelX: this.origX[i].toPrecision(3).toString(),
           labelY: this.origY[i].toPrecision(3).toString(),
+          labelZ: labelZ,
           group: group,
           color: ptColor,
-          id: i
+          id: i,
+          fillOpacity: fillOpacity
         });
         this.lab.push({
           x: x,
@@ -239,12 +264,6 @@ PlotData = (function() {
           id: i,
           fontSize: fontSize,
           fontFamily: this.viewBoxDim.labelFontFamily
-        });
-        this.anc.push({
-          x: x,
-          y: y,
-          r: this.pointRadius,
-          id: i
         });
       }
       _results.push(i++);
@@ -372,18 +391,16 @@ PlotData = (function() {
   };
 
   PlotData.prototype.moveElemToLegend = function(id, data) {
-    var checkId, movedAnc, movedLab, movedPt;
+    var checkId, movedLab, movedPt;
     checkId = function(e) {
       return e.id === id;
     };
     movedPt = _.remove(this.pts, checkId);
     movedLab = _.remove(this.lab, checkId);
-    movedAnc = _.remove(this.anc, checkId);
     data.legendPts.push({
       id: id,
       pt: movedPt[0],
       lab: movedLab[0],
-      anc: movedAnc[0],
       anchor: 'start',
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
       color: movedPt[0].color,
@@ -403,7 +420,6 @@ PlotData = (function() {
     legendPt = _.remove(data.legendPts, checkId);
     this.pts.push(legendPt.pt);
     this.lab.push(legendPt.lab);
-    this.anc.push(legendPt.anc);
     _.remove(this.draggedOutPtsId, function(i) {
       return i === id;
     });

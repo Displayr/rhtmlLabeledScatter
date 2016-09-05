@@ -3,6 +3,7 @@
 class PlotData
   constructor: (@X,
                 @Y,
+                @Z,
                 @group,
                 @label,
                 @viewBoxDim,
@@ -12,10 +13,11 @@ class PlotData
                 @originAlign,
                 @pointRadius) ->
 
-    @origX = X.slice(0)
-    @origY = Y.slice(0)
-    @normX = X.slice(0)
-    @normY = Y.slice(0)
+    @origX = @X.slice(0)
+    @origY = @Y.slice(0)
+    @normX = @X.slice(0)
+    @normY = @Y.slice(0)
+    @normZ = @Z.slice() if @Z?
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []
@@ -27,6 +29,7 @@ class PlotData
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData(@)
+      @normalizeZData(@) if @Z?
       @setupColors()
       @calcDataArrays()
     else
@@ -162,6 +165,16 @@ class PlotData
       @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
+  normalizeZData: (data) ->
+    minZ = _.min data.Z
+    maxZ = _.max data.Z
+
+    i = 0
+    while i < data.Z.length
+      normalizedArea = data.Z[i]/maxZ
+      data.normZ[i] = Math.sqrt(normalizedArea/Math.PI)
+      i++
+
   setupColors: ->
     @legendGroups = []
     if @group?
@@ -183,7 +196,6 @@ class PlotData
   calcDataArrays: () ->
     @pts = []
     @lab = []
-    @anc = []
 
     i = 0
     while i < @origLen
@@ -191,7 +203,10 @@ class PlotData
          _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
+        r = if @Z? then (@viewBoxDim.width/8)*@normZ[i] else @pointRadius
+        fillOpacity = if @Z? then 0.3 else 1
         label = @label[i]
+        labelZ = if @Z? then @Z[i].toString() else ''
         fontSize = @viewBoxDim.labelFontSize
 
         if _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
@@ -205,13 +220,15 @@ class PlotData
         @pts.push({
           x: x
           y: y
-          r: @pointRadius
+          r: r
           label: label
           labelX: @origX[i].toPrecision(3).toString()
           labelY: @origY[i].toPrecision(3).toString()
+          labelZ: labelZ
           group: group
           color: ptColor
           id: i
+          fillOpacity: fillOpacity
         })
         @lab.push({
           x: x
@@ -221,12 +238,6 @@ class PlotData
           id: i
           fontSize: fontSize
           fontFamily: @viewBoxDim.labelFontFamily
-        })
-        @anc.push({
-          x: x
-          y: y
-          r: @pointRadius
-          id: i
         })
       i++
 
@@ -349,12 +360,10 @@ class PlotData
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
-    movedAnc = _.remove @anc, checkId
     data.legendPts.push {
       id: id
       pt: movedPt[0]
       lab: movedLab[0]
-      anc: movedAnc[0]
       anchor: 'start'
       text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
       color: movedPt[0].color
@@ -370,7 +379,6 @@ class PlotData
     legendPt = _.remove data.legendPts, checkId
     @pts.push legendPt.pt
     @lab.push legendPt.lab
-    @anc.push legendPt.anc
 
     _.remove @draggedOutPtsId, (i) -> i == id
     _.remove @draggedOutCondensedPts, (i) -> i.dataId == id

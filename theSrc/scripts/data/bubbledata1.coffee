@@ -171,6 +171,49 @@ bubble1 =
     26832215
   ],
 
+  group: [
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+  ]
+
   xTitle: "Men's life expectancy",
   yTitle: "Women's life expectancy",
   fixedAspectRatio: false,
@@ -184,7 +227,7 @@ bubble1 =
   labelsFontFamily: 'Arial',
   labelsFontSize: 16,
   labelsFontColor: null,
-  colors: ['#5F00D5', '#ED7D31', '#A5A5A5'],
+  colors: ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47','#255E91','#9E480E','#636363','#997300','#264478','#43682B','#FF2323'],
   xDecimals: 1,
   yDecimals: 1,
   xPrefix: '',
