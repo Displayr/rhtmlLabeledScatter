@@ -224,7 +224,7 @@ PlotData = (function() {
       }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
-        r = this.Z != null ? (this.viewBoxDim.width / 8) * this.Z[i] : this.pointRadius;
+        r = this.Z != null ? (this.viewBoxDim.width / 8) * this.normZ[i] : this.pointRadius;
         fillOpacity = this.Z != null ? 0.3 : 1;
         label = this.label[i];
         labelZ = this.Z != null ? this.Z[i].toString() : '';

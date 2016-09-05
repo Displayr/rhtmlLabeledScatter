@@ -21,6 +21,7 @@ dependencies:
      - PlotData.js
      - RectPlot.js
      - rhtmlLabeledScatter.js
+     - LinkUtils.js
 
  - name: Data
    version: 0.0.1

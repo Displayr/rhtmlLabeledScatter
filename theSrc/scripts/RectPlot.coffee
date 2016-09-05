@@ -97,8 +97,6 @@ class RectPlot
     else
       @showLabels = true
 
-    console.log @showLabels
-
     @setDim(@svg, @width, @height)
 
   draw: ->
@@ -683,10 +681,7 @@ class RectPlot
                .on('drag', dragMove)
                .on('dragend', dragEnd)
 
-    console.log 'showl'
-    console.log @showLabels
     if @showLabels
-      console.log 'here'
       drag = labelDragAndDrop()
       plot.svg.selectAll('.lab').remove()
       plot.svg.selectAll('.lab')
@@ -731,91 +726,22 @@ class RectPlot
       plot.drawLinks(plot.svg, plot.data)
 
   drawLinks: (svg, data) ->
-    # calc the links from anc to label text if ambiguous
-    getNewPtOnLabelBorder = (label, anchor, anchor_array) ->
-      labelBorder =
-        botL: [label.x - label.width/2,     label.y]
-        botC: [label.x,                     label.y]
-        botR: [label.x + label.width/2,     label.y]
-        topL: [label.x - label.width/2,     label.y - label.height + 7]
-        topC: [label.x,                     label.y - label.height + 7]
-        topR: [label.x + label.width/2,     label.y - label.height + 7]
-        midL: [label.x - label.width/2,     label.y - label.height/2]
-        midR: [label.x + label.width/2,     label.y - label.height/2]
-
-      padding = 10
-      centered = (anchor.x > label.x - label.width/2) and (anchor.x < label.x + label.width/2)
-      paddedCenter = (anchor.x > label.x - label.width/2 - padding) and (anchor.x < label.x + label.width/2 + padding)
-      abovePadded = anchor.y < label.y - label.height - padding
-      above = anchor.y < label.y - label.height
-      aboveMid = anchor.y < label.y - label.height/2
-      belowPadded = anchor.y > label.y + padding
-      below = anchor.y > label.y
-      belowMid = anchor.y >= label.y - label.height/2
-      left = anchor.x < label.x - label.width/2
-      right = anchor.x > label.x + label.width/2
-      leftPadded = anchor.x < label.x - label.width/2 - padding
-      rightPadded = anchor.x > label.x + label.width/2 + padding
-
-      if centered and abovePadded
-        return labelBorder.topC
-      else if centered and belowPadded
-        return labelBorder.botC
-      else if above and left
-        return labelBorder.topL
-      else if above and right
-        return labelBorder.topR
-      else if below and left
-        return labelBorder.botL
-      else if below and right
-        return labelBorder.botR
-      else if leftPadded
-        return labelBorder.midL
-      else if rightPadded
-        return labelBorder.midR
-      else
-        # Draw the link if there are any anc nearby
-        ambiguityFactor = 10
-        padL = labelBorder.topL[0] - ambiguityFactor
-        padR = labelBorder.topR[0] + ambiguityFactor
-        padT = labelBorder.topL[1] - ambiguityFactor
-        padB = labelBorder.botR[1] + ambiguityFactor
-        ancNearby = 0
-        for a in anchor_array
-          if (a.x > padL and a.x < padR) and (a.y > padT and a.y < padB)
-            ancNearby++
-        if ancNearby > 1
-          if not left and not right and not above and not below
-            return labelBorder.botC
-          else if centered and above
-            return labelBorder.topC
-          else if centered and below
-            return labelBorder.botC
-          else if left and above
-            return labelBorder.topL
-          else if left and below
-            return labelBorder.botL
-          else if right and above
-            return labelBorder.topR
-          else if right and below
-            return labelBorder.botR
-          else if left
-            return labelBorder.midL
-          else if right
-            return labelBorder.midR
+    utils = LinkUtils.get()
 
     links = []
     i = 0
     while i < data.len
-      newLinkPt = getNewPtOnLabelBorder data.lab[i], data.pts[i], data.pts
-      links.push({
-        x1: data.pts[i].x
-        y1: data.pts[i].y
-        x2: newLinkPt[0]
-        y2: newLinkPt[1]
-        width: 1
-        color: data.pts[i].color
-      }) if newLinkPt?
+      newLinkPt = utils.getNewPtOnLabelBorder data.lab[i], data.pts[i], data.pts
+      if newLinkPt?
+        ancBorderPt = utils.getPtOnAncBorder data.pts[i].x, data.pts[i].y, data.pts[i].r, newLinkPt[0], newLinkPt[1]
+        links.push({
+          x1: ancBorderPt[0]
+          y1: ancBorderPt[1]
+          x2: newLinkPt[0]
+          y2: newLinkPt[1]
+          width: 1
+          color: data.pts[i].color
+        })
       i++
 
     svg.selectAll('.link')

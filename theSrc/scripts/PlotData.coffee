@@ -203,7 +203,7 @@ class PlotData
          _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
-        r = if @Z? then (@viewBoxDim.width/8)*@Z[i] else @pointRadius
+        r = if @Z? then (@viewBoxDim.width/8)*@normZ[i] else @pointRadius
         fillOpacity = if @Z? then 0.3 else 1
         label = @label[i]
         labelZ = if @Z? then @Z[i].toString() else ''

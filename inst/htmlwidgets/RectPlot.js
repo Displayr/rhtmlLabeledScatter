@@ -86,7 +86,6 @@ RectPlot = (function() {
     } else {
       this.showLabels = true;
     }
-    console.log(this.showLabels);
     this.setDim(this.svg, this.width, this.height);
   }
 
@@ -688,10 +687,7 @@ RectPlot = (function() {
         };
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
-    console.log('showl');
-    console.log(this.showLabels);
     if (this.showLabels) {
-      console.log('here');
       drag = labelDragAndDrop();
       plot.svg.selectAll('.lab').remove();
       plot.svg.selectAll('.lab').data(plot.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
@@ -727,92 +723,17 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLinks = function(svg, data) {
-    var getNewPtOnLabelBorder, i, links, newLinkPt;
-    getNewPtOnLabelBorder = function(label, anchor, anchor_array) {
-      var a, above, aboveMid, abovePadded, ambiguityFactor, ancNearby, below, belowMid, belowPadded, centered, labelBorder, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
-      labelBorder = {
-        botL: [label.x - label.width / 2, label.y],
-        botC: [label.x, label.y],
-        botR: [label.x + label.width / 2, label.y],
-        topL: [label.x - label.width / 2, label.y - label.height + 7],
-        topC: [label.x, label.y - label.height + 7],
-        topR: [label.x + label.width / 2, label.y - label.height + 7],
-        midL: [label.x - label.width / 2, label.y - label.height / 2],
-        midR: [label.x + label.width / 2, label.y - label.height / 2]
-      };
-      padding = 10;
-      centered = (anchor.x > label.x - label.width / 2) && (anchor.x < label.x + label.width / 2);
-      paddedCenter = (anchor.x > label.x - label.width / 2 - padding) && (anchor.x < label.x + label.width / 2 + padding);
-      abovePadded = anchor.y < label.y - label.height - padding;
-      above = anchor.y < label.y - label.height;
-      aboveMid = anchor.y < label.y - label.height / 2;
-      belowPadded = anchor.y > label.y + padding;
-      below = anchor.y > label.y;
-      belowMid = anchor.y >= label.y - label.height / 2;
-      left = anchor.x < label.x - label.width / 2;
-      right = anchor.x > label.x + label.width / 2;
-      leftPadded = anchor.x < label.x - label.width / 2 - padding;
-      rightPadded = anchor.x > label.x + label.width / 2 + padding;
-      if (centered && abovePadded) {
-        return labelBorder.topC;
-      } else if (centered && belowPadded) {
-        return labelBorder.botC;
-      } else if (above && left) {
-        return labelBorder.topL;
-      } else if (above && right) {
-        return labelBorder.topR;
-      } else if (below && left) {
-        return labelBorder.botL;
-      } else if (below && right) {
-        return labelBorder.botR;
-      } else if (leftPadded) {
-        return labelBorder.midL;
-      } else if (rightPadded) {
-        return labelBorder.midR;
-      } else {
-        ambiguityFactor = 10;
-        padL = labelBorder.topL[0] - ambiguityFactor;
-        padR = labelBorder.topR[0] + ambiguityFactor;
-        padT = labelBorder.topL[1] - ambiguityFactor;
-        padB = labelBorder.botR[1] + ambiguityFactor;
-        ancNearby = 0;
-        for (_i = 0, _len = anchor_array.length; _i < _len; _i++) {
-          a = anchor_array[_i];
-          if ((a.x > padL && a.x < padR) && (a.y > padT && a.y < padB)) {
-            ancNearby++;
-          }
-        }
-        if (ancNearby > 1) {
-          if (!left && !right && !above && !below) {
-            return labelBorder.botC;
-          } else if (centered && above) {
-            return labelBorder.topC;
-          } else if (centered && below) {
-            return labelBorder.botC;
-          } else if (left && above) {
-            return labelBorder.topL;
-          } else if (left && below) {
-            return labelBorder.botL;
-          } else if (right && above) {
-            return labelBorder.topR;
-          } else if (right && below) {
-            return labelBorder.botR;
-          } else if (left) {
-            return labelBorder.midL;
-          } else if (right) {
-            return labelBorder.midR;
-          }
-        }
-      }
-    };
+    var ancBorderPt, i, links, newLinkPt, utils;
+    utils = LinkUtils.get();
     links = [];
     i = 0;
     while (i < data.len) {
-      newLinkPt = getNewPtOnLabelBorder(data.lab[i], data.pts[i], data.pts);
+      newLinkPt = utils.getNewPtOnLabelBorder(data.lab[i], data.pts[i], data.pts);
       if (newLinkPt != null) {
+        ancBorderPt = utils.getPtOnAncBorder(data.pts[i].x, data.pts[i].y, data.pts[i].r, newLinkPt[0], newLinkPt[1]);
         links.push({
-          x1: data.pts[i].x,
-          y1: data.pts[i].y,
+          x1: ancBorderPt[0],
+          y1: ancBorderPt[1],
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
