@@ -592,7 +592,7 @@ RectPlot = (function() {
     }).attr('fill-opacity', function(d) {
       return d.fillOpacity;
     });
-    if (this.Z != null) {
+    if ((this.Z != null) && this.Z instanceof Array) {
       return anc.append('title').text(function(d) {
         return "" + d.label + "\n" + d.labelZ + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
       });

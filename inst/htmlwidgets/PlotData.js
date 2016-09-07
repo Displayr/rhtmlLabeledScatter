@@ -19,7 +19,7 @@ PlotData = (function() {
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
     this.normY = this.Y.slice(0);
-    if (this.Z != null) {
+    if ((this.Z != null) && this.Z instanceof Array) {
       this.normZ = this.Z.slice();
     }
     this.draggedOutPtsId = [];
@@ -30,7 +30,7 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData(this);
-      if (this.Z != null) {
+      if ((this.Z != null) && this.Z instanceof Array) {
         this.normalizeZData(this);
       }
       this.setupColors();
@@ -224,10 +224,10 @@ PlotData = (function() {
       }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
-        r = this.Z != null ? (this.viewBoxDim.width / 8) * this.normZ[i] : this.pointRadius;
-        fillOpacity = this.Z != null ? 0.3 : 1;
+        r = (this.Z != null) && this.Z instanceof Array ? (this.viewBoxDim.width / 8) * this.normZ[i] : this.pointRadius;
+        fillOpacity = (this.Z != null) && this.Z instanceof Array ? 0.3 : 1;
         label = this.label[i];
-        labelZ = this.Z != null ? this.Z[i].toString() : '';
+        labelZ = (this.Z != null) && this.Z instanceof Array ? this.Z[i].toString() : '';
         fontSize = this.viewBoxDim.labelFontSize;
         if (_.includes(_.map(this.draggedOutCondensedPts, function(e) {
           return e.dataId;

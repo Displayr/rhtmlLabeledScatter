@@ -592,7 +592,7 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .attr('fill-opacity', (d) -> d.fillOpacity)
-    if @Z?
+    if @Z? and @Z instanceof Array
       anc.append('title')
          .text((d) -> "#{d.label}\n#{d.labelZ}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
     else
