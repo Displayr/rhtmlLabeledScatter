@@ -30,6 +30,8 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData(this);
+      console.log('here');
+      console.log(this.Z);
       if (this.Z != null) {
         this.normalizeZData(this);
       }

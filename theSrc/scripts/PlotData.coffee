@@ -29,6 +29,8 @@ class PlotData
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData(@)
+      console.log 'here'
+      console.log @Z
       @normalizeZData(@) if @Z?
       @setupColors()
       @calcDataArrays()
