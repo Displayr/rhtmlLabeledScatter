@@ -17,7 +17,7 @@ class PlotData
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
-    @normZ = @Z.slice() if @Z?
+    @normZ = @Z.slice() if @Z? and @Z instanceof Array
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []
@@ -29,9 +29,7 @@ class PlotData
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData(@)
-      console.log 'here'
-      console.log @Z
-      @normalizeZData(@) if @Z?
+      @normalizeZData(@) if @Z? and @Z instanceof Array
       @setupColors()
       @calcDataArrays()
     else
@@ -205,10 +203,10 @@ class PlotData
          _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
-        r = if @Z? then (@viewBoxDim.width/8)*@normZ[i] else @pointRadius
-        fillOpacity = if @Z? then 0.3 else 1
+        r = if @Z? and @Z instanceof Array then (@viewBoxDim.width/8)*@normZ[i] else @pointRadius
+        fillOpacity = if @Z? and @Z instanceof Array then 0.3 else 1
         label = @label[i]
-        labelZ = if @Z? then @Z[i].toString() else ''
+        labelZ = if @Z? and @Z instanceof Array then @Z[i].toString() else ''
         fontSize = @viewBoxDim.labelFontSize
 
         if _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
