@@ -18,7 +18,7 @@ class LabeledScatter
             .attr('height', @height)
             .attr('class', 'plot-container')
     @plot.setDim(svg, @width, @height)
-    @plot.draw()
+    @plot.draw(@plot)
     return @
 
   draw: (data, el) ->
@@ -32,8 +32,8 @@ class LabeledScatter
       @data = data
 
     else # For debuggning in browser
-#      @data = bubble1
-       @data = testData2
+      @data = bubble1
+      # @data = testData2
 
     @plot = new RectPlot(@width,
                         @height,
@@ -46,6 +46,7 @@ class LabeledScatter
                         @data.fixedAspectRatio,
                         @data.xTitle,
                         @data.yTitle,
+                        @data.zTitle,
                         @data.title,
                         @data.colors,
                         @data.grid,
@@ -76,5 +77,5 @@ class LabeledScatter
                         @data.axisFontColor,
                         @data.axisFontSize,
                         @data.pointRadius)
-    @plot.draw()
+    @plot.draw(@plot)
     return @

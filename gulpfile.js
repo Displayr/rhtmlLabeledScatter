@@ -105,7 +105,8 @@ gulp.task('copy', function () {
     'node_modules/d3/d3.min.js',
     'node_modules/rhtmlBaseClasses/dist/rHtmlSvgWidget.js',
     'node_modules/rhtmlBaseClasses/dist/rHtmlStatefulWidget.js',
-    'node_modules/random-js/lib/random.min.js'
+    'node_modules/random-js/lib/random.min.js',
+    'node_modules/bluebird/js/browser/bluebird.min.js'
   ];
 
   gulp.src(extLibs)

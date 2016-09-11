@@ -11,6 +11,7 @@ class RectPlot
                 fixedRatio,
                 xTitle,
                 yTitle,
+                @zTitle = '',
                 title,
                 @colors,
                 grid,
@@ -53,6 +54,7 @@ class RectPlot
       fontFamily: xTitleFontFamily
       fontSize:   xTitleFontSize
       fontColor:  xTitleFontColor
+      topPadding: 5
     @xTitle.textHeight = 0 if @xTitle.text is ''
 
     @yTitle =
@@ -67,7 +69,7 @@ class RectPlot
     @axisDimensionTextHeight = 0 # This is set later
     @axisDimensionTextWidth = 0  # This is set later
     @verticalPadding = 5
-    @horizontalPadding = 5
+    @horizontalPadding = 10
 
     @title =
       text:         title
@@ -82,7 +84,7 @@ class RectPlot
       @title.paddingBot = 0
     else
       @title.textHeight = titleFontSize
-      @title.paddingBot = 10
+      @title.paddingBot = 20
 
     @title.y = @verticalPadding + @title.textHeight
 
@@ -97,16 +99,6 @@ class RectPlot
       @showLabels = false
 
     @setDim(@svg, @width, @height)
-
-  draw: ->
-    @drawTitle()
-    @drawLabs(@)
-    @drawLegend(@, @data)
-    @drawDraggedMarkers(@data)
-    @drawRect()
-    @drawDimensionMarkers()
-    @drawAxisLabels()
-    @drawAnc(@data)
 
   setDim: (svg, width, height) ->
     @svg = svg
@@ -130,7 +122,7 @@ class RectPlot
       svgWidth:           width
       svgHeight:          height
       width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight
-      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength
+      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength - @xTitle.topPadding
       x:                  @horizontalPadding*2 + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
       labelFontSize:      @labelsFont.size
@@ -153,27 +145,32 @@ class RectPlot
                          @originAlign,
                          @pointRadius)
 
-  redraw: (data) ->
-    plotElems = [
-      '.plot-viewbox'
-      '.origin'
-      '.dim-marker'
-      '.dim-marker-leader'
-      '.dim-marker-label'
-      '.axis-label'
-      '.legend-pts'
-      '.legend-text'
-      '.anc'
-      '.lab'
-      '.link'
-    ]
-    for elem in plotElems
-      @svg.selectAll(elem).remove()
+  draw: (plot) ->
+    dimensionMarkerPromise = new Promise (resolve, reject) ->
+      plot.drawDimensionMarkers(reject)
+      resolve()
+    legendPromise = new Promise (resolve, reject) ->
+      plot.drawLegend(plot, plot.data, reject)
+      resolve()
 
-    data.normalizeData(data)
-    data.calcDataArrays()
-    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
-    @draw()
+    resizePromises = [dimensionMarkerPromise, legendPromise]
+    Promise.all(resizePromises).then(() ->
+
+      plot.data.normalizeData(plot.data)
+      plot.data.calcDataArrays()
+      plot.title.x = plot.viewBoxDim.x + plot.viewBoxDim.width/2
+
+      plot.drawTitle()
+      plot.drawAnc(plot.data)
+      plot.drawLabs(plot)
+      plot.drawDraggedMarkers(plot.data)
+      plot.drawRect()
+      plot.drawAxisLabels()
+    ).catch((resizedPlot) ->
+      # A redraw is needed
+      resizedPlot.draw(resizedPlot)
+    )
+
 
   drawTitle: ->
     if @title.text != ''
@@ -201,137 +198,13 @@ class RectPlot
         .attr('stroke', 'black')
         .attr('stroke-width', '1px')
 
-  drawDimensionMarkers: ->
-    data = @data
-    viewBoxDim = @viewBoxDim
-
-    return unless data.len > 0 # if all points have been dragged off plot
-
-    # Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
-    getTickRange = (max, min) ->
-      maxTicks = 8
-      range = max - min
-      unroundedTickSize = range/(maxTicks-1)
-      x = Math.ceil(Math.log(unroundedTickSize)/Math.LN10-1)
-      pow10x = Math.pow(10, x)
-      roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x
-      roundedTickRange
-
-    between = (num, min, max) ->
-      num >= min and num <= max
-
-    pushDimensionMarker = (type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) ->
-      if type == 'c'
-        dimensionMarkerLeaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
-        dimensionMarkerLabelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: xPrefix + label.toFixed(xDecimals), anchor: 'middle'})
-      if type == 'r'
-        dimensionMarkerLeaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
-        dimensionMarkerLabelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: yPrefix + label.toFixed(yDecimals), anchor: 'end'})
-
-    normalizeXCoords = (Xcoord) ->
-      (Xcoord-data.minX)/(data.maxX - data.minX)*viewBoxDim.width + viewBoxDim.x
-
-    normalizeYCoords = (Ycoord) ->
-      -(Ycoord-data.minY)/(data.maxY - data.minY)*viewBoxDim.height + viewBoxDim.y + viewBoxDim.height
-
-    dimensionMarkerStack = []
-    dimensionMarkerLeaderStack = []
-    dimensionMarkerLabelStack = []
-
-    ticksX = getTickRange(@data.maxX, @data.minX)
-    ticksY = getTickRange(@data.maxY, @data.minY)
-
-    originAxis = []
-    oax = {
-      x1: @viewBoxDim.x
-      y1: normalizeYCoords 0
-      x2: @viewBoxDim.x + @viewBoxDim.width
-      y2: normalizeYCoords 0
-    }
-    pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-    originAxis.push(oax) unless (@data.minY is 0) or (@data.maxY is 0)
-
-    oay = {
-      x1: normalizeXCoords 0
-      y1: @viewBoxDim.y
-      x2: normalizeXCoords 0
-      y2: @viewBoxDim.y + @viewBoxDim.height
-    }
-    pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-    originAxis.push(oay) unless (@data.minX is 0) or (@data.maxX is 0)
-
-    #calculate number of dimension markers
-    colsPositive = 0
-    colsNegative = 0
-    i = if between(0, @data.minX, @data.maxX) then ticksX else @data.minX
-    while between(i, @data.minX, @data.maxX) or between(-i, @data.minX, @data.maxX)
-      colsPositive++ if between(i, @data.minX, @data.maxX)
-      colsNegative++ if between(-i, @data.minX, @data.maxX)
-      i += ticksX
-
-    rowsPositive = 0
-    rowsNegative = 0
-    i = if between(0, @data.minY, @data.maxY) then ticksY else @data.minY
-    while between(i, @data.minY, @data.maxY) or between(-i, @data.minY, @data.maxY)
-      rowsNegative++ if between(i, @data.minY, @data.maxY) # y axis inversed svg
-      rowsPositive++ if between(-i, @data.minY, @data.maxY)
-      i += ticksY
-
-    i = 0
-    while i < Math.max(colsPositive, colsNegative)
-      if i < colsPositive
-        val = (i+1)*ticksX
-        if not between(0, @data.minX, @data.maxX)
-          val = @data.minX + i*ticksX
-        x1 = normalizeXCoords val
-        y1 = @viewBoxDim.y
-        x2 = normalizeXCoords val
-        y2 = @viewBoxDim.y + @viewBoxDim.height
-        dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
-        if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-
-      if i < colsNegative
-        val = -(i+1)*ticksX
-        x1 = normalizeXCoords val
-        y1 = @viewBoxDim.y
-        x2 = normalizeXCoords val
-        y2 = @viewBoxDim.y + @viewBoxDim.height
-        dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
-        if i % 2
-          pushDimensionMarker 'c', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-      i++
-
-    i = 0
-    while i < Math.max(rowsPositive, rowsNegative)
-      x1 = y1 = x2 = y2 = 0
-      if i < rowsPositive
-        val = -(i+1)*ticksY
-        x1 = @viewBoxDim.x
-        y1 = normalizeYCoords val
-        x2 = @viewBoxDim.x + @viewBoxDim.width
-        y2 = normalizeYCoords val
-        dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
-        if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-
-      if i < rowsNegative
-        val = (i+1)*ticksY
-        if not between(0, @data.minY, @data.maxY)
-          val = @data.minY + i*ticksY
-        x1 = @viewBoxDim.x
-        y1 = normalizeYCoords val
-        x2 = @viewBoxDim.x + @viewBoxDim.width
-        y2 = normalizeYCoords val
-        dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
-        if i % 2
-          pushDimensionMarker 'r', x1, y1, x2, y2, val, @axisLeaderLineLength, @axisDimensionTextHeight, @xDecimals, @yDecimals, @xPrefix, @yPrefix
-      i++
+  drawDimensionMarkers: (reject) ->
+    axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
     if @grid
       @svg.selectAll('.origin').remove()
       @svg.selectAll('.origin')
-          .data(originAxis)
+          .data(axisArrays.gridOrigin)
           .enter()
           .append('line')
           .attr('class', 'origin')
@@ -349,7 +222,7 @@ class RectPlot
 
       @svg.selectAll('.dim-marker').remove()
       @svg.selectAll('.dim-marker')
-               .data(dimensionMarkerStack)
+               .data(axisArrays.gridLines)
                .enter()
                .append('line')
                .attr('class', 'dim-marker')
@@ -359,7 +232,6 @@ class RectPlot
                .attr('y2', (d) -> d.y2)
                .attr('stroke-width', 0.2)
                .attr('stroke', 'grey')
-
 
     else if not @grid and @origin
       @svg.selectAll('.origin').remove()
@@ -379,7 +251,7 @@ class RectPlot
 
     @svg.selectAll('.dim-marker-leader').remove()
     @svg.selectAll('.dim-marker-leader')
-             .data(dimensionMarkerLeaderStack)
+             .data(axisArrays.axisLeader)
              .enter()
              .append('line')
              .attr('class', 'dim-marker-leader')
@@ -392,7 +264,7 @@ class RectPlot
 
     @svg.selectAll('.dim-marker-label').remove()
     ml = @svg.selectAll('.dim-marker-label')
-             .data(dimensionMarkerLabelStack)
+             .data(axisArrays.axisLeaderLabel)
              .enter()
              .append('text')
              .attr('class', 'dim-marker-label')
@@ -415,12 +287,11 @@ class RectPlot
         @axisDimensionTextWidth = bb.width
       if @axisDimensionTextHeight < bb.height
         @axisDimensionTextHeight = bb.height
-
       i++
 
     if initWidth != @axisDimensionTextWidth or initHeight != @axisDimensionTextHeight
       @setDim(@svg, @width, @height)
-      @draw()
+      reject(@)
 
   drawAxisLabels: ->
     axisLabels = [
@@ -429,6 +300,7 @@ class RectPlot
         y: @viewBoxDim.y + @viewBoxDim.height +
            @axisLeaderLineLength +
            @axisDimensionTextHeight +
+           @xTitle.topPadding +
            @xTitle.textHeight
         text: @xTitle.text
         anchor: 'middle'
@@ -468,7 +340,7 @@ class RectPlot
              .style('font-weight', 'bold')
              .style('display', (d) -> d.display)
 
-  drawLegend: (plot, data)->
+  drawLegend: (plot, data, reject)->
     data.setupLegendGroupsAndPts(data)
 
     superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
@@ -502,7 +374,7 @@ class RectPlot
             .attr('x', d3.select(this).x = legendPt.x)
             .attr('y', d3.select(this).y = legendPt.y)
         else
-          plot.elemDraggedOnPlot(plot, data, id)
+          plot.elemDraggedOnPlot(plot, id)
 
 
       d3.behavior.drag()
@@ -517,6 +389,52 @@ class RectPlot
              .on('dragend', dragEnd)
 
     if @legendShow
+      if @Z? and @Z instanceof Array
+        @svg.selectAll('.legend-bubbles').remove()
+        @svg.selectAll('.legend-bubbles')
+            .data(data.legendBubbles)
+            .enter()
+            .append('circle')
+            .attr('class', 'legend-bubbles')
+            .attr('cx', (d) -> d.cx)
+            .attr('cy', (d) -> d.cy)
+            .attr('r', (d) -> d.r)
+            .attr('fill', 'none')
+            .attr('stroke', 'black')
+            .attr('stroke-opacity', 0.5)
+
+      @svg.selectAll('.legend-bubbles-labels').remove()
+      @svg.selectAll('.legend-bubbles-labels')
+          .data(data.legendBubbles)
+          .enter()
+          .append('text')
+          .attr('class', 'legend-bubbles-labels')
+          .attr('x', (d) -> d.x)
+          .attr('y', (d) -> d.y)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', @legendFontSize)
+          .attr('font-family', @legendFontFamily)
+          .attr('fill', @legendFontColor)
+          .text((d) -> d.text)
+
+      if @zTitle != ''
+        legendFontSize = @legendFontSize
+        @svg.selectAll('.legend-bubbles-title').remove()
+        legendBubbleTitleSvg = @svg.selectAll('.legend-bubbles-title')
+            .data(data.legendBubblesTitle)
+            .enter()
+            .append('text')
+            .attr('class', 'legend-bubbles-title')
+            .attr('x', (d) -> d.x)
+            .attr('y', (d) -> d.y - (legendFontSize*1.5))
+            .attr('text-anchor', 'middle')
+            .attr('font-family', @legendFontFamily)
+            .attr('font-weight', 'bold')
+            .attr('fill', @legendFontColor)
+            .text @zTitle
+
+        SvgUtils.get().setSvgBBoxWidthAndHeight data.legendBubblesTitle.length, data.legendBubblesTitle, legendBubbleTitleSvg
+
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
                .data(data.legendGroups)
@@ -564,21 +482,11 @@ class RectPlot
       legendGroupsLab = @svg.selectAll('.legend-groups-text')
       legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
 
-      i = 0
-      while i < data.legendGroups.length
-        data.legendGroups[i].width = legendGroupsLab[0][i].getBBox().width
-        data.legendGroups[i].height = legendGroupsLab[0][i].getBBox().height
-        i++
-
-      i = 0
-      while i < data.legendPts.length
-        data.legendPts[i].width = legendDraggedPtsLab[0][i].getBBox().width
-        data.legendPts[i].height = legendDraggedPtsLab[0][i].getBBox().height
-        i++
+      SvgUtils.get().setSvgBBoxWidthAndHeight data.legendGroups.length, data.legendGroups, legendGroupsLab
+      SvgUtils.get().setSvgBBoxWidthAndHeight data.legendPts.length, data.legendPts, legendDraggedPtsLab
 
       if data.resizedAfterLegendGroupsDrawn()
-        console.log 'Legend resize triggered'
-        plot.redraw(data, @viewBoxDim.svgWidth, @viewBoxDim.svgHeight)
+        reject(plot)
 
   drawAnc: (data) ->
     @svg.selectAll('.anc').remove()
@@ -627,22 +535,31 @@ class RectPlot
         .attr('fill', (d) -> d.color)
         .text((d) -> d.markerLabel)
 
-  elemDraggedOffPlot: (plot, data, id) ->
-    data.moveElemToLegend(id, data)
-    plot.resetPlotAfterDragEvent(plot, data)
+  elemDraggedOffPlot: (plot, id) ->
+    plot.data.moveElemToLegend(id, plot.data)
+    plot.resetPlotAfterDragEvent(plot)
 
-  elemDraggedOnPlot: (plot, data, id) ->
-    data.removeElemFromLegend(id, data)
-    plot.resetPlotAfterDragEvent(plot, data)
+  elemDraggedOnPlot: (plot, id) ->
+    plot.data.removeElemFromLegend(id, plot.data)
+    plot.resetPlotAfterDragEvent(plot)
 
-  resetPlotAfterDragEvent: (plot, data) ->
-    plot.drawRect()
-    plot.drawAxisLabels()
-    plot.drawDimensionMarkers()
-    plot.drawAnc(data)
-    plot.drawLabs(plot)
-    plot.drawDraggedMarkers(data)
-    plot.drawLegend(plot, data)
+  resetPlotAfterDragEvent: (plot) ->
+    plotElems = [
+       '.plot-viewbox'
+       '.origin'
+       '.dim-marker'
+       '.dim-marker-leader'
+       '.dim-marker-label'
+       '.axis-label'
+       '.legend-pts'
+       '.legend-text'
+       '.anc'
+       '.lab'
+       '.link'
+     ]
+    for elem in plotElems
+      @svg.selectAll(elem).remove()
+    plot.draw(plot)
 
   drawLabs: (plot) ->
     labelDragAndDrop = ->
@@ -665,7 +582,7 @@ class RectPlot
         id = Number(d3.select(this).attr('id'))
         lab = _.find plot.data.lab, (l) -> l.id == id
         if plot.data.isOutsideViewBox(lab)
-          plot.elemDraggedOffPlot(plot, plot.data, id)
+          plot.elemDraggedOffPlot(plot, id)
         else
           plot.drawLinks(plot.svg, plot.data)
 
@@ -700,13 +617,9 @@ class RectPlot
 
       labels_svg = plot.svg.selectAll('.lab')
 
-      i = 0
-      while i < plot.data.len
-        plot.data.lab[i].width = labels_svg[0][i].getBBox().width
-        plot.data.lab[i].height = labels_svg[0][i].getBBox().height
-        i++
+      SvgUtils.get().setSvgBBoxWidthAndHeight plot.data.len, plot.data.lab, labels_svg
 
-
+      console.log "Running label placement algorithm..."
       labeler = d3.labeler()
                   .svg(plot.svg)
                   .w1(plot.viewBoxDim.x)

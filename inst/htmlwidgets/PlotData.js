@@ -4,6 +4,7 @@ var PlotData;
 
 PlotData = (function() {
   function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius) {
+    var legendUtils;
     this.X = X;
     this.Y = Y;
     this.Z = Z;
@@ -25,15 +26,20 @@ PlotData = (function() {
     this.draggedOutPtsId = [];
     this.legendPts = [];
     this.draggedOutCondensedPts = [];
+    this.legendBubbles = [];
+    this.legendBubblesLab = [];
     this.cIndex = 0;
     this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+    legendUtils = LegendUtils.get();
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData(this);
       if ((this.Z != null) && this.Z instanceof Array) {
         this.normalizeZData(this);
       }
-      this.setupColors();
+      if (this.group != null) {
+        this.groupToColorMap = legendUtils.setupColors(this);
+      }
       this.calcDataArrays();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
@@ -172,48 +178,15 @@ PlotData = (function() {
   };
 
   PlotData.prototype.normalizeZData = function(data) {
-    var i, maxZ, minZ, normalizedArea, _results;
-    minZ = _.min(data.Z);
+    var legendUtils, maxZ;
+    legendUtils = LegendUtils.get();
     maxZ = _.max(data.Z);
-    i = 0;
-    _results = [];
-    while (i < data.Z.length) {
-      normalizedArea = data.Z[i] / maxZ;
-      data.normZ[i] = Math.sqrt(normalizedArea / Math.PI);
-      _results.push(i++);
-    }
-    return _results;
-  };
-
-  PlotData.prototype.setupColors = function() {
-    var group, i, newColor, _results;
-    this.legendGroups = [];
-    if (this.group != null) {
-      this.groupToColorMap = {};
-      group = this.group;
-      i = 0;
-      _results = [];
-      while (i < this.group.length) {
-        if (!(_.some(this.legendGroups, function(e) {
-          return e.text === group[i];
-        }))) {
-          newColor = this.getDefaultColor();
-          this.legendGroups.push({
-            text: this.group[i],
-            color: newColor,
-            r: this.legendDim.ptRadius,
-            anchor: 'start'
-          });
-          this.groupToColorMap[this.group[i]] = newColor;
-        }
-        _results.push(i++);
-      }
-      return _results;
-    }
+    legendUtils.calcZQuartiles(data, maxZ);
+    return legendUtils.normalizeZValues(data, maxZ);
   };
 
   PlotData.prototype.calcDataArrays = function() {
-    var fillOpacity, fontColor, fontSize, group, i, label, labelZ, pt, ptColor, r, x, y, _results;
+    var fillOpacity, fontColor, fontSize, group, i, label, labelZ, legendUtils, pt, ptColor, r, x, y, _results;
     this.pts = [];
     this.lab = [];
     i = 0;
@@ -224,7 +197,11 @@ PlotData = (function() {
       }), i)) {
         x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
         y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
-        r = (this.Z != null) && this.Z instanceof Array ? (this.viewBoxDim.width / 8) * this.normZ[i] : this.pointRadius;
+        r = this.pointRadius;
+        if ((this.Z != null) && this.Z instanceof Array) {
+          legendUtils = LegendUtils.get();
+          r = legendUtils.normalizedZtoRadius(this.viewBoxDim, this.normZ[i]);
+        }
         fillOpacity = (this.Z != null) && this.Z instanceof Array ? 0.3 : 1;
         label = this.label[i];
         labelZ = (this.Z != null) && this.Z instanceof Array ? this.Z[i].toString() : '';
@@ -272,9 +249,14 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setLegendItemsPositions = function(data, numItems, itemsArray, cols) {
-    var colSpacing, currentCol, exceededCurrentCol, i, legendDim, legendStartY, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
+    var colSpacing, currentCol, exceededCurrentCol, i, legendDim, legendHeightWithoutBubbleSize, legendStartY, legendUtils, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, viewBoxDim, _results;
     legendDim = data.legendDim;
     viewBoxDim = data.viewBoxDim;
+    legendHeightWithoutBubbleSize = viewBoxDim.height;
+    if (data.Zquartiles != null) {
+      legendUtils = LegendUtils.get();
+      legendUtils.setupBubbles(data);
+    }
     startOfCenteredLegendItems = viewBoxDim.y + viewBoxDim.height / 2 - legendDim.heightOfRow * (numItems / cols) / 2 + legendDim.ptRadius;
     startOfViewBox = viewBoxDim.y + legendDim.ptRadius;
     legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox);
@@ -286,14 +268,14 @@ PlotData = (function() {
     while (i < numItems) {
       if (cols > 1) {
         numElemsInCol = numItems / cols;
-        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
+        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize;
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * currentCol;
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
           colSpacing = (legendDim.colSpace + legendDim.ptRadius * 2 + legendDim.ptToTextSpace) * currentCol;
           numItemsInPrevCols = i;
           currentCol++;
         }
-        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height;
+        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize;
         if (totalItemsSpacingExceedLegendArea) {
           break;
         }
@@ -339,7 +321,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
-    var initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems;
+    var bubbleLeftRightPadding, bubbleTitleWidth, initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems, _ref;
     initWidth = this.viewBoxDim.width;
     totalLegendItems = this.legendGroups.length + this.legendPts.length;
     legendGrpsTextMax = 0;
@@ -351,19 +333,18 @@ PlotData = (function() {
     legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
       return e.width;
     })).width : 0;
-    maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax);
+    maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax]);
     spacingAroundMaxTextWidth = this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
+    bubbleLeftRightPadding = this.legendDim.leftPadding + this.legendDim.rightPadding;
     this.legendDim.cols = Math.ceil(totalLegendItems * this.legendDim.heightOfRow / this.viewBoxDim.height);
     this.legendDim.width = maxTextWidth * this.legendDim.cols + spacingAroundMaxTextWidth + this.legendDim.centerPadding * (this.legendDim.cols - 1);
+    bubbleTitleWidth = (_ref = this.legendBubblesTitle) != null ? _ref[0].width : void 0;
+    this.legendDim.width = _.max([this.legendDim.width, bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding]);
     this.legendDim.colSpace = maxTextWidth;
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.setupLegendGroupsAndPts(this);
     return initWidth !== this.viewBoxDim.width;
-  };
-
-  PlotData.prototype.getDefaultColor = function() {
-    return this.colorWheel[(this.cIndex++) % this.colorWheel.length];
   };
 
   PlotData.prototype.isOutsideViewBox = function(lab) {
