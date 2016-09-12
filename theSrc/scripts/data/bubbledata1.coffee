@@ -186,12 +186,12 @@ bubble1 =
     'Asia'
     'Asia'
     'Asia'
-    'Middle East'
-    'Middle East'
-    'Middle East'
-    'Middle East'
-    'Middle East'
-    'Middle East'
+    'Midt'
+    'Midt'
+    'Midt'
+    'Midt'
+    'Midt'
+    'Midt'
     'Asia'
     'Asia'
     'Asia'
@@ -216,6 +216,7 @@ bubble1 =
 
   xTitle: "Men's life expectancy",
   yTitle: "Women's life expectancy",
+  zTitle: "Population",
   fixedAspectRatio: false,
   grid: true,
   origin: true,

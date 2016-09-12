@@ -21,16 +21,19 @@ class PlotData
     @draggedOutPtsId = []
     @legendPts = []
     @draggedOutCondensedPts = []
+    @legendBubbles = []
+    @legendBubblesLab = []
 
     @cIndex = 0 # color index
 
     @superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
+    legendUtils = LegendUtils.get()
 
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData(@)
       @normalizeZData(@) if @Z? and @Z instanceof Array
-      @setupColors()
+      @groupToColorMap = legendUtils.setupColors(@) if @group?
       @calcDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
@@ -166,32 +169,12 @@ class PlotData
       i++
 
   normalizeZData: (data) ->
-    minZ = _.min data.Z
+    legendUtils = LegendUtils.get()
+
     maxZ = _.max data.Z
+    legendUtils.calcZQuartiles(data, maxZ)
+    legendUtils.normalizeZValues(data, maxZ)
 
-    i = 0
-    while i < data.Z.length
-      normalizedArea = data.Z[i]/maxZ
-      data.normZ[i] = Math.sqrt(normalizedArea/Math.PI)
-      i++
-
-  setupColors: ->
-    @legendGroups = []
-    if @group?
-      @groupToColorMap = {}
-      group = @group
-      i = 0
-      while i < @group.length
-        unless (_.some @legendGroups, (e) -> e.text is group[i])
-          newColor = @getDefaultColor()
-          @legendGroups.push {
-            text:   @group[i]
-            color:  newColor
-            r:      @legendDim.ptRadius
-            anchor: 'start'
-          }
-          @groupToColorMap[@group[i]] = newColor
-        i++
 
   calcDataArrays: () ->
     @pts = []
@@ -203,7 +186,10 @@ class PlotData
          _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
-        r = if @Z? and @Z instanceof Array then (@viewBoxDim.width/8)*@normZ[i] else @pointRadius
+        r = @pointRadius
+        if @Z? and @Z instanceof Array
+          legendUtils = LegendUtils.get()
+          r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
         fillOpacity = if @Z? and @Z instanceof Array then 0.3 else 1
         label = @label[i]
         labelZ = if @Z? and @Z instanceof Array then @Z[i].toString() else ''
@@ -245,6 +231,11 @@ class PlotData
     legendDim = data.legendDim
     viewBoxDim = data.viewBoxDim
 
+    legendHeightWithoutBubbleSize = viewBoxDim.height
+    if data.Zquartiles?
+      legendUtils = LegendUtils.get()
+      legendUtils.setupBubbles(data)
+
     startOfCenteredLegendItems = (viewBoxDim.y + viewBoxDim.height/2 -
                                   legendDim.heightOfRow*(numItems/cols)/2 +
                                   legendDim.ptRadius)
@@ -259,14 +250,14 @@ class PlotData
     while i < numItems
       if cols > 1
         numElemsInCol = numItems/cols
-        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
           colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*currentCol
           numItemsInPrevCols = i
           currentCol++
 
-        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + viewBoxDim.height
+        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
         break if totalItemsSpacingExceedLegendArea
 
       li = itemsArray[i]
@@ -310,15 +301,22 @@ class PlotData
     if @legendGroups.length > 0
       legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
     legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
-    maxTextWidth = Math.max(legendGrpsTextMax, legendPtsTextMax)
+
+    maxTextWidth = _.max [legendGrpsTextMax, legendPtsTextMax]
 
     spacingAroundMaxTextWidth = @legendDim.leftPadding +
                                 @legendDim.ptRadius * 2 +
                                 @legendDim.rightPadding +
                                 @legendDim.ptToTextSpace
 
+    bubbleLeftRightPadding = @legendDim.leftPadding + @legendDim.rightPadding
+
     @legendDim.cols = Math.ceil((totalLegendItems)*@legendDim.heightOfRow/@viewBoxDim.height)
     @legendDim.width = maxTextWidth*@legendDim.cols + spacingAroundMaxTextWidth + @legendDim.centerPadding*(@legendDim.cols-1)
+
+    bubbleTitleWidth = @legendBubblesTitle?[0].width
+    @legendDim.width = _.max [@legendDim.width, bubbleTitleWidth + bubbleLeftRightPadding, @legendBubblesMaxWidth + bubbleLeftRightPadding]
+
     @legendDim.colSpace = maxTextWidth
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
@@ -326,9 +324,6 @@ class PlotData
     @setupLegendGroupsAndPts(@)
 
     initWidth != @viewBoxDim.width
-
-  getDefaultColor: ->
-    @colorWheel[(@cIndex++)%(@colorWheel.length)]
 
   isOutsideViewBox: (lab) ->
     left  = lab.x - lab.width/2
