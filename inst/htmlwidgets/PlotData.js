@@ -29,7 +29,6 @@ PlotData = (function() {
     this.legendBubbles = [];
     this.legendBubblesLab = [];
     this.cIndex = 0;
-    this.superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
     legendUtils = LegendUtils.get();
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;

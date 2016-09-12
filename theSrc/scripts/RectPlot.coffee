@@ -343,12 +343,13 @@ class RectPlot
   drawLegend: (plot, data, reject)->
     data.setupLegendGroupsAndPts(data)
 
-    superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
+    superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] # '⁰¹²³⁴⁵⁶⁷⁸⁹'
+
     getSuperscript = (id) ->
       ss = ''
       while id > 0
         digit = id % 10
-        ss = superscript[id % 10] + ss
+        ss = String.fromCharCode(superscript[id % 10]) + ss
         id = (id - digit)/10
       ss
 

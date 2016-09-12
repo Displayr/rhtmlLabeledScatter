@@ -26,7 +26,6 @@ class PlotData
 
     @cIndex = 0 # color index
 
-    @superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹'
     legendUtils = LegendUtils.get()
 
     if @X.length is @Y.length

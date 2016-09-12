@@ -292,13 +292,13 @@ RectPlot = (function() {
   RectPlot.prototype.drawLegend = function(plot, data, reject) {
     var drag, getSuperscript, legendBubbleTitleSvg, legendDraggedPtsLab, legendFontSize, legendGroupsLab, legendLabelDragAndDrop, superscript;
     data.setupLegendGroupsAndPts(data);
-    superscript = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+    superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313];
     getSuperscript = function(id) {
       var digit, ss;
       ss = '';
       while (id > 0) {
         digit = id % 10;
-        ss = superscript[id % 10] + ss;
+        ss = String.fromCharCode(superscript[id % 10]) + ss;
         id = (id - digit) / 10;
       }
       return ss;
