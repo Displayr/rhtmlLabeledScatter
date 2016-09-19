@@ -218,7 +218,7 @@ bubble1 =
   yTitle: "Women's life expectancy",
   zTitle: "Population",
   fixedAspectRatio: false,
-  grid: true,
+  grid: false,
   origin: true,
   originAlign: false,
   title: "Life expectancy plot",

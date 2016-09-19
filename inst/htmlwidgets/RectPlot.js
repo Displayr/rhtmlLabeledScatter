@@ -192,7 +192,7 @@ RectPlot = (function() {
       }).attr('stroke-width', 0.2).attr('stroke', 'grey');
     } else if (!this.grid && this.origin) {
       this.svg.selectAll('.origin').remove();
-      this.svg.selectAll('.origin').data(originAxis).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+      this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
         return d.x1;
       }).attr('y1', function(d) {
         return d.y1;
