@@ -236,7 +236,7 @@ class RectPlot
     else if not @grid and @origin
       @svg.selectAll('.origin').remove()
       @svg.selectAll('.origin')
-          .data(originAxis)
+          .data(axisArrays.gridOrigin)
           .enter()
           .append('line')
           .attr('class', 'origin')
