@@ -34,6 +34,8 @@ class RectPlot
                 @yDecimals,
                 @xPrefix,
                 @yPrefix,
+                @xSuffix = '',
+                @ySuffix = '',
                 @legendShow,
                 @legendFontFamily,
                 @legendFontSize,
@@ -41,7 +43,13 @@ class RectPlot
                 @axisFontFamily,
                 @axisFontColor,
                 @axisFontSize,
-                @pointRadius = 2) ->
+                @pointRadius = 2,
+                xBoundsMinimum = null,
+                xBoundsMaximum = null,
+                yBoundsMinimum = null,
+                yBoundsMaximum = null,
+                @xBoundsUnitsMajor = null,
+                @yBoundsUnitsMajor = null) ->
 
     @labelsFont =
       size:            labelsFontSize
@@ -70,6 +78,12 @@ class RectPlot
     @axisDimensionTextWidth = 0  # This is set later
     @verticalPadding = 5
     @horizontalPadding = 10
+
+    @bounds =
+      xmin: xBoundsMinimum
+      xmax: xBoundsMaximum
+      ymin: yBoundsMinimum
+      ymax: yBoundsMaximum
 
     @title =
       text:         title
@@ -143,7 +157,8 @@ class RectPlot
                          @colors,
                          @fixedRatio,
                          @originAlign,
-                         @pointRadius)
+                         @pointRadius,
+                         @bounds)
 
   draw: (plot) ->
     dimensionMarkerPromise = new Promise (resolve, reject) ->
@@ -156,7 +171,7 @@ class RectPlot
     resizePromises = [dimensionMarkerPromise, legendPromise]
     Promise.all(resizePromises).then(() ->
 
-      plot.data.normalizeData(plot.data)
+      plot.data.normalizeData()
       plot.data.calcDataArrays()
       plot.title.x = plot.viewBoxDim.x + plot.viewBoxDim.width/2
 
@@ -167,6 +182,9 @@ class RectPlot
       plot.drawRect()
       plot.drawAxisLabels()
     ).catch((resizedPlot) ->
+      #For debugging
+      console.log resizedPlot if resizedPlot instanceof Error
+
       # A redraw is needed
       resizedPlot.draw(resizedPlot)
     )
@@ -390,7 +408,7 @@ class RectPlot
              .on('dragend', dragEnd)
 
     if @legendShow
-      if @Z? and @Z instanceof Array
+      if Utils.get().isArr(@Z)
         @svg.selectAll('.legend-bubbles').remove()
         @svg.selectAll('.legend-bubbles')
             .data(data.legendBubbles)
@@ -501,7 +519,7 @@ class RectPlot
              .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .attr('fill-opacity', (d) -> d.fillOpacity)
-    if @Z? and @Z instanceof Array
+    if Utils.get().isArr(@Z)
       anc.append('title')
          .text((d) -> "#{d.label}\n#{d.labelZ}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
     else
@@ -511,7 +529,7 @@ class RectPlot
   drawDraggedMarkers: (data) ->
     @svg.selectAll('.marker').remove()
     @svg.selectAll('.marker')
-        .data(data.draggedOutMarkers)
+        .data(data.outsidePlotMarkers)
         .enter()
         .append('line')
         .attr('class', 'marker')
@@ -524,7 +542,7 @@ class RectPlot
 
     @svg.selectAll('.marker-label').remove()
     @svg.selectAll('.marker-label')
-        .data(data.draggedOutMarkers)
+        .data(data.outsidePlotMarkers)
         .enter()
         .append('text')
         .attr('class', 'marker-label')
@@ -537,11 +555,11 @@ class RectPlot
         .text((d) -> d.markerLabel)
 
   elemDraggedOffPlot: (plot, id) ->
-    plot.data.moveElemToLegend(id, plot.data)
+    plot.data.moveElemToLegend(id)
     plot.resetPlotAfterDragEvent(plot)
 
   elemDraggedOnPlot: (plot, id) ->
-    plot.data.removeElemFromLegend(id, plot.data)
+    plot.data.removeElemFromLegend(id)
     plot.resetPlotAfterDragEvent(plot)
 
   resetPlotAfterDragEvent: (plot) ->

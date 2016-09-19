@@ -10,7 +10,7 @@ bubble1 = {
   yTitle: "Women's life expectancy",
   zTitle: "Population",
   fixedAspectRatio: false,
-  grid: false,
+  grid: true,
   origin: true,
   originAlign: false,
   title: "Life expectancy plot",
@@ -32,8 +32,15 @@ bubble1 = {
   xTitleFontSize: 20,
   yTitleFontColor: 'black',
   yTitleFontSize: 16,
+  xSuffix: "y",
+  ySuffix: "y",
   legendShow: true,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
-  legendFontColor: 'black'
+  legendFontColor: 'black',
+  yBoundsMaximum: 85,
+  xBoundsMinimum: 63,
+  xBoundsMaximum: 78,
+  xBoundsUnitsMajor: 2,
+  yBoundsUnitsMajor: 2
 };

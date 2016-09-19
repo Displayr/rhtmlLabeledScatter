@@ -33,37 +33,6 @@ AxisUtils = (function() {
       return num >= min && num <= max;
     };
 
-    AU.prototype._pushDimensionMarker = function(leaderStack, labelStack, type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) {
-      if (type === 'c') {
-        leaderStack.push({
-          x1: x1,
-          y1: y2,
-          x2: x1,
-          y2: y2 + leaderLineLen
-        });
-        labelStack.push({
-          x: x1,
-          y: y2 + leaderLineLen + labelHeight,
-          label: xPrefix + label.toFixed(xDecimals),
-          anchor: 'middle'
-        });
-      }
-      if (type === 'r') {
-        leaderStack.push({
-          x1: x1 - leaderLineLen,
-          y1: y1,
-          x2: x1,
-          y2: y2
-        });
-        return labelStack.push({
-          x: x1 - leaderLineLen,
-          y: y2 + labelHeight / 3,
-          label: yPrefix + label.toFixed(yDecimals),
-          anchor: 'end'
-        });
-      }
-    };
-
     AU.prototype._normalizeXCoords = function(data, Xcoord) {
       var viewBoxDim;
       viewBoxDim = data.viewBoxDim;
@@ -77,15 +46,54 @@ AxisUtils = (function() {
     };
 
     AU.prototype.getAxisDataArrays = function(plot, data, viewBoxDim) {
-      var colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, oax, oax_y, oay, oay_x, originAxis, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
+      var colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, oax, oax_y, oay, oay_x, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
       if (!(data.len > 0)) {
         return;
       }
+      pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
+        var displayedLabel, labelHeight, leaderLineLen, xDecimals, xPrefix, xSuffix, yDecimals, yPrefix, ySuffix;
+        leaderLineLen = plot.axisLeaderLineLength;
+        labelHeight = plot.axisDimensionTextHeight;
+        xDecimals = plot.xDecimals;
+        yDecimals = plot.yDecimals;
+        xPrefix = plot.xPrefix;
+        yPrefix = plot.yPrefix;
+        xSuffix = plot.xSuffix;
+        ySuffix = plot.ySuffix;
+        if (type === 'c') {
+          displayedLabel = dimensionMarkerLeaderStack.push({
+            x1: x1,
+            y1: y2,
+            x2: x1,
+            y2: y2 + leaderLineLen
+          });
+          dimensionMarkerLabelStack.push({
+            x: x1,
+            y: y2 + leaderLineLen + labelHeight,
+            label: xPrefix + label.toFixed(xDecimals) + xSuffix,
+            anchor: 'middle'
+          });
+        }
+        if (type === 'r') {
+          dimensionMarkerLeaderStack.push({
+            x1: x1 - leaderLineLen,
+            y1: y1,
+            x2: x1,
+            y2: y2
+          });
+          return dimensionMarkerLabelStack.push({
+            x: x1 - leaderLineLen,
+            y: y2 + labelHeight / 3,
+            label: yPrefix + label.toFixed(yDecimals) + ySuffix,
+            anchor: 'end'
+          });
+        }
+      };
       dimensionMarkerStack = [];
       dimensionMarkerLeaderStack = [];
       dimensionMarkerLabelStack = [];
-      ticksX = this._getTickRange(data.maxX, data.minX);
-      ticksY = this._getTickRange(data.maxY, data.minY);
+      ticksX = Utils.get().isNum(plot.xBoundsUnitsMajor) ? ticksX = plot.xBoundsUnitsMajor / 2 : this._getTickRange(data.maxX, data.minX);
+      ticksY = Utils.get().isNum(plot.yBoundsUnitsMajor) ? ticksY = plot.yBoundsUnitsMajor / 2 : this._getTickRange(data.maxY, data.minY);
       originAxis = [];
       oax_y = this._normalizeYCoords(data, 0);
       if ((oax_y < viewBoxDim.y + viewBoxDim.height) && (oax_y > viewBoxDim.y)) {
@@ -95,7 +103,7 @@ AxisUtils = (function() {
           x2: viewBoxDim.x + viewBoxDim.width,
           y2: oax_y
         };
-        this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+        pushDimensionMarker('r', oax.x1, oax.y1, oax.x2, oax.y2, 0);
         if (!((data.minY === 0) || (data.maxY === 0))) {
           originAxis.push(oax);
         }
@@ -108,7 +116,7 @@ AxisUtils = (function() {
           x2: oay_x,
           y2: viewBoxDim.y + viewBoxDim.height
         };
-        this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+        pushDimensionMarker('c', oay.x1, oay.y1, oay.x2, oay.y2, 0);
         if (!((data.minX === 0) || (data.maxX === 0))) {
           originAxis.push(oay);
         }
@@ -155,7 +163,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+            pushDimensionMarker('c', x1, y1, x2, y2, val);
           }
         }
         if (i < colsNegative) {
@@ -171,7 +179,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+            pushDimensionMarker('c', x1, y1, x2, y2, val);
           }
         }
         i++;
@@ -192,7 +200,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+            pushDimensionMarker('r', x1, y1, x2, y2, val);
           }
         }
         if (i < rowsNegative) {
@@ -211,7 +219,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            this._pushDimensionMarker(dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix);
+            pushDimensionMarker('r', x1, y1, x2, y2, val);
           }
         }
         i++;

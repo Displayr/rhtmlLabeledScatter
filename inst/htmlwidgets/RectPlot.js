@@ -2,7 +2,7 @@
 var RectPlot;
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, xSuffix, ySuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -20,6 +20,8 @@ RectPlot = (function() {
     this.yDecimals = yDecimals;
     this.xPrefix = xPrefix;
     this.yPrefix = yPrefix;
+    this.xSuffix = xSuffix != null ? xSuffix : '';
+    this.ySuffix = ySuffix != null ? ySuffix : '';
     this.legendShow = legendShow;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
@@ -28,6 +30,20 @@ RectPlot = (function() {
     this.axisFontColor = axisFontColor;
     this.axisFontSize = axisFontSize;
     this.pointRadius = pointRadius != null ? pointRadius : 2;
+    if (xBoundsMinimum == null) {
+      xBoundsMinimum = null;
+    }
+    if (xBoundsMaximum == null) {
+      xBoundsMaximum = null;
+    }
+    if (yBoundsMinimum == null) {
+      yBoundsMinimum = null;
+    }
+    if (yBoundsMaximum == null) {
+      yBoundsMaximum = null;
+    }
+    this.xBoundsUnitsMajor = xBoundsUnitsMajor != null ? xBoundsUnitsMajor : null;
+    this.yBoundsUnitsMajor = yBoundsUnitsMajor != null ? yBoundsUnitsMajor : null;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -59,6 +75,12 @@ RectPlot = (function() {
     this.axisDimensionTextWidth = 0;
     this.verticalPadding = 5;
     this.horizontalPadding = 10;
+    this.bounds = {
+      xmin: xBoundsMinimum,
+      xmax: xBoundsMaximum,
+      ymin: yBoundsMinimum,
+      ymax: yBoundsMaximum
+    };
     this.title = {
       text: title,
       color: titleFontColor,
@@ -122,7 +144,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds);
   };
 
   RectPlot.prototype.draw = function(plot) {
@@ -137,7 +159,7 @@ RectPlot = (function() {
     });
     resizePromises = [dimensionMarkerPromise, legendPromise];
     return Promise.all(resizePromises).then(function() {
-      plot.data.normalizeData(plot.data);
+      plot.data.normalizeData();
       plot.data.calcDataArrays();
       plot.title.x = plot.viewBoxDim.x + plot.viewBoxDim.width / 2;
       plot.drawTitle();
@@ -147,6 +169,9 @@ RectPlot = (function() {
       plot.drawRect();
       return plot.drawAxisLabels();
     })["catch"](function(resizedPlot) {
+      if (resizedPlot instanceof Error) {
+        console.log(resizedPlot);
+      }
       return resizedPlot.draw(resizedPlot);
     });
   };
@@ -336,7 +361,7 @@ RectPlot = (function() {
       }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
     };
     if (this.legendShow) {
-      if ((this.Z != null) && this.Z instanceof Array) {
+      if (Utils.get().isArr(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove();
         this.svg.selectAll('.legend-bubbles').data(data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
           return d.cx;
@@ -431,7 +456,7 @@ RectPlot = (function() {
     }).attr('fill-opacity', function(d) {
       return d.fillOpacity;
     });
-    if ((this.Z != null) && this.Z instanceof Array) {
+    if (Utils.get().isArr(this.Z)) {
       return anc.append('title').text(function(d) {
         return "" + d.label + "\n" + d.labelZ + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
       });
@@ -444,7 +469,7 @@ RectPlot = (function() {
 
   RectPlot.prototype.drawDraggedMarkers = function(data) {
     this.svg.selectAll('.marker').remove();
-    this.svg.selectAll('.marker').data(data.draggedOutMarkers).enter().append('line').attr('class', 'marker').attr('x1', function(d) {
+    this.svg.selectAll('.marker').data(data.outsidePlotMarkers).enter().append('line').attr('class', 'marker').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
@@ -458,7 +483,7 @@ RectPlot = (function() {
       return d.color;
     });
     this.svg.selectAll('.marker-label').remove();
-    return this.svg.selectAll('.marker-label').data(data.draggedOutMarkers).enter().append('text').attr('class', 'marker-label').attr('x', function(d) {
+    return this.svg.selectAll('.marker-label').data(data.outsidePlotMarkers).enter().append('text').attr('class', 'marker-label').attr('x', function(d) {
       return d.markerTextX;
     }).attr('y', function(d) {
       return d.markerTextY;
@@ -470,12 +495,12 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.elemDraggedOffPlot = function(plot, id) {
-    plot.data.moveElemToLegend(id, plot.data);
+    plot.data.moveElemToLegend(id);
     return plot.resetPlotAfterDragEvent(plot);
   };
 
   RectPlot.prototype.elemDraggedOnPlot = function(plot, id) {
-    plot.data.removeElemFromLegend(id, plot.data);
+    plot.data.removeElemFromLegend(id);
     return plot.resetPlotAfterDragEvent(plot);
   };
 

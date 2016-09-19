@@ -25,14 +25,14 @@ class PlotColors
           @groupToColorMap[group[i]] = newColor
         i++
 
-  getColorFromGroup: (group) ->
+  getColorFromGroup: (group) =>
     @groupToColorMap[group]
 
-  getNewColor: (index) ->
+  getNewColor: (index) =>
     @plotData.colorWheel[ index % @plotData.colorWheel.length ]
 
-  getColor: (i) ->
-     if @plotData.group? and @plotData.group instanceof Array
+  getColor: (i) =>
+     if Utils.get().isArr(@plotData.group)
        @getColorFromGroup(@plotData.group[i])
      else
        @getNewColor(0) # takes the first color in the color wheel since all pts in same grp

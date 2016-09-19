@@ -11,16 +11,17 @@ class PlotData
                 @colorWheel,
                 @fixedAspectRatio,
                 @originAlign,
-                @pointRadius) ->
+                @pointRadius,
+                @bounds) ->
 
     @origX = @X.slice(0)
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
-    @normZ = @Z.slice() if @Z? and @Z instanceof Array
-    @draggedOutPtsId = []
+    @normZ = @Z.slice() if Utils.get().isArr(@Z)
+    @outsidePlotPtsId = []
     @legendPts = []
-    @draggedOutCondensedPts = []
+    @outsidePlotCondensedPts = []
     @legendBubbles = []
     @legendBubblesLab = []
 
@@ -30,17 +31,15 @@ class PlotData
 
     if @X.length is @Y.length
       @len = @origLen= X.length
-      @normalizeData(@)
-      @normalizeZData(@) if @Z? and @Z instanceof Array
+      @normalizeData()
+      @normalizeZData() if Utils.get().isArr(@Z)
       @plotColors = new PlotColors(@)
       @calcDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
-  normalizeData: (data) ->
-    viewBoxDim = data.viewBoxDim
-
-    ptsOut = @draggedOutPtsId
+  normalizeData: =>
+    ptsOut = @outsidePlotPtsId
     notMovedX = _.filter(@origX, (val, key) ->
       !(_.includes(ptsOut, key))
     )
@@ -71,13 +70,13 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
-      diff = Math.abs(viewBoxDim.width - viewBoxDim.height)
-      if viewBoxDim.width > viewBoxDim.height
-        factor = rangeY*(diff/viewBoxDim.width)
+      diff = Math.abs(@viewBoxDim.width - @viewBoxDim.height)
+      if @viewBoxDim.width > @viewBoxDim.height
+        factor = rangeY*(diff/@viewBoxDim.width)
         @maxY += factor/2
         @minY -= factor/2
       else
-        factor = rangeX*(diff/viewBoxDim.height)
+        factor = rangeX*(diff/@viewBoxDim.height)
         @maxX += factor/2
         @minX -= factor/2
 
@@ -91,15 +90,23 @@ class PlotData
         @maxX += diff/2
         @minX -= diff/2
 
+
+    # If user has sent x and y boundaries, these hold higher priority
+    @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)
+    @minX = @bounds.xmin if Utils.get().isNum(@bounds.xmin)
+    @maxY = @bounds.ymax if Utils.get().isNum(@bounds.ymax)
+    @minY = @bounds.ymin if Utils.get().isNum(@bounds.ymin)
+
+
     #create list of movedOffPts that need markers
-    @draggedOutMarkers = []
-    @draggedOutMarkersIter = 0
+    @outsidePlotMarkers = []
+    @outsidePlotMarkersIter = 0
 
     for lp in @legendPts
       id = lp.pt.id
       draggedNormX = (@X[id] - @minX)/(@maxX - @minX)
       draggedNormY = (@Y[id] - @minY)/(@maxY - @minY)
-      newMarkerId = @draggedOutMarkersIter
+      newMarkerId = @outsidePlotMarkersIter
       lp.markerId = newMarkerId
 
       if Math.abs(draggedNormX) > 1 or Math.abs(draggedNormY) > 1 or
@@ -109,8 +116,8 @@ class PlotData
         draggedNormX = if draggedNormX < 0 then 0 else draggedNormX
         draggedNormY = if draggedNormY > 1 then 1 else draggedNormY
         draggedNormY = if draggedNormY < 0 then 0 else draggedNormY
-        x2 = draggedNormX*viewBoxDim.width + viewBoxDim.x
-        y2 = (1-draggedNormY)*viewBoxDim.height + viewBoxDim.y
+        x2 = draggedNormX*@viewBoxDim.width + @viewBoxDim.x
+        y2 = (1-draggedNormY)*@viewBoxDim.height + @viewBoxDim.y
 
         markerTextX = markerTextY = 0
         numDigitsInId = Math.ceil(Math.log(newMarkerId+1.1)/Math.LN10)
@@ -135,7 +142,7 @@ class PlotData
           markerTextX = x1 - @legendDim.markerCharWidth*(numDigitsInId)
           markerTextY = y1 + @legendDim.markerTextSize
 
-        @draggedOutMarkers.push
+        @outsidePlotMarkers.push
           markerLabel: newMarkerId + 1
           ptId: id
           x1: x1
@@ -148,18 +155,30 @@ class PlotData
           color: lp.color
 
         # if the points were condensed, remove point
-        @draggedOutCondensedPts = _.filter @draggedOutCondensedPts, (e) -> e.dataId != id
-        @len = @origLen - @draggedOutMarkers.length
+        @outsidePlotCondensedPts = _.filter @outsidePlotCondensedPts, (e) -> e.dataId != id
+        @len = @origLen - @outsidePlotMarkers.length
 
       else # no marker required, but still inside plot window
         console.log "Condensed point added"
-        condensedPtsDataIdArray = _.map @draggedOutCondensedPts, (e) -> e.dataId
+        condensedPtsDataIdArray = _.map @outsidePlotCondensedPts, (e) -> e.dataId
         unless _.includes condensedPtsDataIdArray, id
-          @draggedOutCondensedPts.push(
+          @outsidePlotCondensedPts.push(
             dataId: id
             markerId: newMarkerId
           )
-      @draggedOutMarkersIter++
+      @outsidePlotMarkersIter++
+
+    # Remove pts that are outside plot if user bounds were set
+    @outsideBoundsPtsId = []
+    if _.some(@bounds, (b) -> Utils.get().isNum(b))
+      i = 0
+      while i < @origLen
+        unless _.includes(@outsideBoundsPtsId, i)
+          if @X[i] < @minX or @X[i] > @maxX or
+             @Y[i] < @minY or @Y[i] > @maxY
+            @outsideBoundsPtsId.push i
+        i++
+
 
     i = 0
     while i < @origLen
@@ -167,35 +186,34 @@ class PlotData
       @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
-  normalizeZData: (data) ->
+  normalizeZData: =>
     legendUtils = LegendUtils.get()
 
-    maxZ = _.max data.Z
-    legendUtils.calcZQuartiles(data, maxZ)
-    legendUtils.normalizeZValues(data, maxZ)
+    maxZ = _.max @Z
+    legendUtils.calcZQuartiles(@, maxZ)
+    legendUtils.normalizeZValues(@, maxZ)
 
-
-  calcDataArrays: () ->
+  calcDataArrays: =>
     @pts = []
     @lab = []
 
     i = 0
     while i < @origLen
-      if (not _.includes(@draggedOutPtsId, i)) or
-         _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
+      if (not _.includes(@outsidePlotPtsId, i)) or
+         _.includes (_.map @outsidePlotCondensedPts, (e) -> e.dataId), i
         x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
         y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
         r = @pointRadius
-        if @Z? and @Z instanceof Array
+        if Utils.get().isArr(@Z)
           legendUtils = LegendUtils.get()
           r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
-        fillOpacity = if @Z? and @Z instanceof Array then 0.3 else 1
+        fillOpacity = if Utils.get().isArr(@Z) then 0.3 else 1
         label = @label[i]
-        labelZ = if @Z? and @Z instanceof Array then @Z[i].toString() else ''
+        labelZ = if Utils.get().isArr(@Z) then @Z[i].toString() else ''
         fontSize = @viewBoxDim.labelFontSize
 
-        if _.includes (_.map @draggedOutCondensedPts, (e) -> e.dataId), i
-          pt = _.find @draggedOutCondensedPts, (e) -> e.dataId == i
+        if _.includes (_.map @outsidePlotCondensedPts, (e) -> e.dataId), i
+          pt = _.find @outsidePlotCondensedPts, (e) -> e.dataId == i
           label = pt.markerId + 1
           fontSize = @viewBoxDim.labelSmallFontSize
 
@@ -226,19 +244,21 @@ class PlotData
         })
       i++
 
-  setLegendItemsPositions: (data, numItems, itemsArray, cols) ->
-    legendDim = data.legendDim
-    viewBoxDim = data.viewBoxDim
+    # Remove pts outside plot because user bounds set
+    for p in @outsideBoundsPtsId
+      @moveElemToLegend(p) unless _.includes(@outsidePlotPtsId, p)
 
-    legendHeightWithoutBubbleSize = viewBoxDim.height
-    if data.Zquartiles?
+  setLegendItemsPositions: (numItems, itemsArray, cols) =>
+    legendHeightWithoutBubbleSize = @viewBoxDim.height
+
+    if @Zquartiles?
       legendUtils = LegendUtils.get()
-      legendUtils.setupBubbles(data)
+      legendUtils.setupBubbles(@)
 
-    startOfCenteredLegendItems = (viewBoxDim.y + viewBoxDim.height/2 -
-                                  legendDim.heightOfRow*(numItems/cols)/2 +
-                                  legendDim.ptRadius)
-    startOfViewBox = viewBoxDim.y + legendDim.ptRadius
+    startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
+                                  @legendDim.heightOfRow*(numItems/cols)/2 +
+                                  @legendDim.ptRadius)
+    startOfViewBox = @viewBoxDim.y + @legendDim.ptRadius
     legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
 
     colSpacing = 0
@@ -249,50 +269,46 @@ class PlotData
     while i < numItems
       if cols > 1
         numElemsInCol = numItems/cols
-        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
-          colSpacing = (legendDim.colSpace + legendDim.ptRadius*2 + legendDim.ptToTextSpace)*currentCol
+          colSpacing = (@legendDim.colSpace + @legendDim.ptRadius*2 + @legendDim.ptToTextSpace)*currentCol
           numItemsInPrevCols = i
           currentCol++
 
-        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
+        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
         break if totalItemsSpacingExceedLegendArea
 
       li = itemsArray[i]
       if li.isDraggedPt
-        li.x = legendDim.x + legendDim.leftPadding + colSpacing
-        li.y = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow + legendDim.vertPtPadding
+        li.x = @legendDim.x + @legendDim.leftPadding + colSpacing
+        li.y = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow + @legendDim.vertPtPadding
       else
-        li.cx = legendDim.x + legendDim.leftPadding + colSpacing + li.r
-        li.cy = legendStartY + (i-numItemsInPrevCols)*legendDim.heightOfRow
-        li.x = li.cx + legendDim.ptToTextSpace
+        li.cx = @legendDim.x + @legendDim.leftPadding + colSpacing + li.r
+        li.cy = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow
+        li.x = li.cx + @legendDim.ptToTextSpace
         li.y = li.cy + li.r
       i++
 
-  setupLegendGroupsAndPts: (data) ->
-    legendGroups = data.legendGroups
-    legendDim = data.legendDim
-    legendPts = data.legendPts
-
-    if legendPts.length > 0
-      totalLegendItems = legendGroups.length + legendPts.length
+  setupLegendGroupsAndPts: =>
+    if @legendPts.length > 0
+      totalLegendItems = @legendGroups.length + @legendPts.length
       legendItemArray = []
       i = 0
       j = 0
       while i < totalLegendItems
-        if i < legendGroups.length
-          legendItemArray.push legendGroups[i]
+        if i < @legendGroups.length
+          legendItemArray.push @legendGroups[i]
         else
-          j = i - legendGroups.length
-          legendItemArray.push legendPts[j]
+          j = i - @legendGroups.length
+          legendItemArray.push @legendPts[j]
         i++
 
-      data.setLegendItemsPositions(data, totalLegendItems, legendItemArray, legendDim.cols)
+      @setLegendItemsPositions(totalLegendItems, legendItemArray, @legendDim.cols)
     else
-      @setLegendItemsPositions(@, legendGroups.length, legendGroups, legendDim.cols)
+      @setLegendItemsPositions(@, @legendGroups.length, @legendGroups, @legendDim.cols)
 
-  resizedAfterLegendGroupsDrawn: ->
+  resizedAfterLegendGroupsDrawn: =>
     initWidth = @viewBoxDim.width
 
     totalLegendItems = @legendGroups.length + @legendPts.length
@@ -324,7 +340,7 @@ class PlotData
 
     initWidth != @viewBoxDim.width
 
-  isOutsideViewBox: (lab) ->
+  isOutsideViewBox: (lab) =>
     left  = lab.x - lab.width/2
     right = lab.x + lab.width/2
     top   = lab.y - lab.height
@@ -337,7 +353,7 @@ class PlotData
       return true
     return false
 
-  isLegendPtOutsideViewBox: (lab) ->
+  isLegendPtOutsideViewBox: (lab) =>
     left  = lab.x
     right = lab.x + lab.width
     top   = lab.y - lab.height
@@ -350,11 +366,11 @@ class PlotData
       return true
     return false
 
-  moveElemToLegend: (id, data) ->
+  moveElemToLegend: (id) =>
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
-    data.legendPts.push {
+    @legendPts.push {
       id: id
       pt: movedPt[0]
       lab: movedLab[0]
@@ -363,20 +379,20 @@ class PlotData
       color: movedPt[0].color
       isDraggedPt: true
     }
-    @draggedOutPtsId.push id
-    @normalizeData(data)
+    @outsidePlotPtsId.push id
+    @normalizeData()
     @calcDataArrays()
     @setupLegendGroupsAndPts(@)
 
-  removeElemFromLegend: (id, data) ->
+  removeElemFromLegend: (id) =>
     checkId = (e) -> e.id == id
-    legendPt = _.remove data.legendPts, checkId
+    legendPt = _.remove @legendPts, checkId
     @pts.push legendPt.pt
     @lab.push legendPt.lab
 
-    _.remove @draggedOutPtsId, (i) -> i == id
-    _.remove @draggedOutCondensedPts, (i) -> i.dataId == id
+    _.remove @outsidePlotPtsId, (i) -> i == id
+    _.remove @outsidePlotCondensedPts, (i) -> i.dataId == id
 
-    @normalizeData(data)
+    @normalizeData()
     @calcDataArrays()
     @setupLegendGroupsAndPts(@)
