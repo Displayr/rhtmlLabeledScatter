@@ -38,36 +38,6 @@ LegendUtils = (function() {
       return exponentialShortForms[val];
     };
 
-    LU.prototype.getDefaultColor = function(colorWheel, cIndex) {
-      return colorWheel[cIndex % colorWheel.length];
-    };
-
-    LU.prototype.setupColors = function(data) {
-      var group, groupToColorMap, i, legendDim, newColor;
-      legendDim = data.legendDim;
-      data.legendGroups = [];
-      groupToColorMap = {};
-      group = data.group;
-      i = 0;
-      while (i < group.length) {
-        if (!(_.some(data.legendGroups, function(e) {
-          return e.text === group[i];
-        }))) {
-          newColor = this.getDefaultColor(data.colorWheel, data.cIndex);
-          data.cIndex++;
-          data.legendGroups.push({
-            text: group[i],
-            color: newColor,
-            r: legendDim.ptRadius,
-            anchor: 'start'
-          });
-          groupToColorMap[group[i]] = newColor;
-        }
-        i++;
-      }
-      return groupToColorMap;
-    };
-
     LU.prototype.normalizedZtoRadius = function(viewBoxDim, normZval) {
       return Math.sqrt(viewBoxDim.width * viewBoxDim.height / 16 / Math.PI) * normZval;
     };
