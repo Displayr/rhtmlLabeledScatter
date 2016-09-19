@@ -5,7 +5,7 @@
 #'
 #' @param X is array of x coordinates of data set
 #' @param Y is array of y coordinates of data set
-#' @param Z is size coordinates of data set (for bubble charts). This is optional
+#' @param Z is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional
 #' @param label is the array of text labels for the data set
 #' @param group is the array of group name for each data point
 #' @param fixed.aspect Default to FALSE.

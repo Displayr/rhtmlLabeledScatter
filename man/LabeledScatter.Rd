@@ -33,7 +33,7 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{Y}{is array of y coordinates of data set}
 
-\item{Z}{is size coordinates of data set (for bubble charts). This is optional}
+\item{Z}{is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional}
 
 \item{label}{is the array of text labels for the data set}
 
