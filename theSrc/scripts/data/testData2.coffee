@@ -53,23 +53,23 @@ testData2 =
     -.02
   ]
 
-  group: [
-    'A'
-    'B'
-    'C'
-    'D'
-    'E'
-    'F'
-    'G'
-    'H'
-    'I'
-    'J'
-    'K'
-    'L'
-    'M'
-    'N'
-    'O'
-  ],
+  # group: [
+  #   'A'
+  #   'B'
+  #   'C'
+  #   'D'
+  #   'E'
+  #   'F'
+  #   'G'
+  #   'H'
+  #   'I'
+  #   'J'
+  #   'K'
+  #   'L'
+  #   'M'
+  #   'N'
+  #   'O'
+  # ],
   xTitle: "",
   yTitle: "",
   fixedAspectRatio: true,

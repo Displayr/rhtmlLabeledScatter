@@ -32,7 +32,7 @@ class PlotData
       @len = @origLen= X.length
       @normalizeData(@)
       @normalizeZData(@) if @Z? and @Z instanceof Array
-      @groupToColorMap = legendUtils.setupColors(@) if @group?
+      @plotColors = new PlotColors(@)
       @calcDataArrays()
     else
       throw new Error("Inputs X and Y lengths do not match!")
@@ -199,7 +199,7 @@ class PlotData
           label = pt.markerId + 1
           fontSize = @viewBoxDim.labelSmallFontSize
 
-        fontColor = ptColor = if @groupToColorMap? then @groupToColorMap[@group[i]] else 'black'
+        fontColor = ptColor = @plotColors.getColor(i)
         fontColor = @viewBoxDim.labelFontColor if @viewBoxDim.labelFontColor? and !(@viewBoxDim.labelFontColor == '')
         group = if @group? then @group[i] else ''
         @pts.push({

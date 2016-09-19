@@ -26,6 +26,7 @@ dependencies:
      - LegendUtils.js
      - SvgUtils.js
      - AxisUtils.js
+     - PlotColors.js
 
  - name: Data
    version: 0.0.1

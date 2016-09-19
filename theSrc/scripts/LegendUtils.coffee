@@ -25,31 +25,6 @@ class LegendUtils
     getExponentialShortForm: (val) ->
       exponentialShortForms[val]
 
-    getDefaultColor: (colorWheel, cIndex) ->
-      colorWheel[ cIndex % colorWheel.length ]
-
-    setupColors: (data) ->
-      legendDim = data.legendDim
-      data.legendGroups = []
-
-      groupToColorMap = {}
-      group = data.group
-      i = 0
-      while i < group.length
-        unless (_.some data.legendGroups, (e) -> e.text is group[i])
-          newColor = @getDefaultColor(data.colorWheel, data.cIndex)
-          data.cIndex++
-
-          data.legendGroups.push {
-            text:   group[i]
-            color:  newColor
-            r:      legendDim.ptRadius
-            anchor: 'start'
-          }
-          groupToColorMap[group[i]] = newColor
-        i++
-      return groupToColorMap
-
     normalizedZtoRadius: (viewBoxDim, normZval) ->
        Math.sqrt(viewBoxDim.width*viewBoxDim.height/16/Math.PI)*normZval
 

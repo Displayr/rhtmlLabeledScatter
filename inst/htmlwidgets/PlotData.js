@@ -36,9 +36,7 @@ PlotData = (function() {
       if ((this.Z != null) && this.Z instanceof Array) {
         this.normalizeZData(this);
       }
-      if (this.group != null) {
-        this.groupToColorMap = legendUtils.setupColors(this);
-      }
+      this.plotColors = new PlotColors(this);
       this.calcDataArrays();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
@@ -214,7 +212,7 @@ PlotData = (function() {
           label = pt.markerId + 1;
           fontSize = this.viewBoxDim.labelSmallFontSize;
         }
-        fontColor = ptColor = this.groupToColorMap != null ? this.groupToColorMap[this.group[i]] : 'black';
+        fontColor = ptColor = this.plotColors.getColor(i);
         if ((this.viewBoxDim.labelFontColor != null) && !(this.viewBoxDim.labelFontColor === '')) {
           fontColor = this.viewBoxDim.labelFontColor;
         }
