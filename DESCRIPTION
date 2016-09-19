@@ -8,4 +8,4 @@ Maintainer: Po Liu <pliu0771@uni.sydney.edu.au>
 Description: An HTML widget that creates a labeled scatter plot.
 License: Numbers International Pty Ltd
 LazyData: TRUE
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1

@@ -62,7 +62,9 @@ class LegendUtils
       botQ = 0.1
 
       originalNum = (maxZ*topQ).toPrecision 2
-      exp = Math.log10(originalNum)
+      exp = Math.log(originalNum)
+      exp = Math.round(exp*100000)/100000
+      exp /= Math.LN10
       expDecimal = exp%1
       exp -= expDecimal
       digitsBtwnShortForms = exp % 3
