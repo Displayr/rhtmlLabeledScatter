@@ -71,11 +71,11 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{z.prefix}{A string that prefixes all bubble values(eg. "$")}
 
-\item{x.suffix}{A string that suffixes all x values(eg. "%")}
+\item{x.suffix}{A string that suffixes all x values(eg. "kg")}
 
-\item{y.suffix}{A string that suffixes all y values(eg. "%")}
+\item{y.suffix}{A string that suffixes all y values(eg. "kg")}
 
-\item{z.suffix}{A string that suffixes all bubble values(eg. "%")}
+\item{z.suffix}{A string that suffixes all bubble values(eg. "kg")}
 
 \item{title.font.family}{is the font family of the plot title}
 
