@@ -86,19 +86,21 @@ testData5 =
   colors: ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47','#255E91','#9E480E','#636363','#997300','#264478','#43682B','#FF2323'],
   xDecimals: 1,
   yDecimals: 1,
-  xPrefix: '',
-  yPrefix: '',
+  xPrefix: '$',
+  yPrefix: '$',
+  xSuffix: ' per person'
   titleFontColor: 'black',
   titleFontSize: 40,
   xTitleFontColor: 'black',
   xTitleFontSize: 16,
   yTitleFontColor: 'black',
   yTitleFontSize: 16,
-  legendShow: true,
+  legendShow: false,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
   legendFontColor: 'black'
   axisFontFamily: 'Times New Roman'
-  axisFontColor: "red"
-  axisFontSize: '10'
+  axisFontColor: "blue"
+  axisFontSize: '15'
   pointRadius: 2
+  xBoundsUnitsMajor: 200

@@ -91,6 +91,7 @@ RectPlot = (function() {
     this.axisLeaderLineLength = 5;
     this.axisDimensionTextHeight = 0;
     this.axisDimensionTextWidth = 0;
+    this.axisDimensionTextRightPadding = 0;
     this.verticalPadding = 5;
     this.horizontalPadding = 10;
     this.bounds = {
@@ -151,7 +152,7 @@ RectPlot = (function() {
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width - this.horizontalPadding * 3 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight,
+      width: width - this.legendDim.width - this.horizontalPadding * 3 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight - this.axisDimensionTextRightPadding,
       height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.xTitle.textHeight - this.axisLeaderLineLength - this.xTitle.topPadding,
       x: this.horizontalPadding * 2 + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
@@ -213,7 +214,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawDimensionMarkers = function(reject) {
-    var axisArrays, bb, i, initHeight, initWidth, ml;
+    var axisArrays, bb, i, initAxisTextHeight, initAxisTextWidth, markerLabel, markerLabels, _i, _len, _ref;
     axisArrays = AxisUtils.get().getAxisDataArrays(this, this.data, this.viewBoxDim);
     if (this.grid) {
       this.svg.selectAll('.origin').remove();
@@ -262,7 +263,7 @@ RectPlot = (function() {
       return d.y2;
     }).attr('stroke-width', 1).attr('stroke', 'black');
     this.svg.selectAll('.dim-marker-label').remove();
-    ml = this.svg.selectAll('.dim-marker-label').data(axisArrays.axisLeaderLabel).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
+    markerLabels = this.svg.selectAll('.dim-marker-label').data(axisArrays.axisLeaderLabel).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
       return d.x;
     }).attr('y', function(d) {
       return d.y;
@@ -272,20 +273,23 @@ RectPlot = (function() {
       return d.anchor;
     });
     this.maxTextWidthOfDimensionMarkerLabels = 0;
-    initWidth = this.axisDimensionTextWidth;
-    initHeight = this.axisDimensionTextHeight;
-    i = 0;
-    while (i < ml[0].length) {
-      bb = ml[0][i].getBBox();
+    initAxisTextWidth = this.axisDimensionTextWidth;
+    initAxisTextHeight = this.axisDimensionTextHeight;
+    _ref = markerLabels[0];
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      markerLabel = _ref[i];
+      bb = markerLabel.getBBox();
       if (this.axisDimensionTextWidth < bb.width) {
         this.axisDimensionTextWidth = bb.width;
       }
       if (this.axisDimensionTextHeight < bb.height) {
         this.axisDimensionTextHeight = bb.height;
       }
-      i++;
+      if (this.width < bb.x + bb.width) {
+        this.axisDimensionTextRightPadding = bb.width / 2;
+      }
     }
-    if (initWidth !== this.axisDimensionTextWidth || initHeight !== this.axisDimensionTextHeight) {
+    if (initAxisTextWidth !== this.axisDimensionTextWidth || initAxisTextHeight !== this.axisDimensionTextHeight) {
       this.setDim(this.svg, this.width, this.height);
       return reject(this);
     }
@@ -339,7 +343,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function(reject) {
-    var drag, legendBubbleTitleSvg, legendDraggedPtsLab, legendFontSize, legendGroupsLab, legendLabelDragAndDrop;
+    var drag, legendBubbleTitleSvg, legendFontSize, legendLabelDragAndDrop;
     this.data.setupLegendGroupsAndPts();
     legendLabelDragAndDrop = (function(_this) {
       return function() {
@@ -404,7 +408,7 @@ RectPlot = (function() {
         }).attr('y', function(d) {
           return d.y - (legendFontSize * 1.5);
         }).attr('text-anchor', 'middle').attr('font-family', this.legendFontFamily).attr('font-weight', 'bold').attr('fill', this.legendFontColor).text(this.zTitle);
-        SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle.length, this.data.legendBubblesTitle, legendBubbleTitleSvg);
+        SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg);
       }
       this.svg.selectAll('.legend-groups-pts').remove();
       this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
@@ -449,10 +453,8 @@ RectPlot = (function() {
           return d.text;
         }
       }).call(drag);
-      legendGroupsLab = this.svg.selectAll('.legend-groups-text');
-      legendDraggedPtsLab = this.svg.selectAll('.legend-dragged-pts-text');
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups.length, this.data.legendGroups, legendGroupsLab);
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts.length, this.data.legendPts, legendDraggedPtsLab);
+      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
+      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
       if (this.data.resizedAfterLegendGroupsDrawn()) {
         return reject(this);
       }
@@ -600,7 +602,7 @@ RectPlot = (function() {
         return d.fontSize;
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.len, this.data.lab, labels_svg);
+      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log("Running label placement algorithm...");
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
@@ -613,24 +615,23 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLinks = function() {
-    var ancBorderPt, i, links, newLinkPt, utils;
-    utils = LinkUtils.get();
+    var ancBorderPt, i, links, newLinkPt, pt, _i, _len, _ref;
     links = [];
-    i = 0;
-    while (i < this.data.len) {
-      newLinkPt = utils.getNewPtOnLabelBorder(this.data.lab[i], this.data.pts[i], this.data.pts);
+    _ref = this.data.pts;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      pt = _ref[i];
+      newLinkPt = LinkUtils.get().getNewPtOnLabelBorder(this.data.lab[i], pt, this.data.pts);
       if (newLinkPt != null) {
-        ancBorderPt = utils.getPtOnAncBorder(this.data.pts[i].x, this.data.pts[i].y, this.data.pts[i].r, newLinkPt[0], newLinkPt[1]);
+        ancBorderPt = LinkUtils.get().getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
         links.push({
           x1: ancBorderPt[0],
           y1: ancBorderPt[1],
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
-          color: this.data.pts[i].color
+          color: pt.color
         });
       }
-      i++;
     }
     return this.svg.selectAll('.link').data(links).enter().append('line').attr('class', 'link').attr('x1', function(d) {
       return d.x1;

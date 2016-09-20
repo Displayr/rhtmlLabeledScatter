@@ -18,19 +18,16 @@ SvgUtils = (function() {
   SU = (function() {
     function SU() {}
 
-    SU.prototype.setSvgBBoxWidthAndHeight = function(arrayLen, dataArray, svgArray) {
-      var i;
-      i = 0;
-      while (i < arrayLen) {
-        dataArray[i].width = svgArray[0][i].getBBox().width;
-        dataArray[i].height = svgArray[0][i].getBBox().height;
-        i++;
+    SU.prototype.setSvgBBoxWidthAndHeight = function(dataArray, svgArray) {
+      var dataElem, i, _i, _len, _results;
+      _results = [];
+      for (i = _i = 0, _len = dataArray.length; _i < _len; i = ++_i) {
+        dataElem = dataArray[i];
+        dataElem.width = svgArray[0][i].getBBox().width;
+        _results.push(dataElem.height = svgArray[0][i].getBBox().height);
       }
+      return _results;
     };
-
-    SU.prototype.getSvgTextArrayMaxHeight = function(svg) {};
-
-    SU.prototype.getAxisMarkerTextMaxWidth = function() {};
 
     return SU;
 
