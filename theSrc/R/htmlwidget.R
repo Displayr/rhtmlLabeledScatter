@@ -47,9 +47,9 @@
 #' @param y.prefix A string that prefixes all y values(eg. "$")
 #' @param x.prefix A string that prefixes all x values(eg. "$")
 #' @param z.prefix A string that prefixes all bubble values(eg. "$")
-#' @param y.prefix A string that prefixes all y values(eg. "%")
-#' @param x.prefix A string that prefixes all x values(eg. "%")
-#' @param z.prefix A string that prefixes all bubble values(eg. "%")
+#' @param y.suffix A string that suffixes all y values(eg. "%")
+#' @param x.suffix A string that suffixes all x values(eg. "%")
+#' @param z.suffix A string that suffixes all bubble values(eg. "%")
 #' @param point.radius Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.
 #' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting on the x axis
 #' @param x.bounds.maximum Integer or NULL; set minimum of range for plotting on the x axis

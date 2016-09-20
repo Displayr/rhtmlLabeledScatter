@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, xPrefix, yPrefix, xSuffix, ySuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -17,12 +17,15 @@ RectPlot = (function() {
     this.colors = colors;
     this.originAlign = originAlign;
     this.showLabels = showLabels != null ? showLabels : true;
-    this.xDecimals = xDecimals;
-    this.yDecimals = yDecimals;
-    this.xPrefix = xPrefix;
-    this.yPrefix = yPrefix;
+    this.xDecimals = xDecimals != null ? xDecimals : null;
+    this.yDecimals = yDecimals != null ? yDecimals : null;
+    this.zDecimals = zDecimals != null ? zDecimals : null;
+    this.xPrefix = xPrefix != null ? xPrefix : '';
+    this.yPrefix = yPrefix != null ? yPrefix : '';
+    this.zPrefix = zPrefix != null ? zPrefix : '';
     this.xSuffix = xSuffix != null ? xSuffix : '';
     this.ySuffix = ySuffix != null ? ySuffix : '';
+    this.zSuffix = zSuffix != null ? zSuffix : '';
     this.legendShow = legendShow;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
@@ -335,19 +338,8 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function(reject) {
-    var drag, getSuperscript, legendBubbleTitleSvg, legendDraggedPtsLab, legendFontSize, legendGroupsLab, legendLabelDragAndDrop, superscript;
+    var drag, legendBubbleTitleSvg, legendDraggedPtsLab, legendFontSize, legendGroupsLab, legendLabelDragAndDrop;
     this.data.setupLegendGroupsAndPts();
-    superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313];
-    getSuperscript = function(id) {
-      var digit, ss;
-      ss = '';
-      while (id > 0) {
-        digit = id % 10;
-        ss = String.fromCharCode(superscript[id % 10]) + ss;
-        id = (id - digit) / 10;
-      }
-      return ss;
-    };
     legendLabelDragAndDrop = (function(_this) {
       return function() {
         var data, dragEnd, dragMove, dragStart, plot;
@@ -451,7 +443,7 @@ RectPlot = (function() {
         return d.color;
       }).text(function(d) {
         if (d.markerId != null) {
-          return getSuperscript(d.markerId + 1) + d.text;
+          return Utils.get().getSuperscript(d.markerId + 1) + d.text;
         } else {
           return d.text;
         }
@@ -481,9 +473,15 @@ RectPlot = (function() {
       return d.fillOpacity;
     });
     if (Utils.get().isArr(this.Z)) {
-      return anc.append('title').text(function(d) {
-        return "" + d.label + "\n" + d.labelZ + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
-      });
+      return anc.append('title').text((function(_this) {
+        return function(d) {
+          var xlabel, ylabel, zlabel;
+          xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
+          ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
+          zlabel = Utils.get().getFormattedNum(d.labelZ, _this.zDecimals, _this.zPrefix, _this.zSuffix);
+          return "" + d.label + "\n" + zlabel + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
+        };
+      })(this));
     } else {
       return anc.append('title').text(function(d) {
         return "" + d.label + "\n" + d.group + "\n[" + d.labelX + ", " + d.labelY + "]";
