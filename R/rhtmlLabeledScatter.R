@@ -8,7 +8,7 @@
 #' @param Z is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional
 #' @param label is the array of text labels for the data set
 #' @param group is the array of group name for each data point
-#' @param fixed.aspect Default to FALSE.
+#' @param fixed.aspect Default to FALSE. Cannot be guarenteed if any of the axis bounds are set.
 #' @param colors is the color wheel to be used when plotting the data points. Defaults to Q color wheel.
 #' @param grid Defaults to TRUE. Shows the grid lines.
 #' @param origin Defaults to FALSE. Shows the origin lines as dotted if not along axis.
@@ -47,7 +47,16 @@
 #' @param y.prefix A string that prefixes all y values(eg. "$")
 #' @param x.prefix A string that prefixes all x values(eg. "$")
 #' @param z.prefix A string that prefixes all bubble values(eg. "$")
+#' @param y.prefix A string that prefixes all y values(eg. "%")
+#' @param x.prefix A string that prefixes all x values(eg. "%")
+#' @param z.prefix A string that prefixes all bubble values(eg. "%")
 #' @param point.radius Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.
+#' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting on the x axis
+#' @param x.bounds.maximum Integer or NULL; set minimum of range for plotting on the x axis
+#' @param y.bounds.minimum Integer or NULL; set minimum of range for plotting on the y axis
+#' @param y.bounds.maximum Integer or NULL; set minimum of range for plotting on the y axis
+#' @param x.bounds.units.major Integer or NULL; set the distance between each tick mark on the x axis.
+#' @param y.bounds.units.major Integer or NULL; set the distance between each tick mark on the y axis.
 #'
 #' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
@@ -79,6 +88,9 @@ LabeledScatter <- function(
   x.prefix = "",
   y.prefix = "",
   z.prefix = "",
+  x.suffix = "",
+  y.suffix = "",
+  z.suffix = "",
   title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title.font.size = 16,
@@ -99,6 +111,12 @@ LabeledScatter <- function(
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   x.title.font.family = "Arial",
   x.title.font.size = 12,
+  x.bounds.minimum = NULL,
+  x.bounds.maximum = NULL,
+  y.bounds.minimum = NULL,
+  y.bounds.maximum = NULL,
+  x.bounds.units.major = NULL,
+  y.bounds.units.major = NULL,
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial",
   tooltip.title.font.size = 10,
@@ -128,6 +146,9 @@ LabeledScatter <- function(
     xPrefix = x.prefix,
     yPrefix = y.prefix,
     zPrefix = z.prefix,
+    xSuffix = x.suffix,
+    ySuffix = y.suffix,
+    zSuffix = z.suffix,
     titleFontFamily = title.font.family,
     titleFontColor = title.font.color,
     titleFontSize = title.font.size,
@@ -151,7 +172,13 @@ LabeledScatter <- function(
     tooltipTitleFontColor = tooltip.title.font.color,
     toolTipTitleFontFamily = tooltip.title.font.family,
     tooltipTitleFontSize = tooltip.title.font.size,
-    pointRadius = point.radius
+    pointRadius = point.radius,
+    xBoundsMinimum = x.bounds.minimum,
+    xBoundsMaximum = x.bounds.maximum,
+    yBoundsMinimum = y.bounds.minimum,
+    yBoundsMaximum = y.bounds.maximum,
+    xBoundsUnitsMajor = x.bounds.units.major,
+    yBoundsUnitsMajor = y.bounds.units.major
   )
 
   htmlwidgets::createWidget(

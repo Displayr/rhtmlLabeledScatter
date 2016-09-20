@@ -69,6 +69,8 @@ class LabeledScatter
                         @data.yDecimals,
                         @data.xPrefix,
                         @data.yPrefix,
+                        @data.xSuffix,
+                        @data.ySuffix,
                         @data.legendShow,
                         @data.legendFontFamily,
                         @data.legendFontSize,
@@ -76,6 +78,12 @@ class LabeledScatter
                         @data.axisFontFamily,
                         @data.axisFontColor,
                         @data.axisFontSize,
-                        @data.pointRadius)
+                        @data.pointRadius,
+                        @data.xBoundsMinimum,
+                        @data.xBoundsMaximum,
+                        @data.yBoundsMinimum,
+                        @data.yBoundsMaximum,
+                        @data.xBoundsUnitsMajor,
+                        @data.yBoundsUnitsMajor)
     @plot.draw(@plot)
     return @

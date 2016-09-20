@@ -23,14 +23,6 @@ class AxisUtils
     _between: (num, min, max) ->
       num >= min and num <= max
 
-    _pushDimensionMarker: (leaderStack, labelStack, type, x1, y1, x2, y2, label, leaderLineLen, labelHeight, xDecimals, yDecimals, xPrefix, yPrefix) ->
-      if type == 'c'
-        leaderStack.push({x1: x1, y1: y2, x2: x1, y2: y2 + leaderLineLen})
-        labelStack.push({x: x1, y: y2 + leaderLineLen + labelHeight, label: xPrefix + label.toFixed(xDecimals), anchor: 'middle'})
-      if type == 'r'
-        leaderStack.push({x1: x1 - leaderLineLen, y1: y1, x2: x1, y2: y2})
-        labelStack.push({x: x1 - leaderLineLen, y: y2 + labelHeight/3, label: yPrefix + label.toFixed(yDecimals), anchor: 'end'})
-
     _normalizeXCoords: (data, Xcoord) ->
       viewBoxDim = data.viewBoxDim
       (Xcoord-data.minX)/(data.maxX - data.minX)*viewBoxDim.width + viewBoxDim.x
@@ -43,12 +35,57 @@ class AxisUtils
       # exit if all points have been dragged off plot
       return unless data.len > 0
 
+      pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
+        leaderLineLen = plot.axisLeaderLineLength
+        labelHeight = plot.axisDimensionTextHeight
+        xDecimals = plot.xDecimals
+        yDecimals = plot.yDecimals
+        xPrefix = plot.xPrefix
+        yPrefix = plot.yPrefix
+        xSuffix = plot.xSuffix
+        ySuffix = plot.ySuffix
+
+        if type == 'c'
+          displayedLabel =
+          dimensionMarkerLeaderStack.push({
+            x1: x1
+            y1: y2
+            x2: x1
+            y2: y2 + leaderLineLen
+          })
+          dimensionMarkerLabelStack.push({
+            x: x1
+            y: y2 + leaderLineLen + labelHeight
+            label: xPrefix + label.toFixed(xDecimals) + xSuffix
+            anchor: 'middle'
+          })
+
+        if type == 'r'
+          dimensionMarkerLeaderStack.push({
+            x1: x1 - leaderLineLen
+            y1: y1
+            x2: x1
+            y2: y2
+          })
+          dimensionMarkerLabelStack.push({
+            x: x1 - leaderLineLen
+            y: y2 + labelHeight/3
+            label: yPrefix + label.toFixed(yDecimals) + ySuffix
+            anchor: 'end'
+          })
+
       dimensionMarkerStack = []
       dimensionMarkerLeaderStack = []
       dimensionMarkerLabelStack = []
 
-      ticksX = @_getTickRange(data.maxX, data.minX)
-      ticksY = @_getTickRange(data.maxY, data.minY)
+      ticksX = if Utils.get().isNum(plot.xBoundsUnitsMajor)
+                 ticksX = plot.xBoundsUnitsMajor / 2
+               else
+                 @_getTickRange(data.maxX, data.minX)
+      ticksY = if Utils.get().isNum(plot.yBoundsUnitsMajor)
+                 ticksY = plot.yBoundsUnitsMajor / 2
+               else
+                 @_getTickRange(data.maxY, data.minY)
 
       originAxis = []
       oax_y = @_normalizeYCoords data,  0
@@ -59,7 +96,7 @@ class AxisUtils
           x2: viewBoxDim.x + viewBoxDim.width
           y2: oax_y
         }
-        @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+        pushDimensionMarker 'r', oax.x1, oax.y1, oax.x2, oax.y2, 0
         originAxis.push(oax) unless (data.minY is 0) or (data.maxY is 0)
 
       oay_x = @_normalizeXCoords data,  0
@@ -70,7 +107,7 @@ class AxisUtils
           x2: oay_x
           y2: viewBoxDim.y + viewBoxDim.height
         }
-        @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+        pushDimensionMarker 'c', oay.x1, oay.y1, oay.x2, oay.y2, 0
         originAxis.push(oay) unless (data.minX is 0) or (data.maxX is 0)
 
 
@@ -103,7 +140,7 @@ class AxisUtils
           y2 = viewBoxDim.y + viewBoxDim.height
           dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
           if i % 2
-            @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+            pushDimensionMarker 'c', x1, y1, x2, y2, val
 
         if i < colsNegative
           val = -(i+1)*ticksX
@@ -113,7 +150,7 @@ class AxisUtils
           y2 = viewBoxDim.y + viewBoxDim.height
           dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
           if i % 2
-            @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'c', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+            pushDimensionMarker 'c', x1, y1, x2, y2, val
         i++
 
       i = 0
@@ -127,7 +164,7 @@ class AxisUtils
           y2 = @_normalizeYCoords data,  val
           dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
           if i % 2
-            @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+            pushDimensionMarker 'r', x1, y1, x2, y2, val
 
         if i < rowsNegative
           val = (i+1)*ticksY
@@ -139,7 +176,7 @@ class AxisUtils
           y2 = @_normalizeYCoords data,  val
           dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
           if i % 2
-            @_pushDimensionMarker dimensionMarkerLeaderStack, dimensionMarkerLabelStack, 'r', x1, y1, x2, y2, val, plot.axisLeaderLineLength, plot.axisDimensionTextHeight, plot.xDecimals, plot.yDecimals, plot.xPrefix, plot.yPrefix
+            pushDimensionMarker 'r', x1, y1, x2, y2, val
         i++
 
       return {
