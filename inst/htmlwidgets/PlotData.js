@@ -4,7 +4,7 @@ var PlotData,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 PlotData = (function() {
-  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds) {
+  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency) {
     var legendUtils;
     this.X = X;
     this.Y = Y;
@@ -18,6 +18,7 @@ PlotData = (function() {
     this.originAlign = originAlign;
     this.pointRadius = pointRadius;
     this.bounds = bounds;
+    this.transparency = transparency;
     this.removeElemFromLegend = __bind(this.removeElemFromLegend, this);
     this.moveElemToLegend = __bind(this.moveElemToLegend, this);
     this.isLegendPtOutsideViewBox = __bind(this.isLegendPtOutsideViewBox, this);
@@ -235,7 +236,7 @@ PlotData = (function() {
           legendUtils = LegendUtils.get();
           r = legendUtils.normalizedZtoRadius(this.viewBoxDim, this.normZ[i]);
         }
-        fillOpacity = Utils.get().isArr(this.Z) ? 0.3 : 1;
+        fillOpacity = this.plotColors.getFillOpacity(this.transparency);
         label = this.label[i];
         labelZ = Utils.get().isArr(this.Z) ? this.Z[i].toString() : '';
         fontSize = this.viewBoxDim.labelFontSize;

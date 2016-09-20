@@ -6,6 +6,7 @@ PlotColors = (function() {
   function PlotColors(plotData) {
     var group, i, newColor;
     this.plotData = plotData;
+    this.getFillOpacity = __bind(this.getFillOpacity, this);
     this.getColor = __bind(this.getColor, this);
     this.getNewColor = __bind(this.getNewColor, this);
     this.getColorFromGroup = __bind(this.getColorFromGroup, this);
@@ -46,6 +47,16 @@ PlotColors = (function() {
       return this.getColorFromGroup(this.plotData.group[i]);
     } else {
       return this.getNewColor(0);
+    }
+  };
+
+  PlotColors.prototype.getFillOpacity = function(transparency) {
+    if (Utils.get().isNum(transparency)) {
+      return transparency;
+    } else if (Utils.get().isArr(this.plotData.Z)) {
+      return 0.3;
+    } else {
+      return 1;
     }
   };
 

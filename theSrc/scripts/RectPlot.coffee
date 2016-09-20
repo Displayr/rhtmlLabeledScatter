@@ -14,6 +14,7 @@ class RectPlot
                 @zTitle = '',
                 title,
                 @colors,
+                @transparency,
                 grid,
                 origin,
                 @originAlign,
@@ -161,7 +162,8 @@ class RectPlot
                          @fixedRatio,
                          @originAlign,
                          @pointRadius,
-                         @bounds)
+                         @bounds,
+                         @transparency)
 
   draw: =>
     dimensionMarkerPromise = new Promise (resolve, reject) =>
@@ -523,7 +525,10 @@ class RectPlot
            "#{d.label}\n#{zlabel}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
     else
       anc.append('title')
-         .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
+         .text((d) =>
+           xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
+           ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
+           "#{d.label}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
 
   drawDraggedMarkers: =>
     @svg.selectAll('.marker').remove()

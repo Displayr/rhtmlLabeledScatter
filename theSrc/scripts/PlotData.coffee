@@ -12,7 +12,8 @@ class PlotData
                 @fixedAspectRatio,
                 @originAlign,
                 @pointRadius,
-                @bounds) ->
+                @bounds,
+                @transparency) ->
 
     @origX = @X.slice(0)
     @origY = @Y.slice(0)
@@ -207,7 +208,7 @@ class PlotData
         if Utils.get().isArr(@Z)
           legendUtils = LegendUtils.get()
           r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
-        fillOpacity = if Utils.get().isArr(@Z) then 0.3 else 1
+        fillOpacity = @plotColors.getFillOpacity(@transparency)
         label = @label[i]
         labelZ = if Utils.get().isArr(@Z) then @Z[i].toString() else ''
         fontSize = @viewBoxDim.labelFontSize

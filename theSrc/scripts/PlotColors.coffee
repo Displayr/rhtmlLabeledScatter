@@ -36,3 +36,11 @@ class PlotColors
        @getColorFromGroup(@plotData.group[i])
      else
        @getNewColor(0) # takes the first color in the color wheel since all pts in same grp
+
+  getFillOpacity: (transparency) =>
+    if Utils.get().isNum(transparency)
+      transparency
+    else if Utils.get().isArr(@plotData.Z)
+      0.3 # If data has a Z dimension, then default to 0.3 (semi-transparent)
+    else
+      1 # If data has no Z dimension, then default to 1 (opaque)

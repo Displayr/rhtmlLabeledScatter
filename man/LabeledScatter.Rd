@@ -133,6 +133,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{height}{is the height of the plot. Defaults to the max of window}
 
+\item{color.transparency}{Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z}
+
 \item{title.font}{size is the font size of the plot title}
 
 \item{tooltip.font.color}{is the font color of the tooltips}

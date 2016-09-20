@@ -163,7 +163,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            pushDimensionMarker('c', x1, y1, x2, y2, val);
+            pushDimensionMarker('c', x1, y1, x2, y2, val.toPrecision(14));
           }
         }
         if (i < colsNegative) {
@@ -179,7 +179,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            pushDimensionMarker('c', x1, y1, x2, y2, val);
+            pushDimensionMarker('c', x1, y1, x2, y2, val.toPrecision(14));
           }
         }
         i++;
@@ -200,7 +200,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            pushDimensionMarker('r', x1, y1, x2, y2, val);
+            pushDimensionMarker('r', x1, y1, x2, y2, val.toPrecision(14));
           }
         }
         if (i < rowsNegative) {
@@ -219,7 +219,7 @@ AxisUtils = (function() {
             y2: y2
           });
           if (i % 2) {
-            pushDimensionMarker('r', x1, y1, x2, y2, val);
+            pushDimensionMarker('r', x1, y1, x2, y2, val.toPrecision(14));
           }
         }
         i++;
