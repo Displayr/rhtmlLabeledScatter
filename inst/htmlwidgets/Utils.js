@@ -26,6 +26,22 @@ Utils = (function() {
       return (arr != null) && arr instanceof Array;
     };
 
+    U.prototype.getSuperscript = function(id) {
+      var digit, ss, superscript;
+      superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313];
+      ss = '';
+      while (id > 0) {
+        digit = id % 10;
+        ss = String.fromCharCode(superscript[id % 10]) + ss;
+        id = (id - digit) / 10;
+      }
+      return ss;
+    };
+
+    U.prototype.getFormattedNum = function(num, decimals, prefix, suffix) {
+      return prefix + (new BigNumber(num)).toFormat(decimals) + suffix;
+    };
+
     return U;
 
   })();

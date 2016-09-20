@@ -30,12 +30,15 @@ class RectPlot
                 labelsFontFamily,
                 labelsFontSize,
                 labelsFontColor,
-                @xDecimals,
-                @yDecimals,
-                @xPrefix,
-                @yPrefix,
+                @xDecimals = null,
+                @yDecimals = null,
+                @zDecimals = null,
+                @xPrefix = '',
+                @yPrefix = '',
+                @zPrefix = '',
                 @xSuffix = '',
                 @ySuffix = '',
+                @zSuffix = '',
                 @legendShow,
                 @legendFontFamily,
                 @legendFontSize,
@@ -361,16 +364,6 @@ class RectPlot
   drawLegend: (reject) =>
     @data.setupLegendGroupsAndPts()
 
-    superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] # '⁰¹²³⁴⁵⁶⁷⁸⁹'
-
-    getSuperscript = (id) ->
-      ss = ''
-      while id > 0
-        digit = id % 10
-        ss = String.fromCharCode(superscript[id % 10]) + ss
-        id = (id - digit)/10
-      ss
-
     legendLabelDragAndDrop = =>
       plot = @
       data = @data
@@ -497,7 +490,7 @@ class RectPlot
                .attr('font-size', @legendFontSize)
                .attr('text-anchor', (d) -> d.anchor)
                .attr('fill', (d) -> d.color)
-               .text((d) -> if d.markerId? then getSuperscript(d.markerId+1) + d.text else d.text)
+               .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
                .call(drag)
 
       legendGroupsLab = @svg.selectAll('.legend-groups-text')
@@ -523,7 +516,11 @@ class RectPlot
              .attr('fill-opacity', (d) -> d.fillOpacity)
     if Utils.get().isArr(@Z)
       anc.append('title')
-         .text((d) -> "#{d.label}\n#{d.labelZ}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
+         .text((d) =>
+           xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
+           ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
+           zlabel = Utils.get().getFormattedNum(d.labelZ, @zDecimals, @zPrefix, @zSuffix)
+           "#{d.label}\n#{zlabel}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
     else
       anc.append('title')
          .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")

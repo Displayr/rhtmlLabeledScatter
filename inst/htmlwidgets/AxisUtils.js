@@ -70,7 +70,7 @@ AxisUtils = (function() {
           dimensionMarkerLabelStack.push({
             x: x1,
             y: y2 + leaderLineLen + labelHeight,
-            label: xPrefix + label.toFixed(xDecimals) + xSuffix,
+            label: Utils.get().getFormattedNum(label, xDecimals, xPrefix, xSuffix),
             anchor: 'middle'
           });
         }
@@ -84,7 +84,7 @@ AxisUtils = (function() {
           return dimensionMarkerLabelStack.push({
             x: x1 - leaderLineLen,
             y: y2 + labelHeight / 3,
-            label: yPrefix + label.toFixed(yDecimals) + ySuffix,
+            label: Utils.get().getFormattedNum(label, yDecimals, yPrefix, ySuffix),
             anchor: 'end'
           });
         }

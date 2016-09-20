@@ -71,6 +71,12 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{z.prefix}{A string that prefixes all bubble values(eg. "$")}
 
+\item{x.suffix}{A string that suffixes all x values(eg. "%")}
+
+\item{y.suffix}{A string that suffixes all y values(eg. "%")}
+
+\item{z.suffix}{A string that suffixes all bubble values(eg. "%")}
+
 \item{title.font.family}{is the font family of the plot title}
 
 \item{title.font.color}{is the font color of the plot title}
@@ -134,12 +140,6 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{tooltip.font.family}{is the font family of the tooltips}
 
 \item{tooltip.font.size}{is the font size of the tooltips}
-
-\item{y.prefix}{A string that prefixes all y values(eg. "%")}
-
-\item{x.prefix}{A string that prefixes all x values(eg. "%")}
-
-\item{z.prefix}{A string that prefixes all bubble values(eg. "%")}
 }
 \description{
 A HTMLWidget that creates a labeled scatter plot.

@@ -12,6 +12,7 @@ dependencies:
      - rHtmlSvgWidget.js
      - labeler.js
      - bluebird.min.js
+     - bignumber.min.js
 
  - name: Local
    version: 0.0.1
