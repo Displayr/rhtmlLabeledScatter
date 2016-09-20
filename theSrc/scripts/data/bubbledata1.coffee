@@ -257,3 +257,4 @@ bubble1 =
   xBoundsMaximum: 78
   xBoundsUnitsMajor: 10
   yBoundsUnitsMajor: 20
+  # transparency: 0.5

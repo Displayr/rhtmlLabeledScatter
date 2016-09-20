@@ -10,6 +10,7 @@
 #' @param group is the array of group name for each data point
 #' @param fixed.aspect Default to FALSE. Cannot be guarenteed if any of the axis bounds are set.
 #' @param colors is the color wheel to be used when plotting the data points. Defaults to Q color wheel.
+#' @param color.transparency Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z
 #' @param grid Defaults to TRUE. Shows the grid lines.
 #' @param origin Defaults to FALSE. Shows the origin lines as dotted if not along axis.
 #' @param origin.align Defaults to FALSE. Aligns the origin lines as closely to axis as possible.
@@ -133,6 +134,7 @@ LabeledScatter <- function(
     group = jsonlite::toJSON(group),
     fixedAspectRatio = fixed.aspect,
     colors = jsonlite::toJSON(colors),
+    transparency = color.transparency,
     grid = grid,
     origin = origin,
     originAlign = origin.align,
