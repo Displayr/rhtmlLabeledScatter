@@ -171,48 +171,48 @@ bubble1 =
     26832215
   ],
 
-  # group: [
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Middle East'
-  #   'Middle East'
-  #   'Middle East'
-  #   'Middle East'
-  #   'Middle East'
-  #   'Middle East'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  #   'Asia'
-  # ]
+  group: [
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Middle East'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+    'Asia'
+  ]
 
   xTitle: "Men's life expectancy",
   yTitle: "Women's life expectancy",
@@ -247,8 +247,8 @@ bubble1 =
   legendFontSize: 16,
   legendFontColor: 'black'
   yBoundsMaximum: 85
-  # yBoundsMinimum: 65
+  yBoundsMinimum: 65
   xBoundsMinimum: 63
   xBoundsMaximum: 78
-  xBoundsUnitsMajor: 2
-  yBoundsUnitsMajor: 2
+  xBoundsUnitsMajor: 10
+  yBoundsUnitsMajor: 20

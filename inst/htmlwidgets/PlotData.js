@@ -354,7 +354,7 @@ PlotData = (function() {
       }
       return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legendDim.cols);
     } else {
-      return this.setLegendItemsPositions(this, this.legendGroups.length, this.legendGroups, this.legendDim.cols);
+      return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legendDim.cols);
     }
   };
 
@@ -381,7 +381,7 @@ PlotData = (function() {
     this.legendDim.colSpace = maxTextWidth;
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    this.setupLegendGroupsAndPts(this);
+    this.setupLegendGroupsAndPts();
     return initWidth !== this.viewBoxDim.width;
   };
 
@@ -428,7 +428,7 @@ PlotData = (function() {
     this.outsidePlotPtsId.push(id);
     this.normalizeData();
     this.calcDataArrays();
-    return this.setupLegendGroupsAndPts(this);
+    return this.setupLegendGroupsAndPts();
   };
 
   PlotData.prototype.removeElemFromLegend = function(id) {
@@ -447,7 +447,7 @@ PlotData = (function() {
     });
     this.normalizeData();
     this.calcDataArrays();
-    return this.setupLegendGroupsAndPts(this);
+    return this.setupLegendGroupsAndPts();
   };
 
   return PlotData;

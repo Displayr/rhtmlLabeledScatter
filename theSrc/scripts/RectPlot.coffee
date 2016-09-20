@@ -114,7 +114,7 @@ class RectPlot
 
     @setDim(@svg, @width, @height)
 
-  setDim: (svg, width, height) ->
+  setDim: (svg, width, height) =>
     @svg = svg
     @title.x = width/2
     @legendDim =
@@ -160,27 +160,27 @@ class RectPlot
                          @pointRadius,
                          @bounds)
 
-  draw: (plot) ->
-    dimensionMarkerPromise = new Promise (resolve, reject) ->
-      plot.drawDimensionMarkers(reject)
+  draw: =>
+    dimensionMarkerPromise = new Promise (resolve, reject) =>
+      @drawDimensionMarkers(reject)
       resolve()
-    legendPromise = new Promise (resolve, reject) ->
-      plot.drawLegend(plot, plot.data, reject)
+    legendPromise = new Promise (resolve, reject) =>
+      @drawLegend(reject)
       resolve()
 
     resizePromises = [dimensionMarkerPromise, legendPromise]
-    Promise.all(resizePromises).then(() ->
+    Promise.all(resizePromises).then(() =>
 
-      plot.data.normalizeData()
-      plot.data.calcDataArrays()
-      plot.title.x = plot.viewBoxDim.x + plot.viewBoxDim.width/2
+      @data.normalizeData()
+      @data.calcDataArrays()
+      @title.x = @viewBoxDim.x + @viewBoxDim.width/2
 
-      plot.drawTitle()
-      plot.drawAnc(plot.data)
-      plot.drawLabs(plot)
-      plot.drawDraggedMarkers(plot.data)
-      plot.drawRect()
-      plot.drawAxisLabels()
+      @drawTitle()
+      @drawAnc()
+      @drawLabs()
+      @drawDraggedMarkers()
+      @drawRect()
+      @drawAxisLabels()
     ).catch((resizedPlot) ->
       #For debugging
       console.log resizedPlot if resizedPlot instanceof Error
@@ -190,7 +190,7 @@ class RectPlot
     )
 
 
-  drawTitle: ->
+  drawTitle: =>
     if @title.text != ''
       @svg.selectAll('.plot-title').remove()
       @svg.append('text')
@@ -204,7 +204,7 @@ class RectPlot
           .attr('font-weight', @title.fontWeight)
           .text(@title.text)
 
-  drawRect: ->
+  drawRect: =>
     @svg.selectAll('.plot-viewbox').remove()
     @svg.append('rect')
         .attr('class', 'plot-viewbox')
@@ -311,7 +311,7 @@ class RectPlot
       @setDim(@svg, @width, @height)
       reject(@)
 
-  drawAxisLabels: ->
+  drawAxisLabels: =>
     axisLabels = [
       { # x axis label
         x: @viewBoxDim.x + @viewBoxDim.width/2
@@ -358,8 +358,8 @@ class RectPlot
              .style('font-weight', 'bold')
              .style('display', (d) -> d.display)
 
-  drawLegend: (plot, data, reject)->
-    data.setupLegendGroupsAndPts(data)
+  drawLegend: (reject) =>
+    @data.setupLegendGroupsAndPts()
 
     superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] # '⁰¹²³⁴⁵⁶⁷⁸⁹'
 
@@ -371,29 +371,31 @@ class RectPlot
         id = (id - digit)/10
       ss
 
-    legendLabelDragAndDrop = (plot, data) ->
+    legendLabelDragAndDrop = =>
+      plot = @
+      data = @data
       dragStart = ->
 
       dragMove = ->
-        d3.select(this)
-        .attr('x', d3.select(this).x = d3.event.x)
-        .attr('y', d3.select(this).y = d3.event.y)
+        d3.select(@)
+        .attr('x', d3.select(@).x = d3.event.x)
+        .attr('y', d3.select(@).y = d3.event.y)
 
         # Save the new location of text so links can be redrawn
-        id = d3.select(this).attr('id').split('legend-')[1]
+        id = d3.select(@).attr('id').split('legend-')[1]
         legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
         legendPt.lab.x = d3.event.x
         legendPt.lab.y = d3.event.y
 
       dragEnd = ->
-        id = Number(d3.select(this).attr('id').split('legend-')[1])
+        id = Number(d3.select(@).attr('id').split('legend-')[1])
         legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
         if plot.data.isLegendPtOutsideViewBox(legendPt.lab)
-          d3.select(this)
-            .attr('x', d3.select(this).x = legendPt.x)
-            .attr('y', d3.select(this).y = legendPt.y)
+          d3.select(@)
+            .attr('x', d3.select(@).x = legendPt.x)
+            .attr('y', d3.select(@).y = legendPt.y)
         else
-          plot.elemDraggedOnPlot(plot, id)
+          plot.elemDraggedOnPlot(id)
 
 
       d3.behavior.drag()
@@ -411,7 +413,7 @@ class RectPlot
       if Utils.get().isArr(@Z)
         @svg.selectAll('.legend-bubbles').remove()
         @svg.selectAll('.legend-bubbles')
-            .data(data.legendBubbles)
+            .data(@data.legendBubbles)
             .enter()
             .append('circle')
             .attr('class', 'legend-bubbles')
@@ -424,7 +426,7 @@ class RectPlot
 
       @svg.selectAll('.legend-bubbles-labels').remove()
       @svg.selectAll('.legend-bubbles-labels')
-          .data(data.legendBubbles)
+          .data(@data.legendBubbles)
           .enter()
           .append('text')
           .attr('class', 'legend-bubbles-labels')
@@ -440,7 +442,7 @@ class RectPlot
         legendFontSize = @legendFontSize
         @svg.selectAll('.legend-bubbles-title').remove()
         legendBubbleTitleSvg = @svg.selectAll('.legend-bubbles-title')
-            .data(data.legendBubblesTitle)
+            .data(@data.legendBubblesTitle)
             .enter()
             .append('text')
             .attr('class', 'legend-bubbles-title')
@@ -452,11 +454,11 @@ class RectPlot
             .attr('fill', @legendFontColor)
             .text @zTitle
 
-        SvgUtils.get().setSvgBBoxWidthAndHeight data.legendBubblesTitle.length, data.legendBubblesTitle, legendBubbleTitleSvg
+        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle.length, @data.legendBubblesTitle, legendBubbleTitleSvg
 
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
-               .data(data.legendGroups)
+               .data(@data.legendGroups)
                .enter()
                .append('circle')
                .attr('class', 'legend-groups-pts')
@@ -469,7 +471,7 @@ class RectPlot
 
       @svg.selectAll('.legend-groups-text').remove()
       @svg.selectAll('.legend-groups-text')
-               .data(data.legendGroups)
+               .data(@data.legendGroups)
                .enter()
                .append('text')
                .attr('class', 'legend-groups-text')
@@ -481,10 +483,10 @@ class RectPlot
                .text((d) -> d.text)
                .attr('text-anchor', (d) -> d.anchor)
 
-      drag = legendLabelDragAndDrop(plot, data)
+      drag = legendLabelDragAndDrop()
       @svg.selectAll('.legend-dragged-pts-text').remove()
       @svg.selectAll('.legend-dragged-pts-text')
-               .data(data.legendPts)
+               .data(@data.legendPts)
                .enter()
                .append('text')
                .attr('class', 'legend-dragged-pts-text')
@@ -501,16 +503,16 @@ class RectPlot
       legendGroupsLab = @svg.selectAll('.legend-groups-text')
       legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
 
-      SvgUtils.get().setSvgBBoxWidthAndHeight data.legendGroups.length, data.legendGroups, legendGroupsLab
-      SvgUtils.get().setSvgBBoxWidthAndHeight data.legendPts.length, data.legendPts, legendDraggedPtsLab
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups.length, @data.legendGroups, legendGroupsLab
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts.length, @data.legendPts, legendDraggedPtsLab
 
-      if data.resizedAfterLegendGroupsDrawn()
-        reject(plot)
+      if @data.resizedAfterLegendGroupsDrawn()
+        reject(@)
 
-  drawAnc: (data) ->
+  drawAnc: =>
     @svg.selectAll('.anc').remove()
     anc = @svg.selectAll('.anc')
-             .data(data.pts)
+             .data(@data.pts)
              .enter()
              .append('circle')
              .attr('class', 'anc')
@@ -526,10 +528,10 @@ class RectPlot
       anc.append('title')
          .text((d) -> "#{d.label}\n#{d.group}\n[#{d.labelX}, #{d.labelY}]")
 
-  drawDraggedMarkers: (data) ->
+  drawDraggedMarkers: =>
     @svg.selectAll('.marker').remove()
     @svg.selectAll('.marker')
-        .data(data.outsidePlotMarkers)
+        .data(@data.outsidePlotMarkers)
         .enter()
         .append('line')
         .attr('class', 'marker')
@@ -542,7 +544,7 @@ class RectPlot
 
     @svg.selectAll('.marker-label').remove()
     @svg.selectAll('.marker-label')
-        .data(data.outsidePlotMarkers)
+        .data(@data.outsidePlotMarkers)
         .enter()
         .append('text')
         .attr('class', 'marker-label')
@@ -550,19 +552,19 @@ class RectPlot
         .attr('y', (d) -> d.markerTextY)
         .attr('font-family', 'Arial')
         .attr('text-anchor', 'start')
-        .attr('font-size', data.legendDim.markerTextSize)
+        .attr('font-size', @data.legendDim.markerTextSize)
         .attr('fill', (d) -> d.color)
         .text((d) -> d.markerLabel)
 
-  elemDraggedOffPlot: (plot, id) ->
-    plot.data.moveElemToLegend(id)
-    plot.resetPlotAfterDragEvent(plot)
+  elemDraggedOffPlot: (id) =>
+    @data.moveElemToLegend(id)
+    @resetPlotAfterDragEvent()
 
-  elemDraggedOnPlot: (plot, id) ->
-    plot.data.removeElemFromLegend(id)
-    plot.resetPlotAfterDragEvent(plot)
+  elemDraggedOnPlot: (id) =>
+    @data.removeElemFromLegend(id)
+    @resetPlotAfterDragEvent()
 
-  resetPlotAfterDragEvent: (plot) ->
+  resetPlotAfterDragEvent: =>
     plotElems = [
        '.plot-viewbox'
        '.origin'
@@ -578,32 +580,33 @@ class RectPlot
      ]
     for elem in plotElems
       @svg.selectAll(elem).remove()
-    plot.draw(plot)
+    @draw()
 
-  drawLabs: (plot) ->
-    labelDragAndDrop = ->
+  drawLabs: =>
+    labelDragAndDrop = =>
+      plot = @
       dragStart = () ->
         plot.svg.selectAll('.link').remove()
 
       dragMove = () ->
-        d3.select(this)
-        .attr('x', d3.select(this).x = d3.event.x)
-        .attr('y', d3.select(this).y = d3.event.y)
+        d3.select(@)
+        .attr('x', d3.select(@).x = d3.event.x)
+        .attr('y', d3.select(@).y = d3.event.y)
 
         # Save the new location of text so links can be redrawn
-        id = d3.select(this).attr('id')
+        id = d3.select(@).attr('id')
         label = _.find plot.data.lab, (l) -> l.id == Number(id)
         label.x = d3.event.x
         label.y = d3.event.y
 
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
-        id = Number(d3.select(this).attr('id'))
+        id = Number(d3.select(@).attr('id'))
         lab = _.find plot.data.lab, (l) -> l.id == id
         if plot.data.isOutsideViewBox(lab)
-          plot.elemDraggedOffPlot(plot, id)
+          plot.elemDraggedOffPlot(id)
         else
-          plot.drawLinks(plot.svg, plot.data)
+          plot.drawLinks()
 
       d3.behavior.drag()
                .origin(() ->
@@ -618,9 +621,9 @@ class RectPlot
 
     if @showLabels
       drag = labelDragAndDrop()
-      plot.svg.selectAll('.lab').remove()
-      plot.svg.selectAll('.lab')
-               .data(plot.data.lab)
+      @svg.selectAll('.lab').remove()
+      @svg.selectAll('.lab')
+               .data(@data.lab)
                .enter()
                .append('text')
                .attr('class', 'lab')
@@ -634,19 +637,19 @@ class RectPlot
                .attr('font-size', (d) -> d.fontSize)
                .call(drag)
 
-      labels_svg = plot.svg.selectAll('.lab')
+      labels_svg = @svg.selectAll('.lab')
 
-      SvgUtils.get().setSvgBBoxWidthAndHeight plot.data.len, plot.data.lab, labels_svg
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.len, @data.lab, labels_svg
 
       console.log "Running label placement algorithm..."
       labeler = d3.labeler()
-                  .svg(plot.svg)
-                  .w1(plot.viewBoxDim.x)
-                  .w2(plot.viewBoxDim.x + plot.viewBoxDim.width)
-                  .h1(plot.viewBoxDim.y)
-                  .h2(plot.viewBoxDim.y + plot.viewBoxDim.height)
-                  .anchor(plot.data.pts)
-                  .label(plot.data.lab)
+                  .svg(@svg)
+                  .w1(@viewBoxDim.x)
+                  .w2(@viewBoxDim.x + @viewBoxDim.width)
+                  .h1(@viewBoxDim.y)
+                  .h2(@viewBoxDim.y + @viewBoxDim.height)
+                  .anchor(@data.pts)
+                  .label(@data.lab)
                   .start(500)
 
       labels_svg.transition()
@@ -654,28 +657,28 @@ class RectPlot
                 .attr('x', (d) -> d.x)
                 .attr('y', (d) -> d.y)
 
-      plot.drawLinks(plot.svg, plot.data)
+      @drawLinks()
 
-  drawLinks: (svg, data) ->
+  drawLinks: =>
     utils = LinkUtils.get()
 
     links = []
     i = 0
-    while i < data.len
-      newLinkPt = utils.getNewPtOnLabelBorder data.lab[i], data.pts[i], data.pts
+    while i < @data.len
+      newLinkPt = utils.getNewPtOnLabelBorder @data.lab[i], @data.pts[i], @data.pts
       if newLinkPt?
-        ancBorderPt = utils.getPtOnAncBorder data.pts[i].x, data.pts[i].y, data.pts[i].r, newLinkPt[0], newLinkPt[1]
+        ancBorderPt = utils.getPtOnAncBorder @data.pts[i].x, @data.pts[i].y, @data.pts[i].r, newLinkPt[0], newLinkPt[1]
         links.push({
           x1: ancBorderPt[0]
           y1: ancBorderPt[1]
           x2: newLinkPt[0]
           y2: newLinkPt[1]
           width: 1
-          color: data.pts[i].color
+          color: @data.pts[i].color
         })
       i++
 
-    svg.selectAll('.link')
+    @svg.selectAll('.link')
              .data(links)
              .enter()
              .append('line')

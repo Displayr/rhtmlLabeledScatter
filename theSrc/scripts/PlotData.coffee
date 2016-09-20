@@ -306,7 +306,7 @@ class PlotData
 
       @setLegendItemsPositions(totalLegendItems, legendItemArray, @legendDim.cols)
     else
-      @setLegendItemsPositions(@, @legendGroups.length, @legendGroups, @legendDim.cols)
+      @setLegendItemsPositions(@legendGroups.length, @legendGroups, @legendDim.cols)
 
   resizedAfterLegendGroupsDrawn: =>
     initWidth = @viewBoxDim.width
@@ -336,7 +336,7 @@ class PlotData
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
-    @setupLegendGroupsAndPts(@)
+    @setupLegendGroupsAndPts()
 
     initWidth != @viewBoxDim.width
 
@@ -382,7 +382,7 @@ class PlotData
     @outsidePlotPtsId.push id
     @normalizeData()
     @calcDataArrays()
-    @setupLegendGroupsAndPts(@)
+    @setupLegendGroupsAndPts()
 
   removeElemFromLegend: (id) =>
     checkId = (e) -> e.id == id
@@ -395,4 +395,4 @@ class PlotData
 
     @normalizeData()
     @calcDataArrays()
-    @setupLegendGroupsAndPts(@)
+    @setupLegendGroupsAndPts()
