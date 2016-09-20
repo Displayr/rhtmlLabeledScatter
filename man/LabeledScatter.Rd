@@ -10,18 +10,18 @@ https://github.com/NumbersInternational/rhtmlLabeledScatter
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   group = NULL, fixed.aspect = FALSE, colors = c("#5B9BD5", "#ED7D31",
   "#A5A5A5", "#1EC000", "#4472C4", "#70AD47", "#255E91", "#9E480E", "#636363",
-  "#997300", "#264478", "#43682B", "#FF2323"), grid = TRUE, origin = TRUE,
-  origin.align = FALSE, y.title = "", x.title = "", z.title = "",
-  title = "", x.decimals = 1, y.decimals = 1, z.decimals = 1,
-  x.prefix = "", y.prefix = "", z.prefix = "", x.suffix = "",
-  y.suffix = "", z.suffix = "", title.font.family = "Arial",
-  title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  title.font.size = 16, labels.show = TRUE, labels.font.family = "Arial",
-  labels.font.color = NULL, labels.font.size = 10, legend.show = TRUE,
-  legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.font.family = "Arial", legend.font.size = 12,
-  y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12,
+  "#997300", "#264478", "#43682B", "#FF2323"), color.transparency = NULL,
+  grid = TRUE, origin = TRUE, origin.align = FALSE, y.title = "",
+  x.title = "", z.title = "", title = "", x.decimals = 1,
+  y.decimals = 1, z.decimals = 1, x.prefix = "", y.prefix = "",
+  z.prefix = "", x.suffix = "", y.suffix = "", z.suffix = "",
+  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title.font.size = 16, labels.show = TRUE,
+  labels.font.family = "Arial", labels.font.color = NULL,
+  labels.font.size = 10, legend.show = TRUE, legend.font.color = rgb(44,
+  44, 44, maxColorValue = 255), legend.font.family = "Arial",
+  legend.font.size = 12, y.title.font.color = rgb(44, 44, 44, maxColorValue
+  = 255), y.title.font.family = "Arial", y.title.font.size = 12,
   axis.font.family = "Arial", axis.font.color = "Black",
   axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
   255), x.title.font.family = "Arial", x.title.font.size = 12,
@@ -46,6 +46,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{fixed.aspect}{Default to FALSE. Cannot be guarenteed if any of the axis bounds are set.}
 
 \item{colors}{is the color wheel to be used when plotting the data points. Defaults to Q color wheel.}
+
+\item{color.transparency}{Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z}
 
 \item{grid}{Defaults to TRUE. Shows the grid lines.}
 
@@ -132,8 +134,6 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{width}{is the width of the plot. Defaults to max of window}
 
 \item{height}{is the height of the plot. Defaults to the max of window}
-
-\item{color.transparency}{Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z}
 
 \item{title.font}{size is the font size of the plot title}
 
