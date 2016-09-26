@@ -80,6 +80,7 @@ class RectPlot
     @axisLeaderLineLength = 5
     @axisDimensionTextHeight = 0 # This is set later
     @axisDimensionTextWidth = 0  # This is set later
+    @axisDimensionTextRightPadding = 0 # Set later, for when axis markers labels protrude (VIS-146)
     @verticalPadding = 5
     @horizontalPadding = 10
 
@@ -139,7 +140,7 @@ class RectPlot
     @viewBoxDim =
       svgWidth:           width
       svgHeight:          height
-      width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight
+      width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight - @axisDimensionTextRightPadding
       height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength - @xTitle.topPadding
       x:                  @horizontalPadding*2 + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
@@ -286,7 +287,7 @@ class RectPlot
              .attr('stroke', 'black')
 
     @svg.selectAll('.dim-marker-label').remove()
-    ml = @svg.selectAll('.dim-marker-label')
+    markerLabels = @svg.selectAll('.dim-marker-label')
              .data(axisArrays.axisLeaderLabel)
              .enter()
              .append('text')
@@ -301,18 +302,19 @@ class RectPlot
 
     # Figure out the max width of the yaxis dimensional labels
     @maxTextWidthOfDimensionMarkerLabels = 0
-    initWidth = @axisDimensionTextWidth
-    initHeight = @axisDimensionTextHeight
-    i = 0
-    while i < ml[0].length
-      bb = ml[0][i].getBBox()
+    initAxisTextWidth = @axisDimensionTextWidth
+    initAxisTextHeight = @axisDimensionTextHeight
+    for markerLabel, i in markerLabels[0]
+      bb = markerLabel.getBBox()
       if @axisDimensionTextWidth < bb.width
         @axisDimensionTextWidth = bb.width
       if @axisDimensionTextHeight < bb.height
         @axisDimensionTextHeight = bb.height
-      i++
+      if @width < bb.x + bb.width
+        @axisDimensionTextRightPadding = bb.width/2
 
-    if initWidth != @axisDimensionTextWidth or initHeight != @axisDimensionTextHeight
+    if initAxisTextWidth != @axisDimensionTextWidth or
+       initAxisTextHeight != @axisDimensionTextHeight
       @setDim(@svg, @width, @height)
       reject(@)
 
@@ -449,7 +451,7 @@ class RectPlot
             .attr('fill', @legendFontColor)
             .text @zTitle
 
-        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle.length, @data.legendBubblesTitle, legendBubbleTitleSvg
+        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
@@ -495,11 +497,9 @@ class RectPlot
                .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
                .call(drag)
 
-      legendGroupsLab = @svg.selectAll('.legend-groups-text')
-      legendDraggedPtsLab = @svg.selectAll('.legend-dragged-pts-text')
-
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups.length, @data.legendGroups, legendGroupsLab
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts.length, @data.legendPts, legendDraggedPtsLab
+      # Height and width are not provided
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
       if @data.resizedAfterLegendGroupsDrawn()
         reject(@)
@@ -641,7 +641,7 @@ class RectPlot
 
       labels_svg = @svg.selectAll('.lab')
 
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.len, @data.lab, labels_svg
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.lab, labels_svg
 
       console.log "Running label placement algorithm..."
       labeler = d3.labeler()
@@ -662,23 +662,19 @@ class RectPlot
       @drawLinks()
 
   drawLinks: =>
-    utils = LinkUtils.get()
-
     links = []
-    i = 0
-    while i < @data.len
-      newLinkPt = utils.getNewPtOnLabelBorder @data.lab[i], @data.pts[i], @data.pts
+    for pt, i in @data.pts
+      newLinkPt = LinkUtils.get().getNewPtOnLabelBorder @data.lab[i], pt, @data.pts
       if newLinkPt?
-        ancBorderPt = utils.getPtOnAncBorder @data.pts[i].x, @data.pts[i].y, @data.pts[i].r, newLinkPt[0], newLinkPt[1]
+        ancBorderPt = LinkUtils.get().getPtOnAncBorder pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]
         links.push({
           x1: ancBorderPt[0]
           y1: ancBorderPt[1]
           x2: newLinkPt[0]
           y2: newLinkPt[1]
           width: 1
-          color: @data.pts[i].color
+          color: pt.color
         })
-      i++
 
     @svg.selectAll('.link')
              .data(links)
