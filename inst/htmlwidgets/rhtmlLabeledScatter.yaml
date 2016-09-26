@@ -29,6 +29,7 @@ dependencies:
      - AxisUtils.js
      - PlotColors.js
      - Utils.js
+     - State.js
 
  - name: Data
    version: 0.0.1

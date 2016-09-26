@@ -175,7 +175,7 @@ PlotData = (function() {
         });
         this.len = this.origLen - this.outsidePlotMarkers.length;
       } else {
-        console.log("Condensed point added");
+        console.log("rhtmlLabeledScatter: Condensed point added");
         condensedPtsDataIdArray = _.map(this.outsidePlotCondensedPts, function(e) {
           return e.dataId;
         });

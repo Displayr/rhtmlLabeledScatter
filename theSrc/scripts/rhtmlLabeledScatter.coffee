@@ -6,15 +6,18 @@ HTMLWidgets.widget
   name: 'rhtmlLabeledScatter'
   type: 'output'
 
-  initialize: (el, width, height) ->
-    console.log 'initialize called'
-    return new LabeledScatter width, height
+  factory: (el, width, height, stateChanged) ->
+    console.log 'rhtmlLabeledScatter: factory called'
+    instance = new LabeledScatter width, height, stateChanged
+    {
+      resize: (width, height) ->
+        console.log 'rhtmlLabeledScatter: resize called'
+        instance.resize el, width, height
+        return instance
 
-  resize: (el, width, height, instance) ->
-    console.log 'resize called'
-    instance.resize el, width, height
-    return instance
+      renderValue: (params, state) ->
+        console.log 'rhtmlLabeledScatter: renderValue called'
+        instance.draw(params, el, state)
 
-  renderValue: (el, params, instance) ->
-    console.log 'renderValue called'
-    instance.draw(params, el)
+      labeledScatter: instance
+    }

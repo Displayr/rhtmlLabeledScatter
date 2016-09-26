@@ -7,32 +7,32 @@ LabeledScatter = (function() {
 
   LabeledScatter.data = null;
 
-  function LabeledScatter(width, height) {
+  function LabeledScatter(width, height, stateChangedCallback) {
     this.width = width;
     this.height = height;
+    this.stateChangedCallback = stateChangedCallback;
   }
 
   LabeledScatter.prototype.resize = function(el, width, height) {
     var svg;
-    console.log('resize');
+    console.log('rhtmlLabeledScatter: resize');
     this.width = width;
     this.height = height;
     d3.select('.plot-container').remove();
     svg = d3.select(el).append('svg').attr('width', this.width).attr('height', this.height).attr('class', 'plot-container');
     this.plot.setDim(svg, this.width, this.height);
     this.plot.draw();
-    return this;
   };
 
-  LabeledScatter.prototype.draw = function(data, el) {
+  LabeledScatter.prototype.draw = function(data, el, state) {
     var svg;
     svg = d3.select(el).append('svg').attr('width', this.width).attr('height', this.height).attr('class', 'plot-container');
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
     } else {
-      this.data = testData5;
+      this.data = testData6;
     }
-    this.plot = new RectPlot(this.width, this.height, this.data.X, this.data.Y, this.data.Z, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.zTitle, this.data.title, this.data.colors, this.data.transparency, this.data.grid, this.data.origin, this.data.originAlign, this.data.titleFontFamily, this.data.titleFontSize, this.data.titleFontColor, this.data.xTitleFontFamily, this.data.xTitleFontSize, this.data.xTitleFontColor, this.data.yTitleFontFamily, this.data.yTitleFontSize, this.data.yTitleFontColor, this.data.showLabels, this.data.labelsFontFamily, this.data.labelsFontSize, this.data.labelsFontColor, this.data.xDecimals, this.data.yDecimals, this.data.zDecimals, this.data.xPrefix, this.data.yPrefix, this.data.zPrefix, this.data.xSuffix, this.data.ySuffix, this.data.zSuffix, this.data.legendShow, this.data.legendFontFamily, this.data.legendFontSize, this.data.legendFontColor, this.data.axisFontFamily, this.data.axisFontColor, this.data.axisFontSize, this.data.pointRadius, this.data.xBoundsMinimum, this.data.xBoundsMaximum, this.data.yBoundsMinimum, this.data.yBoundsMaximum, this.data.xBoundsUnitsMajor, this.data.yBoundsUnitsMajor);
+    this.plot = new RectPlot(state, this.stateChangedCallback, this.width, this.height, this.data.X, this.data.Y, this.data.Z, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.zTitle, this.data.title, this.data.colors, this.data.transparency, this.data.grid, this.data.origin, this.data.originAlign, this.data.titleFontFamily, this.data.titleFontSize, this.data.titleFontColor, this.data.xTitleFontFamily, this.data.xTitleFontSize, this.data.xTitleFontColor, this.data.yTitleFontFamily, this.data.yTitleFontSize, this.data.yTitleFontColor, this.data.showLabels, this.data.labelsFontFamily, this.data.labelsFontSize, this.data.labelsFontColor, this.data.xDecimals, this.data.yDecimals, this.data.zDecimals, this.data.xPrefix, this.data.yPrefix, this.data.zPrefix, this.data.xSuffix, this.data.ySuffix, this.data.zSuffix, this.data.legendShow, this.data.legendFontFamily, this.data.legendFontSize, this.data.legendFontColor, this.data.axisFontFamily, this.data.axisFontColor, this.data.axisFontSize, this.data.pointRadius, this.data.xBoundsMinimum, this.data.xBoundsMaximum, this.data.yBoundsMinimum, this.data.yBoundsMaximum, this.data.xBoundsUnitsMajor, this.data.yBoundsUnitsMajor);
     this.plot.draw();
     return this;
   };

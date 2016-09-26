@@ -5,10 +5,10 @@ class LabeledScatter
   @plot = null
   @data = null
 
-  constructor: (@width, @height) ->
+  constructor: (@width, @height, @stateChangedCallback) ->
 
   resize: (el, width, height) ->
-    console.log 'resize'
+    console.log 'rhtmlLabeledScatter: resize'
     @width = width
     @height = height
     d3.select('.plot-container').remove()
@@ -19,9 +19,9 @@ class LabeledScatter
             .attr('class', 'plot-container')
     @plot.setDim(svg, @width, @height)
     @plot.draw()
-    return @
+    return
 
-  draw: (data, el) ->
+  draw: (data, el, state) ->
     svg = d3.select(el)
             .append('svg')
             .attr('width', @width)
@@ -30,12 +30,13 @@ class LabeledScatter
 
     if data.X? and data.Y?
       @data = data
-
     else # For debuggning in browser
       # @data = bubble1
-      @data = testData5
+      @data = testData6
 
-    @plot = new RectPlot(@width,
+    @plot = new RectPlot(state,
+                        @stateChangedCallback,
+                        @width,
                         @height,
                         @data.X,
                         @data.Y,

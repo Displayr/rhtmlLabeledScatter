@@ -12,7 +12,8 @@
             w1 = 1,
             w2 = 1,
             labeler = {},
-            svg = {}
+            svg = {},
+            pinned = [],
             minLabWidth = Infinity;
 
         // var investigate = 7;
@@ -151,6 +152,9 @@
             // select a random label
             var i = Math.floor(random.real(0,1) * lab.length);
 
+            // Ignore if user moved label
+            if (pinned.includes(i)) { return; }
+
             // save old coordinates
             var x_old = lab[i].x;
             var y_old = lab[i].y;
@@ -210,6 +214,9 @@
 
             // select a random label
             var i = Math.floor(random.real(0,1) * lab.length);
+
+            // Ignore if user moved label
+            if (pinned.includes(i)) {return;}
 
             // save old coordinates
             var x_old = lab[i].x;
@@ -384,6 +391,13 @@
             // users insert anchor positions
             if (!arguments.length) return anc;
             anc = x;
+            return labeler;
+        };
+
+        labeler.pinned = function(x) {
+            // user positioned labels
+            if (!arguments.length) return pinned;
+            pinned = x;
             return labeler;
         };
 
