@@ -31,7 +31,7 @@ class AxisUtils
       viewBoxDim = data.viewBoxDim
       -(Ycoord-data.minY)/(data.maxY - data.minY)*viewBoxDim.height + viewBoxDim.y + viewBoxDim.height
 
-    getAxisDataArrays: (plot, data, viewBoxDim)->
+    getAxisDataArrays: (plot, data, viewBoxDim) ->
       # exit if all points have been dragged off plot
       return unless data.len > 0
 
@@ -89,7 +89,7 @@ class AxisUtils
 
       originAxis = []
       oax_y = @_normalizeYCoords data,  0
-      if (oax_y < viewBoxDim.y + viewBoxDim.height) and (oax_y > viewBoxDim.y)
+      if (oax_y <= viewBoxDim.y + viewBoxDim.height) and (oax_y >= viewBoxDim.y)
         oax = {
           x1: viewBoxDim.x
           y1: oax_y
@@ -100,7 +100,7 @@ class AxisUtils
         originAxis.push(oax) unless (data.minY is 0) or (data.maxY is 0)
 
       oay_x = @_normalizeXCoords data,  0
-      if (oay_x > viewBoxDim.x) and (oay_x < viewBoxDim.x + viewBoxDim.width)
+      if (oay_x >= viewBoxDim.x) and (oay_x <= viewBoxDim.x + viewBoxDim.width)
         oay = {
           x1: oay_x
           y1: viewBoxDim.y
@@ -114,19 +114,31 @@ class AxisUtils
       #calculate number of dimension markers
       colsPositive = 0
       colsNegative = 0
-      i = if @_between(0, data.minX, data.maxX) then ticksX else data.minX
-      while @_between(i, data.minX, data.maxX) or @_between(-i, data.minX, data.maxX)
-        colsPositive++ if @_between(i, data.minX, data.maxX)
-        colsNegative++ if @_between(-i, data.minX, data.maxX)
-        i += ticksX
+      if @_between(0, data.minX, data.maxX)
+        colsPositive = data.maxX / ticksX - 1
+        colsNegative = Math.abs(data.minX / ticksX) - 1
+      else
+        cols = (data.maxX - data.minX) / ticksX
+        if data.minX < 0
+          colsNegative = cols
+          colsPositive = 0
+        else
+          colsNegative = 0
+          colsPositive = cols
 
       rowsPositive = 0
       rowsNegative = 0
-      i = if @_between(0, data.minY, data.maxY) then ticksY else data.minY
-      while @_between(i, data.minY, data.maxY) or @_between(-i, data.minY, data.maxY)
-        rowsNegative++ if @_between(i, data.minY, data.maxY) # y axis inversed svg
-        rowsPositive++ if @_between(-i, data.minY, data.maxY)
-        i += ticksY
+      if @_between(0, data.minY, data.maxY)
+        rowsPositive = Math.abs(data.minY / ticksY) - 1
+        rowsNegative = data.maxY / ticksY - 1
+      else
+        rows = (data.maxY - data.minY) / ticksY
+        if data.minY < 0
+          rowsNegative = 0
+          rowsPositive = rows
+        else
+          rowsNegative = rows
+          rowsPositive = 0
 
       i = 0
       while i < Math.max(colsPositive, colsNegative)
@@ -138,6 +150,7 @@ class AxisUtils
           y1 = viewBoxDim.y
           x2 = @_normalizeXCoords data,  val
           y2 = viewBoxDim.y + viewBoxDim.height
+
           dimensionMarkerStack.push {x1: x1, y1: y1, x2: x2, y2: y2}
           if i % 2
             pushDimensionMarker 'c', x1, y1, x2, y2, val.toPrecision(14)

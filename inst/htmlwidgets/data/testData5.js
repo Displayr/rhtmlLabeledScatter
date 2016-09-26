@@ -10,7 +10,7 @@ testData5 = {
   yTitle: "",
   fixedAspectRatio: true,
   grid: true,
-  origin: true,
+  origin: false,
   originAlign: false,
   title: "Brand Analysis",
   titleFontFamily: 'Arial',
@@ -39,5 +39,7 @@ testData5 = {
   axisFontColor: "blue",
   axisFontSize: '15',
   pointRadius: 2,
-  xBoundsUnitsMajor: 200
+  xBoundsUnitsMajor: 200,
+  yBoundsMinimum: 0,
+  xBoundsMinimum: 0
 };

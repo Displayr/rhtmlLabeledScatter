@@ -270,14 +270,14 @@ class PlotData
     while i < numItems
       if cols > 1
         numElemsInCol = numItems/cols
-        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + legendHeightWithoutBubbleSize
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
           colSpacing = (@legendDim.colSpace + @legendDim.ptRadius*2 + @legendDim.ptToTextSpace)*currentCol
           numItemsInPrevCols = i
           currentCol++
 
-        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize
+        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + legendHeightWithoutBubbleSize
         break if totalItemsSpacingExceedLegendArea
 
       li = itemsArray[i]
@@ -337,7 +337,6 @@ class PlotData
 
     @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
-    @setupLegendGroupsAndPts()
 
     initWidth != @viewBoxDim.width
 

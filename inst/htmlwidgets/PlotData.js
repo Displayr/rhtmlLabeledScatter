@@ -310,14 +310,14 @@ PlotData = (function() {
     while (i < numItems) {
       if (cols > 1) {
         numElemsInCol = numItems / cols;
-        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize;
+        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + legendHeightWithoutBubbleSize;
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * currentCol;
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
           colSpacing = (this.legendDim.colSpace + this.legendDim.ptRadius * 2 + this.legendDim.ptToTextSpace) * currentCol;
           numItemsInPrevCols = i;
           currentCol++;
         }
-        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > viewBoxDim.y + legendHeightWithoutBubbleSize;
+        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + legendHeightWithoutBubbleSize;
         if (totalItemsSpacingExceedLegendArea) {
           break;
         }
@@ -382,7 +382,6 @@ PlotData = (function() {
     this.legendDim.colSpace = maxTextWidth;
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
-    this.setupLegendGroupsAndPts();
     return initWidth !== this.viewBoxDim.width;
   };
 
