@@ -46,7 +46,7 @@ AxisUtils = (function() {
     };
 
     AU.prototype.getAxisDataArrays = function(plot, data, viewBoxDim) {
-      var colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, oax, oax_y, oay, oay_x, originAxis, pushDimensionMarker, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
+      var cols, colsNegative, colsPositive, dimensionMarkerLabelStack, dimensionMarkerLeaderStack, dimensionMarkerStack, i, oax, oax_y, oay, oay_x, originAxis, pushDimensionMarker, rows, rowsNegative, rowsPositive, ticksX, ticksY, val, x1, x2, y1, y2;
       if (!(data.len > 0)) {
         return;
       }
@@ -96,7 +96,7 @@ AxisUtils = (function() {
       ticksY = Utils.get().isNum(plot.yBoundsUnitsMajor) ? ticksY = plot.yBoundsUnitsMajor / 2 : this._getTickRange(data.maxY, data.minY);
       originAxis = [];
       oax_y = this._normalizeYCoords(data, 0);
-      if ((oax_y < viewBoxDim.y + viewBoxDim.height) && (oax_y > viewBoxDim.y)) {
+      if ((oax_y <= viewBoxDim.y + viewBoxDim.height) && (oax_y >= viewBoxDim.y)) {
         oax = {
           x1: viewBoxDim.x,
           y1: oax_y,
@@ -109,7 +109,7 @@ AxisUtils = (function() {
         }
       }
       oay_x = this._normalizeXCoords(data, 0);
-      if ((oay_x > viewBoxDim.x) && (oay_x < viewBoxDim.x + viewBoxDim.width)) {
+      if ((oay_x >= viewBoxDim.x) && (oay_x <= viewBoxDim.x + viewBoxDim.width)) {
         oay = {
           x1: oay_x,
           y1: viewBoxDim.y,
@@ -123,27 +123,33 @@ AxisUtils = (function() {
       }
       colsPositive = 0;
       colsNegative = 0;
-      i = this._between(0, data.minX, data.maxX) ? ticksX : data.minX;
-      while (this._between(i, data.minX, data.maxX) || this._between(-i, data.minX, data.maxX)) {
-        if (this._between(i, data.minX, data.maxX)) {
-          colsPositive++;
+      if (this._between(0, data.minX, data.maxX)) {
+        colsPositive = data.maxX / ticksX - 1;
+        colsNegative = Math.abs(data.minX / ticksX) - 1;
+      } else {
+        cols = (data.maxX - data.minX) / ticksX;
+        if (data.minX < 0) {
+          colsNegative = cols;
+          colsPositive = 0;
+        } else {
+          colsNegative = 0;
+          colsPositive = cols;
         }
-        if (this._between(-i, data.minX, data.maxX)) {
-          colsNegative++;
-        }
-        i += ticksX;
       }
       rowsPositive = 0;
       rowsNegative = 0;
-      i = this._between(0, data.minY, data.maxY) ? ticksY : data.minY;
-      while (this._between(i, data.minY, data.maxY) || this._between(-i, data.minY, data.maxY)) {
-        if (this._between(i, data.minY, data.maxY)) {
-          rowsNegative++;
+      if (this._between(0, data.minY, data.maxY)) {
+        rowsPositive = Math.abs(data.minY / ticksY) - 1;
+        rowsNegative = data.maxY / ticksY - 1;
+      } else {
+        rows = (data.maxY - data.minY) / ticksY;
+        if (data.minY < 0) {
+          rowsNegative = 0;
+          rowsPositive = rows;
+        } else {
+          rowsNegative = rows;
+          rowsPositive = 0;
         }
-        if (this._between(-i, data.minY, data.maxY)) {
-          rowsPositive++;
-        }
-        i += ticksY;
       }
       i = 0;
       while (i < Math.max(colsPositive, colsNegative)) {
