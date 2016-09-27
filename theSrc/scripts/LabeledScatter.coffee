@@ -33,6 +33,9 @@ class LabeledScatter
       # @data = bubble1
       @data = testData5
 
+    console.log "rhtmlLabeledScatter: received state"
+    console.log state
+
     @plot = new RectPlot(state,
                         @stateChangedCallback,
                         @width,

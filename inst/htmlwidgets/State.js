@@ -35,7 +35,7 @@ State = (function() {
 
   State.prototype.saveToState = function(key, val) {
     if (_.isFunction(this.stateChangedCallback)) {
-      this.stateObj.key = val;
+      this.stateObj[key] = val;
       return this.stateChangedCallback(this.stateObj);
     }
   };

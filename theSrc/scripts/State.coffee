@@ -17,7 +17,7 @@ class State
 
   saveToState: (key, val) =>
     if _.isFunction(@stateChangedCallback)
-      @stateObj.key = val
+      @stateObj[key] = val
       @stateChangedCallback(@stateObj)
 
   pushLegendPt: (id) =>
