@@ -13,7 +13,6 @@ HTMLWidgets.widget
       resize: (width, height) ->
         console.log 'rhtmlLabeledScatter: resize called'
         instance.resize el, width, height
-        return instance
 
       renderValue: (params, state) ->
         console.log 'rhtmlLabeledScatter: renderValue called'

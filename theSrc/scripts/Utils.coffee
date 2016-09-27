@@ -24,3 +24,4 @@ class Utils
 
     getFormattedNum: (num, decimals, prefix, suffix) ->
       prefix + (new BigNumber(num)).toFormat(decimals) + suffix
+      # prefix + Number(num).toFixed(decimals) + suffix

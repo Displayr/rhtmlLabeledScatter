@@ -10,8 +10,7 @@ HTMLWidgets.widget({
     return {
       resize: function(width, height) {
         console.log('rhtmlLabeledScatter: resize called');
-        instance.resize(el, width, height);
-        return instance;
+        return instance.resize(el, width, height);
       },
       renderValue: function(params, state) {
         console.log('rhtmlLabeledScatter: renderValue called');

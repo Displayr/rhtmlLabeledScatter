@@ -58,9 +58,11 @@ RectPlot = (function() {
     this.drawAnc = __bind(this.drawAnc, this);
     this.drawLegend = __bind(this.drawLegend, this);
     this.drawAxisLabels = __bind(this.drawAxisLabels, this);
+    this.drawDimensionMarkers = __bind(this.drawDimensionMarkers, this);
     this.drawRect = __bind(this.drawRect, this);
     this.drawTitle = __bind(this.drawTitle, this);
     this.draw = __bind(this.draw, this);
+    this.drawLabsAndPlot = __bind(this.drawLabsAndPlot, this);
     this.setDim = __bind(this.setDim, this);
     this.state = new State(stateObj, stateChangedCallback);
     this.labelsFont = {
@@ -167,33 +169,33 @@ RectPlot = (function() {
     return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency);
   };
 
+  RectPlot.prototype.drawLabsAndPlot = function() {
+    var pt, _i, _len, _ref;
+    this.data.normalizeData();
+    this.data.calcDataArrays();
+    this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
+    if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
+      _ref = this.state.getLegendPts();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pt = _ref[_i];
+        this.data.moveElemToLegend(pt);
+      }
+      console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
+      return false;
+    }
+    this.drawTitle();
+    this.drawAnc();
+    this.drawLabs();
+    this.drawDraggedMarkers();
+    this.drawRect();
+    this.drawAxisLabels();
+    return true;
+  };
+
   RectPlot.prototype.draw = function() {
-    var drawLabsPromise;
-    drawLabsPromise = (function(_this) {
-      return function() {
-        var pt, _i, _len, _ref;
-        _this.data.normalizeData();
-        _this.data.calcDataArrays();
-        _this.title.x = _this.viewBoxDim.x + _this.viewBoxDim.width / 2;
-        if (!_this.state.isLegendPtsSynced(_this.data.outsidePlotPtsId)) {
-          _ref = _this.state.getLegendPts();
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            pt = _ref[_i];
-            _this.data.moveElemToLegend(pt);
-          }
-          return false;
-        }
-        _this.drawTitle();
-        _this.drawAnc();
-        _this.drawLabs();
-        _this.drawDraggedMarkers();
-        _this.drawRect();
-        _this.drawAxisLabels();
-        return true;
-      };
-    })(this);
-    if (!(this.drawDimensionMarkers() && this.drawLegend() && drawLabsPromise())) {
-      return this.draw();
+    if (!(this.drawDimensionMarkers() && this.drawLegend() && this.drawLabsAndPlot())) {
+      console.log('rhtmlLabeledScatter: redraw');
+      this.draw();
     }
   };
 
@@ -287,6 +289,7 @@ RectPlot = (function() {
     }
     if (initAxisTextWidth !== this.axisDimensionTextWidth || initAxisTextHeight !== this.axisDimensionTextHeight) {
       this.setDim(this.svg, this.width, this.height);
+      console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
       return false;
     }
     return true;
@@ -453,10 +456,11 @@ RectPlot = (function() {
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
       if (this.data.resizedAfterLegendGroupsDrawn()) {
+        console.log("drawLegend false");
         return false;
       }
-      return true;
     }
+    return true;
   };
 
   RectPlot.prototype.drawAnc = function() {

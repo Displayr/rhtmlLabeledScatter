@@ -170,29 +170,31 @@ class RectPlot
                          @bounds,
                          @transparency)
 
+  drawLabsAndPlot: =>
+    @data.normalizeData()
+    @data.calcDataArrays()
+    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
+
+    unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
+      for pt in @state.getLegendPts()
+        @data.moveElemToLegend(pt)
+      console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
+      return false
+
+    @drawTitle()
+    @drawAnc()
+    @drawLabs()
+    @drawDraggedMarkers()
+    @drawRect()
+    @drawAxisLabels()
+    return true
+
   draw: =>
-
-    drawLabsPromise = =>
-      @data.normalizeData()
-      @data.calcDataArrays()
-      @title.x = @viewBoxDim.x + @viewBoxDim.width/2
-
-      unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
-        for pt in @state.getLegendPts()
-          @data.moveElemToLegend(pt)
-        return false
-
-      @drawTitle()
-      @drawAnc()
-      @drawLabs()
-      @drawDraggedMarkers()
-      @drawRect()
-      @drawAxisLabels()
-      return true
-
-    unless @drawDimensionMarkers() and @drawLegend() and drawLabsPromise() # fails if any func == false
+    unless @drawDimensionMarkers() and @drawLegend() and @drawLabsAndPlot() # fails if any func == false
+      console.log 'rhtmlLabeledScatter: redraw'
       # Redraw is needed
       @draw()
+      return
 
   drawTitle: =>
     if @title.text != ''
@@ -220,7 +222,7 @@ class RectPlot
         .attr('stroke', 'black')
         .attr('stroke-width', '1px')
 
-  drawDimensionMarkers: ->
+  drawDimensionMarkers: =>
     axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
     if @grid
@@ -314,6 +316,7 @@ class RectPlot
     if initAxisTextWidth != @axisDimensionTextWidth or
        initAxisTextHeight != @axisDimensionTextHeight
       @setDim(@svg, @width, @height)
+      console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
       return false
     return true
 
@@ -501,9 +504,10 @@ class RectPlot
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
       if @data.resizedAfterLegendGroupsDrawn()
+        console.log "drawLegend false"
         return false
 
-      return true
+    return true
 
   drawAnc: =>
     @svg.selectAll('.anc').remove()

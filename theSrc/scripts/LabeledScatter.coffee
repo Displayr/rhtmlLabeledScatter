@@ -8,7 +8,6 @@ class LabeledScatter
   constructor: (@width, @height, @stateChangedCallback) ->
 
   resize: (el, width, height) ->
-    console.log 'rhtmlLabeledScatter: resize'
     @width = width
     @height = height
     d3.select('.plot-container').remove()
@@ -32,7 +31,7 @@ class LabeledScatter
       @data = data
     else # For debuggning in browser
       # @data = bubble1
-      @data = testData6
+      @data = testData5
 
     @plot = new RectPlot(state,
                         @stateChangedCallback,
