@@ -47,6 +47,8 @@ class LegendUtils
 
       final_base = originalNum / 10**exp
       final_shortForm = @getExponentialShortForm exp
+      unless final_shortForm?
+        final_shortForm = ''
 
       data.Zquartiles =
         top:
