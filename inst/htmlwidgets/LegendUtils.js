@@ -60,6 +60,9 @@ LegendUtils = (function() {
       exp -= digitsBtwnShortForms;
       final_base = originalNum / Math.pow(10, exp);
       final_shortForm = this.getExponentialShortForm(exp);
+      if (final_shortForm == null) {
+        final_shortForm = '';
+      }
       return data.Zquartiles = {
         top: {
           val: final_base + final_shortForm,
