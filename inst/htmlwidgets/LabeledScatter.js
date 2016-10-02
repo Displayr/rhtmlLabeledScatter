@@ -14,7 +14,7 @@ LabeledScatter = (function() {
         return function() {
           return setTimeout(function() {
             var el, height, resizeParams, svg, width;
-            console.log('timeout');
+            console.log('rhtmlLabeledScatter: resize timeout');
             resizeParams = _this.resizeStack.pop();
             el = resizeParams[0];
             width = resizeParams[1];

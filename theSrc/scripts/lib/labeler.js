@@ -153,7 +153,7 @@
             var i = Math.floor(random.real(0,1) * lab.length);
 
             // Ignore if user moved label
-            if (_.includes(pinned, i)) { return; }
+            if (_.includes(pinned, lab[i].id)) { return; }
 
             // save old coordinates
             var x_old = lab[i].x;
@@ -216,7 +216,7 @@
             var i = Math.floor(random.real(0,1) * lab.length);
 
             // Ignore if user moved label
-            if (_.includes(pinned, i)) { return; }
+            if (_.includes(pinned, lab[i].id)) { return; }
 
             // save old coordinates
             var x_old = lab[i].x;

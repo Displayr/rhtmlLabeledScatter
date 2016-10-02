@@ -177,7 +177,12 @@ class RectPlot
 
     unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
       for pt in @state.getLegendPts()
-        @data.moveElemToLegend(pt)
+        unless _.includes @data.outsidePlotPtsId, pt
+          @data.moveElemToLegend(pt)
+
+      for pt in @data.outsidePlotPtsId
+        unless _.includes @state.getLegendPts(), pt
+          @state.pushLegendPt pt
       console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
       return false
 
@@ -631,6 +636,8 @@ class RectPlot
 
     if @showLabels
       drag = labelDragAndDrop()
+      @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
+
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
                .data(@data.lab)
@@ -650,9 +657,7 @@ class RectPlot
       labels_svg = @svg.selectAll('.lab')
 
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.lab, labels_svg
-
       console.log "rhtmlLabeledScatter: Running label placement algorithm..."
-      @state.updateLabelsWithUserPositionedData(@data.pts, @data.lab, @viewBoxDim)
       labeler = d3.labeler()
                   .svg(@svg)
                   .w1(@viewBoxDim.x)
@@ -663,7 +668,6 @@ class RectPlot
                   .label(@data.lab)
                   .pinned(@state.getUserPositionedLabIds())
                   .start(500)
-
 
       labels_svg.transition()
                 .duration(800)

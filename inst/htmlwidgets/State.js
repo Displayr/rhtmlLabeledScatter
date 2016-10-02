@@ -74,14 +74,14 @@ State = (function() {
     return this.saveToState('userPositionedLabs', this.userPositionedLabs);
   };
 
-  State.prototype.updateLabelsWithUserPositionedData = function(pts, lab, viewBoxDim) {
+  State.prototype.updateLabelsWithUserPositionedData = function(lab, viewBoxDim) {
     var i, l, newX, newY, posLab, _i, _len, _results;
     if (!_.isEmpty(this.userPositionedLabs)) {
       _results = [];
       for (i = _i = 0, _len = lab.length; _i < _len; i = ++_i) {
         l = lab[i];
         posLab = _.find(this.userPositionedLabs, function(e) {
-          return e.id === l.id;
+          return e.id === lab[i].id;
         });
         if (posLab != null) {
           newX = (posLab.x * viewBoxDim.width) + viewBoxDim.x;

@@ -45,15 +45,13 @@ class State
       y: (laby - viewBoxDim.y) / viewBoxDim.height
     @saveToState('userPositionedLabs', @userPositionedLabs)
 
-  updateLabelsWithUserPositionedData: (pts, lab, viewBoxDim) =>
+  updateLabelsWithUserPositionedData: (lab, viewBoxDim) =>
     unless _.isEmpty @userPositionedLabs
-
       for l, i in lab
-        posLab = _.find(@userPositionedLabs, (e) -> e.id == l.id)
+        posLab = _.find(@userPositionedLabs, (e) -> e.id == lab[i].id)
         if posLab?
           newX = (posLab.x * viewBoxDim.width) + viewBoxDim.x
           newY = (posLab.y * viewBoxDim.height) + viewBoxDim.y
-
           l.x = newX
           l.y = newY
 

@@ -9,7 +9,7 @@ class LabeledScatter
     unless @resizeDelayPromise?
       @resizeDelayPromise = new Promise () =>
         setTimeout(() =>
-          console.log 'timeout'
+          console.log 'rhtmlLabeledScatter: resize timeout'
 
           resizeParams = @resizeStack.pop()
           el = resizeParams[0]

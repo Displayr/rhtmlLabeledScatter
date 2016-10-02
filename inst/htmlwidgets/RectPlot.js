@@ -170,7 +170,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabsAndPlot = function() {
-    var pt, _i, _len, _ref;
+    var pt, _i, _j, _len, _len1, _ref, _ref1;
     this.data.normalizeData();
     this.data.calcDataArrays();
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
@@ -178,7 +178,16 @@ RectPlot = (function() {
       _ref = this.state.getLegendPts();
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         pt = _ref[_i];
-        this.data.moveElemToLegend(pt);
+        if (!_.includes(this.data.outsidePlotPtsId, pt)) {
+          this.data.moveElemToLegend(pt);
+        }
+      }
+      _ref1 = this.data.outsidePlotPtsId;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        pt = _ref1[_j];
+        if (!_.includes(this.state.getLegendPts(), pt)) {
+          this.state.pushLegendPt(pt);
+        }
       }
       console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
       return false;
@@ -590,6 +599,7 @@ RectPlot = (function() {
     })(this);
     if (this.showLabels) {
       drag = labelDragAndDrop();
+      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
         return d.id;
@@ -609,7 +619,6 @@ RectPlot = (function() {
       labels_svg = this.svg.selectAll('.lab');
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log("rhtmlLabeledScatter: Running label placement algorithm...");
-      this.state.updateLabelsWithUserPositionedData(this.data.pts, this.data.lab, this.viewBoxDim);
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
