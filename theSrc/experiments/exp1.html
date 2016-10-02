@@ -38,16 +38,18 @@
     $(document).ready( function() {
       console.log("Document ready.");
 
-      myWidgetInstance = myWidgetDefinition.initialize(container, window.innerWidth, window.innerHeight);
-      myWidgetDefinition.renderValue(container, {}, myWidgetInstance);
+      myWidgetInstance = myWidgetDefinition.factory(container, window.innerWidth, window.innerHeight);
+      myWidgetInstance.renderValue(container, {}, myWidgetInstance);
 
     });
     window.onresize = function() {
-      myWidgetDefinition.resize(container, window.innerWidth, window.innerHeight, myWidgetInstance);
+      myWidgetInstance.resize(window.innerWidth, window.innerHeight);
     };
 
   </script>
   <script src="../scripts/PlotColors.js"></script>
+  <script src="../scripts/State.js"></script>
+
   <script src="../scripts/rhtmlLabeledScatter.js"></script>
   <script src="../scripts/LabeledScatter.js"></script>
   <script src="../scripts/RectPlot.js"></script>

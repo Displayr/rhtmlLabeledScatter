@@ -5,23 +5,42 @@ class LabeledScatter
   @plot = null
   @data = null
 
-  constructor: (@width, @height) ->
+  getResizeDelayPromise: () =>
+    unless @resizeDelayPromise?
+      @resizeDelayPromise = new Promise () =>
+        setTimeout(() =>
+          console.log 'rhtmlLabeledScatter: resize timeout'
 
-  resize: (el, width, height) ->
-    console.log 'resize'
-    @width = width
-    @height = height
-    d3.select('.plot-container').remove()
-    svg = d3.select(el)
-            .append('svg')
-            .attr('width', @width)
-            .attr('height', @height)
-            .attr('class', 'plot-container')
-    @plot.setDim(svg, @width, @height)
-    @plot.draw()
-    return @
+          resizeParams = @resizeStack.pop()
+          el = resizeParams[0]
+          width = resizeParams[1]
+          height = resizeParams[2]
+          @resizeStack = []
 
-  draw: (data, el) ->
+          @width = width
+          @height = height
+          d3.select('.plot-container').remove()
+          svg = d3.select(el)
+                  .append('svg')
+                  .attr('width', @width)
+                  .attr('height', @height)
+                  .attr('class', 'plot-container')
+          @plot.setDim(svg, @width, @height)
+          @plot.draw()
+          @resizeDelayPromise = null
+        , 500)
+
+    @resizeDelayPromise
+
+  constructor: (@width, @height, @stateChangedCallback) ->
+    @resizeStack = []
+    @resizeDelayPromise = null
+
+  resize: (el, width, height) =>
+    @resizeStack.push([el, width, height])
+    @getResizeDelayPromise()
+
+  draw: (data, el, state) ->
     svg = d3.select(el)
             .append('svg')
             .attr('width', @width)
@@ -30,12 +49,16 @@ class LabeledScatter
 
     if data.X? and data.Y?
       @data = data
-
     else # For debuggning in browser
-      # @data = bubble1
-      @data = testData5
+       @data = bubble1
+#      @data = testData5
 
-    @plot = new RectPlot(@width,
+    console.log "rhtmlLabeledScatter: received state"
+    console.log state
+
+    @plot = new RectPlot(state,
+                        @stateChangedCallback,
+                        @width,
                         @height,
                         @data.X,
                         @data.Y,

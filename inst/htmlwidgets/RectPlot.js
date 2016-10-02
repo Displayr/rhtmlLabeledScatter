@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -58,10 +58,13 @@ RectPlot = (function() {
     this.drawAnc = __bind(this.drawAnc, this);
     this.drawLegend = __bind(this.drawLegend, this);
     this.drawAxisLabels = __bind(this.drawAxisLabels, this);
+    this.drawDimensionMarkers = __bind(this.drawDimensionMarkers, this);
     this.drawRect = __bind(this.drawRect, this);
     this.drawTitle = __bind(this.drawTitle, this);
     this.draw = __bind(this.draw, this);
+    this.drawLabsAndPlot = __bind(this.drawLabsAndPlot, this);
     this.setDim = __bind(this.setDim, this);
+    this.state = new State(stateObj, stateChangedCallback);
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -166,39 +169,43 @@ RectPlot = (function() {
     return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency);
   };
 
-  RectPlot.prototype.draw = function() {
-    var dimensionMarkerPromise, legendPromise, resizePromises;
-    dimensionMarkerPromise = new Promise((function(_this) {
-      return function(resolve, reject) {
-        _this.drawDimensionMarkers(reject);
-        return resolve();
-      };
-    })(this));
-    legendPromise = new Promise((function(_this) {
-      return function(resolve, reject) {
-        _this.drawLegend(reject);
-        return resolve();
-      };
-    })(this));
-    resizePromises = [dimensionMarkerPromise, legendPromise];
-    return Promise.all(resizePromises).then((function(_this) {
-      return function() {
-        _this.data.normalizeData();
-        _this.data.calcDataArrays();
-        _this.title.x = _this.viewBoxDim.x + _this.viewBoxDim.width / 2;
-        _this.drawTitle();
-        _this.drawAnc();
-        _this.drawLabs();
-        _this.drawDraggedMarkers();
-        _this.drawRect();
-        return _this.drawAxisLabels();
-      };
-    })(this))["catch"](function(resizedPlot) {
-      if (resizedPlot instanceof Error) {
-        console.log(resizedPlot);
+  RectPlot.prototype.drawLabsAndPlot = function() {
+    var pt, _i, _j, _len, _len1, _ref, _ref1;
+    this.data.normalizeData();
+    this.data.calcDataArrays();
+    this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
+    if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
+      _ref = this.state.getLegendPts();
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        pt = _ref[_i];
+        if (!_.includes(this.data.outsidePlotPtsId, pt)) {
+          this.data.moveElemToLegend(pt);
+        }
       }
-      return resizedPlot.draw(resizedPlot);
-    });
+      _ref1 = this.data.outsidePlotPtsId;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        pt = _ref1[_j];
+        if (!_.includes(this.state.getLegendPts(), pt)) {
+          this.state.pushLegendPt(pt);
+        }
+      }
+      console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
+      return false;
+    }
+    this.drawTitle();
+    this.drawAnc();
+    this.drawLabs();
+    this.drawDraggedMarkers();
+    this.drawRect();
+    this.drawAxisLabels();
+    return true;
+  };
+
+  RectPlot.prototype.draw = function() {
+    if (!(this.drawDimensionMarkers() && this.drawLegend() && this.drawLabsAndPlot())) {
+      console.log('rhtmlLabeledScatter: redraw');
+      this.draw();
+    }
   };
 
   RectPlot.prototype.drawTitle = function() {
@@ -213,7 +220,7 @@ RectPlot = (function() {
     return this.svg.append('rect').attr('class', 'plot-viewbox').attr('x', this.viewBoxDim.x).attr('y', this.viewBoxDim.y).attr('width', this.viewBoxDim.width).attr('height', this.viewBoxDim.height).attr('fill', 'none').attr('stroke', 'black').attr('stroke-width', '1px');
   };
 
-  RectPlot.prototype.drawDimensionMarkers = function(reject) {
+  RectPlot.prototype.drawDimensionMarkers = function() {
     var axisArrays, bb, i, initAxisTextHeight, initAxisTextWidth, markerLabel, markerLabels, _i, _len, _ref;
     axisArrays = AxisUtils.get().getAxisDataArrays(this, this.data, this.viewBoxDim);
     if (this.grid) {
@@ -291,8 +298,10 @@ RectPlot = (function() {
     }
     if (initAxisTextWidth !== this.axisDimensionTextWidth || initAxisTextHeight !== this.axisDimensionTextHeight) {
       this.setDim(this.svg, this.width, this.height);
-      return reject(this);
+      console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
+      return false;
     }
+    return true;
   };
 
   RectPlot.prototype.drawAxisLabels = function() {
@@ -342,7 +351,7 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.drawLegend = function(reject) {
+  RectPlot.prototype.drawLegend = function() {
     var drag, legendBubbleTitleSvg, legendFontSize, legendLabelDragAndDrop;
     this.data.setupLegendGroupsAndPts();
     legendLabelDragAndDrop = (function(_this) {
@@ -456,9 +465,11 @@ RectPlot = (function() {
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
       if (this.data.resizedAfterLegendGroupsDrawn()) {
-        return reject(this);
+        console.log("rhtmlLabeledScatter: drawLegend false");
+        return false;
       }
     }
+    return true;
   };
 
   RectPlot.prototype.drawAnc = function() {
@@ -526,11 +537,13 @@ RectPlot = (function() {
 
   RectPlot.prototype.elemDraggedOffPlot = function(id) {
     this.data.moveElemToLegend(id);
+    this.state.pushLegendPt(id);
     return this.resetPlotAfterDragEvent();
   };
 
   RectPlot.prototype.elemDraggedOnPlot = function(id) {
     this.data.removeElemFromLegend(id);
+    this.state.pullLegendPt(id);
     return this.resetPlotAfterDragEvent();
   };
 
@@ -572,6 +585,7 @@ RectPlot = (function() {
           if (plot.data.isOutsideViewBox(lab)) {
             return plot.elemDraggedOffPlot(id);
           } else {
+            plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim);
             return plot.drawLinks();
           }
         };
@@ -585,6 +599,7 @@ RectPlot = (function() {
     })(this);
     if (this.showLabels) {
       drag = labelDragAndDrop();
+      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
         return d.id;
@@ -603,8 +618,8 @@ RectPlot = (function() {
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
-      console.log("Running label placement algorithm...");
-      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).start(500);
+      console.log("rhtmlLabeledScatter: Running label placement algorithm...");
+      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {

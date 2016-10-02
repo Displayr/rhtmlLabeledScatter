@@ -77,13 +77,13 @@ LegendUtils = (function() {
     };
 
     LU.prototype.normalizeZValues = function(data, maxZ) {
-      var i, normalizedArea, _results;
-      i = 0;
+      var i, normalizedArea, z, _i, _len, _ref, _results;
+      _ref = data.Z;
       _results = [];
-      while (i < data.Z.length) {
-        normalizedArea = data.Z[i] / maxZ;
-        data.normZ[i] = Math.sqrt(normalizedArea / Math.PI);
-        _results.push(i++);
+      for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+        z = _ref[i];
+        normalizedArea = z / maxZ;
+        _results.push(data.normZ[i] = Math.sqrt(normalizedArea / Math.PI));
       }
       return _results;
     };

@@ -160,7 +160,7 @@ class PlotData
         @len = @origLen - @outsidePlotMarkers.length
 
       else # no marker required, but still inside plot window
-        console.log "Condensed point added"
+        console.log "rhtmlLabeledScatter: Condensed point added"
         condensedPtsDataIdArray = _.map @outsidePlotCondensedPts, (e) -> e.dataId
         unless _.includes condensedPtsDataIdArray, id
           @outsidePlotCondensedPts.push(

@@ -60,11 +60,9 @@ class LegendUtils
           lab: getZLabel botQ, maxZ, 1
 
     normalizeZValues: (data, maxZ) ->
-      i = 0
-      while i < data.Z.length
-        normalizedArea = data.Z[i]/maxZ
+      for z, i in data.Z
+        normalizedArea = z/maxZ
         data.normZ[i] = Math.sqrt(normalizedArea/Math.PI)
-        i++
 
     setupBubbles: (data) ->
       viewBoxDim = data.viewBoxDim

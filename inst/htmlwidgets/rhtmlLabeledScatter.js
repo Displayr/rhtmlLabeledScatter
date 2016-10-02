@@ -3,17 +3,20 @@
 HTMLWidgets.widget({
   name: 'rhtmlLabeledScatter',
   type: 'output',
-  initialize: function(el, width, height) {
-    console.log('initialize called');
-    return new LabeledScatter(width, height);
-  },
-  resize: function(el, width, height, instance) {
-    console.log('resize called');
-    instance.resize(el, width, height);
-    return instance;
-  },
-  renderValue: function(el, params, instance) {
-    console.log('renderValue called');
-    return instance.draw(params, el);
+  factory: function(el, width, height, stateChanged) {
+    var instance;
+    console.log('rhtmlLabeledScatter: factory called');
+    instance = new LabeledScatter(width, height, stateChanged);
+    return {
+      resize: function(width, height) {
+        console.log('rhtmlLabeledScatter: resize called');
+        return instance.resize(el, width, height);
+      },
+      renderValue: function(params, state) {
+        console.log('rhtmlLabeledScatter: renderValue called');
+        return instance.draw(params, el, state);
+      },
+      labeledScatter: instance
+    };
   }
 });

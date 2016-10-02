@@ -1,6 +1,8 @@
 
 class RectPlot
-  constructor: (@width,
+  constructor: (stateObj,
+                stateChangedCallback,
+                @width,
                 @height,
                 @X,
                 @Y,
@@ -54,6 +56,8 @@ class RectPlot
                 yBoundsMaximum = null,
                 @xBoundsUnitsMajor = null,
                 @yBoundsUnitsMajor = null) ->
+
+    @state = new State(stateObj, stateChangedCallback)
 
     @labelsFont =
       size:            labelsFontSize
@@ -166,35 +170,36 @@ class RectPlot
                          @bounds,
                          @transparency)
 
+  drawLabsAndPlot: =>
+    @data.normalizeData()
+    @data.calcDataArrays()
+    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
+
+    unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
+      for pt in @state.getLegendPts()
+        unless _.includes @data.outsidePlotPtsId, pt
+          @data.moveElemToLegend(pt)
+
+      for pt in @data.outsidePlotPtsId
+        unless _.includes @state.getLegendPts(), pt
+          @state.pushLegendPt pt
+      console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
+      return false
+
+    @drawTitle()
+    @drawAnc()
+    @drawLabs()
+    @drawDraggedMarkers()
+    @drawRect()
+    @drawAxisLabels()
+    return true
+
   draw: =>
-    dimensionMarkerPromise = new Promise (resolve, reject) =>
-      @drawDimensionMarkers(reject)
-      resolve()
-    legendPromise = new Promise (resolve, reject) =>
-      @drawLegend(reject)
-      resolve()
-
-    resizePromises = [dimensionMarkerPromise, legendPromise]
-    Promise.all(resizePromises).then(() =>
-
-      @data.normalizeData()
-      @data.calcDataArrays()
-      @title.x = @viewBoxDim.x + @viewBoxDim.width/2
-
-      @drawTitle()
-      @drawAnc()
-      @drawLabs()
-      @drawDraggedMarkers()
-      @drawRect()
-      @drawAxisLabels()
-    ).catch((resizedPlot) ->
-      #For debugging
-      console.log resizedPlot if resizedPlot instanceof Error
-
-      # A redraw is needed
-      resizedPlot.draw(resizedPlot)
-    )
-
+    unless @drawDimensionMarkers() and @drawLegend() and @drawLabsAndPlot() # fails if any func == false
+      console.log 'rhtmlLabeledScatter: redraw'
+      # Redraw is needed
+      @draw()
+      return
 
   drawTitle: =>
     if @title.text != ''
@@ -222,7 +227,7 @@ class RectPlot
         .attr('stroke', 'black')
         .attr('stroke-width', '1px')
 
-  drawDimensionMarkers: (reject) ->
+  drawDimensionMarkers: =>
     axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
     if @grid
@@ -316,7 +321,9 @@ class RectPlot
     if initAxisTextWidth != @axisDimensionTextWidth or
        initAxisTextHeight != @axisDimensionTextHeight
       @setDim(@svg, @width, @height)
-      reject(@)
+      console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
+      return false
+    return true
 
   drawAxisLabels: =>
     axisLabels = [
@@ -365,7 +372,7 @@ class RectPlot
              .style('font-weight', 'bold')
              .style('display', (d) -> d.display)
 
-  drawLegend: (reject) =>
+  drawLegend: =>
     @data.setupLegendGroupsAndPts()
 
     legendLabelDragAndDrop = =>
@@ -502,7 +509,10 @@ class RectPlot
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
       if @data.resizedAfterLegendGroupsDrawn()
-        reject(@)
+        console.log "rhtmlLabeledScatter: drawLegend false"
+        return false
+
+    return true
 
   drawAnc: =>
     @svg.selectAll('.anc').remove()
@@ -560,10 +570,12 @@ class RectPlot
 
   elemDraggedOffPlot: (id) =>
     @data.moveElemToLegend(id)
+    @state.pushLegendPt(id)
     @resetPlotAfterDragEvent()
 
   elemDraggedOnPlot: (id) =>
     @data.removeElemFromLegend(id)
+    @state.pullLegendPt(id)
     @resetPlotAfterDragEvent()
 
   resetPlotAfterDragEvent: =>
@@ -608,6 +620,7 @@ class RectPlot
         if plot.data.isOutsideViewBox(lab)
           plot.elemDraggedOffPlot(id)
         else
+          plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
           plot.drawLinks()
 
       d3.behavior.drag()
@@ -623,6 +636,8 @@ class RectPlot
 
     if @showLabels
       drag = labelDragAndDrop()
+      @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
+
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
                .data(@data.lab)
@@ -642,8 +657,7 @@ class RectPlot
       labels_svg = @svg.selectAll('.lab')
 
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.lab, labels_svg
-
-      console.log "Running label placement algorithm..."
+      console.log "rhtmlLabeledScatter: Running label placement algorithm..."
       labeler = d3.labeler()
                   .svg(@svg)
                   .w1(@viewBoxDim.x)
@@ -652,6 +666,7 @@ class RectPlot
                   .h2(@viewBoxDim.y + @viewBoxDim.height)
                   .anchor(@data.pts)
                   .label(@data.lab)
+                  .pinned(@state.getUserPositionedLabIds())
                   .start(500)
 
       labels_svg.transition()
