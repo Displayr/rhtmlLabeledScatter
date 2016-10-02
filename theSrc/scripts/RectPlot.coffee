@@ -504,7 +504,7 @@ class RectPlot
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
       if @data.resizedAfterLegendGroupsDrawn()
-        console.log "drawLegend false"
+        console.log "rhtmlLabeledScatter: drawLegend false"
         return false
 
     return true

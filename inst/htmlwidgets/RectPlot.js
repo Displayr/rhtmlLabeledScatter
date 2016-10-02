@@ -456,7 +456,7 @@ RectPlot = (function() {
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
       if (this.data.resizedAfterLegendGroupsDrawn()) {
-        console.log("drawLegend false");
+        console.log("rhtmlLabeledScatter: drawLegend false");
         return false;
       }
     }
