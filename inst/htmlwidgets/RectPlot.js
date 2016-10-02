@@ -662,7 +662,7 @@ RectPlot = (function() {
       return d.width;
     }).attr('stroke', function(d) {
       return d.color;
-    }).style('stroke-opacity', 0.7);
+    }).style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency));
   };
 
   return RectPlot;

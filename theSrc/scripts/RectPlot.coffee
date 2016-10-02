@@ -703,4 +703,4 @@ class RectPlot
              .attr('y2', (d) -> d.y2)
              .attr('stroke-width', (d) -> d.width)
              .attr('stroke', (d) -> d.color)
-             .style('stroke-opacity', 0.7)
+             .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
