@@ -5,7 +5,6 @@ var PlotData,
 
 PlotData = (function() {
   function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency) {
-    var legendUtils;
     this.X = X;
     this.Y = Y;
     this.Z = Z;
@@ -42,7 +41,6 @@ PlotData = (function() {
     this.legendBubbles = [];
     this.legendBubblesLab = [];
     this.cIndex = 0;
-    legendUtils = LegendUtils.get();
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData();
