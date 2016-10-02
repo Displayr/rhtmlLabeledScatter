@@ -25,7 +25,8 @@ PlotColors = (function() {
             text: group[i],
             color: newColor,
             r: this.plotData.legendDim.ptRadius,
-            anchor: 'start'
+            anchor: 'start',
+            fillOpacity: this.getFillOpacity(this.plotData.transparency)
           });
           this.groupToColorMap[group[i]] = newColor;
         }

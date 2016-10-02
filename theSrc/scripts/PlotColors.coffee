@@ -17,10 +17,11 @@ class PlotColors
           @plotData.cIndex++
 
           @plotData.legendGroups.push {
-            text:   group[i]
-            color:  newColor
-            r:       @plotData.legendDim.ptRadius
-            anchor: 'start'
+            text:         group[i]
+            color:        newColor
+            r:            @plotData.legendDim.ptRadius
+            anchor:       'start'
+            fillOpacity:  @getFillOpacity(@plotData.transparency)
           }
           @groupToColorMap[group[i]] = newColor
         i++

@@ -28,8 +28,6 @@ class PlotData
 
     @cIndex = 0 # color index
 
-    legendUtils = LegendUtils.get()
-
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData()

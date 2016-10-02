@@ -472,6 +472,7 @@ class RectPlot
                .attr('fill', (d) -> d.color)
                .attr('stroke', (d) -> d.stroke)
                .attr('stroke-opacity', (d) -> d['stroke-opacity'])
+               .attr('fill-opacity', (d) -> d.fillOpacity)
 
       @svg.selectAll('.legend-groups-text').remove()
       @svg.selectAll('.legend-groups-text')

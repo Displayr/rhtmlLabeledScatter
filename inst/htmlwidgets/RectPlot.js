@@ -432,6 +432,8 @@ RectPlot = (function() {
         return d.stroke;
       }).attr('stroke-opacity', function(d) {
         return d['stroke-opacity'];
+      }).attr('fill-opacity', function(d) {
+        return d.fillOpacity;
       });
       this.svg.selectAll('.legend-groups-text').remove();
       this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
