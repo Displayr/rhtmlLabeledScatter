@@ -41,6 +41,7 @@ bubble1 = {
   zPrefix: '$',
   zSuffix: 'people',
   legendShow: true,
+  legendBubblesShow: true,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
   legendFontColor: 'black',

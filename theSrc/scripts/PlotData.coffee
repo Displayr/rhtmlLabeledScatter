@@ -307,14 +307,12 @@ class PlotData
     else
       @setLegendItemsPositions(@legendGroups.length, @legendGroups, @legendDim.cols)
 
-  resizedAfterLegendGroupsDrawn: =>
+  resizedAfterLegendGroupsDrawn: (legendShow) =>
     initWidth = @viewBoxDim.width
 
     totalLegendItems = @legendGroups.length + @legendPts.length
-    legendGrpsTextMax = 0
-    if @legendGroups.length > 0
-      legendGrpsTextMax = (_.maxBy(@legendGroups, (e) -> e.width)).width
-    legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
+    legendGrpsTextMax = if @legendGroups.length > 0 and legendShow then (_.maxBy(@legendGroups, (e) -> e.width)).width else 0
+    legendPtsTextMax = if @legendPts.length > 0 and legendShow then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
 
     maxTextWidth = _.max [legendGrpsTextMax, legendPtsTextMax]
 

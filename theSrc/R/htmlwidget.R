@@ -25,6 +25,7 @@
 #' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
 #' @param labels.font.size is the font size of the labels
 #' @param legend.show is the toggle to show the legend. Defaults to TRUE
+#' @param legend.bubbles.show toggle to show the bubble sizes in the legend. Defaults to TRUE
 #' @param legend.font.color is the font color of the legend. NOTE: Setting this overrides the color array given
 #' @param legend.font.size is the font size of the legend
 #' @param legend.font.family is the font family of the legend
@@ -101,6 +102,7 @@ LabeledScatter <- function(
   labels.font.color = NULL,
   labels.font.size = 10,
   legend.show = TRUE,
+  legend.bubbles.show = TRUE,
   legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.font.family = "Arial",
   legend.font.size = 12,
@@ -160,6 +162,7 @@ LabeledScatter <- function(
     labelsFontColor = labels.font.color,
     labelsFontSize = labels.font.size,
     legendShow = legend.show,
+    legendBubblesShow = legend.bubbles.show,
     legendFontColor = legend.font.color,
     legendFontFamily = legend.font.family,
     legendFontSize = legend.font.size,

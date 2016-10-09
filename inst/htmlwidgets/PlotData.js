@@ -357,17 +357,14 @@ PlotData = (function() {
     }
   };
 
-  PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
+  PlotData.prototype.resizedAfterLegendGroupsDrawn = function(legendShow) {
     var bubbleLeftRightPadding, bubbleTitleWidth, initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems, _ref;
     initWidth = this.viewBoxDim.width;
     totalLegendItems = this.legendGroups.length + this.legendPts.length;
-    legendGrpsTextMax = 0;
-    if (this.legendGroups.length > 0) {
-      legendGrpsTextMax = (_.maxBy(this.legendGroups, function(e) {
-        return e.width;
-      })).width;
-    }
-    legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
+    legendGrpsTextMax = this.legendGroups.length > 0 && legendShow ? (_.maxBy(this.legendGroups, function(e) {
+      return e.width;
+    })).width : 0;
+    legendPtsTextMax = this.legendPts.length > 0 && legendShow ? (_.maxBy(this.legendPts, function(e) {
       return e.width;
     })).width : 0;
     maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax]);

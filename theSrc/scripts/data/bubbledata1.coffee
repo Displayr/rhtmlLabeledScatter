@@ -247,8 +247,9 @@ bubble1 =
   yPrefix: '~'
   zPrefix: '$'
   zSuffix: 'people'
-  legendShow: true,
-  legendFontFamily: 'Arial',
+  legendShow: true
+  legendBubblesShow: true
+  legendFontFamily: 'Arial'
   legendFontSize: 16,
   legendFontColor: 'black'
   yBoundsMaximum: 85

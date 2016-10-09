@@ -99,6 +99,7 @@ class LabeledScatter
                         @data.ySuffix,
                         @data.zSuffix,
                         @data.legendShow,
+                        @data.legendBubblesShow,
                         @data.legendFontFamily,
                         @data.legendFontSize,
                         @data.legendFontColor,

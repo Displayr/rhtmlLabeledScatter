@@ -43,6 +43,7 @@ class RectPlot
                 @ySuffix = '',
                 @zSuffix = '',
                 @legendShow,
+                @legendBubblesShow = true,
                 @legendFontFamily,
                 @legendFontSize,
                 @legendFontColor,
@@ -413,20 +414,19 @@ class RectPlot
              .on('drag', dragMove)
              .on('dragend', dragEnd)
 
-    if @legendShow
-      if Utils.get().isArr(@Z)
-        @svg.selectAll('.legend-bubbles').remove()
-        @svg.selectAll('.legend-bubbles')
-            .data(@data.legendBubbles)
-            .enter()
-            .append('circle')
-            .attr('class', 'legend-bubbles')
-            .attr('cx', (d) -> d.cx)
-            .attr('cy', (d) -> d.cy)
-            .attr('r', (d) -> d.r)
-            .attr('fill', 'none')
-            .attr('stroke', 'black')
-            .attr('stroke-opacity', 0.5)
+    if @legendBubblesShow and Utils.get().isArr(@Z)
+      @svg.selectAll('.legend-bubbles').remove()
+      @svg.selectAll('.legend-bubbles')
+          .data(@data.legendBubbles)
+          .enter()
+          .append('circle')
+          .attr('class', 'legend-bubbles')
+          .attr('cx', (d) -> d.cx)
+          .attr('cy', (d) -> d.cy)
+          .attr('r', (d) -> d.r)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
+          .attr('stroke-opacity', 0.5)
 
       @svg.selectAll('.legend-bubbles-labels').remove()
       @svg.selectAll('.legend-bubbles-labels')
@@ -460,6 +460,7 @@ class RectPlot
 
         SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
+    if @legendShow
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
                .data(@data.legendGroups)
@@ -509,7 +510,8 @@ class RectPlot
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
-      if @data.resizedAfterLegendGroupsDrawn()
+    if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z))
+      if @data.resizedAfterLegendGroupsDrawn(@legendShow)
         console.log "rhtmlLabeledScatter: drawLegend false"
         return false
 

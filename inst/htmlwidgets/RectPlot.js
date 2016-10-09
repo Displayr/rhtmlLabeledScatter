@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -28,6 +28,7 @@ RectPlot = (function() {
     this.ySuffix = ySuffix != null ? ySuffix : '';
     this.zSuffix = zSuffix != null ? zSuffix : '';
     this.legendShow = legendShow;
+    this.legendBubblesShow = legendBubblesShow != null ? legendBubblesShow : true;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
@@ -390,17 +391,15 @@ RectPlot = (function() {
         }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
       };
     })(this);
-    if (this.legendShow) {
-      if (Utils.get().isArr(this.Z)) {
-        this.svg.selectAll('.legend-bubbles').remove();
-        this.svg.selectAll('.legend-bubbles').data(this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
-          return d.cx;
-        }).attr('cy', function(d) {
-          return d.cy;
-        }).attr('r', function(d) {
-          return d.r;
-        }).attr('fill', 'none').attr('stroke', 'black').attr('stroke-opacity', 0.5);
-      }
+    if (this.legendBubblesShow && Utils.get().isArr(this.Z)) {
+      this.svg.selectAll('.legend-bubbles').remove();
+      this.svg.selectAll('.legend-bubbles').data(this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
+        return d.cx;
+      }).attr('cy', function(d) {
+        return d.cy;
+      }).attr('r', function(d) {
+        return d.r;
+      }).attr('fill', 'none').attr('stroke', 'black').attr('stroke-opacity', 0.5);
       this.svg.selectAll('.legend-bubbles-labels').remove();
       this.svg.selectAll('.legend-bubbles-labels').data(this.data.legendBubbles).enter().append('text').attr('class', 'legend-bubbles-labels').attr('x', function(d) {
         return d.x;
@@ -419,6 +418,8 @@ RectPlot = (function() {
         }).attr('text-anchor', 'middle').attr('font-family', this.legendFontFamily).attr('font-weight', 'bold').attr('fill', this.legendFontColor).text(this.zTitle);
         SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg);
       }
+    }
+    if (this.legendShow) {
       this.svg.selectAll('.legend-groups-pts').remove();
       this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
         return d.cx;
@@ -466,7 +467,9 @@ RectPlot = (function() {
       }).call(drag);
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
-      if (this.data.resizedAfterLegendGroupsDrawn()) {
+    }
+    if (this.legendShow || (this.legendBubblesShow && Utils.get().isArr(this.Z))) {
+      if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
         console.log("rhtmlLabeledScatter: drawLegend false");
         return false;
       }
