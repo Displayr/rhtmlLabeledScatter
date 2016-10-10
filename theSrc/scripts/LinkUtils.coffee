@@ -11,29 +11,42 @@ class LinkUtils
 
     # calc the links from anc to label text if ambiguous
     getNewPtOnLabelBorder: (label, anchor, anchor_array) ->
+      labelXmid = label.x
+      labelXleft = label.x - label.width/2
+      labelXright = label.x + label.width/2
+
+      labelYbot = label.y
+      labelYtop = label.y - label.height
+      labelYmid = label.y - label.height/2
+
+      ancL = anchor.x - anchor.r
+      ancR = anchor.x + anchor.r
+      ancT = anchor.y + anchor.r
+      ancB = anchor.y - anchor.r
+
       labelBorder =
-        botL: [label.x - label.width/2,     label.y]
-        botC: [label.x,                     label.y]
-        botR: [label.x + label.width/2,     label.y]
-        topL: [label.x - label.width/2,     label.y - label.height + 7]
-        topC: [label.x,                     label.y - label.height + 7]
-        topR: [label.x + label.width/2,     label.y - label.height + 7]
-        midL: [label.x - label.width/2,     label.y - label.height/2]
-        midR: [label.x + label.width/2,     label.y - label.height/2]
+        botL: [labelXleft,     labelYbot]
+        botC: [labelXmid,      labelYbot]
+        botR: [labelXright,    labelYbot]
+        topL: [labelXleft,     labelYtop + 7]
+        topC: [labelXmid,      labelYtop + 7]
+        topR: [labelXright,    labelYtop + 7]
+        midL: [labelXleft,     labelYmid]
+        midR: [labelXright,    labelYmid]
 
       padding = 10
-      centered = (anchor.x > label.x - label.width/2) and (anchor.x < label.x + label.width/2)
-      paddedCenter = (anchor.x > label.x - label.width/2 - padding) and (anchor.x < label.x + label.width/2 + padding)
-      abovePadded = anchor.y < label.y - label.height - padding
-      above = anchor.y < label.y - label.height
-      aboveMid = anchor.y < label.y - label.height/2
-      belowPadded = anchor.y > label.y + padding
-      below = anchor.y > label.y
-      belowMid = anchor.y >= label.y - label.height/2
-      left = anchor.x < label.x - label.width/2
-      right = anchor.x > label.x + label.width/2
-      leftPadded = anchor.x < label.x - label.width/2 - padding
-      rightPadded = anchor.x > label.x + label.width/2 + padding
+      centered = (ancR > labelXleft) and (ancL < labelXright)
+      paddedCenter = (ancR > labelXleft - padding) and (ancL < labelXright + padding)
+      abovePadded = ancB < labelYtop - padding
+      above = ancB < labelYtop
+      aboveMid = anchor.y < labelYmid
+      belowPadded = ancT > labelYbot + padding
+      below = ancT > labelYbot
+      belowMid = anchor.y >= labelYmid
+      left = ancR < labelXleft
+      right = ancL > labelXright
+      leftPadded = ancR < labelXleft - padding
+      rightPadded = ancL > labelXright + padding
 
       if centered and abovePadded
         return labelBorder.topC
@@ -81,6 +94,7 @@ class LinkUtils
             return labelBorder.midL
           else if right
             return labelBorder.midR
+        return
 
     getPtOnAncBorder: (cx, cy, cr, x, y) ->
       opp = Math.abs(cy - y)
