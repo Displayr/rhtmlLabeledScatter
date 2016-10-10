@@ -291,13 +291,17 @@ PlotData = (function() {
   };
 
   PlotData.prototype.setLegendItemsPositions = function(numItems, itemsArray, cols) {
-    var colSpacing, currentCol, exceededCurrentCol, i, legendHeightWithoutBubbleSize, legendStartY, legendUtils, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, _results;
-    legendHeightWithoutBubbleSize = this.viewBoxDim.height;
+    var bubbleLegendTextHeight, colSpacing, currentCol, exceededCurrentCol, i, legendStartY, legendUtils, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, _results;
+    bubbleLegendTextHeight = 20;
+    this.legendHeight = this.viewBoxDim.height;
+    if (this.legendBubblesTitle != null) {
+      this.legendHeight = this.legendBubblesTitle[0].y - bubbleLegendTextHeight - this.viewBoxDim.y;
+    }
     if (this.Zquartiles != null) {
       legendUtils = LegendUtils.get();
       legendUtils.setupBubbles(this);
     }
-    startOfCenteredLegendItems = this.viewBoxDim.y + this.viewBoxDim.height / 2 - this.legendDim.heightOfRow * (numItems / cols) / 2 + this.legendDim.ptRadius;
+    startOfCenteredLegendItems = this.viewBoxDim.y + this.legendHeight / 2 - this.legendDim.heightOfRow * (numItems / cols) / 2 + this.legendDim.ptRadius;
     startOfViewBox = this.viewBoxDim.y + this.legendDim.ptRadius;
     legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox);
     colSpacing = 0;
@@ -308,14 +312,14 @@ PlotData = (function() {
     while (i < numItems) {
       if (cols > 1) {
         numElemsInCol = numItems / cols;
-        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + legendHeightWithoutBubbleSize;
+        exceededCurrentCol = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + this.legendHeight;
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol * currentCol;
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
           colSpacing = (this.legendDim.colSpace + this.legendDim.ptRadius * 2 + this.legendDim.ptToTextSpace) * currentCol;
           numItemsInPrevCols = i;
           currentCol++;
         }
-        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + legendHeightWithoutBubbleSize;
+        totalItemsSpacingExceedLegendArea = legendStartY + (i - numItemsInPrevCols) * this.legendDim.heightOfRow > this.viewBoxDim.y + this.legendHeight;
         if (totalItemsSpacingExceedLegendArea) {
           break;
         }
@@ -370,7 +374,7 @@ PlotData = (function() {
     maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax]);
     spacingAroundMaxTextWidth = this.legendDim.leftPadding + this.legendDim.ptRadius * 2 + this.legendDim.rightPadding + this.legendDim.ptToTextSpace;
     bubbleLeftRightPadding = this.legendDim.leftPadding + this.legendDim.rightPadding;
-    this.legendDim.cols = Math.ceil(totalLegendItems * this.legendDim.heightOfRow / this.viewBoxDim.height);
+    this.legendDim.cols = Math.ceil(totalLegendItems * this.legendDim.heightOfRow / this.legendHeight);
     this.legendDim.width = maxTextWidth * this.legendDim.cols + spacingAroundMaxTextWidth + this.legendDim.centerPadding * (this.legendDim.cols - 1);
     bubbleTitleWidth = (_ref = this.legendBubblesTitle) != null ? _ref[0].width : void 0;
     this.legendDim.width = _.max([this.legendDim.width, bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding]);
