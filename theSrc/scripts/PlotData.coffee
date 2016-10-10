@@ -248,13 +248,16 @@ class PlotData
       @moveElemToLegend(p) unless _.includes(@outsidePlotPtsId, p)
 
   setLegendItemsPositions: (numItems, itemsArray, cols) =>
-    legendHeightWithoutBubbleSize = @viewBoxDim.height
+    bubbleLegendTextHeight = 20
+    @legendHeight = @viewBoxDim.height
+    if @legendBubblesTitle?
+      @legendHeight = @legendBubblesTitle[0].y - bubbleLegendTextHeight - @viewBoxDim.y
 
     if @Zquartiles?
       legendUtils = LegendUtils.get()
       legendUtils.setupBubbles(@)
 
-    startOfCenteredLegendItems = (@viewBoxDim.y + @viewBoxDim.height/2 -
+    startOfCenteredLegendItems = (@viewBoxDim.y + @legendHeight/2 -
                                   @legendDim.heightOfRow*(numItems/cols)/2 +
                                   @legendDim.ptRadius)
     startOfViewBox = @viewBoxDim.y + @legendDim.ptRadius
@@ -268,14 +271,14 @@ class PlotData
     while i < numItems
       if cols > 1
         numElemsInCol = numItems/cols
-        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + legendHeightWithoutBubbleSize
+        exceededCurrentCol = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + @legendHeight
         plottedEvenBalanceOfItemsBtwnCols = i >= numElemsInCol*currentCol
         if exceededCurrentCol or plottedEvenBalanceOfItemsBtwnCols
           colSpacing = (@legendDim.colSpace + @legendDim.ptRadius*2 + @legendDim.ptToTextSpace)*currentCol
           numItemsInPrevCols = i
           currentCol++
 
-        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + legendHeightWithoutBubbleSize
+        totalItemsSpacingExceedLegendArea = legendStartY + (i-numItemsInPrevCols)*@legendDim.heightOfRow > @viewBoxDim.y + @legendHeight
         break if totalItemsSpacingExceedLegendArea
 
       li = itemsArray[i]
@@ -323,7 +326,7 @@ class PlotData
 
     bubbleLeftRightPadding = @legendDim.leftPadding + @legendDim.rightPadding
 
-    @legendDim.cols = Math.ceil((totalLegendItems)*@legendDim.heightOfRow/@viewBoxDim.height)
+    @legendDim.cols = Math.ceil((totalLegendItems)*@legendDim.heightOfRow/@legendHeight)
     @legendDim.width = maxTextWidth*@legendDim.cols + spacingAroundMaxTextWidth + @legendDim.centerPadding*(@legendDim.cols-1)
 
     bubbleTitleWidth = @legendBubblesTitle?[0].width
