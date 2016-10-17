@@ -83,9 +83,12 @@ class RectPlot
     @yTitle.textHeight = 0 if @yTitle.text is ''
 
     @axisLeaderLineLength = 5
-    @axisDimensionTextHeight = 0 # This is set later
-    @axisDimensionTextWidth = 0  # This is set later
-    @axisDimensionTextRightPadding = 0 # Set later, for when axis markers labels protrude (VIS-146)
+    @axisDimensionText =
+      rowMaxWidth: 0
+      rowMaxHeight: 0
+      colMaxWidth: 0
+      colMaxHeight: 0
+      rightPadding: 0  # Set later, for when axis markers labels protrude (VIS-146)
     @verticalPadding = 5
     @horizontalPadding = 10
 
@@ -145,9 +148,9 @@ class RectPlot
     @viewBoxDim =
       svgWidth:           width
       svgHeight:          height
-      width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionTextWidth - @yTitle.textHeight - @axisDimensionTextRightPadding
-      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionTextHeight - @xTitle.textHeight - @axisLeaderLineLength - @xTitle.topPadding
-      x:                  @horizontalPadding*2 + @axisDimensionTextWidth + @axisLeaderLineLength + @yTitle.textHeight
+      width:              width - @legendDim.width - @horizontalPadding*3 - @axisLeaderLineLength - @axisDimensionText.rowMaxWidth - @yTitle.textHeight - @axisDimensionText.rightPadding
+      height:             height - @verticalPadding*2 - @title.textHeight - @title.paddingBot - @axisDimensionText.colMaxHeight - @xTitle.textHeight - @axisLeaderLineLength - @xTitle.topPadding
+      x:                  @horizontalPadding*2 + @axisDimensionText.rowMaxWidth + @axisLeaderLineLength + @yTitle.textHeight
       y:                  @verticalPadding + @title.textHeight + @title.paddingBot
       labelFontSize:      @labelsFont.size
       labelSmallFontSize: @labelsFont.size * 0.75
@@ -169,7 +172,10 @@ class RectPlot
                          @originAlign,
                          @pointRadius,
                          @bounds,
-                         @transparency)
+                         @transparency,
+                         @legendShow,
+                         @legendBubblesShow,
+                         @axisDimensionText)
 
   drawLabsAndPlot: =>
     @data.normalizeData()
@@ -305,24 +311,30 @@ class RectPlot
              .attr('font-size', @axisFontSize)
              .text((d) -> d.label)
              .attr('text-anchor', (d) -> d.anchor)
+             .attr('type', (d) -> d.type)
 
     # Figure out the max width of the yaxis dimensional labels
-    @maxTextWidthOfDimensionMarkerLabels = 0
-    initAxisTextWidth = @axisDimensionTextWidth
-    initAxisTextHeight = @axisDimensionTextHeight
+    initAxisTextRowWidth = @axisDimensionText.rowMaxWidth
+    initAxisTextColWidth = @axisDimensionText.colMaxWidth
+    initAxisTextRowHeight = @axisDimensionText.rowMaxHeight
+    initAxisTextColHeight = @axisDimensionText.colMaxHeight
     for markerLabel, i in markerLabels[0]
+      labelType = d3.select(markerLabel).attr('type')
       bb = markerLabel.getBBox()
-      if @axisDimensionTextWidth < bb.width
-        @axisDimensionTextWidth = bb.width
-      if @axisDimensionTextHeight < bb.height
-        @axisDimensionTextHeight = bb.height
-      if @width < bb.x + bb.width
-        @axisDimensionTextRightPadding = bb.width/2
+      @axisDimensionText.rowMaxWidth = bb.width if @axisDimensionText.rowMaxWidth < bb.width and labelType == 'row'
+      @axisDimensionText.colMaxWidth = bb.width if @axisDimensionText.colMaxWidth < bb.width and labelType == 'col'
+      @axisDimensionText.rowMaxHeight = bb.height if @axisDimensionText.rowMaxHeight < bb.height and labelType == 'row'
+      @axisDimensionText.colMaxHeight = bb.height if @axisDimensionText.colMaxHeight < bb.height and labelType == 'col'
 
-    if initAxisTextWidth != @axisDimensionTextWidth or
-       initAxisTextHeight != @axisDimensionTextHeight
-      @setDim(@svg, @width, @height)
+      if @width < bb.x + bb.width
+        @axisDimensionText.rightPadding = bb.width/2
+
+    if initAxisTextRowWidth != @axisDimensionText.rowMaxWidth or
+       initAxisTextColWidth != @axisDimensionText.colMaxWidth or
+       initAxisTextRowHeight != @axisDimensionText.rowMaxHeight or
+       initAxisTextColHeight != @axisDimensionText.colMaxHeight
       console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
+      @setDim(@svg, @width, @height)
       return false
     return true
 
@@ -332,7 +344,7 @@ class RectPlot
         x: @viewBoxDim.x + @viewBoxDim.width/2
         y: @viewBoxDim.y + @viewBoxDim.height +
            @axisLeaderLineLength +
-           @axisDimensionTextHeight +
+           @axisDimensionText.colMaxHeight +
            @xTitle.topPadding +
            @xTitle.textHeight
         text: @xTitle.text
@@ -460,7 +472,40 @@ class RectPlot
 
         SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
+    drag = legendLabelDragAndDrop()
+    @svg.selectAll('.legend-dragged-pts-text').remove()
+    @svg.selectAll('.legend-dragged-pts-text')
+        .data(@data.legendPts)
+        .enter()
+        .append('text')
+        .attr('class', 'legend-dragged-pts-text')
+        .attr('id', (d) -> "legend-#{d.id}")
+        .attr('x', (d) -> d.x)
+        .attr('y', (d) -> d.y)
+        .attr('font-family', @legendFontFamily)
+        .attr('font-size', @legendFontSize)
+        .attr('text-anchor', (d) -> d.anchor)
+        .attr('fill', (d) -> d.color)
+        .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
+        .call(drag)
+
+    SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
+
     if @legendShow
+      @svg.selectAll('.legend-groups-text').remove()
+      @svg.selectAll('.legend-groups-text')
+          .data(@data.legendGroups)
+          .enter()
+          .append('text')
+          .attr('class', 'legend-groups-text')
+          .attr('x', (d) -> d.x)
+          .attr('y', (d) -> d.y)
+          .attr('font-family', @legendFontFamily)
+          .attr('fill', @legendFontColor)
+          .attr('font-size', @legendFontSize)
+          .text((d) -> d.text)
+          .attr('text-anchor', (d) -> d.anchor)
+
       @svg.selectAll('.legend-groups-pts').remove()
       @svg.selectAll('.legend-groups-pts')
                .data(@data.legendGroups)
@@ -475,42 +520,10 @@ class RectPlot
                .attr('stroke-opacity', (d) -> d['stroke-opacity'])
                .attr('fill-opacity', (d) -> d.fillOpacity)
 
-      @svg.selectAll('.legend-groups-text').remove()
-      @svg.selectAll('.legend-groups-text')
-               .data(@data.legendGroups)
-               .enter()
-               .append('text')
-               .attr('class', 'legend-groups-text')
-               .attr('x', (d) -> d.x)
-               .attr('y', (d) -> d.y)
-               .attr('font-family', @legendFontFamily)
-               .attr('fill', @legendFontColor)
-               .attr('font-size', @legendFontSize)
-               .text((d) -> d.text)
-               .attr('text-anchor', (d) -> d.anchor)
-
-      drag = legendLabelDragAndDrop()
-      @svg.selectAll('.legend-dragged-pts-text').remove()
-      @svg.selectAll('.legend-dragged-pts-text')
-               .data(@data.legendPts)
-               .enter()
-               .append('text')
-               .attr('class', 'legend-dragged-pts-text')
-               .attr('id', (d) -> "legend-#{d.id}")
-               .attr('x', (d) -> d.x)
-               .attr('y', (d) -> d.y)
-               .attr('font-family', @legendFontFamily)
-               .attr('font-size', @legendFontSize)
-               .attr('text-anchor', (d) -> d.anchor)
-               .attr('fill', (d) -> d.color)
-               .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
-               .call(drag)
-
       # Height and width are not provided
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
-    if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z))
+    if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z)) or @data.legendPts?
       if @data.resizedAfterLegendGroupsDrawn(@legendShow)
         console.log "rhtmlLabeledScatter: drawLegend false"
         return false

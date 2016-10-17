@@ -37,7 +37,7 @@ class AxisUtils
 
       pushDimensionMarker = (type, x1, y1, x2, y2, label) ->
         leaderLineLen = plot.axisLeaderLineLength
-        labelHeight = plot.axisDimensionTextHeight
+        labelHeight = _.max [plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight]
         xDecimals = plot.xDecimals
         yDecimals = plot.yDecimals
         xPrefix = plot.xPrefix
@@ -46,7 +46,6 @@ class AxisUtils
         ySuffix = plot.ySuffix
 
         if type == 'c'
-          displayedLabel =
           dimensionMarkerLeaderStack.push({
             x1: x1
             y1: y2
@@ -58,6 +57,7 @@ class AxisUtils
             y: y2 + leaderLineLen + labelHeight
             label: Utils.get().getFormattedNum(label, xDecimals, xPrefix, xSuffix)
             anchor: 'middle'
+            type: 'col'
           })
 
         if type == 'r'
@@ -72,6 +72,7 @@ class AxisUtils
             y: y2 + labelHeight/3
             label: Utils.get().getFormattedNum(label, yDecimals, yPrefix, ySuffix)
             anchor: 'end'
+            type: 'row'
           })
 
       dimensionMarkerStack = []

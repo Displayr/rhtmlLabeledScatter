@@ -4,7 +4,7 @@ var PlotData,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 PlotData = (function() {
-  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency) {
+  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency, legendShow, legendBubblesShow, axisDimensionText) {
     this.X = X;
     this.Y = Y;
     this.Z = Z;
@@ -18,6 +18,9 @@ PlotData = (function() {
     this.pointRadius = pointRadius;
     this.bounds = bounds;
     this.transparency = transparency;
+    this.legendShow = legendShow;
+    this.legendBubblesShow = legendBubblesShow;
+    this.axisDimensionText = axisDimensionText;
     this.removeElemFromLegend = __bind(this.removeElemFromLegend, this);
     this.moveElemToLegend = __bind(this.moveElemToLegend, this);
     this.isLegendPtOutsideViewBox = __bind(this.isLegendPtOutsideViewBox, this);
@@ -294,7 +297,7 @@ PlotData = (function() {
     var bubbleLegendTextHeight, colSpacing, currentCol, exceededCurrentCol, i, legendStartY, legendUtils, li, numElemsInCol, numItemsInPrevCols, plottedEvenBalanceOfItemsBtwnCols, startOfCenteredLegendItems, startOfViewBox, totalItemsSpacingExceedLegendArea, _results;
     bubbleLegendTextHeight = 20;
     this.legendHeight = this.viewBoxDim.height;
-    if (this.legendBubblesTitle != null) {
+    if ((this.legendBubblesTitle != null) && this.legendBubblesShow) {
       this.legendHeight = this.legendBubblesTitle[0].y - bubbleLegendTextHeight - this.viewBoxDim.y;
     }
     if (this.Zquartiles != null) {
@@ -341,7 +344,7 @@ PlotData = (function() {
 
   PlotData.prototype.setupLegendGroupsAndPts = function() {
     var i, j, legendItemArray, totalLegendItems;
-    if (this.legendPts.length > 0) {
+    if (this.legendPts.length > 0 && this.legendShow === true) {
       totalLegendItems = this.legendGroups.length + this.legendPts.length;
       legendItemArray = [];
       i = 0;
@@ -356,19 +359,21 @@ PlotData = (function() {
         i++;
       }
       return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legendDim.cols);
+    } else if (this.legendPts.length > 0 && this.legendShow === false) {
+      return this.setLegendItemsPositions(this.legendPts.length, this.legendPts, this.legendDim.cols);
     } else {
       return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legendDim.cols);
     }
   };
 
-  PlotData.prototype.resizedAfterLegendGroupsDrawn = function(legendShow) {
+  PlotData.prototype.resizedAfterLegendGroupsDrawn = function() {
     var bubbleLeftRightPadding, bubbleTitleWidth, initWidth, legendGrpsTextMax, legendPtsTextMax, maxTextWidth, spacingAroundMaxTextWidth, totalLegendItems, _ref;
     initWidth = this.viewBoxDim.width;
-    totalLegendItems = this.legendGroups.length + this.legendPts.length;
-    legendGrpsTextMax = this.legendGroups.length > 0 && legendShow ? (_.maxBy(this.legendGroups, function(e) {
+    totalLegendItems = this.legendShow ? this.legendGroups.length + this.legendPts.length : this.legendPts.length;
+    legendGrpsTextMax = this.legendGroups.length > 0 && this.legendShow ? (_.maxBy(this.legendGroups, function(e) {
       return e.width;
     })).width : 0;
-    legendPtsTextMax = this.legendPts.length > 0 && legendShow ? (_.maxBy(this.legendPts, function(e) {
+    legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, function(e) {
       return e.width;
     })).width : 0;
     maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax]);
@@ -379,7 +384,7 @@ PlotData = (function() {
     bubbleTitleWidth = (_ref = this.legendBubblesTitle) != null ? _ref[0].width : void 0;
     this.legendDim.width = _.max([this.legendDim.width, bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding]);
     this.legendDim.colSpace = maxTextWidth;
-    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x;
+    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x - this.axisDimensionText.rowMaxWidth;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     return initWidth !== this.viewBoxDim.width;
   };
