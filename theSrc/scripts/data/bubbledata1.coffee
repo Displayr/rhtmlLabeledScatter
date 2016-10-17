@@ -247,8 +247,8 @@ bubble1 =
   yPrefix: '~'
   zPrefix: '$'
   zSuffix: 'people'
-  legendShow: true
-  legendBubblesShow: true
+  legendShow: false
+  legendBubblesShow: false
   legendFontFamily: 'Arial'
   legendFontSize: 16,
   legendFontColor: 'black'

@@ -13,7 +13,10 @@ class PlotData
                 @originAlign,
                 @pointRadius,
                 @bounds,
-                @transparency) ->
+                @transparency,
+                @legendShow,
+                @legendBubblesShow,
+                @axisDimensionText) ->
 
     @origX = @X.slice(0)
     @origY = @Y.slice(0)
@@ -250,7 +253,7 @@ class PlotData
   setLegendItemsPositions: (numItems, itemsArray, cols) =>
     bubbleLegendTextHeight = 20
     @legendHeight = @viewBoxDim.height
-    if @legendBubblesTitle?
+    if @legendBubblesTitle? and @legendBubblesShow
       @legendHeight = @legendBubblesTitle[0].y - bubbleLegendTextHeight - @viewBoxDim.y
 
     if @Zquartiles?
@@ -293,7 +296,7 @@ class PlotData
       i++
 
   setupLegendGroupsAndPts: =>
-    if @legendPts.length > 0
+    if @legendPts.length > 0 and @legendShow == true
       totalLegendItems = @legendGroups.length + @legendPts.length
       legendItemArray = []
       i = 0
@@ -307,15 +310,17 @@ class PlotData
         i++
 
       @setLegendItemsPositions(totalLegendItems, legendItemArray, @legendDim.cols)
+    else if @legendPts.length > 0 and @legendShow == false
+      @setLegendItemsPositions(@legendPts.length, @legendPts, @legendDim.cols)
     else
       @setLegendItemsPositions(@legendGroups.length, @legendGroups, @legendDim.cols)
 
-  resizedAfterLegendGroupsDrawn: (legendShow) =>
+  resizedAfterLegendGroupsDrawn: =>
     initWidth = @viewBoxDim.width
 
-    totalLegendItems = @legendGroups.length + @legendPts.length
-    legendGrpsTextMax = if @legendGroups.length > 0 and legendShow then (_.maxBy(@legendGroups, (e) -> e.width)).width else 0
-    legendPtsTextMax = if @legendPts.length > 0 and legendShow then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
+    totalLegendItems = if @legendShow then @legendGroups.length + @legendPts.length else @legendPts.length
+    legendGrpsTextMax = if @legendGroups.length > 0 and @legendShow then (_.maxBy(@legendGroups, (e) -> e.width)).width else 0
+    legendPtsTextMax = if @legendPts.length > 0 then (_.maxBy(@legendPts, (e) -> e.width)).width else 0
 
     maxTextWidth = _.max [legendGrpsTextMax, legendPtsTextMax]
 
@@ -334,7 +339,7 @@ class PlotData
 
     @legendDim.colSpace = maxTextWidth
 
-    @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x
+    @viewBoxDim.width = @viewBoxDim.svgWidth - @legendDim.width - @viewBoxDim.x - @axisDimensionText.rowMaxWidth
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
 
     initWidth != @viewBoxDim.width

@@ -93,9 +93,13 @@ RectPlot = (function() {
       this.yTitle.textHeight = 0;
     }
     this.axisLeaderLineLength = 5;
-    this.axisDimensionTextHeight = 0;
-    this.axisDimensionTextWidth = 0;
-    this.axisDimensionTextRightPadding = 0;
+    this.axisDimensionText = {
+      rowMaxWidth: 0,
+      rowMaxHeight: 0,
+      colMaxWidth: 0,
+      colMaxHeight: 0,
+      rightPadding: 0
+    };
     this.verticalPadding = 5;
     this.horizontalPadding = 10;
     this.bounds = {
@@ -156,9 +160,9 @@ RectPlot = (function() {
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width - this.horizontalPadding * 3 - this.axisLeaderLineLength - this.axisDimensionTextWidth - this.yTitle.textHeight - this.axisDimensionTextRightPadding,
-      height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionTextHeight - this.xTitle.textHeight - this.axisLeaderLineLength - this.xTitle.topPadding,
-      x: this.horizontalPadding * 2 + this.axisDimensionTextWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
+      width: width - this.legendDim.width - this.horizontalPadding * 3 - this.axisLeaderLineLength - this.axisDimensionText.rowMaxWidth - this.yTitle.textHeight - this.axisDimensionText.rightPadding,
+      height: height - this.verticalPadding * 2 - this.title.textHeight - this.title.paddingBot - this.axisDimensionText.colMaxHeight - this.xTitle.textHeight - this.axisLeaderLineLength - this.xTitle.topPadding,
+      x: this.horizontalPadding * 2 + this.axisDimensionText.rowMaxWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
       labelFontSize: this.labelsFont.size,
       labelSmallFontSize: this.labelsFont.size * 0.75,
@@ -167,7 +171,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
   };
 
   RectPlot.prototype.drawLabsAndPlot = function() {
@@ -222,7 +226,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
-    var axisArrays, bb, i, initAxisTextHeight, initAxisTextWidth, markerLabel, markerLabels, _i, _len, _ref;
+    var axisArrays, bb, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
     axisArrays = AxisUtils.get().getAxisDataArrays(this, this.data, this.viewBoxDim);
     if (this.grid) {
       this.svg.selectAll('.origin').remove();
@@ -279,27 +283,37 @@ RectPlot = (function() {
       return d.label;
     }).attr('text-anchor', function(d) {
       return d.anchor;
+    }).attr('type', function(d) {
+      return d.type;
     });
-    this.maxTextWidthOfDimensionMarkerLabels = 0;
-    initAxisTextWidth = this.axisDimensionTextWidth;
-    initAxisTextHeight = this.axisDimensionTextHeight;
+    initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth;
+    initAxisTextColWidth = this.axisDimensionText.colMaxWidth;
+    initAxisTextRowHeight = this.axisDimensionText.rowMaxHeight;
+    initAxisTextColHeight = this.axisDimensionText.colMaxHeight;
     _ref = markerLabels[0];
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       markerLabel = _ref[i];
+      labelType = d3.select(markerLabel).attr('type');
       bb = markerLabel.getBBox();
-      if (this.axisDimensionTextWidth < bb.width) {
-        this.axisDimensionTextWidth = bb.width;
+      if (this.axisDimensionText.rowMaxWidth < bb.width && labelType === 'row') {
+        this.axisDimensionText.rowMaxWidth = bb.width;
       }
-      if (this.axisDimensionTextHeight < bb.height) {
-        this.axisDimensionTextHeight = bb.height;
+      if (this.axisDimensionText.colMaxWidth < bb.width && labelType === 'col') {
+        this.axisDimensionText.colMaxWidth = bb.width;
+      }
+      if (this.axisDimensionText.rowMaxHeight < bb.height && labelType === 'row') {
+        this.axisDimensionText.rowMaxHeight = bb.height;
+      }
+      if (this.axisDimensionText.colMaxHeight < bb.height && labelType === 'col') {
+        this.axisDimensionText.colMaxHeight = bb.height;
       }
       if (this.width < bb.x + bb.width) {
-        this.axisDimensionTextRightPadding = bb.width / 2;
+        this.axisDimensionText.rightPadding = bb.width / 2;
       }
     }
-    if (initAxisTextWidth !== this.axisDimensionTextWidth || initAxisTextHeight !== this.axisDimensionTextHeight) {
-      this.setDim(this.svg, this.width, this.height);
+    if (initAxisTextRowWidth !== this.axisDimensionText.rowMaxWidth || initAxisTextColWidth !== this.axisDimensionText.colMaxWidth || initAxisTextRowHeight !== this.axisDimensionText.rowMaxHeight || initAxisTextColHeight !== this.axisDimensionText.colMaxHeight) {
       console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
+      this.setDim(this.svg, this.width, this.height);
       return false;
     }
     return true;
@@ -310,7 +324,7 @@ RectPlot = (function() {
     axisLabels = [
       {
         x: this.viewBoxDim.x + this.viewBoxDim.width / 2,
-        y: this.viewBoxDim.y + this.viewBoxDim.height + this.axisLeaderLineLength + this.axisDimensionTextHeight + this.xTitle.topPadding + this.xTitle.textHeight,
+        y: this.viewBoxDim.y + this.viewBoxDim.height + this.axisLeaderLineLength + this.axisDimensionText.colMaxHeight + this.xTitle.topPadding + this.xTitle.textHeight,
         text: this.xTitle.text,
         anchor: 'middle',
         transform: 'rotate(0)',
@@ -419,7 +433,37 @@ RectPlot = (function() {
         SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg);
       }
     }
+    drag = legendLabelDragAndDrop();
+    this.svg.selectAll('.legend-dragged-pts-text').remove();
+    this.svg.selectAll('.legend-dragged-pts-text').data(this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
+      return "legend-" + d.id;
+    }).attr('x', function(d) {
+      return d.x;
+    }).attr('y', function(d) {
+      return d.y;
+    }).attr('font-family', this.legendFontFamily).attr('font-size', this.legendFontSize).attr('text-anchor', function(d) {
+      return d.anchor;
+    }).attr('fill', function(d) {
+      return d.color;
+    }).text(function(d) {
+      if (d.markerId != null) {
+        return Utils.get().getSuperscript(d.markerId + 1) + d.text;
+      } else {
+        return d.text;
+      }
+    }).call(drag);
+    SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
     if (this.legendShow) {
+      this.svg.selectAll('.legend-groups-text').remove();
+      this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      }).attr('font-family', this.legendFontFamily).attr('fill', this.legendFontColor).attr('font-size', this.legendFontSize).text(function(d) {
+        return d.text;
+      }).attr('text-anchor', function(d) {
+        return d.anchor;
+      });
       this.svg.selectAll('.legend-groups-pts').remove();
       this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
         return d.cx;
@@ -436,39 +480,9 @@ RectPlot = (function() {
       }).attr('fill-opacity', function(d) {
         return d.fillOpacity;
       });
-      this.svg.selectAll('.legend-groups-text').remove();
-      this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
-        return d.x;
-      }).attr('y', function(d) {
-        return d.y;
-      }).attr('font-family', this.legendFontFamily).attr('fill', this.legendFontColor).attr('font-size', this.legendFontSize).text(function(d) {
-        return d.text;
-      }).attr('text-anchor', function(d) {
-        return d.anchor;
-      });
-      drag = legendLabelDragAndDrop();
-      this.svg.selectAll('.legend-dragged-pts-text').remove();
-      this.svg.selectAll('.legend-dragged-pts-text').data(this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
-        return "legend-" + d.id;
-      }).attr('x', function(d) {
-        return d.x;
-      }).attr('y', function(d) {
-        return d.y;
-      }).attr('font-family', this.legendFontFamily).attr('font-size', this.legendFontSize).attr('text-anchor', function(d) {
-        return d.anchor;
-      }).attr('fill', function(d) {
-        return d.color;
-      }).text(function(d) {
-        if (d.markerId != null) {
-          return Utils.get().getSuperscript(d.markerId + 1) + d.text;
-        } else {
-          return d.text;
-        }
-      }).call(drag);
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
     }
-    if (this.legendShow || (this.legendBubblesShow && Utils.get().isArr(this.Z))) {
+    if (this.legendShow || (this.legendBubblesShow && Utils.get().isArr(this.Z)) || (this.data.legendPts != null)) {
       if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
         console.log("rhtmlLabeledScatter: drawLegend false");
         return false;

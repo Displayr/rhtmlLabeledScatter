@@ -55,7 +55,7 @@ LabeledScatter = (function() {
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
     } else {
-      this.data = bubble1;
+      this.data = testData5;
     }
     console.log("rhtmlLabeledScatter: received state");
     console.log(state);

@@ -51,9 +51,9 @@ AxisUtils = (function() {
         return;
       }
       pushDimensionMarker = function(type, x1, y1, x2, y2, label) {
-        var displayedLabel, labelHeight, leaderLineLen, xDecimals, xPrefix, xSuffix, yDecimals, yPrefix, ySuffix;
+        var labelHeight, leaderLineLen, xDecimals, xPrefix, xSuffix, yDecimals, yPrefix, ySuffix;
         leaderLineLen = plot.axisLeaderLineLength;
-        labelHeight = plot.axisDimensionTextHeight;
+        labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight]);
         xDecimals = plot.xDecimals;
         yDecimals = plot.yDecimals;
         xPrefix = plot.xPrefix;
@@ -61,7 +61,7 @@ AxisUtils = (function() {
         xSuffix = plot.xSuffix;
         ySuffix = plot.ySuffix;
         if (type === 'c') {
-          displayedLabel = dimensionMarkerLeaderStack.push({
+          dimensionMarkerLeaderStack.push({
             x1: x1,
             y1: y2,
             x2: x1,
@@ -71,7 +71,8 @@ AxisUtils = (function() {
             x: x1,
             y: y2 + leaderLineLen + labelHeight,
             label: Utils.get().getFormattedNum(label, xDecimals, xPrefix, xSuffix),
-            anchor: 'middle'
+            anchor: 'middle',
+            type: 'col'
           });
         }
         if (type === 'r') {
@@ -85,7 +86,8 @@ AxisUtils = (function() {
             x: x1 - leaderLineLen,
             y: y2 + labelHeight / 3,
             label: Utils.get().getFormattedNum(label, yDecimals, yPrefix, ySuffix),
-            anchor: 'end'
+            anchor: 'end',
+            type: 'row'
           });
         }
       };

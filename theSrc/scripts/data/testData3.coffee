@@ -202,7 +202,7 @@ testData3 =
   xTitleFontSize: 16,
   yTitleFontColor: 'black',
   yTitleFontSize: 16,
-  legendShow: true,
+  legendShow: false,
   legendFontFamily: 'Arial',
   legendFontSize: 16,
   legendFontColor: 'black'
