@@ -73,6 +73,12 @@ PlotData = (function() {
     thres = 0.08;
     xThres = thres * (this.maxX - this.minX);
     yThres = thres * (this.maxY - this.minY);
+    if (xThres === 0) {
+      xThres = 1;
+    }
+    if (yThres === 0) {
+      yThres = 1;
+    }
     this.maxX += xThres;
     this.minX -= xThres;
     this.maxY += yThres;
@@ -206,8 +212,8 @@ PlotData = (function() {
     i = 0;
     _results = [];
     while (i < this.origLen) {
-      this.normX[i] = (this.X[i] - this.minX) / (this.maxX - this.minX);
-      this.normY[i] = (this.Y[i] - this.minY) / (this.maxY - this.minY);
+      this.normX[i] = this.minX === this.maxX ? this.minX : (this.X[i] - this.minX) / (this.maxX - this.minX);
+      this.normY[i] = this.minY === this.maxY ? this.minX : (this.Y[i] - this.minY) / (this.maxY - this.minY);
       _results.push(i++);
     }
     return _results;
