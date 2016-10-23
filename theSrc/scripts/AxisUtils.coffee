@@ -79,14 +79,15 @@ class AxisUtils
       dimensionMarkerLeaderStack = []
       dimensionMarkerLabelStack = []
 
-      ticksX = if Utils.get().isNum(plot.xBoundsUnitsMajor)
-                 ticksX = plot.xBoundsUnitsMajor / 2
-               else
-                 @_getTickRange(data.maxX, data.minX)
-      ticksY = if Utils.get().isNum(plot.yBoundsUnitsMajor)
-                 ticksY = plot.yBoundsUnitsMajor / 2
-               else
-                 @_getTickRange(data.maxY, data.minY)
+      if Utils.get().isNum(plot.xBoundsUnitsMajor)
+        ticksX = plot.xBoundsUnitsMajor / 2
+      else
+        ticksX = @_getTickRange(data.maxX, data.minX)
+
+      if Utils.get().isNum(plot.yBoundsUnitsMajor)
+        ticksY = plot.yBoundsUnitsMajor / 2
+      else
+        ticksY = @_getTickRange(data.maxY, data.minY)
 
       originAxis = []
       oax_y = @_normalizeYCoords data,  0

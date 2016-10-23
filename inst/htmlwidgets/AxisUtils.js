@@ -94,8 +94,16 @@ AxisUtils = (function() {
       dimensionMarkerStack = [];
       dimensionMarkerLeaderStack = [];
       dimensionMarkerLabelStack = [];
-      ticksX = Utils.get().isNum(plot.xBoundsUnitsMajor) ? ticksX = plot.xBoundsUnitsMajor / 2 : this._getTickRange(data.maxX, data.minX);
-      ticksY = Utils.get().isNum(plot.yBoundsUnitsMajor) ? ticksY = plot.yBoundsUnitsMajor / 2 : this._getTickRange(data.maxY, data.minY);
+      if (Utils.get().isNum(plot.xBoundsUnitsMajor)) {
+        ticksX = plot.xBoundsUnitsMajor / 2;
+      } else {
+        ticksX = this._getTickRange(data.maxX, data.minX);
+      }
+      if (Utils.get().isNum(plot.yBoundsUnitsMajor)) {
+        ticksY = plot.yBoundsUnitsMajor / 2;
+      } else {
+        ticksY = this._getTickRange(data.maxY, data.minY);
+      }
       originAxis = [];
       oax_y = this._normalizeYCoords(data, 0);
       if ((oax_y <= viewBoxDim.y + viewBoxDim.height) && (oax_y >= viewBoxDim.y)) {

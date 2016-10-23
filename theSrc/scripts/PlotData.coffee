@@ -58,6 +58,11 @@ class PlotData
     thres = 0.08
     xThres = thres*(@maxX - @minX)
     yThres = thres*(@maxY - @minY)
+    if xThres == 0 # if there is no difference, add arbitrary threshold of 1
+      xThres = 1
+    if yThres == 0 # if there is no difference, add arbitrary threshold of 1
+      yThres = 1
+
     @maxX += xThres
     @minX -= xThres
     @maxY += yThres
@@ -181,11 +186,10 @@ class PlotData
             @outsideBoundsPtsId.push i
         i++
 
-
     i = 0
     while i < @origLen
-      @normX[i] = (@X[i] - @minX)/(@maxX - @minX)
-      @normY[i] = (@Y[i] - @minY)/(@maxY - @minY)
+      @normX[i] = if @minX == @maxX then @minX else (@X[i] - @minX)/(@maxX - @minX)
+      @normY[i] = if @minY == @maxY then @minX else (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
   normalizeZData: =>
