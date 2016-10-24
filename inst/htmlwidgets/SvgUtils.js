@@ -23,8 +23,12 @@ SvgUtils = (function() {
       _results = [];
       for (i = _i = 0, _len = dataArray.length; _i < _len; i = ++_i) {
         dataElem = dataArray[i];
-        dataElem.width = svgArray[0][i].getBBox().width;
-        _results.push(dataElem.height = svgArray[0][i].getBBox().height);
+        if (!(dataElem.width != null) && !(dataElem.height != null)) {
+          dataElem.width = svgArray[0][i].getBBox().width;
+          _results.push(dataElem.height = svgArray[0][i].getBBox().height);
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     };

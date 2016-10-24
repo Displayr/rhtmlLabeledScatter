@@ -13,6 +13,7 @@ dependencies:
      - labeler.js
      - bluebird.min.js
      - bignumber.min.js
+     - d3-extended.min.js
 
  - name: Local
    version: 0.0.1
@@ -30,6 +31,7 @@ dependencies:
      - PlotColors.js
      - Utils.js
      - State.js
+     - PlotLabel.js
 
  - name: Data
    version: 0.0.1

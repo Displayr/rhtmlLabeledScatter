@@ -18,10 +18,11 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title.font.size = 16, labels.show = TRUE,
   labels.font.family = "Arial", labels.font.color = NULL,
-  labels.font.size = 10, legend.show = TRUE, legend.font.color = rgb(44,
-  44, 44, maxColorValue = 255), legend.font.family = "Arial",
-  legend.font.size = 12, y.title.font.color = rgb(44, 44, 44, maxColorValue
-  = 255), y.title.font.family = "Arial", y.title.font.size = 12,
+  labels.font.size = 10, labels.logo.scale = NULL, legend.show = TRUE,
+  legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 12,
+  y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  y.title.font.family = "Arial", y.title.font.size = 12,
   axis.font.family = "Arial", axis.font.color = "Black",
   axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
   255), x.title.font.family = "Arial", x.title.font.size = 12,
@@ -91,7 +92,11 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{labels.font.size}{is the font size of the labels}
 
+\item{labels.logo.scale}{is a vector of scaling factors for label logos}
+
 \item{legend.show}{is the toggle to show the legend. Defaults to TRUE}
+
+\item{legend.bubbles.show}{toggle to show the bubble sizes in the legend. Defaults to TRUE}
 
 \item{legend.font.color}{is the font color of the legend. NOTE: Setting this overrides the color array given}
 

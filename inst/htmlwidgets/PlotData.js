@@ -22,13 +22,13 @@ PlotData = (function() {
     this.legendBubblesShow = legendBubblesShow;
     this.axisDimensionText = axisDimensionText;
     this.removeElemFromLegend = __bind(this.removeElemFromLegend, this);
-    this.moveElemToLegend = __bind(this.moveElemToLegend, this);
+    this.addElemToLegend = __bind(this.addElemToLegend, this);
     this.isLegendPtOutsideViewBox = __bind(this.isLegendPtOutsideViewBox, this);
     this.isOutsideViewBox = __bind(this.isOutsideViewBox, this);
     this.resizedAfterLegendGroupsDrawn = __bind(this.resizedAfterLegendGroupsDrawn, this);
     this.setupLegendGroupsAndPts = __bind(this.setupLegendGroupsAndPts, this);
     this.setLegendItemsPositions = __bind(this.setLegendItemsPositions, this);
-    this.calcDataArrays = __bind(this.calcDataArrays, this);
+    this.getPtsAndLabs = __bind(this.getPtsAndLabs, this);
     this.normalizeZData = __bind(this.normalizeZData, this);
     this.normalizeData = __bind(this.normalizeData, this);
     this.origX = this.X.slice(0);
@@ -51,7 +51,8 @@ PlotData = (function() {
         this.normalizeZData();
       }
       this.plotColors = new PlotColors(this);
-      this.calcDataArrays();
+      this.labelNew = new PlotLabel(this.label, this.viewBoxDim.labelLogoScale);
+      this.getPtsAndLabs();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
     }
@@ -227,76 +228,90 @@ PlotData = (function() {
     return legendUtils.normalizeZValues(this, maxZ);
   };
 
-  PlotData.prototype.calcDataArrays = function() {
-    var fillOpacity, fontColor, fontSize, group, i, label, labelZ, legendUtils, p, pt, ptColor, r, x, y, _i, _len, _ref, _results;
-    this.pts = [];
-    this.lab = [];
-    i = 0;
-    while (i < this.origLen) {
-      if ((!_.includes(this.outsidePlotPtsId, i)) || _.includes(_.map(this.outsidePlotCondensedPts, function(e) {
-        return e.dataId;
-      }), i)) {
-        x = this.normX[i] * this.viewBoxDim.width + this.viewBoxDim.x;
-        y = (1 - this.normY[i]) * this.viewBoxDim.height + this.viewBoxDim.y;
-        r = this.pointRadius;
-        if (Utils.get().isArr(this.Z)) {
-          legendUtils = LegendUtils.get();
-          r = legendUtils.normalizedZtoRadius(this.viewBoxDim, this.normZ[i]);
+  PlotData.prototype.getPtsAndLabs = function() {
+    return Promise.all(this.labelNew.promiseLabelArray).then((function(_this) {
+      return function(resolvedLabels) {
+        var fillOpacity, fontColor, fontSize, group, height, i, label, labelZ, legendUtils, p, pt, ptColor, r, url, width, x, y, _i, _len, _ref, _results;
+        _this.pts = [];
+        _this.lab = [];
+        i = 0;
+        while (i < _this.origLen) {
+          if ((!_.includes(_this.outsidePlotPtsId, i)) || _.includes(_.map(_this.outsidePlotCondensedPts, function(e) {
+            return e.dataId;
+          }), i)) {
+            x = _this.normX[i] * _this.viewBoxDim.width + _this.viewBoxDim.x;
+            y = (1 - _this.normY[i]) * _this.viewBoxDim.height + _this.viewBoxDim.y;
+            r = _this.pointRadius;
+            if (Utils.get().isArr(_this.Z)) {
+              legendUtils = LegendUtils.get();
+              r = legendUtils.normalizedZtoRadius(_this.viewBoxDim, _this.normZ[i]);
+            }
+            fillOpacity = _this.plotColors.getFillOpacity(_this.transparency);
+            label = resolvedLabels[i].label;
+            width = resolvedLabels[i].width;
+            height = resolvedLabels[i].height;
+            url = resolvedLabels[i].url;
+            labelZ = Utils.get().isArr(_this.Z) ? _this.Z[i].toString() : '';
+            fontSize = _this.viewBoxDim.labelFontSize;
+            if (_.includes(_.map(_this.outsidePlotCondensedPts, function(e) {
+              return e.dataId;
+            }), i)) {
+              pt = _.find(_this.outsidePlotCondensedPts, function(e) {
+                return e.dataId === i;
+              });
+              label = pt.markerId + 1;
+              fontSize = _this.viewBoxDim.labelSmallFontSize;
+              url = '';
+              width = null;
+              height = null;
+            }
+            fontColor = ptColor = _this.plotColors.getColor(i);
+            if ((_this.viewBoxDim.labelFontColor != null) && !(_this.viewBoxDim.labelFontColor === '')) {
+              fontColor = _this.viewBoxDim.labelFontColor;
+            }
+            group = _this.group != null ? _this.group[i] : '';
+            _this.pts.push({
+              x: x,
+              y: y,
+              r: r,
+              labelX: _this.origX[i].toPrecision(3).toString(),
+              labelY: _this.origY[i].toPrecision(3).toString(),
+              labelZ: labelZ,
+              group: group,
+              color: ptColor,
+              id: i,
+              fillOpacity: fillOpacity
+            });
+            _this.lab.push({
+              x: x,
+              y: y,
+              color: fontColor,
+              id: i,
+              fontSize: fontSize,
+              fontFamily: _this.viewBoxDim.labelFontFamily,
+              text: label,
+              width: width,
+              height: height,
+              url: url
+            });
+          }
+          i++;
         }
-        fillOpacity = this.plotColors.getFillOpacity(this.transparency);
-        label = this.label[i];
-        labelZ = Utils.get().isArr(this.Z) ? this.Z[i].toString() : '';
-        fontSize = this.viewBoxDim.labelFontSize;
-        if (_.includes(_.map(this.outsidePlotCondensedPts, function(e) {
-          return e.dataId;
-        }), i)) {
-          pt = _.find(this.outsidePlotCondensedPts, function(e) {
-            return e.dataId === i;
-          });
-          label = pt.markerId + 1;
-          fontSize = this.viewBoxDim.labelSmallFontSize;
+        _ref = _this.outsideBoundsPtsId;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          p = _ref[_i];
+          if (!_.includes(_this.outsidePlotPtsId, p)) {
+            _results.push(_this.addElemToLegend(p));
+          } else {
+            _results.push(void 0);
+          }
         }
-        fontColor = ptColor = this.plotColors.getColor(i);
-        if ((this.viewBoxDim.labelFontColor != null) && !(this.viewBoxDim.labelFontColor === '')) {
-          fontColor = this.viewBoxDim.labelFontColor;
-        }
-        group = this.group != null ? this.group[i] : '';
-        this.pts.push({
-          x: x,
-          y: y,
-          r: r,
-          label: label,
-          labelX: this.origX[i].toPrecision(3).toString(),
-          labelY: this.origY[i].toPrecision(3).toString(),
-          labelZ: labelZ,
-          group: group,
-          color: ptColor,
-          id: i,
-          fillOpacity: fillOpacity
-        });
-        this.lab.push({
-          x: x,
-          y: y,
-          text: label,
-          color: fontColor,
-          id: i,
-          fontSize: fontSize,
-          fontFamily: this.viewBoxDim.labelFontFamily
-        });
-      }
-      i++;
-    }
-    _ref = this.outsideBoundsPtsId;
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      p = _ref[_i];
-      if (!_.includes(this.outsidePlotPtsId, p)) {
-        _results.push(this.moveElemToLegend(p));
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
+        return _results;
+      };
+    })(this))["catch"](function(err) {
+      return console.log(err);
+    });
   };
 
   PlotData.prototype.setLegendItemsPositions = function(numItems, itemsArray, cols) {
@@ -419,7 +434,7 @@ PlotData = (function() {
     return false;
   };
 
-  PlotData.prototype.moveElemToLegend = function(id) {
+  PlotData.prototype.addElemToLegend = function(id) {
     var checkId, movedLab, movedPt;
     checkId = function(e) {
       return e.id === id;
@@ -431,13 +446,13 @@ PlotData = (function() {
       pt: movedPt[0],
       lab: movedLab[0],
       anchor: 'start',
-      text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
+      text: movedLab[0].text + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')',
       color: movedPt[0].color,
       isDraggedPt: true
     });
     this.outsidePlotPtsId.push(id);
     this.normalizeData();
-    this.calcDataArrays();
+    this.getPtsAndLabs();
     return this.setupLegendGroupsAndPts();
   };
 
@@ -456,7 +471,7 @@ PlotData = (function() {
       return i.dataId === id;
     });
     this.normalizeData();
-    this.calcDataArrays();
+    this.getPtsAndLabs();
     return this.setupLegendGroupsAndPts();
   };
 
