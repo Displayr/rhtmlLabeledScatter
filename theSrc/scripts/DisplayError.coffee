@@ -1,20 +1,33 @@
-
 class DisplayError
+  instance = null
 
-  constructor: (el, @error) ->
-    @rootElement = if _.has(el, 'length') then el[0] else el
+  @get: ->
+    if not instance?
+      instance = new Err()
+    instance
 
-  draw: () ->
-    errorContainer = $('<div class="rhtml-error-container">')
+  class Err
+    constructor: ->
 
-    errorImage = $('<img width="32px" height="32px" src="https://s3-ap-southeast-2.amazonaws.com/kyle-public-numbers-assets/htmlwidgets/CroppedImage/error_128.png"/>')
+    checkIfArrayOfNums: (X, svg, errorMsg) ->
+      unless @isArrayOfNums(X)
+        @displayErrorMessage(svg, errorMsg)
 
-    errorText = $('<span>')
-      .html(@error.toString())
+    isArrayOfNums: (X) ->
+      X.constructor == Array and _.every(X, (n) -> !isNaN(n))
 
-    errorContainer.append(errorImage)
-    errorContainer.append(errorText)
+    displayErrorMessage: (svg, msg) ->
+      errorContainer = $('<div class="rhtml-error-container">')
 
-    $(@rootElement).empty()
-    $(@rootElement).append(errorContainer)
+      errorImage = $('<img width="32px" height="32px" src="https://s3-ap-southeast-2.amazonaws.com/kyle-public-numbers-assets/htmlwidgets/CroppedImage/error_128.png"/>')
 
+      errorText = $('<span style="color: red;">')
+                  .html(msg.toString())
+
+      errorContainer.append(errorImage)
+      errorContainer.append(errorText)
+
+      $(svg).empty()
+      $(svg).append(errorContainer)
+
+      throw new Error(msg)
