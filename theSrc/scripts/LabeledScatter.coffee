@@ -51,10 +51,14 @@ class LabeledScatter
       @data = data
     else # For debuggning in browser
 #       @data = bubble1
-      @data = testData12
+      @data = testData13
 
     console.log "rhtmlLabeledScatter: received state"
     console.log state
+
+    # Error checking
+    DisplayError.get().checkIfArrayOfNums(@data.X, el, 'Given X value is not an array of numbers')
+    DisplayError.get().checkIfArrayOfNums(@data.Y, el, 'Given Y value is not an array of numbers')
 
     @plot = new RectPlot(state,
                         @stateChangedCallback,

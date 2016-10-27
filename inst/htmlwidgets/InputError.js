@@ -18,15 +18,9 @@ DisplayError = (function() {
   Err = (function() {
     function Err() {}
 
-    Err.prototype.checkIfArrayOfNums = function(X, svg, errorMsg) {
-      if (!this.isArrayOfNums(X)) {
-        return this.displayErrorMessage(svg, errorMsg);
-      }
-    };
-
     Err.prototype.isArrayOfNums = function(X) {
       return X.constructor === Array && _.every(X, function(n) {
-        return !isNaN(n);
+        return isNaN(n);
       });
     };
 
