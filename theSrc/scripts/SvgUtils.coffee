@@ -10,8 +10,8 @@ class SvgUtils
 
     constructor: ->
 
-
     setSvgBBoxWidthAndHeight: (dataArray, svgArray) ->
       for dataElem, i in dataArray
-        dataElem.width = svgArray[0][i].getBBox().width
-        dataElem.height = svgArray[0][i].getBBox().height
+        if !(dataElem.width?) and !(dataElem.height?)
+          dataElem.width = svgArray[0][i].getBBox().width
+          dataElem.height = svgArray[0][i].getBBox().height

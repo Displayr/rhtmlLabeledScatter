@@ -50,8 +50,8 @@ class LabeledScatter
     if data.X? and data.Y?
       @data = data
     else # For debuggning in browser
-#       @data = bubble1
-      @data = testData13
+      # @data = bubble1
+      @data = testData2
 
     console.log "rhtmlLabeledScatter: received state"
     console.log state
@@ -93,6 +93,7 @@ class LabeledScatter
                         @data.labelsFontFamily,
                         @data.labelsFontSize,
                         @data.labelsFontColor,
+                        @data.labelsLogoScale,
                         @data.xDecimals,
                         @data.yDecimals,
                         @data.zDecimals,

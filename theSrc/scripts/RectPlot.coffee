@@ -33,6 +33,7 @@ class RectPlot
                 labelsFontFamily,
                 labelsFontSize,
                 labelsFontColor,
+                labelsLogoScale = [],
                 @xDecimals = null,
                 @yDecimals = null,
                 @zDecimals = null,
@@ -64,6 +65,7 @@ class RectPlot
       size:            labelsFontSize
       color:           labelsFontColor
       family:          labelsFontFamily
+      logoScale:       labelsLogoScale
 
     @xTitle =
       text:       xTitle
@@ -156,6 +158,7 @@ class RectPlot
       labelSmallFontSize: @labelsFont.size * 0.75
       labelFontColor:     @labelsFont.color
       labelFontFamily:    @labelsFont.family
+      labelLogoScale:     @labelsFont.logoScale
 
     @legendDim.x = @viewBoxDim.x + @viewBoxDim.width
     @title.x = @viewBoxDim.x + @viewBoxDim.width/2
@@ -177,36 +180,43 @@ class RectPlot
                          @legendBubblesShow,
                          @axisDimensionText)
 
-  drawLabsAndPlot: =>
-    @data.normalizeData()
-    @data.calcDataArrays()
-    @title.x = @viewBoxDim.x + @viewBoxDim.width/2
-
-    unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
-      for pt in @state.getLegendPts()
-        unless _.includes @data.outsidePlotPtsId, pt
-          @data.moveElemToLegend(pt)
-
-      for pt in @data.outsidePlotPtsId
-        unless _.includes @state.getLegendPts(), pt
-          @state.pushLegendPt pt
-      console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
-      return false
-
-    @drawTitle()
-    @drawAnc()
-    @drawLabs()
-    @drawDraggedMarkers()
-    @drawRect()
-    @drawAxisLabels()
-    return true
-
   draw: =>
-    unless @drawDimensionMarkers() and @drawLegend() and @drawLabsAndPlot() # fails if any func == false
+    @drawDimensionMarkers().then(() =>
+      @drawLegend().then(() =>
+        @drawLabsAndPlot()
+      )
+    ).catch((err) =>
+      if err?
+        throw new Error(err)
+
       console.log 'rhtmlLabeledScatter: redraw'
       # Redraw is needed
       @draw()
-      return
+    )
+
+  drawLabsAndPlot: =>
+    @data.normalizeData()
+    @data.getPtsAndLabs().then(() =>
+      @title.x = @viewBoxDim.x + @viewBoxDim.width/2
+
+      unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
+        for pt in @state.getLegendPts()
+          unless _.includes @data.outsidePlotPtsId, pt
+            @data.addElemToLegend(pt)
+
+        for pt in @data.outsidePlotPtsId
+          unless _.includes @state.getLegendPts(), pt
+            @state.pushLegendPt pt
+        console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
+        throw new Error()
+
+      @drawTitle()
+      @drawLabs()
+      @drawAnc()
+      @drawDraggedMarkers()
+      @drawRect()
+      @drawAxisLabels()
+      )
 
   drawTitle: =>
     if @title.text != ''
@@ -235,108 +245,111 @@ class RectPlot
         .attr('stroke-width', '1px')
 
   drawDimensionMarkers: =>
-    axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
+    new Promise((resolve, reject) =>
+      axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
-    if @grid
-      @svg.selectAll('.origin').remove()
-      @svg.selectAll('.origin')
-          .data(axisArrays.gridOrigin)
-          .enter()
-          .append('line')
-          .attr('class', 'origin')
-          .attr('x1', (d) -> d.x1)
-          .attr('y1', (d) -> d.y1)
-          .attr('x2', (d) -> d.x2)
-          .attr('y2', (d) -> d.y2)
-          .attr('stroke-width', 0.2)
-          .attr('stroke', 'grey')
-      if @origin
+      if @grid
+        @svg.selectAll('.origin').remove()
         @svg.selectAll('.origin')
+            .data(axisArrays.gridOrigin)
+            .enter()
+            .append('line')
+            .attr('class', 'origin')
+            .attr('x1', (d) -> d.x1)
+            .attr('y1', (d) -> d.y1)
+            .attr('x2', (d) -> d.x2)
+            .attr('y2', (d) -> d.y2)
+            .attr('stroke-width', 0.2)
+            .attr('stroke', 'grey')
+        if @origin
+          @svg.selectAll('.origin')
+              .style('stroke-dasharray', ('4, 6'))
+              .attr('stroke-width', 1)
+              .attr('stroke', 'black')
+
+        @svg.selectAll('.dim-marker').remove()
+        @svg.selectAll('.dim-marker')
+                 .data(axisArrays.gridLines)
+                 .enter()
+                 .append('line')
+                 .attr('class', 'dim-marker')
+                 .attr('x1', (d) -> d.x1)
+                 .attr('y1', (d) -> d.y1)
+                 .attr('x2', (d) -> d.x2)
+                 .attr('y2', (d) -> d.y2)
+                 .attr('stroke-width', 0.2)
+                 .attr('stroke', 'grey')
+
+      else if not @grid and @origin
+        @svg.selectAll('.origin').remove()
+        @svg.selectAll('.origin')
+            .data(axisArrays.gridOrigin)
+            .enter()
+            .append('line')
+            .attr('class', 'origin')
+            .attr('x1', (d) -> d.x1)
+            .attr('y1', (d) -> d.y1)
+            .attr('x2', (d) -> d.x2)
+            .attr('y2', (d) -> d.y2)
             .style('stroke-dasharray', ('4, 6'))
             .attr('stroke-width', 1)
             .attr('stroke', 'black')
 
-      @svg.selectAll('.dim-marker').remove()
-      @svg.selectAll('.dim-marker')
-               .data(axisArrays.gridLines)
+
+      @svg.selectAll('.dim-marker-leader').remove()
+      @svg.selectAll('.dim-marker-leader')
+               .data(axisArrays.axisLeader)
                .enter()
                .append('line')
-               .attr('class', 'dim-marker')
+               .attr('class', 'dim-marker-leader')
                .attr('x1', (d) -> d.x1)
                .attr('y1', (d) -> d.y1)
                .attr('x2', (d) -> d.x2)
                .attr('y2', (d) -> d.y2)
-               .attr('stroke-width', 0.2)
-               .attr('stroke', 'grey')
+               .attr('stroke-width', 1)
+               .attr('stroke', 'black')
 
-    else if not @grid and @origin
-      @svg.selectAll('.origin').remove()
-      @svg.selectAll('.origin')
-          .data(axisArrays.gridOrigin)
-          .enter()
-          .append('line')
-          .attr('class', 'origin')
-          .attr('x1', (d) -> d.x1)
-          .attr('y1', (d) -> d.y1)
-          .attr('x2', (d) -> d.x2)
-          .attr('y2', (d) -> d.y2)
-          .style('stroke-dasharray', ('4, 6'))
-          .attr('stroke-width', 1)
-          .attr('stroke', 'black')
+      @svg.selectAll('.dim-marker-label').remove()
+      markerLabels = @svg.selectAll('.dim-marker-label')
+               .data(axisArrays.axisLeaderLabel)
+               .enter()
+               .append('text')
+               .attr('class', 'dim-marker-label')
+               .attr('x', (d) -> d.x)
+               .attr('y', (d) -> d.y)
+               .attr('font-family', @axisFontFamily)
+               .attr('fill', @axisFontColor)
+               .attr('font-size', @axisFontSize)
+               .text((d) -> d.label)
+               .attr('text-anchor', (d) -> d.anchor)
+               .attr('type', (d) -> d.type)
 
+      # Figure out the max width of the yaxis dimensional labels
+      initAxisTextRowWidth = @axisDimensionText.rowMaxWidth
+      initAxisTextColWidth = @axisDimensionText.colMaxWidth
+      initAxisTextRowHeight = @axisDimensionText.rowMaxHeight
+      initAxisTextColHeight = @axisDimensionText.colMaxHeight
+      for markerLabel, i in markerLabels[0]
+        labelType = d3.select(markerLabel).attr('type')
+        bb = markerLabel.getBBox()
+        @axisDimensionText.rowMaxWidth = bb.width if @axisDimensionText.rowMaxWidth < bb.width and labelType == 'row'
+        @axisDimensionText.colMaxWidth = bb.width if @axisDimensionText.colMaxWidth < bb.width and labelType == 'col'
+        @axisDimensionText.rowMaxHeight = bb.height if @axisDimensionText.rowMaxHeight < bb.height and labelType == 'row'
+        @axisDimensionText.colMaxHeight = bb.height if @axisDimensionText.colMaxHeight < bb.height and labelType == 'col'
 
-    @svg.selectAll('.dim-marker-leader').remove()
-    @svg.selectAll('.dim-marker-leader')
-             .data(axisArrays.axisLeader)
-             .enter()
-             .append('line')
-             .attr('class', 'dim-marker-leader')
-             .attr('x1', (d) -> d.x1)
-             .attr('y1', (d) -> d.y1)
-             .attr('x2', (d) -> d.x2)
-             .attr('y2', (d) -> d.y2)
-             .attr('stroke-width', 1)
-             .attr('stroke', 'black')
+        if @width < bb.x + bb.width
+          @axisDimensionText.rightPadding = bb.width/2
 
-    @svg.selectAll('.dim-marker-label').remove()
-    markerLabels = @svg.selectAll('.dim-marker-label')
-             .data(axisArrays.axisLeaderLabel)
-             .enter()
-             .append('text')
-             .attr('class', 'dim-marker-label')
-             .attr('x', (d) -> d.x)
-             .attr('y', (d) -> d.y)
-             .attr('font-family', @axisFontFamily)
-             .attr('fill', @axisFontColor)
-             .attr('font-size', @axisFontSize)
-             .text((d) -> d.label)
-             .attr('text-anchor', (d) -> d.anchor)
-             .attr('type', (d) -> d.type)
+      if initAxisTextRowWidth != @axisDimensionText.rowMaxWidth or
+         initAxisTextColWidth != @axisDimensionText.colMaxWidth or
+         initAxisTextRowHeight != @axisDimensionText.rowMaxHeight or
+         initAxisTextColHeight != @axisDimensionText.colMaxHeight
+        console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
+        @setDim(@svg, @width, @height)
+        reject()
+      resolve()
+    )
 
-    # Figure out the max width of the yaxis dimensional labels
-    initAxisTextRowWidth = @axisDimensionText.rowMaxWidth
-    initAxisTextColWidth = @axisDimensionText.colMaxWidth
-    initAxisTextRowHeight = @axisDimensionText.rowMaxHeight
-    initAxisTextColHeight = @axisDimensionText.colMaxHeight
-    for markerLabel, i in markerLabels[0]
-      labelType = d3.select(markerLabel).attr('type')
-      bb = markerLabel.getBBox()
-      @axisDimensionText.rowMaxWidth = bb.width if @axisDimensionText.rowMaxWidth < bb.width and labelType == 'row'
-      @axisDimensionText.colMaxWidth = bb.width if @axisDimensionText.colMaxWidth < bb.width and labelType == 'col'
-      @axisDimensionText.rowMaxHeight = bb.height if @axisDimensionText.rowMaxHeight < bb.height and labelType == 'row'
-      @axisDimensionText.colMaxHeight = bb.height if @axisDimensionText.colMaxHeight < bb.height and labelType == 'col'
-
-      if @width < bb.x + bb.width
-        @axisDimensionText.rightPadding = bb.width/2
-
-    if initAxisTextRowWidth != @axisDimensionText.rowMaxWidth or
-       initAxisTextColWidth != @axisDimensionText.colMaxWidth or
-       initAxisTextRowHeight != @axisDimensionText.rowMaxHeight or
-       initAxisTextColHeight != @axisDimensionText.colMaxHeight
-      console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
-      @setDim(@svg, @width, @height)
-      return false
-    return true
 
   drawAxisLabels: =>
     axisLabels = [
@@ -386,149 +399,151 @@ class RectPlot
              .style('display', (d) -> d.display)
 
   drawLegend: =>
-    @data.setupLegendGroupsAndPts()
+    new Promise((resolve, reject) =>
+      @data.setupLegendGroupsAndPts()
 
-    legendLabelDragAndDrop = =>
-      plot = @
-      data = @data
-      dragStart = ->
+      legendLabelDragAndDrop = =>
+        plot = @
+        data = @data
+        dragStart = ->
 
-      dragMove = ->
-        d3.select(@)
-        .attr('x', d3.select(@).x = d3.event.x)
-        .attr('y', d3.select(@).y = d3.event.y)
-
-        # Save the new location of text so links can be redrawn
-        id = d3.select(@).attr('id').split('legend-')[1]
-        legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
-        legendPt.lab.x = d3.event.x
-        legendPt.lab.y = d3.event.y
-
-      dragEnd = ->
-        id = Number(d3.select(@).attr('id').split('legend-')[1])
-        legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
-        if plot.data.isLegendPtOutsideViewBox(legendPt.lab)
+        dragMove = ->
           d3.select(@)
-            .attr('x', d3.select(@).x = legendPt.x)
-            .attr('y', d3.select(@).y = legendPt.y)
-        else
-          plot.elemDraggedOnPlot(id)
+          .attr('x', d3.select(@).x = d3.event.x)
+          .attr('y', d3.select(@).y = d3.event.y)
+
+          # Save the new location of text so links can be redrawn
+          id = d3.select(@).attr('id').split('legend-')[1]
+          legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
+          legendPt.lab.x = d3.event.x
+          legendPt.lab.y = d3.event.y
+
+        dragEnd = ->
+          id = Number(d3.select(@).attr('id').split('legend-')[1])
+          legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
+          if plot.data.isLegendPtOutsideViewBox(legendPt.lab)
+            d3.select(@)
+              .attr('x', d3.select(@).x = legendPt.x)
+              .attr('y', d3.select(@).y = legendPt.y)
+          else
+            plot.elemDraggedOnPlot(id)
 
 
-      d3.behavior.drag()
-             .origin(() ->
-               {
-                 x: d3.select(this).attr("x")
-                 y: d3.select(this).attr("y")
-               }
-              )
-             .on('dragstart', dragStart)
-             .on('drag', dragMove)
-             .on('dragend', dragEnd)
+        d3.behavior.drag()
+               .origin(() ->
+                 {
+                   x: d3.select(this).attr("x")
+                   y: d3.select(this).attr("y")
+                 }
+                )
+               .on('dragstart', dragStart)
+               .on('drag', dragMove)
+               .on('dragend', dragEnd)
 
-    if @legendBubblesShow and Utils.get().isArr(@Z)
-      @svg.selectAll('.legend-bubbles').remove()
-      @svg.selectAll('.legend-bubbles')
-          .data(@data.legendBubbles)
-          .enter()
-          .append('circle')
-          .attr('class', 'legend-bubbles')
-          .attr('cx', (d) -> d.cx)
-          .attr('cy', (d) -> d.cy)
-          .attr('r', (d) -> d.r)
-          .attr('fill', 'none')
-          .attr('stroke', 'black')
-          .attr('stroke-opacity', 0.5)
+      if @legendBubblesShow and Utils.get().isArr(@Z)
+        @svg.selectAll('.legend-bubbles').remove()
+        @svg.selectAll('.legend-bubbles')
+            .data(@data.legendBubbles)
+            .enter()
+            .append('circle')
+            .attr('class', 'legend-bubbles')
+            .attr('cx', (d) -> d.cx)
+            .attr('cy', (d) -> d.cy)
+            .attr('r', (d) -> d.r)
+            .attr('fill', 'none')
+            .attr('stroke', 'black')
+            .attr('stroke-opacity', 0.5)
 
-      @svg.selectAll('.legend-bubbles-labels').remove()
-      @svg.selectAll('.legend-bubbles-labels')
-          .data(@data.legendBubbles)
-          .enter()
-          .append('text')
-          .attr('class', 'legend-bubbles-labels')
-          .attr('x', (d) -> d.x)
-          .attr('y', (d) -> d.y)
-          .attr('text-anchor', 'middle')
-          .attr('font-size', @legendFontSize)
-          .attr('font-family', @legendFontFamily)
-          .attr('fill', @legendFontColor)
-          .text((d) -> d.text)
-
-      if @zTitle != ''
-        legendFontSize = @legendFontSize
-        @svg.selectAll('.legend-bubbles-title').remove()
-        legendBubbleTitleSvg = @svg.selectAll('.legend-bubbles-title')
-            .data(@data.legendBubblesTitle)
+        @svg.selectAll('.legend-bubbles-labels').remove()
+        @svg.selectAll('.legend-bubbles-labels')
+            .data(@data.legendBubbles)
             .enter()
             .append('text')
-            .attr('class', 'legend-bubbles-title')
+            .attr('class', 'legend-bubbles-labels')
             .attr('x', (d) -> d.x)
-            .attr('y', (d) -> d.y - (legendFontSize*1.5))
+            .attr('y', (d) -> d.y)
             .attr('text-anchor', 'middle')
+            .attr('font-size', @legendFontSize)
             .attr('font-family', @legendFontFamily)
-            .attr('font-weight', 'bold')
             .attr('fill', @legendFontColor)
-            .text @zTitle
+            .text((d) -> d.text)
 
-        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
+        if @zTitle != ''
+          legendFontSize = @legendFontSize
+          @svg.selectAll('.legend-bubbles-title').remove()
+          legendBubbleTitleSvg = @svg.selectAll('.legend-bubbles-title')
+              .data(@data.legendBubblesTitle)
+              .enter()
+              .append('text')
+              .attr('class', 'legend-bubbles-title')
+              .attr('x', (d) -> d.x)
+              .attr('y', (d) -> d.y - (legendFontSize*1.5))
+              .attr('text-anchor', 'middle')
+              .attr('font-family', @legendFontFamily)
+              .attr('font-weight', 'bold')
+              .attr('fill', @legendFontColor)
+              .text @zTitle
 
-    drag = legendLabelDragAndDrop()
-    @svg.selectAll('.legend-dragged-pts-text').remove()
-    @svg.selectAll('.legend-dragged-pts-text')
-        .data(@data.legendPts)
-        .enter()
-        .append('text')
-        .attr('class', 'legend-dragged-pts-text')
-        .attr('id', (d) -> "legend-#{d.id}")
-        .attr('x', (d) -> d.x)
-        .attr('y', (d) -> d.y)
-        .attr('font-family', @legendFontFamily)
-        .attr('font-size', @legendFontSize)
-        .attr('text-anchor', (d) -> d.anchor)
-        .attr('fill', (d) -> d.color)
-        .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
-        .call(drag)
+          SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
-    SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
-
-    if @legendShow
-      @svg.selectAll('.legend-groups-text').remove()
-      @svg.selectAll('.legend-groups-text')
-          .data(@data.legendGroups)
+      drag = legendLabelDragAndDrop()
+      @svg.selectAll('.legend-dragged-pts-text').remove()
+      @svg.selectAll('.legend-dragged-pts-text')
+          .data(@data.legendPts)
           .enter()
           .append('text')
-          .attr('class', 'legend-groups-text')
+          .attr('class', 'legend-dragged-pts-text')
+          .attr('id', (d) -> "legend-#{d.id}")
           .attr('x', (d) -> d.x)
           .attr('y', (d) -> d.y)
           .attr('font-family', @legendFontFamily)
-          .attr('fill', @legendFontColor)
           .attr('font-size', @legendFontSize)
-          .text((d) -> d.text)
           .attr('text-anchor', (d) -> d.anchor)
+          .attr('fill', (d) -> d.color)
+          .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
+          .call(drag)
 
-      @svg.selectAll('.legend-groups-pts').remove()
-      @svg.selectAll('.legend-groups-pts')
-               .data(@data.legendGroups)
-               .enter()
-               .append('circle')
-               .attr('class', 'legend-groups-pts')
-               .attr('cx', (d) -> d.cx)
-               .attr('cy', (d) -> d.cy)
-               .attr('r', (d) -> d.r)
-               .attr('fill', (d) -> d.color)
-               .attr('stroke', (d) -> d.stroke)
-               .attr('stroke-opacity', (d) -> d['stroke-opacity'])
-               .attr('fill-opacity', (d) -> d.fillOpacity)
+      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
-      # Height and width are not provided
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
+      if @legendShow
+        @svg.selectAll('.legend-groups-text').remove()
+        @svg.selectAll('.legend-groups-text')
+            .data(@data.legendGroups)
+            .enter()
+            .append('text')
+            .attr('class', 'legend-groups-text')
+            .attr('x', (d) -> d.x)
+            .attr('y', (d) -> d.y)
+            .attr('font-family', @legendFontFamily)
+            .attr('fill', @legendFontColor)
+            .attr('font-size', @legendFontSize)
+            .text((d) -> d.text)
+            .attr('text-anchor', (d) -> d.anchor)
 
-    if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z)) or @data.legendPts?
-      if @data.resizedAfterLegendGroupsDrawn(@legendShow)
-        console.log "rhtmlLabeledScatter: drawLegend false"
-        return false
+        @svg.selectAll('.legend-groups-pts').remove()
+        @svg.selectAll('.legend-groups-pts')
+                 .data(@data.legendGroups)
+                 .enter()
+                 .append('circle')
+                 .attr('class', 'legend-groups-pts')
+                 .attr('cx', (d) -> d.cx)
+                 .attr('cy', (d) -> d.cy)
+                 .attr('r', (d) -> d.r)
+                 .attr('fill', (d) -> d.color)
+                 .attr('stroke', (d) -> d.stroke)
+                 .attr('stroke-opacity', (d) -> d['stroke-opacity'])
+                 .attr('fill-opacity', (d) -> d.fillOpacity)
 
-    return true
+        # Height and width are not provided
+        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
+
+      if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z)) or @data.legendPts?
+        if @data.resizedAfterLegendGroupsDrawn(@legendShow)
+          console.log "rhtmlLabeledScatter: drawLegend false"
+          reject()
+
+      resolve()
+    )
 
   drawAnc: =>
     @svg.selectAll('.anc').remove()
@@ -585,7 +600,7 @@ class RectPlot
         .text((d) -> d.markerLabel)
 
   elemDraggedOffPlot: (id) =>
-    @data.moveElemToLegend(id)
+    @data.addElemToLegend(id)
     @state.pushLegendPt(id)
     @resetPlotAfterDragEvent()
 
@@ -620,14 +635,19 @@ class RectPlot
 
       dragMove = () ->
         d3.select(@)
-        .attr('x', d3.select(@).x = d3.event.x)
-        .attr('y', d3.select(@).y = d3.event.y)
+        .attr('x', d3.event.x)
+        .attr('y', d3.event.y)
 
         # Save the new location of text so links can be redrawn
         id = d3.select(@).attr('id')
         label = _.find plot.data.lab, (l) -> l.id == Number(id)
-        label.x = d3.event.x
-        label.y = d3.event.y
+        if $(@).prop("tagName") == 'image'
+          label.x = d3.event.x + label.width/2
+          label.y = d3.event.y + label.height
+        else
+          label.x = d3.event.x
+          label.y = d3.event.y
+
 
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
@@ -654,13 +674,27 @@ class RectPlot
       drag = labelDragAndDrop()
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
+      @svg.selectAll('.lab-img').remove()
+      @svg.selectAll('.lab-img')
+          .data(@data.lab)
+          .enter()
+          .append('svg:image')
+          .attr('class', 'lab-img')
+          .attr('xlink:href', (d) -> d.url)
+          .attr('id', (d) -> d.id if d.url != '')
+          .attr('x', (d) -> d.x - d.width/2)
+          .attr('y', (d) -> d.y - d.height)
+          .attr('width', (d) -> d.width)
+          .attr('height', (d) -> d.height)
+          .call(drag)
+
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
                .data(@data.lab)
                .enter()
                .append('text')
                .attr('class', 'lab')
-               .attr('id', (d) -> d.id)
+               .attr('id', (d) -> d.id if d.text != '')
                .attr('x', (d) -> d.x)
                .attr('y', (d) -> d.y)
                .attr('font-family', (d) -> d.fontFamily)
@@ -671,6 +705,7 @@ class RectPlot
                .call(drag)
 
       labels_svg = @svg.selectAll('.lab')
+      labels_img_svg = @svg.selectAll('.lab-img')
 
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.lab, labels_svg
       console.log "rhtmlLabeledScatter: Running label placement algorithm..."
@@ -689,6 +724,11 @@ class RectPlot
                 .duration(800)
                 .attr('x', (d) -> d.x)
                 .attr('y', (d) -> d.y)
+
+      labels_img_svg.transition()
+                    .duration(800)
+                    .attr('x', (d) -> d.x - d.width/2)
+                    .attr('y', (d) -> d.y - d.height)
 
       @drawLinks()
 

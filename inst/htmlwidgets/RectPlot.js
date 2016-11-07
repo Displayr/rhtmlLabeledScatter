@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -18,6 +18,9 @@ RectPlot = (function() {
     this.transparency = transparency;
     this.originAlign = originAlign;
     this.showLabels = showLabels != null ? showLabels : true;
+    if (labelsLogoScale == null) {
+      labelsLogoScale = [];
+    }
     this.xDecimals = xDecimals != null ? xDecimals : null;
     this.yDecimals = yDecimals != null ? yDecimals : null;
     this.zDecimals = zDecimals != null ? zDecimals : null;
@@ -62,14 +65,15 @@ RectPlot = (function() {
     this.drawDimensionMarkers = __bind(this.drawDimensionMarkers, this);
     this.drawRect = __bind(this.drawRect, this);
     this.drawTitle = __bind(this.drawTitle, this);
-    this.draw = __bind(this.draw, this);
     this.drawLabsAndPlot = __bind(this.drawLabsAndPlot, this);
+    this.draw = __bind(this.draw, this);
     this.setDim = __bind(this.setDim, this);
     this.state = new State(stateObj, stateChangedCallback);
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
-      family: labelsFontFamily
+      family: labelsFontFamily,
+      logoScale: labelsLogoScale
     };
     this.xTitle = {
       text: xTitle,
@@ -167,50 +171,64 @@ RectPlot = (function() {
       labelFontSize: this.labelsFont.size,
       labelSmallFontSize: this.labelsFont.size * 0.75,
       labelFontColor: this.labelsFont.color,
-      labelFontFamily: this.labelsFont.family
+      labelFontFamily: this.labelsFont.family,
+      labelLogoScale: this.labelsFont.logoScale
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
     return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
   };
 
-  RectPlot.prototype.drawLabsAndPlot = function() {
-    var pt, _i, _j, _len, _len1, _ref, _ref1;
-    this.data.normalizeData();
-    this.data.calcDataArrays();
-    this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
-      _ref = this.state.getLegendPts();
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        pt = _ref[_i];
-        if (!_.includes(this.data.outsidePlotPtsId, pt)) {
-          this.data.moveElemToLegend(pt);
+  RectPlot.prototype.draw = function() {
+    return this.drawDimensionMarkers().then((function(_this) {
+      return function() {
+        return _this.drawLegend().then(function() {
+          return _this.drawLabsAndPlot();
+        });
+      };
+    })(this))["catch"]((function(_this) {
+      return function(err) {
+        if (err != null) {
+          throw new Error(err);
         }
-      }
-      _ref1 = this.data.outsidePlotPtsId;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        pt = _ref1[_j];
-        if (!_.includes(this.state.getLegendPts(), pt)) {
-          this.state.pushLegendPt(pt);
-        }
-      }
-      console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
-      return false;
-    }
-    this.drawTitle();
-    this.drawAnc();
-    this.drawLabs();
-    this.drawDraggedMarkers();
-    this.drawRect();
-    this.drawAxisLabels();
-    return true;
+        console.log('rhtmlLabeledScatter: redraw');
+        return _this.draw();
+      };
+    })(this));
   };
 
-  RectPlot.prototype.draw = function() {
-    if (!(this.drawDimensionMarkers() && this.drawLegend() && this.drawLabsAndPlot())) {
-      console.log('rhtmlLabeledScatter: redraw');
-      this.draw();
-    }
+  RectPlot.prototype.drawLabsAndPlot = function() {
+    this.data.normalizeData();
+    return this.data.getPtsAndLabs().then((function(_this) {
+      return function() {
+        var pt, _i, _j, _len, _len1, _ref, _ref1;
+        _this.title.x = _this.viewBoxDim.x + _this.viewBoxDim.width / 2;
+        if (!_this.state.isLegendPtsSynced(_this.data.outsidePlotPtsId)) {
+          _ref = _this.state.getLegendPts();
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            pt = _ref[_i];
+            if (!_.includes(_this.data.outsidePlotPtsId, pt)) {
+              _this.data.addElemToLegend(pt);
+            }
+          }
+          _ref1 = _this.data.outsidePlotPtsId;
+          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+            pt = _ref1[_j];
+            if (!_.includes(_this.state.getLegendPts(), pt)) {
+              _this.state.pushLegendPt(pt);
+            }
+          }
+          console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
+          throw new Error();
+        }
+        _this.drawTitle();
+        _this.drawLabs();
+        _this.drawAnc();
+        _this.drawDraggedMarkers();
+        _this.drawRect();
+        return _this.drawAxisLabels();
+      };
+    })(this));
   };
 
   RectPlot.prototype.drawTitle = function() {
@@ -226,97 +244,101 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawDimensionMarkers = function() {
-    var axisArrays, bb, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
-    axisArrays = AxisUtils.get().getAxisDataArrays(this, this.data, this.viewBoxDim);
-    if (this.grid) {
-      this.svg.selectAll('.origin').remove();
-      this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
-        return d.x1;
-      }).attr('y1', function(d) {
-        return d.y1;
-      }).attr('x2', function(d) {
-        return d.x2;
-      }).attr('y2', function(d) {
-        return d.y2;
-      }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-      if (this.origin) {
-        this.svg.selectAll('.origin').style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
-      }
-      this.svg.selectAll('.dim-marker').remove();
-      this.svg.selectAll('.dim-marker').data(axisArrays.gridLines).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
-        return d.x1;
-      }).attr('y1', function(d) {
-        return d.y1;
-      }).attr('x2', function(d) {
-        return d.x2;
-      }).attr('y2', function(d) {
-        return d.y2;
-      }).attr('stroke-width', 0.2).attr('stroke', 'grey');
-    } else if (!this.grid && this.origin) {
-      this.svg.selectAll('.origin').remove();
-      this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
-        return d.x1;
-      }).attr('y1', function(d) {
-        return d.y1;
-      }).attr('x2', function(d) {
-        return d.x2;
-      }).attr('y2', function(d) {
-        return d.y2;
-      }).style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
-    }
-    this.svg.selectAll('.dim-marker-leader').remove();
-    this.svg.selectAll('.dim-marker-leader').data(axisArrays.axisLeader).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
-      return d.x1;
-    }).attr('y1', function(d) {
-      return d.y1;
-    }).attr('x2', function(d) {
-      return d.x2;
-    }).attr('y2', function(d) {
-      return d.y2;
-    }).attr('stroke-width', 1).attr('stroke', 'black');
-    this.svg.selectAll('.dim-marker-label').remove();
-    markerLabels = this.svg.selectAll('.dim-marker-label').data(axisArrays.axisLeaderLabel).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', this.axisFontFamily).attr('fill', this.axisFontColor).attr('font-size', this.axisFontSize).text(function(d) {
-      return d.label;
-    }).attr('text-anchor', function(d) {
-      return d.anchor;
-    }).attr('type', function(d) {
-      return d.type;
-    });
-    initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth;
-    initAxisTextColWidth = this.axisDimensionText.colMaxWidth;
-    initAxisTextRowHeight = this.axisDimensionText.rowMaxHeight;
-    initAxisTextColHeight = this.axisDimensionText.colMaxHeight;
-    _ref = markerLabels[0];
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      markerLabel = _ref[i];
-      labelType = d3.select(markerLabel).attr('type');
-      bb = markerLabel.getBBox();
-      if (this.axisDimensionText.rowMaxWidth < bb.width && labelType === 'row') {
-        this.axisDimensionText.rowMaxWidth = bb.width;
-      }
-      if (this.axisDimensionText.colMaxWidth < bb.width && labelType === 'col') {
-        this.axisDimensionText.colMaxWidth = bb.width;
-      }
-      if (this.axisDimensionText.rowMaxHeight < bb.height && labelType === 'row') {
-        this.axisDimensionText.rowMaxHeight = bb.height;
-      }
-      if (this.axisDimensionText.colMaxHeight < bb.height && labelType === 'col') {
-        this.axisDimensionText.colMaxHeight = bb.height;
-      }
-      if (this.width < bb.x + bb.width) {
-        this.axisDimensionText.rightPadding = bb.width / 2;
-      }
-    }
-    if (initAxisTextRowWidth !== this.axisDimensionText.rowMaxWidth || initAxisTextColWidth !== this.axisDimensionText.colMaxWidth || initAxisTextRowHeight !== this.axisDimensionText.rowMaxHeight || initAxisTextColHeight !== this.axisDimensionText.colMaxHeight) {
-      console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
-      this.setDim(this.svg, this.width, this.height);
-      return false;
-    }
-    return true;
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        var axisArrays, bb, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
+        axisArrays = AxisUtils.get().getAxisDataArrays(_this, _this.data, _this.viewBoxDim);
+        if (_this.grid) {
+          _this.svg.selectAll('.origin').remove();
+          _this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+            return d.x1;
+          }).attr('y1', function(d) {
+            return d.y1;
+          }).attr('x2', function(d) {
+            return d.x2;
+          }).attr('y2', function(d) {
+            return d.y2;
+          }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+          if (_this.origin) {
+            _this.svg.selectAll('.origin').style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
+          }
+          _this.svg.selectAll('.dim-marker').remove();
+          _this.svg.selectAll('.dim-marker').data(axisArrays.gridLines).enter().append('line').attr('class', 'dim-marker').attr('x1', function(d) {
+            return d.x1;
+          }).attr('y1', function(d) {
+            return d.y1;
+          }).attr('x2', function(d) {
+            return d.x2;
+          }).attr('y2', function(d) {
+            return d.y2;
+          }).attr('stroke-width', 0.2).attr('stroke', 'grey');
+        } else if (!_this.grid && _this.origin) {
+          _this.svg.selectAll('.origin').remove();
+          _this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
+            return d.x1;
+          }).attr('y1', function(d) {
+            return d.y1;
+          }).attr('x2', function(d) {
+            return d.x2;
+          }).attr('y2', function(d) {
+            return d.y2;
+          }).style('stroke-dasharray', '4, 6').attr('stroke-width', 1).attr('stroke', 'black');
+        }
+        _this.svg.selectAll('.dim-marker-leader').remove();
+        _this.svg.selectAll('.dim-marker-leader').data(axisArrays.axisLeader).enter().append('line').attr('class', 'dim-marker-leader').attr('x1', function(d) {
+          return d.x1;
+        }).attr('y1', function(d) {
+          return d.y1;
+        }).attr('x2', function(d) {
+          return d.x2;
+        }).attr('y2', function(d) {
+          return d.y2;
+        }).attr('stroke-width', 1).attr('stroke', 'black');
+        _this.svg.selectAll('.dim-marker-label').remove();
+        markerLabels = _this.svg.selectAll('.dim-marker-label').data(axisArrays.axisLeaderLabel).enter().append('text').attr('class', 'dim-marker-label').attr('x', function(d) {
+          return d.x;
+        }).attr('y', function(d) {
+          return d.y;
+        }).attr('font-family', _this.axisFontFamily).attr('fill', _this.axisFontColor).attr('font-size', _this.axisFontSize).text(function(d) {
+          return d.label;
+        }).attr('text-anchor', function(d) {
+          return d.anchor;
+        }).attr('type', function(d) {
+          return d.type;
+        });
+        initAxisTextRowWidth = _this.axisDimensionText.rowMaxWidth;
+        initAxisTextColWidth = _this.axisDimensionText.colMaxWidth;
+        initAxisTextRowHeight = _this.axisDimensionText.rowMaxHeight;
+        initAxisTextColHeight = _this.axisDimensionText.colMaxHeight;
+        _ref = markerLabels[0];
+        for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+          markerLabel = _ref[i];
+          labelType = d3.select(markerLabel).attr('type');
+          bb = markerLabel.getBBox();
+          if (_this.axisDimensionText.rowMaxWidth < bb.width && labelType === 'row') {
+            _this.axisDimensionText.rowMaxWidth = bb.width;
+          }
+          if (_this.axisDimensionText.colMaxWidth < bb.width && labelType === 'col') {
+            _this.axisDimensionText.colMaxWidth = bb.width;
+          }
+          if (_this.axisDimensionText.rowMaxHeight < bb.height && labelType === 'row') {
+            _this.axisDimensionText.rowMaxHeight = bb.height;
+          }
+          if (_this.axisDimensionText.colMaxHeight < bb.height && labelType === 'col') {
+            _this.axisDimensionText.colMaxHeight = bb.height;
+          }
+          if (_this.width < bb.x + bb.width) {
+            _this.axisDimensionText.rightPadding = bb.width / 2;
+          }
+        }
+        if (initAxisTextRowWidth !== _this.axisDimensionText.rowMaxWidth || initAxisTextColWidth !== _this.axisDimensionText.colMaxWidth || initAxisTextRowHeight !== _this.axisDimensionText.rowMaxHeight || initAxisTextColHeight !== _this.axisDimensionText.colMaxHeight) {
+          console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
+          _this.setDim(_this.svg, _this.width, _this.height);
+          reject();
+        }
+        return resolve();
+      };
+    })(this));
   };
 
   RectPlot.prototype.drawAxisLabels = function() {
@@ -367,128 +389,130 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLegend = function() {
-    var drag, legendBubbleTitleSvg, legendFontSize, legendLabelDragAndDrop;
-    this.data.setupLegendGroupsAndPts();
-    legendLabelDragAndDrop = (function(_this) {
-      return function() {
-        var data, dragEnd, dragMove, dragStart, plot;
-        plot = _this;
-        data = _this.data;
-        dragStart = function() {};
-        dragMove = function() {
-          var id, legendPt;
-          d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
-          id = d3.select(this).attr('id').split('legend-')[1];
-          legendPt = _.find(data.legendPts, function(l) {
-            return l.id === Number(id);
-          });
-          legendPt.lab.x = d3.event.x;
-          return legendPt.lab.y = d3.event.y;
-        };
-        dragEnd = function() {
-          var id, legendPt;
-          id = Number(d3.select(this).attr('id').split('legend-')[1]);
-          legendPt = _.find(data.legendPts, function(l) {
-            return l.id === Number(id);
-          });
-          if (plot.data.isLegendPtOutsideViewBox(legendPt.lab)) {
-            return d3.select(this).attr('x', d3.select(this).x = legendPt.x).attr('y', d3.select(this).y = legendPt.y);
-          } else {
-            return plot.elemDraggedOnPlot(id);
-          }
-        };
-        return d3.behavior.drag().origin(function() {
-          return {
-            x: d3.select(this).attr("x"),
-            y: d3.select(this).attr("y")
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        var drag, legendBubbleTitleSvg, legendFontSize, legendLabelDragAndDrop;
+        _this.data.setupLegendGroupsAndPts();
+        legendLabelDragAndDrop = function() {
+          var data, dragEnd, dragMove, dragStart, plot;
+          plot = _this;
+          data = _this.data;
+          dragStart = function() {};
+          dragMove = function() {
+            var id, legendPt;
+            d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
+            id = d3.select(this).attr('id').split('legend-')[1];
+            legendPt = _.find(data.legendPts, function(l) {
+              return l.id === Number(id);
+            });
+            legendPt.lab.x = d3.event.x;
+            return legendPt.lab.y = d3.event.y;
           };
-        }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
-      };
-    })(this);
-    if (this.legendBubblesShow && Utils.get().isArr(this.Z)) {
-      this.svg.selectAll('.legend-bubbles').remove();
-      this.svg.selectAll('.legend-bubbles').data(this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
-        return d.cx;
-      }).attr('cy', function(d) {
-        return d.cy;
-      }).attr('r', function(d) {
-        return d.r;
-      }).attr('fill', 'none').attr('stroke', 'black').attr('stroke-opacity', 0.5);
-      this.svg.selectAll('.legend-bubbles-labels').remove();
-      this.svg.selectAll('.legend-bubbles-labels').data(this.data.legendBubbles).enter().append('text').attr('class', 'legend-bubbles-labels').attr('x', function(d) {
-        return d.x;
-      }).attr('y', function(d) {
-        return d.y;
-      }).attr('text-anchor', 'middle').attr('font-size', this.legendFontSize).attr('font-family', this.legendFontFamily).attr('fill', this.legendFontColor).text(function(d) {
-        return d.text;
-      });
-      if (this.zTitle !== '') {
-        legendFontSize = this.legendFontSize;
-        this.svg.selectAll('.legend-bubbles-title').remove();
-        legendBubbleTitleSvg = this.svg.selectAll('.legend-bubbles-title').data(this.data.legendBubblesTitle).enter().append('text').attr('class', 'legend-bubbles-title').attr('x', function(d) {
+          dragEnd = function() {
+            var id, legendPt;
+            id = Number(d3.select(this).attr('id').split('legend-')[1]);
+            legendPt = _.find(data.legendPts, function(l) {
+              return l.id === Number(id);
+            });
+            if (plot.data.isLegendPtOutsideViewBox(legendPt.lab)) {
+              return d3.select(this).attr('x', d3.select(this).x = legendPt.x).attr('y', d3.select(this).y = legendPt.y);
+            } else {
+              return plot.elemDraggedOnPlot(id);
+            }
+          };
+          return d3.behavior.drag().origin(function() {
+            return {
+              x: d3.select(this).attr("x"),
+              y: d3.select(this).attr("y")
+            };
+          }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
+        };
+        if (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) {
+          _this.svg.selectAll('.legend-bubbles').remove();
+          _this.svg.selectAll('.legend-bubbles').data(_this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
+            return d.cx;
+          }).attr('cy', function(d) {
+            return d.cy;
+          }).attr('r', function(d) {
+            return d.r;
+          }).attr('fill', 'none').attr('stroke', 'black').attr('stroke-opacity', 0.5);
+          _this.svg.selectAll('.legend-bubbles-labels').remove();
+          _this.svg.selectAll('.legend-bubbles-labels').data(_this.data.legendBubbles).enter().append('text').attr('class', 'legend-bubbles-labels').attr('x', function(d) {
+            return d.x;
+          }).attr('y', function(d) {
+            return d.y;
+          }).attr('text-anchor', 'middle').attr('font-size', _this.legendFontSize).attr('font-family', _this.legendFontFamily).attr('fill', _this.legendFontColor).text(function(d) {
+            return d.text;
+          });
+          if (_this.zTitle !== '') {
+            legendFontSize = _this.legendFontSize;
+            _this.svg.selectAll('.legend-bubbles-title').remove();
+            legendBubbleTitleSvg = _this.svg.selectAll('.legend-bubbles-title').data(_this.data.legendBubblesTitle).enter().append('text').attr('class', 'legend-bubbles-title').attr('x', function(d) {
+              return d.x;
+            }).attr('y', function(d) {
+              return d.y - (legendFontSize * 1.5);
+            }).attr('text-anchor', 'middle').attr('font-family', _this.legendFontFamily).attr('font-weight', 'bold').attr('fill', _this.legendFontColor).text(_this.zTitle);
+            SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendBubblesTitle, legendBubbleTitleSvg);
+          }
+        }
+        drag = legendLabelDragAndDrop();
+        _this.svg.selectAll('.legend-dragged-pts-text').remove();
+        _this.svg.selectAll('.legend-dragged-pts-text').data(_this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
+          return "legend-" + d.id;
+        }).attr('x', function(d) {
           return d.x;
         }).attr('y', function(d) {
-          return d.y - (legendFontSize * 1.5);
-        }).attr('text-anchor', 'middle').attr('font-family', this.legendFontFamily).attr('font-weight', 'bold').attr('fill', this.legendFontColor).text(this.zTitle);
-        SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg);
-      }
-    }
-    drag = legendLabelDragAndDrop();
-    this.svg.selectAll('.legend-dragged-pts-text').remove();
-    this.svg.selectAll('.legend-dragged-pts-text').data(this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
-      return "legend-" + d.id;
-    }).attr('x', function(d) {
-      return d.x;
-    }).attr('y', function(d) {
-      return d.y;
-    }).attr('font-family', this.legendFontFamily).attr('font-size', this.legendFontSize).attr('text-anchor', function(d) {
-      return d.anchor;
-    }).attr('fill', function(d) {
-      return d.color;
-    }).text(function(d) {
-      if (d.markerId != null) {
-        return Utils.get().getSuperscript(d.markerId + 1) + d.text;
-      } else {
-        return d.text;
-      }
-    }).call(drag);
-    SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
-    if (this.legendShow) {
-      this.svg.selectAll('.legend-groups-text').remove();
-      this.svg.selectAll('.legend-groups-text').data(this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
-        return d.x;
-      }).attr('y', function(d) {
-        return d.y;
-      }).attr('font-family', this.legendFontFamily).attr('fill', this.legendFontColor).attr('font-size', this.legendFontSize).text(function(d) {
-        return d.text;
-      }).attr('text-anchor', function(d) {
-        return d.anchor;
-      });
-      this.svg.selectAll('.legend-groups-pts').remove();
-      this.svg.selectAll('.legend-groups-pts').data(this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
-        return d.cx;
-      }).attr('cy', function(d) {
-        return d.cy;
-      }).attr('r', function(d) {
-        return d.r;
-      }).attr('fill', function(d) {
-        return d.color;
-      }).attr('stroke', function(d) {
-        return d.stroke;
-      }).attr('stroke-opacity', function(d) {
-        return d['stroke-opacity'];
-      }).attr('fill-opacity', function(d) {
-        return d.fillOpacity;
-      });
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
-    }
-    if (this.legendShow || (this.legendBubblesShow && Utils.get().isArr(this.Z)) || (this.data.legendPts != null)) {
-      if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
-        console.log("rhtmlLabeledScatter: drawLegend false");
-        return false;
-      }
-    }
-    return true;
+          return d.y;
+        }).attr('font-family', _this.legendFontFamily).attr('font-size', _this.legendFontSize).attr('text-anchor', function(d) {
+          return d.anchor;
+        }).attr('fill', function(d) {
+          return d.color;
+        }).text(function(d) {
+          if (d.markerId != null) {
+            return Utils.get().getSuperscript(d.markerId + 1) + d.text;
+          } else {
+            return d.text;
+          }
+        }).call(drag);
+        SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendPts, _this.svg.selectAll('.legend-dragged-pts-text'));
+        if (_this.legendShow) {
+          _this.svg.selectAll('.legend-groups-text').remove();
+          _this.svg.selectAll('.legend-groups-text').data(_this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
+            return d.x;
+          }).attr('y', function(d) {
+            return d.y;
+          }).attr('font-family', _this.legendFontFamily).attr('fill', _this.legendFontColor).attr('font-size', _this.legendFontSize).text(function(d) {
+            return d.text;
+          }).attr('text-anchor', function(d) {
+            return d.anchor;
+          });
+          _this.svg.selectAll('.legend-groups-pts').remove();
+          _this.svg.selectAll('.legend-groups-pts').data(_this.data.legendGroups).enter().append('circle').attr('class', 'legend-groups-pts').attr('cx', function(d) {
+            return d.cx;
+          }).attr('cy', function(d) {
+            return d.cy;
+          }).attr('r', function(d) {
+            return d.r;
+          }).attr('fill', function(d) {
+            return d.color;
+          }).attr('stroke', function(d) {
+            return d.stroke;
+          }).attr('stroke-opacity', function(d) {
+            return d['stroke-opacity'];
+          }).attr('fill-opacity', function(d) {
+            return d.fillOpacity;
+          });
+          SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendGroups, _this.svg.selectAll('.legend-groups-text'));
+        }
+        if (_this.legendShow || (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) || (_this.data.legendPts != null)) {
+          if (_this.data.resizedAfterLegendGroupsDrawn(_this.legendShow)) {
+            console.log("rhtmlLabeledScatter: drawLegend false");
+            reject();
+          }
+        }
+        return resolve();
+      };
+    })(this));
   };
 
   RectPlot.prototype.drawAnc = function() {
@@ -555,7 +579,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.elemDraggedOffPlot = function(id) {
-    this.data.moveElemToLegend(id);
+    this.data.addElemToLegend(id);
     this.state.pushLegendPt(id);
     return this.resetPlotAfterDragEvent();
   };
@@ -577,7 +601,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabs = function() {
-    var drag, labelDragAndDrop, labeler, labels_svg;
+    var drag, labelDragAndDrop, labeler, labels_img_svg, labels_svg;
     labelDragAndDrop = (function(_this) {
       return function() {
         var dragEnd, dragMove, dragStart, plot;
@@ -587,13 +611,18 @@ RectPlot = (function() {
         };
         dragMove = function() {
           var id, label;
-          d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
+          d3.select(this).attr('x', d3.event.x).attr('y', d3.event.y);
           id = d3.select(this).attr('id');
           label = _.find(plot.data.lab, function(l) {
             return l.id === Number(id);
           });
-          label.x = d3.event.x;
-          return label.y = d3.event.y;
+          if ($(this).prop("tagName") === 'image') {
+            label.x = d3.event.x + label.width / 2;
+            return label.y = d3.event.y + label.height;
+          } else {
+            label.x = d3.event.x;
+            return label.y = d3.event.y;
+          }
         };
         dragEnd = function() {
           var id, lab;
@@ -619,9 +648,27 @@ RectPlot = (function() {
     if (this.showLabels) {
       drag = labelDragAndDrop();
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
+      this.svg.selectAll('.lab-img').remove();
+      this.svg.selectAll('.lab-img').data(this.data.lab).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
+        return d.url;
+      }).attr('id', function(d) {
+        if (d.url !== '') {
+          return d.id;
+        }
+      }).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
+      }).attr('width', function(d) {
+        return d.width;
+      }).attr('height', function(d) {
+        return d.height;
+      }).call(drag);
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
-        return d.id;
+        if (d.text !== '') {
+          return d.id;
+        }
       }).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {
@@ -636,6 +683,7 @@ RectPlot = (function() {
         return d.fontSize;
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
+      labels_img_svg = this.svg.selectAll('.lab-img');
       SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log("rhtmlLabeledScatter: Running label placement algorithm...");
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).pinned(this.state.getUserPositionedLabIds()).start(500);
@@ -643,6 +691,11 @@ RectPlot = (function() {
         return d.x;
       }).attr('y', function(d) {
         return d.y;
+      });
+      labels_img_svg.transition().duration(800).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
       });
       return this.drawLinks();
     }

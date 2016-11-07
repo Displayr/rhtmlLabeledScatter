@@ -55,13 +55,13 @@ LabeledScatter = (function() {
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
     } else {
-      this.data = testData13;
+      this.data = testData2;
     }
     console.log("rhtmlLabeledScatter: received state");
     console.log(state);
     DisplayError.get().checkIfArrayOfNums(this.data.X, el, 'Given X value is not an array of numbers');
     DisplayError.get().checkIfArrayOfNums(this.data.Y, el, 'Given Y value is not an array of numbers');
-    this.plot = new RectPlot(state, this.stateChangedCallback, this.width, this.height, this.data.X, this.data.Y, this.data.Z, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.zTitle, this.data.title, this.data.colors, this.data.transparency, this.data.grid, this.data.origin, this.data.originAlign, this.data.titleFontFamily, this.data.titleFontSize, this.data.titleFontColor, this.data.xTitleFontFamily, this.data.xTitleFontSize, this.data.xTitleFontColor, this.data.yTitleFontFamily, this.data.yTitleFontSize, this.data.yTitleFontColor, this.data.showLabels, this.data.labelsFontFamily, this.data.labelsFontSize, this.data.labelsFontColor, this.data.xDecimals, this.data.yDecimals, this.data.zDecimals, this.data.xPrefix, this.data.yPrefix, this.data.zPrefix, this.data.xSuffix, this.data.ySuffix, this.data.zSuffix, this.data.legendShow, this.data.legendBubblesShow, this.data.legendFontFamily, this.data.legendFontSize, this.data.legendFontColor, this.data.axisFontFamily, this.data.axisFontColor, this.data.axisFontSize, this.data.pointRadius, this.data.xBoundsMinimum, this.data.xBoundsMaximum, this.data.yBoundsMinimum, this.data.yBoundsMaximum, this.data.xBoundsUnitsMajor, this.data.yBoundsUnitsMajor);
+    this.plot = new RectPlot(state, this.stateChangedCallback, this.width, this.height, this.data.X, this.data.Y, this.data.Z, this.data.group, this.data.label, svg, this.data.fixedAspectRatio, this.data.xTitle, this.data.yTitle, this.data.zTitle, this.data.title, this.data.colors, this.data.transparency, this.data.grid, this.data.origin, this.data.originAlign, this.data.titleFontFamily, this.data.titleFontSize, this.data.titleFontColor, this.data.xTitleFontFamily, this.data.xTitleFontSize, this.data.xTitleFontColor, this.data.yTitleFontFamily, this.data.yTitleFontSize, this.data.yTitleFontColor, this.data.showLabels, this.data.labelsFontFamily, this.data.labelsFontSize, this.data.labelsFontColor, this.data.labelsLogoScale, this.data.xDecimals, this.data.yDecimals, this.data.zDecimals, this.data.xPrefix, this.data.yPrefix, this.data.zPrefix, this.data.xSuffix, this.data.ySuffix, this.data.zSuffix, this.data.legendShow, this.data.legendBubblesShow, this.data.legendFontFamily, this.data.legendFontSize, this.data.legendFontColor, this.data.axisFontFamily, this.data.axisFontColor, this.data.axisFontSize, this.data.pointRadius, this.data.xBoundsMinimum, this.data.xBoundsMaximum, this.data.yBoundsMinimum, this.data.yBoundsMaximum, this.data.xBoundsUnitsMajor, this.data.yBoundsUnitsMajor);
     this.plot.draw();
     return this;
   };

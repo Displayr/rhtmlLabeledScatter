@@ -36,7 +36,8 @@ class PlotData
       @normalizeData()
       @normalizeZData() if Utils.get().isArr(@Z)
       @plotColors = new PlotColors(@)
-      @calcDataArrays()
+      @labelNew = new PlotLabel(@label, @viewBoxDim.labelLogoScale)
+      @getPtsAndLabs()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
@@ -199,60 +200,73 @@ class PlotData
     legendUtils.calcZQuartiles(@, maxZ)
     legendUtils.normalizeZValues(@, maxZ)
 
-  calcDataArrays: =>
-    @pts = []
-    @lab = []
+  getPtsAndLabs: =>
+    Promise.all(@labelNew.promiseLabelArray).then((resolvedLabels) =>
+      @pts = []
+      @lab = []
 
-    i = 0
-    while i < @origLen
-      if (not _.includes(@outsidePlotPtsId, i)) or
-         _.includes (_.map @outsidePlotCondensedPts, (e) -> e.dataId), i
-        x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
-        y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
-        r = @pointRadius
-        if Utils.get().isArr(@Z)
-          legendUtils = LegendUtils.get()
-          r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
-        fillOpacity = @plotColors.getFillOpacity(@transparency)
-        label = @label[i]
-        labelZ = if Utils.get().isArr(@Z) then @Z[i].toString() else ''
-        fontSize = @viewBoxDim.labelFontSize
+      i = 0
+      while i < @origLen
+        if (not _.includes(@outsidePlotPtsId, i)) or
+           _.includes((_.map @outsidePlotCondensedPts, (e) -> e.dataId), i)
+          x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
+          y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
+          r = @pointRadius
+          if Utils.get().isArr(@Z)
+            legendUtils = LegendUtils.get()
+            r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
+          fillOpacity = @plotColors.getFillOpacity(@transparency)
 
-        if _.includes (_.map @outsidePlotCondensedPts, (e) -> e.dataId), i
-          pt = _.find @outsidePlotCondensedPts, (e) -> e.dataId == i
-          label = pt.markerId + 1
-          fontSize = @viewBoxDim.labelSmallFontSize
+          label = resolvedLabels[i].label
+          width = resolvedLabels[i].width
+          height = resolvedLabels[i].height
+          url = resolvedLabels[i].url
 
-        fontColor = ptColor = @plotColors.getColor(i)
-        fontColor = @viewBoxDim.labelFontColor if @viewBoxDim.labelFontColor? and !(@viewBoxDim.labelFontColor == '')
-        group = if @group? then @group[i] else ''
-        @pts.push({
-          x: x
-          y: y
-          r: r
-          label: label
-          labelX: @origX[i].toPrecision(3).toString()
-          labelY: @origY[i].toPrecision(3).toString()
-          labelZ: labelZ
-          group: group
-          color: ptColor
-          id: i
-          fillOpacity: fillOpacity
-        })
-        @lab.push({
-          x: x
-          y: y
-          text: label
-          color: fontColor
-          id: i
-          fontSize: fontSize
-          fontFamily: @viewBoxDim.labelFontFamily
-        })
-      i++
+          labelZ = if Utils.get().isArr(@Z) then @Z[i].toString() else ''
+          fontSize = @viewBoxDim.labelFontSize
 
-    # Remove pts outside plot because user bounds set
-    for p in @outsideBoundsPtsId
-      @moveElemToLegend(p) unless _.includes(@outsidePlotPtsId, p)
+          # If pt hsa been already condensed
+          if _.includes (_.map @outsidePlotCondensedPts, (e) -> e.dataId), i
+            pt = _.find @outsidePlotCondensedPts, (e) -> e.dataId == i
+            label = pt.markerId + 1
+            fontSize = @viewBoxDim.labelSmallFontSize
+            url = ''
+            width = null
+            height = null
+
+          fontColor = ptColor = @plotColors.getColor(i)
+          fontColor = @viewBoxDim.labelFontColor if @viewBoxDim.labelFontColor? and !(@viewBoxDim.labelFontColor == '')
+          group = if @group? then @group[i] else ''
+          @pts.push({
+            x: x
+            y: y
+            r: r
+            labelX: @origX[i].toPrecision(3).toString()
+            labelY: @origY[i].toPrecision(3).toString()
+            labelZ: labelZ
+            group: group
+            color: ptColor
+            id: i
+            fillOpacity: fillOpacity
+          })
+          @lab.push({
+            x: x
+            y: y
+            color: fontColor
+            id: i
+            fontSize: fontSize
+            fontFamily: @viewBoxDim.labelFontFamily
+            text: label
+            width: width
+            height: height
+            url: url
+          })
+        i++
+
+      # Remove pts outside plot because user bounds set
+      for p in @outsideBoundsPtsId
+        @addElemToLegend(p) unless _.includes(@outsidePlotPtsId, p)
+    ).catch((err) -> console.log err)
 
   setLegendItemsPositions: (numItems, itemsArray, cols) =>
     bubbleLegendTextHeight = 20
@@ -374,7 +388,7 @@ class PlotData
       return true
     return false
 
-  moveElemToLegend: (id) =>
+  addElemToLegend: (id) =>
     checkId = (e) -> e.id == id
     movedPt = _.remove @pts, checkId
     movedLab = _.remove @lab, checkId
@@ -383,13 +397,13 @@ class PlotData
       pt: movedPt[0]
       lab: movedLab[0]
       anchor: 'start'
-      text: movedPt[0].label + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
+      text: movedLab[0].text + ' (' + movedPt[0].labelX + ', ' + movedPt[0].labelY + ')'
       color: movedPt[0].color
       isDraggedPt: true
     }
     @outsidePlotPtsId.push id
     @normalizeData()
-    @calcDataArrays()
+    @getPtsAndLabs()
     @setupLegendGroupsAndPts()
 
   removeElemFromLegend: (id) =>
@@ -402,5 +416,5 @@ class PlotData
     _.remove @outsidePlotCondensedPts, (i) -> i.dataId == id
 
     @normalizeData()
-    @calcDataArrays()
+    @getPtsAndLabs()
     @setupLegendGroupsAndPts()
