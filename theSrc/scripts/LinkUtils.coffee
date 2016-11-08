@@ -9,8 +9,39 @@ class LinkUtils
   class LU
     constructor: ->
 
+    getNewPtOnLogoLabelBorder: (label, anchor, anchor_array) ->
+      # Don't draw a link if anc is inside logo
+      if (label.x - label.width/2 < anchor.x < label.x + label.width/2) and (label.y - label.height < anchor.y < label.y)
+         return
+
+      # Calculations reference - http://stackoverflow.com/questions/4061576/finding-points-on-a-rectangle-at-a-given-angle
+      a = label.width
+      b = label.height
+      labx = label.x
+      laby = label.y - label.height/2
+
+      dx = anchor.x - labx
+      dy = anchor.y - laby
+      angle = Math.atan(dy/dx)
+
+      if -Math.atan(b/a) < angle < Math.atan(b/a) then region = 1
+      else if Math.atan(b/a) < angle < Math.PI-Math.atan(b/a) then region = 2
+      else if Math.PI-Math.atan(b/a) < angle < Math.PI+Math.atan(b/a) then region = 3
+      else if Math.PI+Math.atan(b/a) < angle or angle < -Math.atan(b/a) then region = 4
+
+      if region == 1 or region == 3
+        if dx > 0
+          [labx + a/2 , (a/2 * Math.tan(angle))+ laby]
+        else
+          [labx - a/2 , -(a/2 * Math.tan(angle))+ laby]
+      else if region == 2 or region == 4
+        if dy > 0
+          [labx + b/(2* Math.tan(angle)) , b/2 + laby]
+        else
+          [labx - b/(2* Math.tan(angle)) , -b/2 + laby]
+
     # calc the links from anc to label text if ambiguous
-    getNewPtOnLabelBorder: (label, anchor, anchor_array) ->
+    getNewPtOnTxtLabelBorder: (label, anchor, anchor_array) ->
       labelXmid = label.x
       labelXleft = label.x - label.width/2
       labelXright = label.x + label.width/2

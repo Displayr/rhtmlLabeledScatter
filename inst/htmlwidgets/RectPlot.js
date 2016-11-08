@@ -707,7 +707,12 @@ RectPlot = (function() {
     _ref = this.data.pts;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       pt = _ref[i];
-      newLinkPt = LinkUtils.get().getNewPtOnLabelBorder(this.data.lab[i], pt, this.data.pts);
+      newLinkPt = null;
+      if (this.data.lab[i].url === '') {
+        newLinkPt = LinkUtils.get().getNewPtOnTxtLabelBorder(this.data.lab[i], pt, this.data.pts);
+      } else {
+        newLinkPt = LinkUtils.get().getNewPtOnLogoLabelBorder(this.data.lab[i], pt, this.data.pts);
+      }
       if (newLinkPt != null) {
         ancBorderPt = LinkUtils.get().getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
         links.push({

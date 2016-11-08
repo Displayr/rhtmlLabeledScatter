@@ -735,7 +735,12 @@ class RectPlot
   drawLinks: =>
     links = []
     for pt, i in @data.pts
-      newLinkPt = LinkUtils.get().getNewPtOnLabelBorder @data.lab[i], pt, @data.pts
+      newLinkPt = null
+      if @data.lab[i].url == ''
+        newLinkPt = LinkUtils.get().getNewPtOnTxtLabelBorder @data.lab[i], pt, @data.pts
+      else
+        newLinkPt = LinkUtils.get().getNewPtOnLogoLabelBorder @data.lab[i], pt, @data.pts
+
       if newLinkPt?
         ancBorderPt = LinkUtils.get().getPtOnAncBorder pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]
         links.push({
