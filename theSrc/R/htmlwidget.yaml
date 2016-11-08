@@ -24,14 +24,21 @@ dependencies:
      - PlotData.js
      - RectPlot.js
      - rhtmlLabeledScatter.js
-     - LinkUtils.js
-     - LegendUtils.js
-     - SvgUtils.js
-     - AxisUtils.js
      - PlotColors.js
-     - Utils.js
      - State.js
      - PlotLabel.js
+
+ - name: Utils
+   version: 0.0.1
+   src: htmlwidgets/utils
+   script:
+     - Utils.js
+     - SvgUtils.js
+     - AxisUtils.js
+     - LegendUtils.js
+     - LinkUtils.js
+     - DragUtils.js
+
 
  - name: Data
    version: 0.0.1

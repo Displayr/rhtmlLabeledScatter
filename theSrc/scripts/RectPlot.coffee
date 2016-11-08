@@ -212,12 +212,15 @@ class RectPlot
         console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
         throw new Error()
 
-      @drawTitle()
-      @drawLabs()
-      @drawAnc()
-      @drawDraggedMarkers()
-      @drawRect()
-      @drawAxisLabels()
+      try
+        @drawTitle()
+        @drawLabs()
+        @drawAnc()
+        @drawDraggedMarkers()
+        @drawRect()
+        @drawAxisLabels()
+      catch error
+        console.log error
       )
 
   drawTitle: =>
@@ -404,44 +407,6 @@ class RectPlot
     new Promise((resolve, reject) =>
       @data.setupLegendGroupsAndPts()
 
-      legendLabelDragAndDrop = =>
-        plot = @
-        data = @data
-        dragStart = ->
-
-        dragMove = ->
-          d3.select(@)
-          .attr('x', d3.select(@).x = d3.event.x)
-          .attr('y', d3.select(@).y = d3.event.y)
-
-          # Save the new location of text so links can be redrawn
-          id = d3.select(@).attr('id').split('legend-')[1]
-          legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
-          legendPt.lab.x = d3.event.x
-          legendPt.lab.y = d3.event.y
-
-        dragEnd = ->
-          id = Number(d3.select(@).attr('id').split('legend-')[1])
-          legendPt = _.find data.legendPts, (l) -> l.id == Number(id)
-          if plot.data.isLegendPtOutsideViewBox(legendPt.lab)
-            d3.select(@)
-              .attr('x', d3.select(@).x = legendPt.x)
-              .attr('y', d3.select(@).y = legendPt.y)
-          else
-            plot.elemDraggedOnPlot(id)
-
-
-        d3.behavior.drag()
-               .origin(() ->
-                 {
-                   x: d3.select(this).attr("x")
-                   y: d3.select(this).attr("y")
-                 }
-                )
-               .on('dragstart', dragStart)
-               .on('drag', dragMove)
-               .on('dragend', dragEnd)
-
       if @legendBubblesShow and Utils.get().isArr(@Z)
         @svg.selectAll('.legend-bubbles').remove()
         @svg.selectAll('.legend-bubbles')
@@ -488,7 +453,7 @@ class RectPlot
 
           SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
-      drag = legendLabelDragAndDrop()
+      drag = DragUtils.get().getLegendLabelDragAndDrop(@, @data)
       @svg.selectAll('.legend-dragged-pts-text').remove()
       @svg.selectAll('.legend-dragged-pts-text')
           .data(@data.legendPts)
@@ -554,6 +519,7 @@ class RectPlot
              .enter()
              .append('circle')
              .attr('class', 'anc')
+             .attr('id', (d) -> "anc-#{d.id}")
              .attr('cx', (d) -> d.x)
              .attr('cy', (d) -> d.y)
              .attr('r', (d) -> d.r)
@@ -603,16 +569,6 @@ class RectPlot
         .attr('fill', (d) -> d.color)
         .text((d) -> d.markerLabel)
 
-  elemDraggedOffPlot: (id) =>
-    @data.addElemToLegend(id)
-    @state.pushLegendPt(id)
-    @resetPlotAfterDragEvent()
-
-  elemDraggedOnPlot: (id) =>
-    @data.removeElemFromLegend(id)
-    @state.pullLegendPt(id)
-    @resetPlotAfterDragEvent()
-
   resetPlotAfterDragEvent: =>
     plotElems = [
        '.plot-viewbox'
@@ -632,50 +588,8 @@ class RectPlot
     @draw()
 
   drawLabs: =>
-    labelDragAndDrop = =>
-      plot = @
-      dragStart = () ->
-        plot.svg.selectAll('.link').remove()
-
-      dragMove = () ->
-        d3.select(@)
-        .attr('x', d3.event.x)
-        .attr('y', d3.event.y)
-
-        # Save the new location of text so links can be redrawn
-        id = d3.select(@).attr('id')
-        label = _.find plot.data.lab, (l) -> l.id == Number(id)
-        if $(@).prop("tagName") == 'image'
-          label.x = d3.event.x + label.width/2
-          label.y = d3.event.y + label.height
-        else
-          label.x = d3.event.x
-          label.y = d3.event.y
-
-
-      dragEnd = ->
-        # If label is dragged out of viewBox, remove the lab and add to legend
-        id = Number(d3.select(@).attr('id'))
-        lab = _.find plot.data.lab, (l) -> l.id == id
-        if plot.data.isOutsideViewBox(lab)
-          plot.elemDraggedOffPlot(id)
-        else
-          plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
-          plot.drawLinks()
-
-      d3.behavior.drag()
-               .origin(() ->
-                 {
-                   x: d3.select(this).attr("x")
-                   y: d3.select(this).attr("y")
-                 }
-                )
-               .on('dragstart', dragStart)
-               .on('drag', dragMove)
-               .on('dragend', dragEnd)
-
     if @showLabels
-      drag = labelDragAndDrop()
+      drag = DragUtils.get().getLabelDragAndDrop(@)
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
       @svg.selectAll('.lab-img').remove()
@@ -737,27 +651,10 @@ class RectPlot
       @drawLinks()
 
   drawLinks: =>
-    links = []
-    for pt, i in @data.pts
-      newLinkPt = null
-      if @data.lab[i].url == ''
-        newLinkPt = LinkUtils.get().getNewPtOnTxtLabelBorder @data.lab[i], pt, @data.pts
-      else
-        newLinkPt = LinkUtils.get().getNewPtOnLogoLabelBorder @data.lab[i], pt, @data.pts
-
-      if newLinkPt?
-        ancBorderPt = LinkUtils.get().getPtOnAncBorder pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]
-        links.push({
-          x1: ancBorderPt[0]
-          y1: ancBorderPt[1]
-          x2: newLinkPt[0]
-          y2: newLinkPt[1]
-          width: 1
-          color: pt.color
-        })
-
+    links = new Links(@data.pts, @data.lab)
+    @svg.selectAll('.link').remove()
     @svg.selectAll('.link')
-             .data(links)
+             .data(links.getLinkData())
              .enter()
              .append('line')
              .attr('class', 'link')

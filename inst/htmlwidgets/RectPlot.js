@@ -57,8 +57,6 @@ RectPlot = (function() {
     this.drawLinks = __bind(this.drawLinks, this);
     this.drawLabs = __bind(this.drawLabs, this);
     this.resetPlotAfterDragEvent = __bind(this.resetPlotAfterDragEvent, this);
-    this.elemDraggedOnPlot = __bind(this.elemDraggedOnPlot, this);
-    this.elemDraggedOffPlot = __bind(this.elemDraggedOffPlot, this);
     this.drawDraggedMarkers = __bind(this.drawDraggedMarkers, this);
     this.drawAnc = __bind(this.drawAnc, this);
     this.drawLegend = __bind(this.drawLegend, this);
@@ -202,7 +200,7 @@ RectPlot = (function() {
     this.data.normalizeData();
     return this.data.getPtsAndLabs().then((function(_this) {
       return function() {
-        var pt, _i, _j, _len, _len1, _ref, _ref1;
+        var error, pt, _i, _j, _len, _len1, _ref, _ref1;
         _this.title.x = _this.viewBoxDim.x + _this.viewBoxDim.width / 2;
         if (!_this.state.isLegendPtsSynced(_this.data.outsidePlotPtsId)) {
           _ref = _this.state.getLegendPts();
@@ -222,12 +220,17 @@ RectPlot = (function() {
           console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
           throw new Error();
         }
-        _this.drawTitle();
-        _this.drawLabs();
-        _this.drawAnc();
-        _this.drawDraggedMarkers();
-        _this.drawRect();
-        return _this.drawAxisLabels();
+        try {
+          _this.drawTitle();
+          _this.drawLabs();
+          _this.drawAnc();
+          _this.drawDraggedMarkers();
+          _this.drawRect();
+          return _this.drawAxisLabels();
+        } catch (_error) {
+          error = _error;
+          return console.log(error);
+        }
       };
     })(this));
   };
@@ -392,42 +395,8 @@ RectPlot = (function() {
   RectPlot.prototype.drawLegend = function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        var drag, legendBubbleTitleSvg, legendFontSize, legendLabelDragAndDrop;
+        var drag, legendBubbleTitleSvg, legendFontSize;
         _this.data.setupLegendGroupsAndPts();
-        legendLabelDragAndDrop = function() {
-          var data, dragEnd, dragMove, dragStart, plot;
-          plot = _this;
-          data = _this.data;
-          dragStart = function() {};
-          dragMove = function() {
-            var id, legendPt;
-            d3.select(this).attr('x', d3.select(this).x = d3.event.x).attr('y', d3.select(this).y = d3.event.y);
-            id = d3.select(this).attr('id').split('legend-')[1];
-            legendPt = _.find(data.legendPts, function(l) {
-              return l.id === Number(id);
-            });
-            legendPt.lab.x = d3.event.x;
-            return legendPt.lab.y = d3.event.y;
-          };
-          dragEnd = function() {
-            var id, legendPt;
-            id = Number(d3.select(this).attr('id').split('legend-')[1]);
-            legendPt = _.find(data.legendPts, function(l) {
-              return l.id === Number(id);
-            });
-            if (plot.data.isLegendPtOutsideViewBox(legendPt.lab)) {
-              return d3.select(this).attr('x', d3.select(this).x = legendPt.x).attr('y', d3.select(this).y = legendPt.y);
-            } else {
-              return plot.elemDraggedOnPlot(id);
-            }
-          };
-          return d3.behavior.drag().origin(function() {
-            return {
-              x: d3.select(this).attr("x"),
-              y: d3.select(this).attr("y")
-            };
-          }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
-        };
         if (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) {
           _this.svg.selectAll('.legend-bubbles').remove();
           _this.svg.selectAll('.legend-bubbles').data(_this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
@@ -456,7 +425,7 @@ RectPlot = (function() {
             SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendBubblesTitle, legendBubbleTitleSvg);
           }
         }
-        drag = legendLabelDragAndDrop();
+        drag = DragUtils.get().getLegendLabelDragAndDrop(_this, _this.data);
         _this.svg.selectAll('.legend-dragged-pts-text').remove();
         _this.svg.selectAll('.legend-dragged-pts-text').data(_this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
           return "legend-" + d.id;
@@ -519,7 +488,9 @@ RectPlot = (function() {
   RectPlot.prototype.drawAnc = function() {
     var anc;
     this.svg.selectAll('.anc').remove();
-    anc = this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('cx', function(d) {
+    anc = this.svg.selectAll('.anc').data(this.data.pts).enter().append('circle').attr('class', 'anc').attr('id', function(d) {
+      return "anc-" + d.id;
+    }).attr('cx', function(d) {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
@@ -581,18 +552,6 @@ RectPlot = (function() {
     });
   };
 
-  RectPlot.prototype.elemDraggedOffPlot = function(id) {
-    this.data.addElemToLegend(id);
-    this.state.pushLegendPt(id);
-    return this.resetPlotAfterDragEvent();
-  };
-
-  RectPlot.prototype.elemDraggedOnPlot = function(id) {
-    this.data.removeElemFromLegend(id);
-    this.state.pullLegendPt(id);
-    return this.resetPlotAfterDragEvent();
-  };
-
   RectPlot.prototype.resetPlotAfterDragEvent = function() {
     var elem, plotElems, _i, _len;
     plotElems = ['.plot-viewbox', '.origin', '.dim-marker', '.dim-marker-leader', '.dim-marker-label', '.axis-label', '.legend-pts', '.legend-text', '.anc', '.lab', '.link'];
@@ -604,52 +563,9 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabs = function() {
-    var drag, labelDragAndDrop, labeler, labels_img_svg, labels_svg;
-    labelDragAndDrop = (function(_this) {
-      return function() {
-        var dragEnd, dragMove, dragStart, plot;
-        plot = _this;
-        dragStart = function() {
-          return plot.svg.selectAll('.link').remove();
-        };
-        dragMove = function() {
-          var id, label;
-          d3.select(this).attr('x', d3.event.x).attr('y', d3.event.y);
-          id = d3.select(this).attr('id');
-          label = _.find(plot.data.lab, function(l) {
-            return l.id === Number(id);
-          });
-          if ($(this).prop("tagName") === 'image') {
-            label.x = d3.event.x + label.width / 2;
-            return label.y = d3.event.y + label.height;
-          } else {
-            label.x = d3.event.x;
-            return label.y = d3.event.y;
-          }
-        };
-        dragEnd = function() {
-          var id, lab;
-          id = Number(d3.select(this).attr('id'));
-          lab = _.find(plot.data.lab, function(l) {
-            return l.id === id;
-          });
-          if (plot.data.isOutsideViewBox(lab)) {
-            return plot.elemDraggedOffPlot(id);
-          } else {
-            plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim);
-            return plot.drawLinks();
-          }
-        };
-        return d3.behavior.drag().origin(function() {
-          return {
-            x: d3.select(this).attr("x"),
-            y: d3.select(this).attr("y")
-          };
-        }).on('dragstart', dragStart).on('drag', dragMove).on('dragend', dragEnd);
-      };
-    })(this);
+    var drag, labeler, labels_img_svg, labels_svg;
     if (this.showLabels) {
-      drag = labelDragAndDrop();
+      drag = DragUtils.get().getLabelDragAndDrop(this);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       this.svg.selectAll('.lab-img').remove();
       this.svg.selectAll('.lab-img').data(this.data.lab).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
@@ -707,30 +623,10 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLinks = function() {
-    var ancBorderPt, i, links, newLinkPt, pt, _i, _len, _ref;
-    links = [];
-    _ref = this.data.pts;
-    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
-      pt = _ref[i];
-      newLinkPt = null;
-      if (this.data.lab[i].url === '') {
-        newLinkPt = LinkUtils.get().getNewPtOnTxtLabelBorder(this.data.lab[i], pt, this.data.pts);
-      } else {
-        newLinkPt = LinkUtils.get().getNewPtOnLogoLabelBorder(this.data.lab[i], pt, this.data.pts);
-      }
-      if (newLinkPt != null) {
-        ancBorderPt = LinkUtils.get().getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
-        links.push({
-          x1: ancBorderPt[0],
-          y1: ancBorderPt[1],
-          x2: newLinkPt[0],
-          y2: newLinkPt[1],
-          width: 1,
-          color: pt.color
-        });
-      }
-    }
-    return this.svg.selectAll('.link').data(links).enter().append('line').attr('class', 'link').attr('x1', function(d) {
+    var links;
+    links = new Links(this.data.pts, this.data.lab);
+    this.svg.selectAll('.link').remove();
+    return this.svg.selectAll('.link').data(links.getLinkData()).enter().append('line').attr('class', 'link').attr('x1', function(d) {
       return d.x1;
     }).attr('y1', function(d) {
       return d.y1;
