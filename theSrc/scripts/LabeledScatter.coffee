@@ -118,6 +118,7 @@ class LabeledScatter
                         @data.yBoundsMinimum,
                         @data.yBoundsMaximum,
                         @data.xBoundsUnitsMajor,
-                        @data.yBoundsUnitsMajor)
+                        @data.yBoundsUnitsMajor,
+                        @data.trendLines)
     @plot.draw()
     return @

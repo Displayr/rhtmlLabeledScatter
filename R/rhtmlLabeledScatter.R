@@ -129,6 +129,7 @@ LabeledScatter <- function(
   tooltip.title.font.family = "Arial",
   tooltip.title.font.size = 10,
   point.radius = 2,
+  trend.lines = FALSE,
   width = NULL,
   height = NULL
   ) {
@@ -190,7 +191,8 @@ LabeledScatter <- function(
     yBoundsMinimum = y.bounds.minimum,
     yBoundsMaximum = y.bounds.maximum,
     xBoundsUnitsMajor = x.bounds.units.major,
-    yBoundsUnitsMajor = y.bounds.units.major
+    yBoundsUnitsMajor = y.bounds.units.major,
+    trendLines = trend.lines
   )
 
   htmlwidgets::createWidget(

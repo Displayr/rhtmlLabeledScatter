@@ -58,7 +58,8 @@ class RectPlot
                 yBoundsMinimum = null,
                 yBoundsMaximum = null,
                 @xBoundsUnitsMajor = null,
-                @yBoundsUnitsMajor = null) ->
+                @yBoundsUnitsMajor = null,
+                @trendLines = false) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
