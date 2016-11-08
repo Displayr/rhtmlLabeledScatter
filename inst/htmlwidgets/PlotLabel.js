@@ -3,19 +3,20 @@ var PlotLabel,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 PlotLabel = (function() {
-  function PlotLabel(givenLabelArray, logoScale) {
-    var i, label, outputLabelArray, _i, _len, _ref;
+  function PlotLabel(givenLabelArray, labelAlt, logoScale) {
+    var i, label, _i, _len, _ref, _ref1;
     this.givenLabelArray = givenLabelArray;
+    this.labelAlt = labelAlt;
     this.logoScale = logoScale;
     this._makeImgLabPromise = __bind(this._makeImgLabPromise, this);
     this._makeLabPromise = __bind(this._makeLabPromise, this);
     this.promiseLabelArray = [];
-    outputLabelArray = [];
     _ref = this.givenLabelArray;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       label = _ref[i];
       if (this._isStringLinkToImg(label)) {
-        this.promiseLabelArray.push(this._makeImgLabPromise(label, this.logoScale[i]));
+        labelAlt = ((_ref1 = this.labelAlt) != null ? _ref1[i] : void 0) != null ? this.labelAlt[i] : '';
+        this.promiseLabelArray.push(this._makeImgLabPromise(label, labelAlt, this.logoScale[i]));
       } else {
         this.promiseLabelArray.push(this._makeLabPromise(label));
       }
@@ -35,7 +36,7 @@ PlotLabel = (function() {
     })(this));
   };
 
-  PlotLabel.prototype._makeImgLabPromise = function(labelLink, scalingFactor) {
+  PlotLabel.prototype._makeImgLabPromise = function(labelLink, labelAlt, scalingFactor) {
     if (scalingFactor == null) {
       scalingFactor = 1;
     }
@@ -55,7 +56,7 @@ PlotLabel = (function() {
           return resolve({
             width: adjW,
             height: adjH,
-            label: '',
+            label: labelAlt,
             url: labelLink
           });
         };

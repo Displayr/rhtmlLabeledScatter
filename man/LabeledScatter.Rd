@@ -8,17 +8,18 @@ https://github.com/NumbersInternational/rhtmlLabeledScatter
 }
 \usage{
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
-  group = NULL, fixed.aspect = FALSE, colors = c("#5B9BD5", "#ED7D31",
-  "#A5A5A5", "#1EC000", "#4472C4", "#70AD47", "#255E91", "#9E480E", "#636363",
-  "#997300", "#264478", "#43682B", "#FF2323"), color.transparency = NULL,
-  grid = TRUE, origin = TRUE, origin.align = FALSE, y.title = "",
-  x.title = "", z.title = "", title = "", x.decimals = 1,
-  y.decimals = 1, z.decimals = 1, x.prefix = "", y.prefix = "",
-  z.prefix = "", x.suffix = "", y.suffix = "", z.suffix = "",
-  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title.font.size = 16, labels.show = TRUE,
-  labels.font.family = "Arial", labels.font.color = NULL,
-  labels.font.size = 10, labels.logo.scale = NULL, legend.show = TRUE,
+  label.alt = NULL, group = NULL, fixed.aspect = FALSE,
+  colors = c("#5B9BD5", "#ED7D31", "#A5A5A5", "#1EC000", "#4472C4", "#70AD47",
+  "#255E91", "#9E480E", "#636363", "#997300", "#264478", "#43682B", "#FF2323"),
+  color.transparency = NULL, grid = TRUE, origin = TRUE,
+  origin.align = FALSE, y.title = "", x.title = "", z.title = "",
+  title = "", x.decimals = 1, y.decimals = 1, z.decimals = 1,
+  x.prefix = "", y.prefix = "", z.prefix = "", x.suffix = "",
+  y.suffix = "", z.suffix = "", title.font.family = "Arial",
+  title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  title.font.size = 16, labels.show = TRUE, labels.font.family = "Arial",
+  labels.font.color = NULL, labels.font.size = 10,
+  labels.logo.scale = NULL, legend.show = TRUE,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
   maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 12,
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -40,7 +41,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{Z}{is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional}
 
-\item{label}{is the array of text labels for the data set}
+\item{label}{is the array of text labels for the data set (can supply an url to show logos)}
+
+\item{label.alt}{is an optional array of alternate label text when an url was provided as the label. NOTE: must be same length as label}
 
 \item{group}{is the array of group name for each data point}
 

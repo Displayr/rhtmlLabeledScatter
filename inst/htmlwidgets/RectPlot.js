@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -12,6 +12,7 @@ RectPlot = (function() {
     this.Z = Z;
     this.group = group;
     this.label = label;
+    this.labelAlt = labelAlt != null ? labelAlt : [];
     this.svg = svg;
     this.zTitle = zTitle != null ? zTitle : '';
     this.colors = colors;
@@ -176,7 +177,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
   };
 
   RectPlot.prototype.draw = function() {
@@ -532,20 +533,22 @@ RectPlot = (function() {
     if (Utils.get().isArr(this.Z)) {
       return anc.append('title').text((function(_this) {
         return function(d) {
-          var xlabel, ylabel, zlabel;
+          var labelTxt, xlabel, ylabel, zlabel;
           xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
           ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
           zlabel = Utils.get().getFormattedNum(d.labelZ, _this.zDecimals, _this.zPrefix, _this.zSuffix);
-          return "" + d.label + "\n" + zlabel + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
+          labelTxt = d.label === '' ? d.labelAlt : d.label;
+          return "" + labelTxt + "\n" + zlabel + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
         };
       })(this));
     } else {
       return anc.append('title').text((function(_this) {
         return function(d) {
-          var xlabel, ylabel;
+          var labelTxt, xlabel, ylabel;
           xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
           ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
-          return "" + d.label + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
+          labelTxt = d.label === '' ? d.labelAlt : d.label;
+          return "" + labelTxt + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
         };
       })(this));
     }
@@ -666,7 +669,7 @@ RectPlot = (function() {
       }).call(drag);
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(this.data.lab).enter().append('text').attr('class', 'lab').attr('id', function(d) {
-        if (d.text !== '') {
+        if (d.url === '') {
           return d.id;
         }
       }).attr('x', function(d) {
@@ -676,7 +679,9 @@ RectPlot = (function() {
       }).attr('font-family', function(d) {
         return d.fontFamily;
       }).text(function(d) {
-        return d.text;
+        if (d.url === '') {
+          return d.text;
+        }
       }).attr('text-anchor', 'middle').attr('fill', function(d) {
         return d.color;
       }).attr('font-size', function(d) {

@@ -69,6 +69,7 @@ class LabeledScatter
                         @data.Z,
                         @data.group,
                         @data.label,
+                        @data.labelAlt,
                         svg,
                         @data.fixedAspectRatio,
                         @data.xTitle,
