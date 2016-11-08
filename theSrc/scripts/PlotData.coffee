@@ -6,6 +6,7 @@ class PlotData
                 @Z,
                 @group,
                 @label,
+                @labelAlt,
                 @viewBoxDim,
                 @legendDim,
                 @colorWheel,
@@ -36,7 +37,7 @@ class PlotData
       @normalizeData()
       @normalizeZData() if Utils.get().isArr(@Z)
       @plotColors = new PlotColors(@)
-      @labelNew = new PlotLabel(@label, @viewBoxDim.labelLogoScale)
+      @labelNew = new PlotLabel(@label, @labelAlt, @viewBoxDim.labelLogoScale)
       @getPtsAndLabs()
     else
       throw new Error("Inputs X and Y lengths do not match!")
@@ -218,6 +219,7 @@ class PlotData
           fillOpacity = @plotColors.getFillOpacity(@transparency)
 
           label = resolvedLabels[i].label
+          labelAlt = if @labelAlt?[i]? then @labelAlt[i] else ''
           width = resolvedLabels[i].width
           height = resolvedLabels[i].height
           url = resolvedLabels[i].url
@@ -241,6 +243,8 @@ class PlotData
             x: x
             y: y
             r: r
+            label: label
+            labelAlt: labelAlt
             labelX: @origX[i].toPrecision(3).toString()
             labelY: @origY[i].toPrecision(3).toString()
             labelZ: labelZ

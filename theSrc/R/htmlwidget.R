@@ -6,7 +6,8 @@
 #' @param X is array of x coordinates of data set
 #' @param Y is array of y coordinates of data set
 #' @param Z is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional
-#' @param label is the array of text labels for the data set
+#' @param label is the array of text labels for the data set (can supply an url to show logos)
+#' @param label.alt is an optional array of alternate label text when an url was provided as the label. NOTE: must be same length as label
 #' @param group is the array of group name for each data point
 #' @param fixed.aspect Default to FALSE. Cannot be guarenteed if any of the axis bounds are set.
 #' @param colors is the color wheel to be used when plotting the data points. Defaults to Q color wheel.
@@ -75,6 +76,7 @@ LabeledScatter <- function(
   Y = NULL,
   Z = NULL,
   label = NULL,
+  label.alt = NULL,
   group = NULL,
   fixed.aspect = FALSE,
   colors = c('#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47','#255E91','#9E480E','#636363','#997300','#264478','#43682B','#FF2323'),
@@ -136,6 +138,7 @@ LabeledScatter <- function(
     Y = jsonlite::toJSON(Y),
     Z = jsonlite::toJSON(Z),
     label = jsonlite::toJSON(label),
+    labelAlt = jsonlite::toJSON(label.alt),
     group = jsonlite::toJSON(group),
     fixedAspectRatio = fixed.aspect,
     colors = jsonlite::toJSON(colors),

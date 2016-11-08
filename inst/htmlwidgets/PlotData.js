@@ -4,12 +4,13 @@ var PlotData,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 PlotData = (function() {
-  function PlotData(X, Y, Z, group, label, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency, legendShow, legendBubblesShow, axisDimensionText) {
+  function PlotData(X, Y, Z, group, label, labelAlt, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency, legendShow, legendBubblesShow, axisDimensionText) {
     this.X = X;
     this.Y = Y;
     this.Z = Z;
     this.group = group;
     this.label = label;
+    this.labelAlt = labelAlt;
     this.viewBoxDim = viewBoxDim;
     this.legendDim = legendDim;
     this.colorWheel = colorWheel;
@@ -51,7 +52,7 @@ PlotData = (function() {
         this.normalizeZData();
       }
       this.plotColors = new PlotColors(this);
-      this.labelNew = new PlotLabel(this.label, this.viewBoxDim.labelLogoScale);
+      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.viewBoxDim.labelLogoScale);
       this.getPtsAndLabs();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
@@ -231,7 +232,7 @@ PlotData = (function() {
   PlotData.prototype.getPtsAndLabs = function() {
     return Promise.all(this.labelNew.promiseLabelArray).then((function(_this) {
       return function(resolvedLabels) {
-        var fillOpacity, fontColor, fontSize, group, height, i, label, labelZ, legendUtils, p, pt, ptColor, r, url, width, x, y, _i, _len, _ref, _results;
+        var fillOpacity, fontColor, fontSize, group, height, i, label, labelAlt, labelZ, legendUtils, p, pt, ptColor, r, url, width, x, y, _i, _len, _ref, _ref1, _results;
         _this.pts = [];
         _this.lab = [];
         i = 0;
@@ -248,6 +249,7 @@ PlotData = (function() {
             }
             fillOpacity = _this.plotColors.getFillOpacity(_this.transparency);
             label = resolvedLabels[i].label;
+            labelAlt = ((_ref = _this.labelAlt) != null ? _ref[i] : void 0) != null ? _this.labelAlt[i] : '';
             width = resolvedLabels[i].width;
             height = resolvedLabels[i].height;
             url = resolvedLabels[i].url;
@@ -274,6 +276,8 @@ PlotData = (function() {
               x: x,
               y: y,
               r: r,
+              label: label,
+              labelAlt: labelAlt,
               labelX: _this.origX[i].toPrecision(3).toString(),
               labelY: _this.origY[i].toPrecision(3).toString(),
               labelZ: labelZ,
@@ -297,10 +301,10 @@ PlotData = (function() {
           }
           i++;
         }
-        _ref = _this.outsideBoundsPtsId;
+        _ref1 = _this.outsideBoundsPtsId;
         _results = [];
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          p = _ref[_i];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          p = _ref1[_i];
           if (!_.includes(_this.outsidePlotPtsId, p)) {
             _results.push(_this.addElemToLegend(p));
           } else {

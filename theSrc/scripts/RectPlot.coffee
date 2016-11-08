@@ -9,6 +9,7 @@ class RectPlot
                 @Z,
                 @group,
                 @label,
+                @labelAlt = [],
                 @svg,
                 fixedRatio,
                 xTitle,
@@ -168,6 +169,7 @@ class RectPlot
                          @Z,
                          @group,
                          @label,
+                         @labelAlt,
                          @viewBoxDim,
                          @legendDim,
                          @colors,
@@ -563,13 +565,15 @@ class RectPlot
            xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
            ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
            zlabel = Utils.get().getFormattedNum(d.labelZ, @zDecimals, @zPrefix, @zSuffix)
-           "#{d.label}\n#{zlabel}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
+           labelTxt = if d.label == '' then d.labelAlt else d.label
+           "#{labelTxt}\n#{zlabel}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
     else
       anc.append('title')
          .text((d) =>
            xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
            ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
-           "#{d.label}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
+           labelTxt = if d.label == '' then d.labelAlt else d.label
+           "#{labelTxt}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
 
   drawDraggedMarkers: =>
     @svg.selectAll('.marker').remove()
@@ -694,11 +698,11 @@ class RectPlot
                .enter()
                .append('text')
                .attr('class', 'lab')
-               .attr('id', (d) -> d.id if d.text != '')
+               .attr('id', (d) -> d.id if d.url == '')
                .attr('x', (d) -> d.x)
                .attr('y', (d) -> d.y)
                .attr('font-family', (d) -> d.fontFamily)
-               .text((d) -> d.text)
+               .text((d) -> d.text if d.url == '')
                .attr('text-anchor', 'middle')
                .attr('fill', (d) -> d.color)
                .attr('font-size', (d) -> d.fontSize)

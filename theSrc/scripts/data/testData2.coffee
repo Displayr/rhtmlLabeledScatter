@@ -17,6 +17,24 @@ testData2 =
     'Weight-conscious'
   ]
 
+  labelAlt: [
+   'Coke'
+   'Diet Coke'
+   'Coke Zero'
+   'Pepsi'
+   'Diet Pepsi'
+   'Pepsi Max'
+   'Feminine'
+   'Health-conscious'
+   'Innocent'
+   'Older'
+   'Open to new experiences'
+   'Rebellious'
+   'Sleepy'
+   'Traditional'
+   'Weight-conscious'
+  ]
+
   Y: [
     -1.16
     .38

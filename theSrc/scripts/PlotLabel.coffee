@@ -4,13 +4,13 @@
 
 class PlotLabel
 
-  constructor: (@givenLabelArray, @logoScale) ->
+  constructor: (@givenLabelArray, @labelAlt, @logoScale) ->
     @promiseLabelArray = []
-    outputLabelArray = []
 
     for label, i in @givenLabelArray
       if @_isStringLinkToImg(label)
-        @promiseLabelArray.push @_makeImgLabPromise(label, @logoScale[i])
+        labelAlt = if @labelAlt?[i]? then @labelAlt[i] else ''
+        @promiseLabelArray.push @_makeImgLabPromise(label, labelAlt, @logoScale[i])
       else
         @promiseLabelArray.push @_makeLabPromise(label)
 
@@ -24,7 +24,7 @@ class PlotLabel
       })
     )
 
-  _makeImgLabPromise: (labelLink, scalingFactor = 1) =>
+  _makeImgLabPromise: (labelLink, labelAlt, scalingFactor = 1) =>
     new Promise((resolve, reject) =>
       img = new Image()
       img.onload = ->
@@ -39,7 +39,7 @@ class PlotLabel
         resolve({
           width: adjW
           height: adjH
-          label: ''
+          label: labelAlt
           url: labelLink
         })
 
