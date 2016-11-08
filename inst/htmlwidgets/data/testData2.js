@@ -5,7 +5,7 @@ testData2 = {
   label: ['https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/800px-Coca-Cola_logo.svg.png', 'http://vignette2.wikia.nocookie.net/logopedia/images/9/92/Diet_Coke_LOGO_2014.jpg/revision/latest?cb=20140603041532', 'http://www.moes.com/public/images/food/beverages/coca-cola-zero.jpg', 'http://fullhdpictures.com/wp-content/uploads/2016/02/Pepsi-Logo.png', 'http://vignette1.wikia.nocookie.net/logopedia/images/7/7f/Diet_Pepsi_2010.png/revision/latest?cb=20101109175634', 'http://www.maxthetaste.com/images/logo-pepsimax.png', 'Feminine', 'Health-conscious', 'https://www.seeklogo.net/wp-content/uploads/2013/01/fanta-logo-vector-400x400.png', 'Older', 'Open to new experiences', 'https://image.freepik.com/free-icon/apple-logo_318-40184.jpg', 'Sleepy', 'http://www.stretch.se/wp-content/uploads/2014/03/microsoft-logo-NYA.jpg', 'Weight-conscious'],
   Y: [-1.16, .38, .42, -.95, .54, .22, .46, .57, .27, -.98, .04, -.24, .1, -1.3, .61],
   X: [-.05, -.36, .39, -.1, -.37, .71, -.44, .01, -.37, -.2, .68, .75, -.36, -.18, -.02],
-  labelsLogoScale: [2, .1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  labelsLogoScale: [1, .1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   xTitle: "",
   yTitle: "",
   fixedAspectRatio: true,

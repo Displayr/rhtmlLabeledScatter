@@ -18,7 +18,43 @@ LinkUtils = (function() {
   LU = (function() {
     function LU() {}
 
-    LU.prototype.getNewPtOnLabelBorder = function(label, anchor, anchor_array) {
+    LU.prototype.getNewPtOnLogoLabelBorder = function(label, anchor, anchor_array) {
+      var a, angle, b, dx, dy, labx, laby, region, _ref, _ref1;
+      if (((label.x - label.width / 2 < (_ref = anchor.x) && _ref < label.x + label.width / 2)) && ((label.y - label.height < (_ref1 = anchor.y) && _ref1 < label.y))) {
+        return;
+      }
+      a = label.width;
+      b = label.height;
+      labx = label.x;
+      laby = label.y - label.height / 2;
+      dx = anchor.x - labx;
+      dy = anchor.y - laby;
+      angle = Math.atan(dy / dx);
+      if ((-Math.atan(b / a) < angle && angle < Math.atan(b / a))) {
+        region = 1;
+      } else if ((Math.atan(b / a) < angle && angle < Math.PI - Math.atan(b / a))) {
+        region = 2;
+      } else if ((Math.PI - Math.atan(b / a) < angle && angle < Math.PI + Math.atan(b / a))) {
+        region = 3;
+      } else if (Math.PI + Math.atan(b / a) < angle || angle < -Math.atan(b / a)) {
+        region = 4;
+      }
+      if (region === 1 || region === 3) {
+        if (dx > 0) {
+          return [labx + a / 2, (a / 2 * Math.tan(angle)) + laby];
+        } else {
+          return [labx - a / 2, -(a / 2 * Math.tan(angle)) + laby];
+        }
+      } else if (region === 2 || region === 4) {
+        if (dy > 0) {
+          return [labx + b / (2 * Math.tan(angle)), b / 2 + laby];
+        } else {
+          return [labx - b / (2 * Math.tan(angle)), -b / 2 + laby];
+        }
+      }
+    };
+
+    LU.prototype.getNewPtOnTxtLabelBorder = function(label, anchor, anchor_array) {
       var a, above, aboveMid, abovePadded, ambiguityFactor, ancB, ancL, ancNearby, ancR, ancT, below, belowMid, belowPadded, centered, labelBorder, labelXleft, labelXmid, labelXright, labelYbot, labelYmid, labelYtop, left, leftPadded, padB, padL, padR, padT, paddedCenter, padding, right, rightPadded, _i, _len;
       labelXmid = label.x;
       labelXleft = label.x - label.width / 2;
