@@ -176,7 +176,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText, this.trendLines);
   };
 
   RectPlot.prototype.draw = function() {
@@ -221,6 +221,7 @@ RectPlot = (function() {
           console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
           throw new Error();
         }
+        new TrendLine(_this.data.pts);
         try {
           _this.drawTitle();
           _this.drawLabs();

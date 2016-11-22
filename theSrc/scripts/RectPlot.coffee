@@ -181,7 +181,8 @@ class RectPlot
                          @transparency,
                          @legendShow,
                          @legendBubblesShow,
-                         @axisDimensionText)
+                         @axisDimensionText,
+                         @trendLines)
 
   draw: =>
     @drawDimensionMarkers().then(() =>
@@ -212,6 +213,8 @@ class RectPlot
             @state.pushLegendPt pt
         console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
         throw new Error()
+
+      new TrendLine(@data.pts)
 
       try
         @drawTitle()
