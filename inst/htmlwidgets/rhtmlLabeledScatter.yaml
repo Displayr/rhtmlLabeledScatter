@@ -27,6 +27,7 @@ dependencies:
      - PlotColors.js
      - State.js
      - PlotLabel.js
+     - Links.js
 
  - name: Utils
    version: 0.0.1
@@ -36,7 +37,6 @@ dependencies:
      - SvgUtils.js
      - AxisUtils.js
      - LegendUtils.js
-     - LinkUtils.js
      - DragUtils.js
 
 
