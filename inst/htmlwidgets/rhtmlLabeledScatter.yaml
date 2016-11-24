@@ -48,14 +48,16 @@ dependencies:
      - testData2.js
      - testData3.js
      - testData4.js
-     - testData2.js
-     - testData2.js
-     - testData2.js
-     - testData2.js
-     - testData2.js
-     - testData2.js
-     - testData2.js
-     - testBubble1.js
+     - testData5.js
+     - testData6.js
+     - testData7.js
+     - testData8.js
+     - testData9.js
+     - testData10.js
+     - testData11.js
+     - testData12.js
+     - testData13.js
+     - bubbledata1.js
 
 
  - name: style
