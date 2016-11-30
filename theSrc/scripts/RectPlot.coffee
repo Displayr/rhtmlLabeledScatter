@@ -58,7 +58,8 @@ class RectPlot
                 yBoundsMinimum = null,
                 yBoundsMaximum = null,
                 @xBoundsUnitsMajor = null,
-                @yBoundsUnitsMajor = null) ->
+                @yBoundsUnitsMajor = null,
+                @trendLines = false) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
@@ -180,7 +181,8 @@ class RectPlot
                          @transparency,
                          @legendShow,
                          @legendBubblesShow,
-                         @axisDimensionText)
+                         @axisDimensionText,
+                         @trendLines)
 
   draw: =>
     @drawDimensionMarkers().then(() =>
@@ -216,6 +218,7 @@ class RectPlot
         @drawTitle()
         @drawLabs()
         @drawAnc()
+        @drawTrendLines()
         @drawDraggedMarkers()
         @drawRect()
         @drawAxisLabels()
@@ -665,3 +668,36 @@ class RectPlot
              .attr('stroke-width', (d) -> d.width)
              .attr('stroke', (d) -> d.color)
              .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
+
+  drawTrendLines: =>
+    tl = new TrendLine(@data.pts)
+
+    _.map(tl.getUniqueGroups(), (group) =>
+      #Arrowhead marker
+      @svg.append('svg:defs').append('svg:marker')
+          .attr('id', "triangle-#{group}")
+          .attr('refX', 6)
+          .attr('refY', 6)
+          .attr('markerWidth', 30)
+          .attr('markerHeight', 30)
+          .attr('orient', 'auto')
+          .append('path')
+          .attr('d', 'M 0 0 12 6 0 12 3 6')
+          .style('fill', @data.plotColors.getColorFromGroup(group));
+
+      @svg.selectAll(".trendline-#{group}")
+        .data(tl.getLineArray(group))
+        .enter()
+        .append('line')
+        .attr('class', "trendline-#{group}")
+        .attr('x1', (d) -> d[0])
+        .attr('y1', (d) -> d[1])
+        .attr('x2', (d) -> d[2])
+        .attr('y2', (d) -> d[3])
+        .attr('stroke', @data.plotColors.getColorFromGroup(group))
+        .attr('stroke-width', 1)
+        .attr('marker-end', (d, i) ->
+          if i == (tl.getLineArray(group)).length - 1
+            "url(#triangle-#{group})"
+        )
+    )

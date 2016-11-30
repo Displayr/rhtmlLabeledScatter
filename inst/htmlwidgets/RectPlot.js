@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -54,6 +54,8 @@ RectPlot = (function() {
     }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor != null ? xBoundsUnitsMajor : null;
     this.yBoundsUnitsMajor = yBoundsUnitsMajor != null ? yBoundsUnitsMajor : null;
+    this.trendLines = trendLines != null ? trendLines : false;
+    this.drawTrendLines = __bind(this.drawTrendLines, this);
     this.drawLinks = __bind(this.drawLinks, this);
     this.drawLabs = __bind(this.drawLabs, this);
     this.resetPlotAfterDragEvent = __bind(this.resetPlotAfterDragEvent, this);
@@ -175,7 +177,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText, this.trendLines);
   };
 
   RectPlot.prototype.draw = function() {
@@ -224,6 +226,7 @@ RectPlot = (function() {
           _this.drawTitle();
           _this.drawLabs();
           _this.drawAnc();
+          _this.drawTrendLines();
           _this.drawDraggedMarkers();
           _this.drawRect();
           return _this.drawAxisLabels();
@@ -639,6 +642,29 @@ RectPlot = (function() {
     }).attr('stroke', function(d) {
       return d.color;
     }).style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency));
+  };
+
+  RectPlot.prototype.drawTrendLines = function() {
+    var tl;
+    tl = new TrendLine(this.data.pts);
+    return _.map(tl.getUniqueGroups(), (function(_this) {
+      return function(group) {
+        _this.svg.append('svg:defs').append('svg:marker').attr('id', "triangle-" + group).attr('refX', 6).attr('refY', 6).attr('markerWidth', 30).attr('markerHeight', 30).attr('orient', 'auto').append('path').attr('d', 'M 0 0 12 6 0 12 3 6').style('fill', _this.data.plotColors.getColorFromGroup(group));
+        return _this.svg.selectAll(".trendline-" + group).data(tl.getLineArray(group)).enter().append('line').attr('class', "trendline-" + group).attr('x1', function(d) {
+          return d[0];
+        }).attr('y1', function(d) {
+          return d[1];
+        }).attr('x2', function(d) {
+          return d[2];
+        }).attr('y2', function(d) {
+          return d[3];
+        }).attr('stroke', _this.data.plotColors.getColorFromGroup(group)).attr('stroke-width', 1).attr('marker-end', function(d, i) {
+          if (i === (tl.getLineArray(group)).length - 1) {
+            return "url(#triangle-" + group + ")";
+          }
+        });
+      };
+    })(this));
   };
 
   return RectPlot;
