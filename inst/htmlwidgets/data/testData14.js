@@ -38,5 +38,6 @@ testData14 = {
   axisFontSize: '10',
   pointRadius: 2,
   trendLines: true,
-  trendLinesLineThickness: 5
+  trendLinesLineThickness: 1,
+  trendLinesPointSize: 10
 };

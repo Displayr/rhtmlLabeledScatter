@@ -63,6 +63,7 @@
 #' @param y.bounds.units.major Integer or NULL; set the distance between each tick mark on the y axis.
 #' @param trend.lines.show Boolean toggle to show trendlines based on groups given
 #' @param trend.lines.line.thickness An integer for the thickness of the trendlines (Default is 1px)
+#' @param trend.lines.point.size An integer to set the size of the data points when a trendline is drawn. This setting overrides Z sizes.
 #'
 #' @author Po Liu <pliu0771@uni.sydney.edu.au>
 #'
@@ -196,7 +197,9 @@ LabeledScatter <- function(
     xBoundsUnitsMajor = x.bounds.units.major,
     yBoundsUnitsMajor = y.bounds.units.major,
     trendLines = trend.lines.show,
-    trendLinesLineThickness = trend.lines.line.thickness
+    trendLinesLineThickness = trend.lines.line.thickness,
+    trendLinesPointSize = trend.lines.point.size
+
   )
 
   htmlwidgets::createWidget(

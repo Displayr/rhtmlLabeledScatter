@@ -120,7 +120,8 @@ class LabeledScatter
                         @data.xBoundsUnitsMajor,
                         @data.yBoundsUnitsMajor,
                         @data.trendLines,
-                        @data.trendLinesLineThickness
+                        @data.trendLinesLineThickness,
+                        @data.trendLinesPointSize
     )
     @plot.draw()
     return @

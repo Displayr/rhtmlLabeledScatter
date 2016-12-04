@@ -60,7 +60,8 @@ class RectPlot
                 @xBoundsUnitsMajor = null,
                 @yBoundsUnitsMajor = null,
                 trendLines = false,
-                trendLinesLineThickness = 1) ->
+                trendLinesLineThickness = 1,
+                trendLinesPointSize = 2) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
@@ -90,6 +91,7 @@ class RectPlot
     @trendLines =
       show:           trendLines
       lineThickness:  trendLinesLineThickness
+      pointSize:      trendLinesPointSize
 
     @axisLeaderLineLength = 5
     @axisDimensionText =
@@ -529,9 +531,13 @@ class RectPlot
              .attr('id', (d) -> "anc-#{d.id}")
              .attr('cx', (d) -> d.x)
              .attr('cy', (d) -> d.y)
-             .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .attr('fill-opacity', (d) -> d.fillOpacity)
+             .attr('r', (d) =>
+                    if @trendLines.show
+                      @trendLines.pointSize
+                    else
+                      d.r)
     if Utils.get().isArr(@Z)
       anc.append('title')
          .text((d) =>

@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines, trendLinesLineThickness) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines, trendLinesLineThickness, trendLinesPointSize) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -60,6 +60,9 @@ RectPlot = (function() {
     if (trendLinesLineThickness == null) {
       trendLinesLineThickness = 1;
     }
+    if (trendLinesPointSize == null) {
+      trendLinesPointSize = 2;
+    }
     this.drawTrendLines = __bind(this.drawTrendLines, this);
     this.drawLinks = __bind(this.drawLinks, this);
     this.drawLabs = __bind(this.drawLabs, this);
@@ -104,7 +107,8 @@ RectPlot = (function() {
     }
     this.trendLines = {
       show: trendLines,
-      lineThickness: trendLinesLineThickness
+      lineThickness: trendLinesLineThickness,
+      pointSize: trendLinesPointSize
     };
     this.axisLeaderLineLength = 5;
     this.axisDimensionText = {
@@ -508,13 +512,19 @@ RectPlot = (function() {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
-    }).attr('r', function(d) {
-      return d.r;
     }).attr('fill', function(d) {
       return d.color;
     }).attr('fill-opacity', function(d) {
       return d.fillOpacity;
-    });
+    }).attr('r', (function(_this) {
+      return function(d) {
+        if (_this.trendLines.show) {
+          return _this.trendLines.pointSize;
+        } else {
+          return d.r;
+        }
+      };
+    })(this));
     if (Utils.get().isArr(this.Z)) {
       return anc.append('title').text((function(_this) {
         return function(d) {
