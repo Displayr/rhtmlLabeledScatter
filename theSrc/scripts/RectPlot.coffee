@@ -667,10 +667,6 @@ class RectPlot
       if @tl == undefined or @tl == null
         @tl = new TrendLine(@data.pts, @data.lab)
 
-      console.log 'here'
-      console.log @tl
-      console.log @tl.getArrowheadLabels()
-
 #      @svg.selectAll('.lab-img').remove()
 #      @svg.selectAll('.lab-img')
 #        .data(@tl.getArrowheadLabels())
@@ -685,9 +681,11 @@ class RectPlot
 #        .attr('height', (d) -> d.height)
 #        .call(drag)
 
+      arrowheadLabs = @tl.getArrowheadLabels()
+
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
-        .data(@tl.getArrowheadLabels())
+        .data(arrowheadLabs)
         .enter()
         .append('text')
         .attr('class', 'lab')
@@ -702,6 +700,8 @@ class RectPlot
 #        .call(drag)
 
       labels_svg = @svg.selectAll('.lab')
+      SvgUtils.get().setSvgBBoxWidthAndHeight arrowheadLabs, labels_svg
+
       labeler = d3.labeler()
                   .svg(@svg)
                   .w1(@viewBoxDim.x)
@@ -709,7 +709,7 @@ class RectPlot
                   .h1(@viewBoxDim.y)
                   .h2(@viewBoxDim.y + @viewBoxDim.height)
                   .anchor(@tl.getArrowheadPts())
-                  .label(@tl.getArrowheadLabels())
+                  .label(arrowheadLabs)
                   .start(500)
 
       labels_svg.transition()
