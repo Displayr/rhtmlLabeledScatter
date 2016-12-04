@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines, trendLinesLineThickness) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -54,7 +54,12 @@ RectPlot = (function() {
     }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor != null ? xBoundsUnitsMajor : null;
     this.yBoundsUnitsMajor = yBoundsUnitsMajor != null ? yBoundsUnitsMajor : null;
-    this.trendLines = trendLines != null ? trendLines : false;
+    if (trendLines == null) {
+      trendLines = false;
+    }
+    if (trendLinesLineThickness == null) {
+      trendLinesLineThickness = 1;
+    }
     this.drawTrendLines = __bind(this.drawTrendLines, this);
     this.drawLinks = __bind(this.drawLinks, this);
     this.drawLabs = __bind(this.drawLabs, this);
@@ -97,6 +102,10 @@ RectPlot = (function() {
     if (this.yTitle.text === '') {
       this.yTitle.textHeight = 0;
     }
+    this.trendLines = {
+      show: trendLines,
+      lineThickness: trendLinesLineThickness
+    };
     this.axisLeaderLineLength = 5;
     this.axisDimensionText = {
       rowMaxWidth: 0,
@@ -177,7 +186,7 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText, this.trendLines);
+    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
   };
 
   RectPlot.prototype.draw = function() {
@@ -226,7 +235,9 @@ RectPlot = (function() {
           _this.drawTitle();
           _this.drawLabs();
           _this.drawAnc();
-          _this.drawTrendLines();
+          if (_this.trendLines.show) {
+            _this.drawTrendLines();
+          }
           _this.drawDraggedMarkers();
           _this.drawRect();
           return _this.drawAxisLabels();
@@ -658,7 +669,7 @@ RectPlot = (function() {
           return d[2];
         }).attr('y2', function(d) {
           return d[3];
-        }).attr('stroke', _this.data.plotColors.getColorFromGroup(group)).attr('stroke-width', 1).attr('marker-end', function(d, i) {
+        }).attr('stroke', _this.data.plotColors.getColorFromGroup(group)).attr('stroke-width', _this.trendLines.lineThickness).attr('marker-end', function(d, i) {
           if (i === (tl.getLineArray(group)).length - 1) {
             return "url(#triangle-" + group + ")";
           }

@@ -4,7 +4,7 @@ var PlotData,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 PlotData = (function() {
-  function PlotData(X, Y, Z, group, label, labelAlt, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency, legendShow, legendBubblesShow, axisDimensionText, trendLines) {
+  function PlotData(X, Y, Z, group, label, labelAlt, viewBoxDim, legendDim, colorWheel, fixedAspectRatio, originAlign, pointRadius, bounds, transparency, legendShow, legendBubblesShow, axisDimensionText) {
     this.X = X;
     this.Y = Y;
     this.Z = Z;
@@ -22,7 +22,6 @@ PlotData = (function() {
     this.legendShow = legendShow;
     this.legendBubblesShow = legendBubblesShow;
     this.axisDimensionText = axisDimensionText;
-    this.trendLines = trendLines;
     this.removeElemFromLegend = __bind(this.removeElemFromLegend, this);
     this.addElemToLegend = __bind(this.addElemToLegend, this);
     this.isLegendPtOutsideViewBox = __bind(this.isLegendPtOutsideViewBox, this);

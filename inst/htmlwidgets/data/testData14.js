@@ -36,5 +36,7 @@ testData14 = {
   axisFontFamily: 'Times New Roman',
   axisFontColor: "red",
   axisFontSize: '10',
-  pointRadius: 2
+  pointRadius: 2,
+  trendLines: true,
+  trendLinesLineThickness: 5
 };

@@ -59,7 +59,8 @@ class RectPlot
                 yBoundsMaximum = null,
                 @xBoundsUnitsMajor = null,
                 @yBoundsUnitsMajor = null,
-                @trendLines = false) ->
+                trendLines = false,
+                trendLinesLineThickness = 1) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
@@ -85,6 +86,10 @@ class RectPlot
       fontSize:   yTitleFontSize
       fontColor:  yTitleFontColor
     @yTitle.textHeight = 0 if @yTitle.text is ''
+
+    @trendLines =
+      show:           trendLines
+      lineThickness:  trendLinesLineThickness
 
     @axisLeaderLineLength = 5
     @axisDimensionText =
@@ -181,8 +186,7 @@ class RectPlot
                          @transparency,
                          @legendShow,
                          @legendBubblesShow,
-                         @axisDimensionText,
-                         @trendLines)
+                         @axisDimensionText)
 
   draw: =>
     @drawDimensionMarkers().then(() =>
@@ -218,7 +222,7 @@ class RectPlot
         @drawTitle()
         @drawLabs()
         @drawAnc()
-        @drawTrendLines()
+        @drawTrendLines() if @trendLines.show
         @drawDraggedMarkers()
         @drawRect()
         @drawAxisLabels()
@@ -695,7 +699,7 @@ class RectPlot
         .attr('x2', (d) -> d[2])
         .attr('y2', (d) -> d[3])
         .attr('stroke', @data.plotColors.getColorFromGroup(group))
-        .attr('stroke-width', 1)
+        .attr('stroke-width', @trendLines.lineThickness)
         .attr('marker-end', (d, i) ->
           if i == (tl.getLineArray(group)).length - 1
             "url(#triangle-#{group})"

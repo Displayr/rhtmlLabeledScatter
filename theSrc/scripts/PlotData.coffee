@@ -17,8 +17,7 @@ class PlotData
                 @transparency,
                 @legendShow,
                 @legendBubblesShow,
-                @axisDimensionText,
-                @trendLines) ->
+                @axisDimensionText) ->
 
     @origX = @X.slice(0)
     @origY = @Y.slice(0)
