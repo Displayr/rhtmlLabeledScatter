@@ -3,17 +3,26 @@ var TrendLine,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 TrendLine = (function() {
-  function TrendLine(pts) {
+  function TrendLine(pts, labs) {
     this.pts = pts;
+    this.labs = labs;
     this.getUniqueGroups = __bind(this.getUniqueGroups, this);
     this.getTrendLines = __bind(this.getTrendLines, this);
+    this.getArrowheadLabels = __bind(this.getArrowheadLabels, this);
+    this.getArrowheadPts = __bind(this.getArrowheadPts, this);
     this.getLineArray = __bind(this.getLineArray, this);
     this._createLineArrays = __bind(this._createLineArrays, this);
     this.linePts = {};
+    this.arrowheadLabels = {};
+    this.groupToLabel = {};
     _.map(this.pts, (function(_this) {
-      return function(pt) {
+      return function(pt, i) {
         if (_this.linePts[pt.group] == null) {
           _this.linePts[pt.group] = [];
+        }
+        if (!((_this.groupToLabel[pt.group] != null) && (_this.arrowheadLabels[pt.group] != null))) {
+          _this.groupToLabel[pt.group] = _this.labs[i];
+          _this.arrowheadLabels[pt.group] = _this.labs[i];
         }
         return _this.linePts[pt.group].push({
           x: pt.x,
@@ -29,17 +38,23 @@ TrendLine = (function() {
   TrendLine.prototype._createLineArrays = function() {
     this.linesMapped = {};
     this.lines = {};
+    this.arrowheadPts = [];
     _.map(this.linePts, (function(_this) {
       return function(groupPts, groupName) {
-        var i, pt, _i, _len, _results;
+        var i, lastLinePt, pt, _i, _len;
         _this.lines[groupName] = [];
         _this.linesMapped[groupName] = [];
         switch (groupPts.length) {
           case 0:
+            break;
           case 1:
+            _this.arrowheadPts.push(groupPts[0]);
             break;
           case 2:
-            return _this.lines[groupName] = [[groupPts[0].x, groupPts[0].y, groupPts[1].x, groupPts[1].y]];
+            _this.lines[groupName] = [[groupPts[0].x, groupPts[0].y, groupPts[1].x, groupPts[1].y]];
+            _this.arrowheadPts.push(groupPts[1]);
+            _this.arrowheadLabels[groupName].x = groupPts[1].x - _this.arrowheadLabels[groupName].width / 2;
+            return _this.arrowheadLabels[groupName].y = groupPts[1].y - _this.arrowheadLabels[groupName].height / 2;
           default:
             for (i = _i = 0, _len = groupPts.length; _i < _len; i = ++_i) {
               pt = groupPts[i];
@@ -49,12 +64,14 @@ TrendLine = (function() {
               }
             }
             i = 0;
-            _results = [];
             while (i < _this.linesMapped[groupName].length) {
               _this.lines[groupName].push([_this.linesMapped[groupName][i].x, _this.linesMapped[groupName][i].y, _this.linesMapped[groupName][i + 1].x, _this.linesMapped[groupName][i + 1].y]);
-              _results.push(i += 2);
+              i += 2;
             }
-            return _results;
+            lastLinePt = _.last(_this.linesMapped[groupName]);
+            _this.arrowheadPts.push(lastLinePt);
+            _this.arrowheadLabels[groupName].x = lastLinePt.x - _this.arrowheadLabels[groupName].width / 2;
+            return _this.arrowheadLabels[groupName].y = lastLinePt.y - _this.arrowheadLabels[groupName].height / 2;
         }
       };
     })(this));
@@ -66,6 +83,17 @@ TrendLine = (function() {
       this._createLineArrays();
     }
     return this.lines[group];
+  };
+
+  TrendLine.prototype.getArrowheadPts = function() {
+    if (this.arrowheadPts == null) {
+      this._createLineArrays();
+    }
+    return this.arrowheadPts;
+  };
+
+  TrendLine.prototype.getArrowheadLabels = function() {
+    return _.values(this.arrowheadLabels);
   };
 
   TrendLine.prototype.getTrendLines = function() {

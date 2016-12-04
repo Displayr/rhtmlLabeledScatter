@@ -65,7 +65,7 @@
 #' @param trend.lines.line.thickness An integer for the thickness of the trendlines (Default is 1px)
 #' @param trend.lines.point.size An integer to set the size of the data points when a trendline is drawn. This setting overrides Z sizes.
 #'
-#' @author Po Liu <pliu0771@uni.sydney.edu.au>
+#' @author Po Liu <po.liu@numbers.net.au>
 #'
 #' @source https://github.com/NumbersInternational/rhtmlLabeledScatter
 #'

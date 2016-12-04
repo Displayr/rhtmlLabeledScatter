@@ -2,7 +2,7 @@
 var testData14;
 
 testData14 = {
-  label: ['1', '2', '3', '4', '5', '6'],
+  label: ['Trendline Label 1', '', '3', '4', 'Trendline Label 2', '6'],
   Y: [0, 3, 0, 1, 0, 2],
   X: [1, 2, 3, 4, 5, 6],
   group: ['a', 'a', 'a', 'a', 'b', 'b'],
@@ -39,5 +39,5 @@ testData14 = {
   pointRadius: 2,
   trendLines: true,
   trendLinesLineThickness: 1,
-  trendLinesPointSize: 10
+  trendLinesPointSize: 2
 };

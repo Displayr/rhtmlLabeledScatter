@@ -1,10 +1,10 @@
 testData14 =
   label: [
-    '1'
-    '2'
+    'Trendline Label 1'
+    ''
     '3'
     '4'
-    '5'
+    'Trendline Label 2'
     '6'
   ]
 
@@ -68,4 +68,4 @@ testData14 =
   pointRadius: 2
   trendLines: true
   trendLinesLineThickness: 1
-  trendLinesPointSize: 10
+  trendLinesPointSize: 2
