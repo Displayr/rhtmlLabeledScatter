@@ -667,21 +667,22 @@ class RectPlot
       if @tl == undefined or @tl == null
         @tl = new TrendLine(@data.pts, @data.lab)
 
-#      @svg.selectAll('.lab-img').remove()
-#      @svg.selectAll('.lab-img')
-#        .data(@tl.getArrowheadLabels())
-#        .enter()
-#        .append('svg:image')
-#        .attr('class', 'lab-img')
-#        .attr('xlink:href', (d) -> d.url)
-#        .attr('id', (d) -> d.id if d.url != '')
-#        .attr('x', (d) -> d.x - d.width/2)
-#        .attr('y', (d) -> d.y - d.height)
-#        .attr('width', (d) -> d.width)
-#        .attr('height', (d) -> d.height)
+      arrowheadLabs = @tl.getArrowheadLabels()
+
+      @svg.selectAll('.lab-img').remove()
+      @svg.selectAll('.lab-img')
+        .data(arrowheadLabs)
+        .enter()
+        .append('svg:image')
+        .attr('class', 'lab-img')
+        .attr('xlink:href', (d) -> d.url)
+        .attr('id', (d) -> d.id if d.url != '')
+        .attr('x', (d) -> d.x - d.width/2)
+        .attr('y', (d) -> d.y - d.height)
+        .attr('width', (d) -> d.width)
+        .attr('height', (d) -> d.height)
 #        .call(drag)
 
-      arrowheadLabs = @tl.getArrowheadLabels()
 
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
@@ -700,6 +701,7 @@ class RectPlot
 #        .call(drag)
 
       labels_svg = @svg.selectAll('.lab')
+      labels_img_svg = @svg.selectAll('.lab-img')
       SvgUtils.get().setSvgBBoxWidthAndHeight arrowheadLabs, labels_svg
 
       labeler = d3.labeler()
@@ -717,6 +719,10 @@ class RectPlot
         .attr('x', (d) -> d.x)
         .attr('y', (d) -> d.y)
 
+      labels_img_svg.transition()
+        .duration(800)
+        .attr('x', (d) -> d.x - d.width/2)
+        .attr('y', (d) -> d.y - d.height)
 
   drawLinks: =>
     links = new Links(@data.pts, @data.lab)

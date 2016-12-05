@@ -648,6 +648,22 @@ RectPlot = (function() {
         this.tl = new TrendLine(this.data.pts, this.data.lab);
       }
       arrowheadLabs = this.tl.getArrowheadLabels();
+      this.svg.selectAll('.lab-img').remove();
+      this.svg.selectAll('.lab-img').data(arrowheadLabs).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
+        return d.url;
+      }).attr('id', function(d) {
+        if (d.url !== '') {
+          return d.id;
+        }
+      }).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
+      }).attr('width', function(d) {
+        return d.width;
+      }).attr('height', function(d) {
+        return d.height;
+      });
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(arrowheadLabs).enter().append('text').attr('class', 'lab').attr('id', function(d) {
         if (d.url === '') {
@@ -669,12 +685,18 @@ RectPlot = (function() {
         return d.fontSize;
       });
       labels_svg = this.svg.selectAll('.lab');
+      labels_img_svg = this.svg.selectAll('.lab-img');
       SvgUtils.get().setSvgBBoxWidthAndHeight(arrowheadLabs, labels_svg);
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.getArrowheadPts()).label(arrowheadLabs).start(500);
-      return labels_svg.transition().duration(800).attr('x', function(d) {
+      labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {
         return d.y;
+      });
+      return labels_img_svg.transition().duration(800).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
       });
     }
   };
