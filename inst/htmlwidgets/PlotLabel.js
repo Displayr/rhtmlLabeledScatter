@@ -43,8 +43,9 @@ PlotLabel = (function() {
     }
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        var img;
+        var img, imgLoaded;
         img = new Image();
+        imgLoaded = false;
         img.onload = function() {
           var adjH, adjW, aspectRatio, defaultArea, height, width;
           defaultArea = 10000 * scalingFactor;
@@ -54,6 +55,7 @@ PlotLabel = (function() {
           adjW = Math.sqrt(defaultArea * aspectRatio);
           adjH = adjW / aspectRatio;
           img.src = '';
+          imgLoaded = true;
           return resolve({
             width: adjW,
             height: adjH,
@@ -63,14 +65,16 @@ PlotLabel = (function() {
         };
         img.onerror = function() {
           var defaultErrorLogoSize;
-          console.log('Error: Image URL not valid - ' + labelLink);
-          defaultErrorLogoSize = 20;
-          return resolve({
-            width: defaultErrorLogoSize,
-            height: defaultErrorLogoSize,
-            label: '',
-            url: DisplayError.get().getErrorImgUrl()
-          });
+          if (!imgLoaded) {
+            console.log('Error: Image URL not valid - ' + labelLink);
+            defaultErrorLogoSize = 20;
+            return resolve({
+              width: defaultErrorLogoSize,
+              height: defaultErrorLogoSize,
+              label: '',
+              url: DisplayError.get().getErrorImgUrl()
+            });
+          }
         };
         return img.src = labelLink;
       };
