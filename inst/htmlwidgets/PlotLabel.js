@@ -11,6 +11,7 @@ PlotLabel = (function() {
     this._makeImgLabPromise = __bind(this._makeImgLabPromise, this);
     this._makeLabPromise = __bind(this._makeLabPromise, this);
     this.promiseLabelArray = [];
+    console.log('constructor');
     _ref = this.givenLabelArray;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       label = _ref[i];

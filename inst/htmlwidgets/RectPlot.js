@@ -647,6 +647,7 @@ RectPlot = (function() {
       if (this.tl === void 0 || this.tl === null) {
         this.tl = new TrendLine(this.data.pts, this.data.lab);
       }
+      drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
       arrowheadLabs = this.tl.getArrowheadLabels();
       this.svg.selectAll('.lab-img').remove();
       this.svg.selectAll('.lab-img').data(arrowheadLabs).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
@@ -663,7 +664,7 @@ RectPlot = (function() {
         return d.width;
       }).attr('height', function(d) {
         return d.height;
-      });
+      }).call(drag);
       this.svg.selectAll('.lab').remove();
       this.svg.selectAll('.lab').data(arrowheadLabs).enter().append('text').attr('class', 'lab').attr('id', function(d) {
         if (d.url === '') {
@@ -683,7 +684,7 @@ RectPlot = (function() {
         return d.color;
       }).attr('font-size', function(d) {
         return d.fontSize;
-      });
+      }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
       labels_img_svg = this.svg.selectAll('.lab-img');
       SvgUtils.get().setSvgBBoxWidthAndHeight(arrowheadLabs, labels_svg);

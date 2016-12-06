@@ -9,7 +9,7 @@ class DragUtils
   class DU
     constructor: ->
 
-    getLabelDragAndDrop: (plot) ->
+    getLabelDragAndDrop: (plot, showTrendLine=false) ->
       dragStart = () ->
         plot.svg.selectAll('.link').remove()
 
@@ -44,7 +44,8 @@ class DragUtils
         else
           plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
           ancToHide = plot.svg.select("#anc-#{id}").attr('fill-opacity', (d) -> d.fillOpacity)
-          plot.drawLinks()
+          unless showTrendLine
+            plot.drawLinks()
 
       d3.behavior.drag()
                .origin(() ->

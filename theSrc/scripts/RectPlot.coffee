@@ -667,6 +667,7 @@ class RectPlot
       if @tl == undefined or @tl == null
         @tl = new TrendLine(@data.pts, @data.lab)
 
+      drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
       arrowheadLabs = @tl.getArrowheadLabels()
 
       @svg.selectAll('.lab-img').remove()
@@ -681,7 +682,7 @@ class RectPlot
         .attr('y', (d) -> d.y - d.height)
         .attr('width', (d) -> d.width)
         .attr('height', (d) -> d.height)
-#        .call(drag)
+        .call(drag)
 
 
       @svg.selectAll('.lab').remove()
@@ -698,7 +699,7 @@ class RectPlot
         .attr('text-anchor', 'middle')
         .attr('fill', (d) -> d.color)
         .attr('font-size', (d) -> d.fontSize)
-#        .call(drag)
+        .call(drag)
 
       labels_svg = @svg.selectAll('.lab')
       labels_img_svg = @svg.selectAll('.lab-img')

@@ -4,7 +4,7 @@ testData14 =
     ''
     '3'
     '4'
-    'http://blogs.microsoft.com/wp-content/uploads/2012/08/8867.Microsoft_5F00_Logo_2D00_for_2D00_screen.jpg'
+    'https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_284x96dp.png'
     '6'
   ]
 

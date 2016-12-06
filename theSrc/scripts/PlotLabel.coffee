@@ -6,6 +6,7 @@ class PlotLabel
 
   constructor: (@givenLabelArray, @labelAlt, @logoScale) ->
     @promiseLabelArray = []
+    console.log 'constructor'
 
     for label, i in @givenLabelArray
       if @_isStringLinkToImg(label)

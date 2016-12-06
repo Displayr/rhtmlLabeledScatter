@@ -2,7 +2,7 @@
 var testData14;
 
 testData14 = {
-  label: ['Trendline Label 1', '', '3', '4', 'http://blogs.microsoft.com/wp-content/uploads/2012/08/8867.Microsoft_5F00_Logo_2D00_for_2D00_screen.jpg', '6'],
+  label: ['Trendline Label 1', '', '3', '4', 'https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_284x96dp.png', '6'],
   Y: [0, 3, 0, 1, 0, 2],
   X: [1, 2, 3, 4, 5, 6],
   group: ['a', 'a', 'a', 'a', 'b', 'b'],

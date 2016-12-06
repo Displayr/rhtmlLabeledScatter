@@ -21,8 +21,11 @@ DragUtils = (function() {
       this.getLegendLabelDragAndDrop = __bind(this.getLegendLabelDragAndDrop, this);
     }
 
-    DU.prototype.getLabelDragAndDrop = function(plot) {
+    DU.prototype.getLabelDragAndDrop = function(plot, showTrendLine) {
       var dragEnd, dragMove, dragStart;
+      if (showTrendLine == null) {
+        showTrendLine = false;
+      }
       dragStart = function() {
         return plot.svg.selectAll('.link').remove();
       };
@@ -61,7 +64,9 @@ DragUtils = (function() {
           ancToHide = plot.svg.select("#anc-" + id).attr('fill-opacity', function(d) {
             return d.fillOpacity;
           });
-          return plot.drawLinks();
+          if (!showTrendLine) {
+            return plot.drawLinks();
+          }
         }
       };
       return d3.behavior.drag().origin(function() {
