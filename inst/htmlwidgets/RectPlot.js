@@ -644,9 +644,7 @@ RectPlot = (function() {
       });
       return this.drawLinks();
     } else if (this.showLabels && this.trendLines.show) {
-      if (this.tl === void 0 || this.tl === null) {
-        this.tl = new TrendLine(this.data.pts, this.data.lab);
-      }
+      this.tl = new TrendLine(this.data.pts, this.data.lab);
       drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
       arrowheadLabs = this.tl.getArrowheadLabels();
       this.svg.selectAll('.lab-img').remove();
@@ -722,9 +720,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawTrendLines = function() {
-    if (this.tl === void 0 || this.tl === null) {
-      this.tl = new TrendLine(this.data.pts, this.data.label);
-    }
+    this.tl = new TrendLine(this.data.pts, this.data.label);
     return _.map(this.tl.getUniqueGroups(), (function(_this) {
       return function(group) {
         _this.svg.append('svg:defs').append('svg:marker').attr('id', "triangle-" + group).attr('refX', 6).attr('refY', 6).attr('markerWidth', 30).attr('markerHeight', 30).attr('orient', 'auto').append('path').attr('d', 'M 0 0 12 6 0 12 3 6').style('fill', _this.data.plotColors.getColorFromGroup(group));

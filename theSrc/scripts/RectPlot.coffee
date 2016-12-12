@@ -664,8 +664,7 @@ class RectPlot
       @drawLinks()
 
     else if @showLabels and @trendLines.show
-      if @tl == undefined or @tl == null
-        @tl = new TrendLine(@data.pts, @data.lab)
+      @tl = new TrendLine(@data.pts, @data.lab)
 
       drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
       arrowheadLabs = @tl.getArrowheadLabels()
@@ -742,8 +741,7 @@ class RectPlot
              .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
 
   drawTrendLines: =>
-    if @tl == undefined or @tl == null
-      @tl = new TrendLine(@data.pts, @data.label)
+    @tl = new TrendLine(@data.pts, @data.label)
 
     _.map(@tl.getUniqueGroups(), (group) =>
       #Arrowhead marker
