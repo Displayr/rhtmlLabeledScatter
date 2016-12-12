@@ -28,7 +28,6 @@ class DragUtils
           label.x = d3.event.x
           label.y = d3.event.y
 
-
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
         id = Number(d3.select(@).attr('id'))

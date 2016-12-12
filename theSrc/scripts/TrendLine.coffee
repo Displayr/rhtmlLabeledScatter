@@ -1,6 +1,5 @@
 class TrendLine
   constructor: (@pts, @labs) ->
-
     @linePts = {}
     @arrowheadLabels = {}
     @groupToLabel = {}

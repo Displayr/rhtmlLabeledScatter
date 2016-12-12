@@ -665,6 +665,7 @@ class RectPlot
 
     else if @showLabels and @trendLines.show
       @tl = new TrendLine(@data.pts, @data.lab)
+      @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
       drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
       arrowheadLabs = @tl.getArrowheadLabels()
@@ -712,6 +713,7 @@ class RectPlot
                   .h2(@viewBoxDim.y + @viewBoxDim.height)
                   .anchor(@tl.getArrowheadPts())
                   .label(arrowheadLabs)
+                  .pinned(@state.getUserPositionedLabIds())
                   .start(500)
 
       labels_svg.transition()
@@ -741,7 +743,8 @@ class RectPlot
              .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
 
   drawTrendLines: =>
-    @tl = new TrendLine(@data.pts, @data.label)
+    if @tl == undefined or @tl == null
+      @tl = new TrendLine(@data.pts, @data.lab)
 
     _.map(@tl.getUniqueGroups(), (group) =>
       #Arrowhead marker

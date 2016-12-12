@@ -645,6 +645,7 @@ RectPlot = (function() {
       return this.drawLinks();
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
+      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
       arrowheadLabs = this.tl.getArrowheadLabels();
       this.svg.selectAll('.lab-img').remove();
@@ -686,7 +687,7 @@ RectPlot = (function() {
       labels_svg = this.svg.selectAll('.lab');
       labels_img_svg = this.svg.selectAll('.lab-img');
       SvgUtils.get().setSvgBBoxWidthAndHeight(arrowheadLabs, labels_svg);
-      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.getArrowheadPts()).label(arrowheadLabs).start(500);
+      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.getArrowheadPts()).label(arrowheadLabs).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {
@@ -720,7 +721,9 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawTrendLines = function() {
-    this.tl = new TrendLine(this.data.pts, this.data.label);
+    if (this.tl === void 0 || this.tl === null) {
+      this.tl = new TrendLine(this.data.pts, this.data.lab);
+    }
     return _.map(this.tl.getUniqueGroups(), (function(_this) {
       return function(group) {
         _this.svg.append('svg:defs').append('svg:marker').attr('id', "triangle-" + group).attr('refX', 6).attr('refY', 6).attr('markerWidth', 30).attr('markerHeight', 30).attr('orient', 'auto').append('path').attr('d', 'M 0 0 12 6 0 12 3 6').style('fill', _this.data.plotColors.getColorFromGroup(group));
