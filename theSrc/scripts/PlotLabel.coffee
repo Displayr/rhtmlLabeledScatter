@@ -27,6 +27,8 @@ class PlotLabel
   _makeImgLabPromise: (labelLink, labelAlt, scalingFactor = 1) =>
     new Promise((resolve, reject) =>
       img = new Image()
+      imgLoaded = false
+
       img.onload = ->
         defaultArea = 10000 * scalingFactor
         height = if @height? then @height else 0
@@ -36,6 +38,7 @@ class PlotLabel
         adjW = Math.sqrt(defaultArea*aspectRatio)
         adjH = adjW/aspectRatio
         img.src = '' # remove img
+        imgLoaded = true
         resolve({
           width: adjW
           height: adjH
@@ -44,15 +47,16 @@ class PlotLabel
         })
 
       img.onerror = ->
-        console.log 'Error: Image URL not valid - ' + labelLink
-        defaultErrorLogoSize = 20
+        unless imgLoaded
+          console.log 'Error: Image URL not valid - ' + labelLink
+          defaultErrorLogoSize = 20
 
-        resolve({
-          width: defaultErrorLogoSize
-          height: defaultErrorLogoSize
-          label: ''
-          url: DisplayError.get().getErrorImgUrl()
-        })
+          resolve({
+            width: defaultErrorLogoSize
+            height: defaultErrorLogoSize
+            label: ''
+            url: DisplayError.get().getErrorImgUrl()
+          })
 
       img.src = labelLink
     )

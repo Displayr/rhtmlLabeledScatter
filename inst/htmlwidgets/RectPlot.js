@@ -3,7 +3,7 @@ var RectPlot,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 RectPlot = (function() {
-  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor) {
+  function RectPlot(stateObj, stateChangedCallback, width, height, X, Y, Z, group, label, labelAlt, svg, fixedRatio, xTitle, yTitle, zTitle, title, colors, transparency, grid, origin, originAlign, titleFontFamily, titleFontSize, titleFontColor, xTitleFontFamily, xTitleFontSize, xTitleFontColor, yTitleFontFamily, yTitleFontSize, yTitleFontColor, showLabels, labelsFontFamily, labelsFontSize, labelsFontColor, labelsLogoScale, xDecimals, yDecimals, zDecimals, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, legendShow, legendBubblesShow, legendFontFamily, legendFontSize, legendFontColor, axisFontFamily, axisFontColor, axisFontSize, pointRadius, xBoundsMinimum, xBoundsMaximum, yBoundsMinimum, yBoundsMaximum, xBoundsUnitsMajor, yBoundsUnitsMajor, trendLines, trendLinesLineThickness, trendLinesPointSize) {
     var x, _i, _len, _ref;
     this.width = width;
     this.height = height;
@@ -54,6 +54,16 @@ RectPlot = (function() {
     }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor != null ? xBoundsUnitsMajor : null;
     this.yBoundsUnitsMajor = yBoundsUnitsMajor != null ? yBoundsUnitsMajor : null;
+    if (trendLines == null) {
+      trendLines = false;
+    }
+    if (trendLinesLineThickness == null) {
+      trendLinesLineThickness = 1;
+    }
+    if (trendLinesPointSize == null) {
+      trendLinesPointSize = 2;
+    }
+    this.drawTrendLines = __bind(this.drawTrendLines, this);
     this.drawLinks = __bind(this.drawLinks, this);
     this.drawLabs = __bind(this.drawLabs, this);
     this.resetPlotAfterDragEvent = __bind(this.resetPlotAfterDragEvent, this);
@@ -95,6 +105,11 @@ RectPlot = (function() {
     if (this.yTitle.text === '') {
       this.yTitle.textHeight = 0;
     }
+    this.trendLines = {
+      show: trendLines,
+      lineThickness: trendLinesLineThickness,
+      pointSize: trendLinesPointSize
+    };
     this.axisLeaderLineLength = 5;
     this.axisDimensionText = {
       rowMaxWidth: 0,
@@ -183,11 +198,14 @@ RectPlot = (function() {
       return function() {
         return _this.drawLegend().then(function() {
           return _this.drawLabsAndPlot();
+        })["catch"](function() {
+          return _this.draw();
         });
       };
     })(this))["catch"]((function(_this) {
       return function(err) {
         if (err != null) {
+          console.log(err);
           throw new Error(err);
         }
         console.log('rhtmlLabeledScatter: redraw');
@@ -224,6 +242,9 @@ RectPlot = (function() {
           _this.drawTitle();
           _this.drawLabs();
           _this.drawAnc();
+          if (_this.trendLines.show) {
+            _this.drawTrendLines();
+          }
           _this.drawDraggedMarkers();
           _this.drawRect();
           return _this.drawAxisLabels();
@@ -494,13 +515,19 @@ RectPlot = (function() {
       return d.x;
     }).attr('cy', function(d) {
       return d.y;
-    }).attr('r', function(d) {
-      return d.r;
     }).attr('fill', function(d) {
       return d.color;
     }).attr('fill-opacity', function(d) {
       return d.fillOpacity;
-    });
+    }).attr('r', (function(_this) {
+      return function(d) {
+        if (_this.trendLines.show) {
+          return _this.trendLines.pointSize;
+        } else {
+          return d.r;
+        }
+      };
+    })(this));
     if (Utils.get().isArr(this.Z)) {
       return anc.append('title').text((function(_this) {
         return function(d) {
@@ -563,8 +590,8 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabs = function() {
-    var drag, labeler, labels_img_svg, labels_svg;
-    if (this.showLabels) {
+    var arrowheadLabs, drag, labeler, labels_img_svg, labels_svg;
+    if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.get().getLabelDragAndDrop(this);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       this.svg.selectAll('.lab-img').remove();
@@ -619,6 +646,61 @@ RectPlot = (function() {
         return d.y - d.height;
       });
       return this.drawLinks();
+    } else if (this.showLabels && this.trendLines.show) {
+      this.tl = new TrendLine(this.data.pts, this.data.lab);
+      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
+      drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
+      arrowheadLabs = this.tl.getArrowheadLabels();
+      this.svg.selectAll('.lab-img').remove();
+      this.svg.selectAll('.lab-img').data(arrowheadLabs).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
+        return d.url;
+      }).attr('id', function(d) {
+        if (d.url !== '') {
+          return d.id;
+        }
+      }).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
+      }).attr('width', function(d) {
+        return d.width;
+      }).attr('height', function(d) {
+        return d.height;
+      }).call(drag);
+      this.svg.selectAll('.lab').remove();
+      this.svg.selectAll('.lab').data(arrowheadLabs).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+        if (d.url === '') {
+          return d.id;
+        }
+      }).attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      }).attr('font-family', function(d) {
+        return d.fontFamily;
+      }).text(function(d) {
+        if (d.url === '') {
+          return d.text;
+        }
+      }).attr('text-anchor', 'middle').attr('fill', function(d) {
+        return d.color;
+      }).attr('font-size', function(d) {
+        return d.fontSize;
+      }).call(drag);
+      labels_svg = this.svg.selectAll('.lab');
+      labels_img_svg = this.svg.selectAll('.lab-img');
+      SvgUtils.get().setSvgBBoxWidthAndHeight(arrowheadLabs, labels_svg);
+      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.getArrowheadPts()).label(arrowheadLabs).pinned(this.state.getUserPositionedLabIds()).start(500);
+      labels_svg.transition().duration(800).attr('x', function(d) {
+        return d.x;
+      }).attr('y', function(d) {
+        return d.y;
+      });
+      return labels_img_svg.transition().duration(800).attr('x', function(d) {
+        return d.x - d.width / 2;
+      }).attr('y', function(d) {
+        return d.y - d.height;
+      });
     }
   };
 
@@ -639,6 +721,33 @@ RectPlot = (function() {
     }).attr('stroke', function(d) {
       return d.color;
     }).style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency));
+  };
+
+  RectPlot.prototype.drawTrendLines = function() {
+    this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
+    if (this.tl === void 0 || this.tl === null) {
+      this.tl = new TrendLine(this.data.pts, this.data.lab);
+    }
+    return _.map(this.tl.getUniqueGroups(), (function(_this) {
+      return function(group) {
+        _this.svg.selectAll("#triangle-" + group).remove();
+        _this.svg.append('svg:defs').append('svg:marker').attr('id', "triangle-" + group).attr('refX', 6).attr('refY', 6).attr('markerWidth', 30).attr('markerHeight', 30).attr('orient', 'auto').append('path').attr('d', 'M 0 0 12 6 0 12 3 6').style('fill', _this.data.plotColors.getColorFromGroup(group));
+        _this.svg.selectAll(".trendline-" + group).remove();
+        return _this.svg.selectAll(".trendline-" + group).data(_this.tl.getLineArray(group)).enter().append('line').attr('class', "trendline-" + group).attr('x1', function(d) {
+          return d[0];
+        }).attr('y1', function(d) {
+          return d[1];
+        }).attr('x2', function(d) {
+          return d[2];
+        }).attr('y2', function(d) {
+          return d[3];
+        }).attr('stroke', _this.data.plotColors.getColorFromGroup(group)).attr('stroke-width', _this.trendLines.lineThickness).attr('marker-end', function(d, i) {
+          if (i === (_this.tl.getLineArray(group)).length - 1) {
+            return "url(#triangle-" + group + ")";
+          }
+        });
+      };
+    })(this));
   };
 
   return RectPlot;

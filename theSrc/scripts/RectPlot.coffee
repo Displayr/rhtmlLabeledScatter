@@ -58,7 +58,10 @@ class RectPlot
                 yBoundsMinimum = null,
                 yBoundsMaximum = null,
                 @xBoundsUnitsMajor = null,
-                @yBoundsUnitsMajor = null) ->
+                @yBoundsUnitsMajor = null,
+                trendLines = false,
+                trendLinesLineThickness = 1,
+                trendLinesPointSize = 2) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
@@ -84,6 +87,11 @@ class RectPlot
       fontSize:   yTitleFontSize
       fontColor:  yTitleFontColor
     @yTitle.textHeight = 0 if @yTitle.text is ''
+
+    @trendLines =
+      show:           trendLines
+      lineThickness:  trendLinesLineThickness
+      pointSize:      trendLinesPointSize
 
     @axisLeaderLineLength = 5
     @axisDimensionText =
@@ -186,9 +194,10 @@ class RectPlot
     @drawDimensionMarkers().then(() =>
       @drawLegend().then(() =>
         @drawLabsAndPlot()
-      )
+      ).catch( => @draw())
     ).catch((err) =>
       if err?
+        console.log err
         throw new Error(err)
 
       console.log 'rhtmlLabeledScatter: redraw'
@@ -216,6 +225,7 @@ class RectPlot
         @drawTitle()
         @drawLabs()
         @drawAnc()
+        @drawTrendLines() if @trendLines.show
         @drawDraggedMarkers()
         @drawRect()
         @drawAxisLabels()
@@ -522,9 +532,13 @@ class RectPlot
              .attr('id', (d) -> "anc-#{d.id}")
              .attr('cx', (d) -> d.x)
              .attr('cy', (d) -> d.y)
-             .attr('r', (d) -> d.r)
              .attr('fill', (d) -> d.color)
              .attr('fill-opacity', (d) -> d.fillOpacity)
+             .attr('r', (d) =>
+                    if @trendLines.show
+                      @trendLines.pointSize
+                    else
+                      d.r)
     if Utils.get().isArr(@Z)
       anc.append('title')
          .text((d) =>
@@ -588,7 +602,7 @@ class RectPlot
     @draw()
 
   drawLabs: =>
-    if @showLabels
+    if @showLabels and not @trendLines.show
       drag = DragUtils.get().getLabelDragAndDrop(@)
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
@@ -650,6 +664,69 @@ class RectPlot
 
       @drawLinks()
 
+    else if @showLabels and @trendLines.show
+      @tl = new TrendLine(@data.pts, @data.lab)
+      @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
+
+      drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
+      arrowheadLabs = @tl.getArrowheadLabels()
+
+      @svg.selectAll('.lab-img').remove()
+      @svg.selectAll('.lab-img')
+        .data(arrowheadLabs)
+        .enter()
+        .append('svg:image')
+        .attr('class', 'lab-img')
+        .attr('xlink:href', (d) -> d.url)
+        .attr('id', (d) -> d.id if d.url != '')
+        .attr('x', (d) -> d.x - d.width/2)
+        .attr('y', (d) -> d.y - d.height)
+        .attr('width', (d) -> d.width)
+        .attr('height', (d) -> d.height)
+        .call(drag)
+
+
+      @svg.selectAll('.lab').remove()
+      @svg.selectAll('.lab')
+        .data(arrowheadLabs)
+        .enter()
+        .append('text')
+        .attr('class', 'lab')
+        .attr('id', (d) -> d.id if d.url == '')
+        .attr('x', (d) -> d.x)
+        .attr('y', (d) -> d.y)
+        .attr('font-family', (d) -> d.fontFamily)
+        .text((d) -> d.text if d.url == '')
+        .attr('text-anchor', 'middle')
+        .attr('fill', (d) -> d.color)
+        .attr('font-size', (d) -> d.fontSize)
+        .call(drag)
+
+      labels_svg = @svg.selectAll('.lab')
+      labels_img_svg = @svg.selectAll('.lab-img')
+      SvgUtils.get().setSvgBBoxWidthAndHeight arrowheadLabs, labels_svg
+
+      labeler = d3.labeler()
+                  .svg(@svg)
+                  .w1(@viewBoxDim.x)
+                  .w2(@viewBoxDim.x + @viewBoxDim.width)
+                  .h1(@viewBoxDim.y)
+                  .h2(@viewBoxDim.y + @viewBoxDim.height)
+                  .anchor(@tl.getArrowheadPts())
+                  .label(arrowheadLabs)
+                  .pinned(@state.getUserPositionedLabIds())
+                  .start(500)
+
+      labels_svg.transition()
+        .duration(800)
+        .attr('x', (d) -> d.x)
+        .attr('y', (d) -> d.y)
+
+      labels_img_svg.transition()
+        .duration(800)
+        .attr('x', (d) -> d.x - d.width/2)
+        .attr('y', (d) -> d.y - d.height)
+
   drawLinks: =>
     links = new Links(@data.pts, @data.lab)
     @svg.selectAll('.link').remove()
@@ -665,3 +742,41 @@ class RectPlot
              .attr('stroke-width', (d) -> d.width)
              .attr('stroke', (d) -> d.color)
              .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
+
+  drawTrendLines: =>
+    @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
+    if @tl == undefined or @tl == null
+      @tl = new TrendLine(@data.pts, @data.lab)
+
+    _.map(@tl.getUniqueGroups(), (group) =>
+      #Arrowhead marker
+      @svg.selectAll("#triangle-#{group}").remove()
+      @svg.append('svg:defs').append('svg:marker')
+          .attr('id', "triangle-#{group}")
+          .attr('refX', 6)
+          .attr('refY', 6)
+          .attr('markerWidth', 30)
+          .attr('markerHeight', 30)
+          .attr('orient', 'auto')
+          .append('path')
+          .attr('d', 'M 0 0 12 6 0 12 3 6')
+          .style('fill', @data.plotColors.getColorFromGroup(group));
+
+      @svg.selectAll(".trendline-#{group}").remove()
+      @svg.selectAll(".trendline-#{group}")
+        .data(@tl.getLineArray(group))
+        .enter()
+        .append('line')
+        .attr('class', "trendline-#{group}")
+        .attr('x1', (d) -> d[0])
+        .attr('y1', (d) -> d[1])
+        .attr('x2', (d) -> d[2])
+        .attr('y2', (d) -> d[3])
+        .attr('stroke', @data.plotColors.getColorFromGroup(group))
+        .attr('stroke-width', @trendLines.lineThickness)
+        .attr('marker-end', (d, i) =>
+          # Draw arrowhead on last element in trendline
+          if i == (@tl.getLineArray(group)).length - 1
+            "url(#triangle-#{group})"
+        )
+    )

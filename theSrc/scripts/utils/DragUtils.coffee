@@ -9,7 +9,7 @@ class DragUtils
   class DU
     constructor: ->
 
-    getLabelDragAndDrop: (plot) ->
+    getLabelDragAndDrop: (plot, showTrendLine=false) ->
       dragStart = () ->
         plot.svg.selectAll('.link').remove()
 
@@ -28,23 +28,24 @@ class DragUtils
           label.x = d3.event.x
           label.y = d3.event.y
 
-
       dragEnd = ->
         # If label is dragged out of viewBox, remove the lab and add to legend
         id = Number(d3.select(@).attr('id'))
         lab = _.find plot.data.lab, (l) -> l.id == id
         anc = _.find plot.data.pts, (a) -> a.id == id
-        if plot.data.isOutsideViewBox(lab)
+        if plot.data.isOutsideViewBox(lab) and !showTrendLine
           # Element dragged off plot
           plot.data.addElemToLegend(id)
           plot.state.pushLegendPt(id)
+          console.log 'pushed lp'
           plot.resetPlotAfterDragEvent()
         else if (lab.x - lab.width/2 < anc.x < lab.x + lab.width/2) and (lab.y > anc.y > lab.y - lab.height)
           ancToHide = plot.svg.select("#anc-#{id}").attr('fill-opacity', 0)
         else
           plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
           ancToHide = plot.svg.select("#anc-#{id}").attr('fill-opacity', (d) -> d.fillOpacity)
-          plot.drawLinks()
+          unless showTrendLine
+            plot.drawLinks()
 
       d3.behavior.drag()
                .origin(() ->

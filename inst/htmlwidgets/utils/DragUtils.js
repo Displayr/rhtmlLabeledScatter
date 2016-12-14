@@ -21,8 +21,11 @@ DragUtils = (function() {
       this.getLegendLabelDragAndDrop = __bind(this.getLegendLabelDragAndDrop, this);
     }
 
-    DU.prototype.getLabelDragAndDrop = function(plot) {
+    DU.prototype.getLabelDragAndDrop = function(plot, showTrendLine) {
       var dragEnd, dragMove, dragStart;
+      if (showTrendLine == null) {
+        showTrendLine = false;
+      }
       dragStart = function() {
         return plot.svg.selectAll('.link').remove();
       };
@@ -50,9 +53,10 @@ DragUtils = (function() {
         anc = _.find(plot.data.pts, function(a) {
           return a.id === id;
         });
-        if (plot.data.isOutsideViewBox(lab)) {
+        if (plot.data.isOutsideViewBox(lab) && !showTrendLine) {
           plot.data.addElemToLegend(id);
           plot.state.pushLegendPt(id);
+          console.log('pushed lp');
           return plot.resetPlotAfterDragEvent();
         } else if (((lab.x - lab.width / 2 < (_ref = anc.x) && _ref < lab.x + lab.width / 2)) && ((lab.y > (_ref1 = anc.y) && _ref1 > lab.y - lab.height))) {
           return ancToHide = plot.svg.select("#anc-" + id).attr('fill-opacity', 0);
@@ -61,7 +65,9 @@ DragUtils = (function() {
           ancToHide = plot.svg.select("#anc-" + id).attr('fill-opacity', function(d) {
             return d.fillOpacity;
           });
-          return plot.drawLinks();
+          if (!showTrendLine) {
+            return plot.drawLinks();
+          }
         }
       };
       return d3.behavior.drag().origin(function() {

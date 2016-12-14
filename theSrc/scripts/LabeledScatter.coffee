@@ -50,8 +50,8 @@ class LabeledScatter
     if data.X? and data.Y?
       @data = data
     else # For debuggning in browser
-      # @data = bubble1
-      @data = testData2
+#       @data = bubble1
+      @data = testData14
 
     console.log "rhtmlLabeledScatter: received state"
     console.log state
@@ -118,6 +118,10 @@ class LabeledScatter
                         @data.yBoundsMinimum,
                         @data.yBoundsMaximum,
                         @data.xBoundsUnitsMajor,
-                        @data.yBoundsUnitsMajor)
+                        @data.yBoundsUnitsMajor,
+                        @data.trendLines,
+                        @data.trendLinesLineThickness,
+                        @data.trendLinesPointSize
+    )
     @plot.draw()
     return @
