@@ -194,9 +194,10 @@ class RectPlot
     @drawDimensionMarkers().then(() =>
       @drawLegend().then(() =>
         @drawLabsAndPlot()
-      )
+      ).catch( => @draw())
     ).catch((err) =>
       if err?
+        console.log err
         throw new Error(err)
 
       console.log 'rhtmlLabeledScatter: redraw'
@@ -743,11 +744,13 @@ class RectPlot
              .style('stroke-opacity', @data.plotColors.getFillOpacity(@transparency))
 
   drawTrendLines: =>
+    @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
     if @tl == undefined or @tl == null
       @tl = new TrendLine(@data.pts, @data.lab)
 
     _.map(@tl.getUniqueGroups(), (group) =>
       #Arrowhead marker
+      @svg.selectAll("#triangle-#{group}").remove()
       @svg.append('svg:defs').append('svg:marker')
           .attr('id', "triangle-#{group}")
           .attr('refX', 6)
@@ -759,6 +762,7 @@ class RectPlot
           .attr('d', 'M 0 0 12 6 0 12 3 6')
           .style('fill', @data.plotColors.getColorFromGroup(group));
 
+      @svg.selectAll(".trendline-#{group}").remove()
       @svg.selectAll(".trendline-#{group}")
         .data(@tl.getLineArray(group))
         .enter()

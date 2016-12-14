@@ -134,6 +134,7 @@ LabeledScatter <- function(
   point.radius = 2,
   trend.lines.show = FALSE,
   trend.lines.line.thickness = 1,
+  trend.lines.point.size=2,
   width = NULL,
   height = NULL
   ) {

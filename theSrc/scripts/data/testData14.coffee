@@ -6,6 +6,9 @@ testData14 =
     '4'
     'https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_284x96dp.png'
     '6'
+    '7'
+    '8'
+    '9'
   ]
 
   Y: [
@@ -15,6 +18,9 @@ testData14 =
     1
     0
     2
+    2
+    4
+    -5
   ]
 
   X: [
@@ -24,6 +30,10 @@ testData14 =
     4
     5
     6
+    7
+    8
+    10
+
   ]
 
   group: [
@@ -31,6 +41,9 @@ testData14 =
     'a'
     'a'
     'a'
+    'b'
+    'b'
+    'b'
     'b'
     'b'
   ]

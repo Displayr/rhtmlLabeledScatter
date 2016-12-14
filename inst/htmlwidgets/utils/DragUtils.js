@@ -53,9 +53,10 @@ DragUtils = (function() {
         anc = _.find(plot.data.pts, function(a) {
           return a.id === id;
         });
-        if (plot.data.isOutsideViewBox(lab)) {
+        if (plot.data.isOutsideViewBox(lab) && !showTrendLine) {
           plot.data.addElemToLegend(id);
           plot.state.pushLegendPt(id);
+          console.log('pushed lp');
           return plot.resetPlotAfterDragEvent();
         } else if (((lab.x - lab.width / 2 < (_ref = anc.x) && _ref < lab.x + lab.width / 2)) && ((lab.y > (_ref1 = anc.y) && _ref1 > lab.y - lab.height))) {
           return ancToHide = plot.svg.select("#anc-" + id).attr('fill-opacity', 0);

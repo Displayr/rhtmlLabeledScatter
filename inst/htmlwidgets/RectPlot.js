@@ -198,11 +198,14 @@ RectPlot = (function() {
       return function() {
         return _this.drawLegend().then(function() {
           return _this.drawLabsAndPlot();
+        })["catch"](function() {
+          return _this.draw();
         });
       };
     })(this))["catch"]((function(_this) {
       return function(err) {
         if (err != null) {
+          console.log(err);
           throw new Error(err);
         }
         console.log('rhtmlLabeledScatter: redraw');
@@ -721,12 +724,15 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawTrendLines = function() {
+    this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
     if (this.tl === void 0 || this.tl === null) {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
     }
     return _.map(this.tl.getUniqueGroups(), (function(_this) {
       return function(group) {
+        _this.svg.selectAll("#triangle-" + group).remove();
         _this.svg.append('svg:defs').append('svg:marker').attr('id', "triangle-" + group).attr('refX', 6).attr('refY', 6).attr('markerWidth', 30).attr('markerHeight', 30).attr('orient', 'auto').append('path').attr('d', 'M 0 0 12 6 0 12 3 6').style('fill', _this.data.plotColors.getColorFromGroup(group));
+        _this.svg.selectAll(".trendline-" + group).remove();
         return _this.svg.selectAll(".trendline-" + group).data(_this.tl.getLineArray(group)).enter().append('line').attr('class', "trendline-" + group).attr('x1', function(d) {
           return d[0];
         }).attr('y1', function(d) {
