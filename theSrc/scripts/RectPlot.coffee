@@ -546,14 +546,14 @@ class RectPlot
            ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
            zlabel = Utils.get().getFormattedNum(d.labelZ, @zDecimals, @zPrefix, @zSuffix)
            labelTxt = if d.label == '' then d.labelAlt else d.label
-           "#{labelTxt}\n#{zlabel}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
+           "#{labelTxt}, #{d.group}\n#{zlabel}\n(#{xlabel}, #{ylabel})")
     else
       anc.append('title')
          .text((d) =>
            xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
            ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
            labelTxt = if d.label == '' then d.labelAlt else d.label
-           "#{labelTxt}\n#{d.group}\n[#{xlabel}, #{ylabel}]")
+           "#{labelTxt}, #{d.group}\n(#{xlabel}, #{ylabel})")
 
   drawDraggedMarkers: =>
     @svg.selectAll('.marker').remove()
