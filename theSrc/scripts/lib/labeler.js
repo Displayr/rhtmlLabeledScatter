@@ -271,7 +271,6 @@
                 acc += 1;
 
                 // if (i == investigate || i == investigate2) {
-                //   console.log('here')
                 //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
                 //                   .attr('y', lab[i].y - lab[i].height)
                 //                   .attr('width', lab[i].width)

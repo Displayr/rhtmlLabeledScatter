@@ -63,4 +63,4 @@ class PlotLabel
 
   _isStringLinkToImg: (label) ->
     (_.includes(label, 'http://') or _.includes(label, 'https://')) and
-      (_.includes(label, '.png') or _.includes(label, '.svg') or _.includes(label, '.jpg'))
+      (_.includes(label, '.png') or _.includes(label, '.svg') or _.includes(label, '.jpg') or _.includes(label, '.gif'))
