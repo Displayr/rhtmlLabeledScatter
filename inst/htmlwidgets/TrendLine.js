@@ -7,9 +7,6 @@ TrendLine = (function() {
     this.pts = pts;
     this.labs = labs;
     this.getUniqueGroups = __bind(this.getUniqueGroups, this);
-    this.getTrendLines = __bind(this.getTrendLines, this);
-    this.getArrowheadLabels = __bind(this.getArrowheadLabels, this);
-    this.getArrowheadPts = __bind(this.getArrowheadPts, this);
     this.getLineArray = __bind(this.getLineArray, this);
     this._createLineArrays = __bind(this._createLineArrays, this);
     this.linePts = {};
@@ -27,7 +24,8 @@ TrendLine = (function() {
         return _this.linePts[pt.group].push({
           x: pt.x,
           y: pt.y,
-          z: pt.r
+          z: pt.r,
+          r: pt.r
         });
       };
     })(this));
@@ -53,6 +51,7 @@ TrendLine = (function() {
           case 2:
             _this.lines[groupName] = [[groupPts[0].x, groupPts[0].y, groupPts[1].x, groupPts[1].y]];
             _this.arrowheadPts.push(groupPts[1]);
+            _this.arrowheadLabels[groupName].r = groupPts[1].r;
             _this.arrowheadLabels[groupName].x = groupPts[1].x - _this.arrowheadLabels[groupName].width / 2;
             return _this.arrowheadLabels[groupName].y = groupPts[1].y - _this.arrowheadLabels[groupName].height / 2;
           default:
@@ -70,11 +69,13 @@ TrendLine = (function() {
             }
             lastLinePt = _.last(_this.linesMapped[groupName]);
             _this.arrowheadPts.push(lastLinePt);
+            _this.arrowheadLabels[groupName].r = lastLinePt.r;
             _this.arrowheadLabels[groupName].x = lastLinePt.x - _this.arrowheadLabels[groupName].width / 2;
             return _this.arrowheadLabels[groupName].y = lastLinePt.y - _this.arrowheadLabels[groupName].height / 2;
         }
       };
     })(this));
+    this.arrowheadLabels = _.values(this.arrowheadLabels);
     return this.lines;
   };
 
@@ -83,21 +84,6 @@ TrendLine = (function() {
       this._createLineArrays();
     }
     return this.lines[group];
-  };
-
-  TrendLine.prototype.getArrowheadPts = function() {
-    if (this.arrowheadPts == null) {
-      this._createLineArrays();
-    }
-    return this.arrowheadPts;
-  };
-
-  TrendLine.prototype.getArrowheadLabels = function() {
-    return _.values(this.arrowheadLabels);
-  };
-
-  TrendLine.prototype.getTrendLines = function() {
-    return this.lines;
   };
 
   TrendLine.prototype.getUniqueGroups = function() {

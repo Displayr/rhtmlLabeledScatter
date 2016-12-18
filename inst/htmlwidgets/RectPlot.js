@@ -590,7 +590,7 @@ RectPlot = (function() {
   };
 
   RectPlot.prototype.drawLabs = function() {
-    var arrowheadLabs, drag, labeler, labels_img_svg, labels_svg;
+    var drag, labeler, labels_img_svg, labels_svg;
     if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.get().getLabelDragAndDrop(this);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
@@ -650,9 +650,8 @@ RectPlot = (function() {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
-      arrowheadLabs = this.tl.getArrowheadLabels();
       this.svg.selectAll('.lab-img').remove();
-      this.svg.selectAll('.lab-img').data(arrowheadLabs).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
+      this.svg.selectAll('.lab-img').data(this.tl.arrowheadLabels).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
         return d.url;
       }).attr('id', function(d) {
         if (d.url !== '') {
@@ -668,7 +667,7 @@ RectPlot = (function() {
         return d.height;
       }).call(drag);
       this.svg.selectAll('.lab').remove();
-      this.svg.selectAll('.lab').data(arrowheadLabs).enter().append('text').attr('class', 'lab').attr('id', function(d) {
+      this.svg.selectAll('.lab').data(this.tl.arrowheadLabels).enter().append('text').attr('class', 'lab').attr('id', function(d) {
         if (d.url === '') {
           return d.id;
         }
@@ -689,8 +688,8 @@ RectPlot = (function() {
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
       labels_img_svg = this.svg.selectAll('.lab-img');
-      SvgUtils.get().setSvgBBoxWidthAndHeight(arrowheadLabs, labels_svg);
-      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.getArrowheadPts()).label(arrowheadLabs).pinned(this.state.getUserPositionedLabIds()).start(500);
+      SvgUtils.get().setSvgBBoxWidthAndHeight(this.tl.arrowheadLabels, labels_svg);
+      labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.arrowheadPts).label(this.tl.arrowheadLabels).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
       }).attr('y', function(d) {

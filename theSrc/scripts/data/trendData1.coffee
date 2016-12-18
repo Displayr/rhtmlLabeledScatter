@@ -1,6 +1,6 @@
-testData14 =
+trendData1 =
   label: [
-    'Trendline Label 1'
+    'https://gigaom.com/wp-content/uploads/sites/1/2010/10/ibm_logo.gif'
     ''
     '3'
     '4'
@@ -8,7 +8,8 @@ testData14 =
     '6'
     '7'
     '8'
-    '9'
+    'http://vignette1.wikia.nocookie.net/marvelcinematicuniverse/images/7/77/Oracle-logo.png/revision/latest?cb=20140803214942'
+    '11'
   ]
 
   Y: [
@@ -20,7 +21,8 @@ testData14 =
     2
     2
     4
-    -5
+    0
+    1
   ]
 
   X: [
@@ -32,27 +34,28 @@ testData14 =
     6
     7
     8
-    10
-
+    11
+    11
   ]
 
   group: [
-    'a'
-    'a'
-    'a'
-    'a'
-    'b'
-    'b'
-    'b'
-    'b'
-    'b'
+    'IBM'
+    'IBM'
+    'IBM'
+    'IBM'
+    'Google'
+    'Google'
+    'Google'
+    'Google'
+    'Oracle'
+    'Oracle'
   ]
 
   xTitle: "",
   yTitle: "",
   fixedAspectRatio: false,
-  grid: true,
-  origin: true,
+  grid: false,
+  origin: false,
   title: "Brand Analysis",
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Arial',

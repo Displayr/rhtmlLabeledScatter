@@ -669,11 +669,10 @@ class RectPlot
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
       drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
-      arrowheadLabs = @tl.getArrowheadLabels()
 
       @svg.selectAll('.lab-img').remove()
       @svg.selectAll('.lab-img')
-        .data(arrowheadLabs)
+        .data(@tl.arrowheadLabels)
         .enter()
         .append('svg:image')
         .attr('class', 'lab-img')
@@ -688,7 +687,7 @@ class RectPlot
 
       @svg.selectAll('.lab').remove()
       @svg.selectAll('.lab')
-        .data(arrowheadLabs)
+        .data(@tl.arrowheadLabels)
         .enter()
         .append('text')
         .attr('class', 'lab')
@@ -704,7 +703,7 @@ class RectPlot
 
       labels_svg = @svg.selectAll('.lab')
       labels_img_svg = @svg.selectAll('.lab-img')
-      SvgUtils.get().setSvgBBoxWidthAndHeight arrowheadLabs, labels_svg
+      SvgUtils.get().setSvgBBoxWidthAndHeight @tl.arrowheadLabels, labels_svg
 
       labeler = d3.labeler()
                   .svg(@svg)
@@ -712,8 +711,8 @@ class RectPlot
                   .w2(@viewBoxDim.x + @viewBoxDim.width)
                   .h1(@viewBoxDim.y)
                   .h2(@viewBoxDim.y + @viewBoxDim.height)
-                  .anchor(@tl.getArrowheadPts())
-                  .label(arrowheadLabs)
+                  .anchor(@tl.arrowheadPts)
+                  .label(@tl.arrowheadLabels)
                   .pinned(@state.getUserPositionedLabIds())
                   .start(500)
 

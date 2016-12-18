@@ -16,6 +16,7 @@ class TrendLine
         x: pt.x
         y: pt.y
         z: pt.r
+        r: pt.r
       }
     )
 
@@ -42,6 +43,8 @@ class TrendLine
         when 2
           @lines[groupName] = [[groupPts[0].x, groupPts[0].y, groupPts[1].x, groupPts[1].y]]
           @arrowheadPts.push(groupPts[1])
+
+          @arrowheadLabels[groupName].r = groupPts[1].r
           @arrowheadLabels[groupName].x = groupPts[1].x - @arrowheadLabels[groupName].width/2
           @arrowheadLabels[groupName].y = groupPts[1].y - @arrowheadLabels[groupName].height/2
         else
@@ -60,10 +63,13 @@ class TrendLine
 
           lastLinePt = _.last(@linesMapped[groupName])
           @arrowheadPts.push(lastLinePt)
+
+          @arrowheadLabels[groupName].r = lastLinePt.r
           @arrowheadLabels[groupName].x = lastLinePt.x - @arrowheadLabels[groupName].width/2
           @arrowheadLabels[groupName].y = lastLinePt.y - @arrowheadLabels[groupName].height/2
 
     )
+    @arrowheadLabels = _.values @arrowheadLabels
     @lines
 
   getLineArray: (group) =>
@@ -71,18 +77,6 @@ class TrendLine
       @_createLineArrays()
 
     @lines[group]
-
-  getArrowheadPts: () =>
-    unless @arrowheadPts?
-      @_createLineArrays()
-
-    @arrowheadPts
-
-  getArrowheadLabels: () =>
-    _.values @arrowheadLabels
-
-  getTrendLines: () =>
-    @lines
 
   getUniqueGroups: =>
     @groups

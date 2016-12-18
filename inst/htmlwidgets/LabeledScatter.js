@@ -55,7 +55,7 @@ LabeledScatter = (function() {
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
     } else {
-      this.data = testData14;
+      this.data = trendData1;
     }
     console.log("rhtmlLabeledScatter: received state");
     console.log(state);
