@@ -536,7 +536,7 @@ RectPlot = (function() {
           ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
           zlabel = Utils.get().getFormattedNum(d.labelZ, _this.zDecimals, _this.zPrefix, _this.zSuffix);
           labelTxt = d.label === '' ? d.labelAlt : d.label;
-          return "" + labelTxt + "\n" + zlabel + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
+          return "" + labelTxt + ", " + d.group + "\n" + zlabel + "\n(" + xlabel + ", " + ylabel + ")";
         };
       })(this));
     } else {
@@ -546,7 +546,7 @@ RectPlot = (function() {
           xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
           ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
           labelTxt = d.label === '' ? d.labelAlt : d.label;
-          return "" + labelTxt + "\n" + d.group + "\n[" + xlabel + ", " + ylabel + "]";
+          return "" + labelTxt + ", " + d.group + "\n(" + xlabel + ", " + ylabel + ")";
         };
       })(this));
     }

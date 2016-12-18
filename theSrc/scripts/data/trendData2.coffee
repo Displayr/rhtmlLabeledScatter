@@ -1,10 +1,10 @@
 trendData2 =
   label: [
+    'https://media1.giphy.com/media/wzXlcBruMmzf2/200_s.gif'
+    'a'
+    'Gaoogle'
     'Google'
-    'Google'
-    'Google'
-    'Google'
-    'Google'
+    'Goasfasfogle'
     'Google'
     'Microsoft'
     'Microsoft'
@@ -158,8 +158,8 @@ trendData2 =
   xTitle: "",
   yTitle: "",
   fixedAspectRatio: false,
-  grid: false,
-  origin: false,
+  grid: true,
+  origin: true,
   title: "Brand Analysis",
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Arial',
@@ -188,4 +188,4 @@ trendData2 =
   pointRadius: 2
   trendLines: true
   trendLinesLineThickness: 1
-  trendLinesPointSize: 2
+  trendLinesPointSize: 0
