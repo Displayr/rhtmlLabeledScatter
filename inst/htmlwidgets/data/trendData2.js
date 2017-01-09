@@ -2,7 +2,7 @@
 var trendData2;
 
 trendData2 = {
-  label: ['https://media1.giphy.com/media/wzXlcBruMmzf2/200_s.gif', 'a', 'Gaoogle', 'Google', 'Goasfasfogle', 'Google', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook'],
+  label: ['GOOGLE', 'a', 'Gaoogle', 'Google', 'Goasfasfogle', 'Google', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook'],
   Y: [0, 1, 2, 3, 4, 5, 0, 2, 4, 6, 8, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 13, 15, 17, 30, 28, 27, 18, 15, 12, 0, 1, 3, 8, 34, 10],
   X: [0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5],
   group: ['Google', 'Google', 'Google', 'Google', 'Google', 'Google', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Microsoft', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Amazon', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Tesla', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Snapchat', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook', 'Facebook'],

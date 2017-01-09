@@ -152,3 +152,21 @@ LabeledScatter(X = as.numeric(bigmac.df[, 1]),
               x.bounds.maximum = 90000,
               x.bounds.units.major = 10000)
 ```
+
+Trend lines example:
+
+```
+library(rhtmlLabeledScatter)
+trendplot.x <- c(1,2,3,4,5,6,7,8,11,11)
+trendplot.y <- c(0,3,0,1,9,2,2,4,0,1)
+trendplot.group <- c("IBM", "IBM", "IBM", "IBM", "Google", "Google", "Google", "Google", "Oracle", "Oracle")
+trendplot.df <- data.frame(trendplot.x, trendplot.y, trendplot.group)
+rownames(trendplot.df) <- c("https://gigaom.com/wp-content/uploads/sites/1/2010/10/ibm_logo.gif", "2", "3", "4", "5", "6", "7", "8", "9", "11")
+LabeledScatter(X = as.numeric(trendplot.df[,1]),
+               Y = as.numeric(trendplot.df[,2]),
+               label = rownames(trendplot.df),
+               group = trendplot.df[,3],
+               trend.lines.show = TRUE,
+               trend.lines.line.thickness = 1,
+               trend.lines.point.size = 0)
+```
