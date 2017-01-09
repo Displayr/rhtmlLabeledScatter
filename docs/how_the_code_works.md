@@ -11,7 +11,6 @@ There are several relevant files:
 1. `theSrc/scripts/rhtmlTemplate.coffee` : registers the `rhtmlWidget` with the HTMLWidget framework. This file is deliberately very light on details and just calls methods on the Template class
 1. `theSrc/scripts/Template.coffee` : defines a class that does all of the work creating the htmlwidget.
 1. `rHtmlStatefulWidget.coffee` : defines the `RhtmlStatefulWidget` class, which provides an interface for setting and getting state from a html widget. This class is meant to be extended by the main widget class using class inheritance.
-1. `rHtmlSvgWidget.coffee` : defines the `RhtmlSvgWidget` class, which provides scaffolding for modifying the outer DOM element and adding a SVG container to the outer DOM. This class is meant to be extended by the main widget class using class inheritance.
 
 ## `theSrc/R/htmlwidget.r`
 
@@ -48,14 +47,6 @@ Template.draw is just a wrapper that calls three subsequent functions:
 You are free to throw descriptive errors via the `throw new Error("good description")` pattern. These will be rendered to the user and eventually caught and handled.
 
 If your widget has any state that needs to be persisted, you can extend the `RhtmlStatefulWidget` class. This is detailed below in the RhtmlStatefulWidget section.
-
-If your widget is SVG based, you can extend the `RhtmlSvgWidget` class. This is detailed in the RhtmlSvgWidget section. Note that if you extend RhtmlSvgWidget, then you also get RhtmlStatefulWidget, so you dont need to (in fact you cannot in JS) extend both directly.
-
-## `RhtmlSvgWidget` - from [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses)
-
-**Important Note** - the docs below are just a (potentially out of date) mirror of the docs in the [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses) repo. You should check the docs in that repo.
-
-This just does some basic formatting of the initial DOM and creates the outerSvg with a viewbox set to the initial width and height. If you extend this class you must define `_redraw` and `_processConfig`, as outlined above.
 
 ## `RhtmlStatefulWidget` - from [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses)
 

@@ -9,7 +9,6 @@ dependencies:
      - d3.min.js
      - random.min.js
      - rHtmlStatefulWidget.js
-     - rHtmlSvgWidget.js
      - labeler.js
      - bluebird.min.js
      - bignumber.min.js
