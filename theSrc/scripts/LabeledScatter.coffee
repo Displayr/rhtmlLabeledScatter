@@ -52,7 +52,7 @@ class LabeledScatter
     else # For debuggning in browser
 #       @data = bubble1
 #      @data = testData
-      @data = trendData1
+      @data = trendData2
 
     console.log "rhtmlLabeledScatter: received state"
     console.log state

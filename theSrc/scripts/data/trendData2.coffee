@@ -1,6 +1,6 @@
 trendData2 =
   label: [
-    'https://media1.giphy.com/media/wzXlcBruMmzf2/200_s.gif'
+    'GOOGLE'
     'a'
     'Gaoogle'
     'Google'
