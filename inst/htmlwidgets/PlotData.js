@@ -60,7 +60,7 @@ PlotData = (function() {
   }
 
   PlotData.prototype.normalizeData = function() {
-    var condensedPtsDataIdArray, diff, draggedNormX, draggedNormY, factor, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+    var condensedPtsDataIdArray, draggedNormX, draggedNormY, factor, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
     ptsOut = this.outsidePlotPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
@@ -72,9 +72,11 @@ PlotData = (function() {
     this.maxX = _.max(notMovedX);
     this.minY = _.min(notMovedY);
     this.maxY = _.max(notMovedY);
+    rangeX = this.maxX - this.minX;
+    rangeY = this.maxY - this.minY;
     thres = 0.08;
-    xThres = thres * (this.maxX - this.minX);
-    yThres = thres * (this.maxY - this.minY);
+    xThres = thres * rangeX;
+    yThres = thres * rangeY;
     if (xThres === 0) {
       xThres = 1;
     }
@@ -94,25 +96,25 @@ PlotData = (function() {
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
-      diff = Math.abs(this.viewBoxDim.width - this.viewBoxDim.height);
-      if (this.viewBoxDim.width > this.viewBoxDim.height) {
-        factor = rangeY * (diff / this.viewBoxDim.width);
-        this.maxY += factor / 2;
-        this.minY -= factor / 2;
-      } else {
-        factor = rangeX * (diff / this.viewBoxDim.height);
-        this.maxX += factor / 2;
-        this.minX -= factor / 2;
-      }
-      rangeX = this.maxX - this.minX;
-      rangeY = this.maxY - this.minY;
-      diff = Math.abs(rangeX - rangeY);
       if (rangeX > rangeY) {
-        this.maxY += diff / 2;
-        this.minY -= diff / 2;
-      } else {
-        this.maxX += diff / 2;
-        this.minX -= diff / 2;
+        factor = (rangeX - rangeY) / 2;
+        this.maxY += factor;
+        this.minY -= factor;
+      } else if (rangeX < rangeY) {
+        factor = (rangeY - rangeX) / 2;
+        this.maxX += factor;
+        this.minX -= factor;
+      }
+      if (this.viewBoxDim.width > this.viewBoxDim.height) {
+        rangeX = this.maxX - this.minX;
+        factor = this.viewBoxDim.width / this.viewBoxDim.height - 1;
+        this.maxX += rangeX * factor / 2;
+        this.minX -= rangeX * factor / 2;
+      } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
+        rangeY = this.maxY - this.minY;
+        factor = this.viewBoxDim.height / this.viewBoxDim.width - 1;
+        this.maxY += rangeY * factor / 2;
+        this.minY -= rangeY * factor / 2;
       }
     }
     if (Utils.get().isNum(this.bounds.xmax)) {

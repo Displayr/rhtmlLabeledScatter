@@ -57,9 +57,11 @@ class PlotData
     @maxY = _.max notMovedY
 
     # threshold used so pts are not right on border of plot
+    rangeX = @maxX - @minX
+    rangeY = @maxY - @minY
     thres = 0.08
-    xThres = thres*(@maxX - @minX)
-    yThres = thres*(@maxY - @minY)
+    xThres = thres*rangeX
+    yThres = thres*rangeY
     if xThres == 0 # if there is no difference, add arbitrary threshold of 1
       xThres = 1
     if yThres == 0 # if there is no difference, add arbitrary threshold of 1
@@ -69,6 +71,7 @@ class PlotData
     @minX -= xThres
     @maxY += yThres
     @minY -= yThres
+
     # originAlign: compensates to make sure origin lines are on axis
     if @originAlign
       @maxX = if @maxX < 0 then 0 else @maxX+xThres # so axis can be on origin
@@ -79,26 +82,25 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
-      diff = Math.abs(@viewBoxDim.width - @viewBoxDim.height)
-      if @viewBoxDim.width > @viewBoxDim.height
-        factor = rangeY*(diff/@viewBoxDim.width)
-        @maxY += factor/2
-        @minY -= factor/2
-      else
-        factor = rangeX*(diff/@viewBoxDim.height)
-        @maxX += factor/2
-        @minX -= factor/2
-
-      rangeX = @maxX - @minX
-      rangeY = @maxY - @minY
-      diff = Math.abs(rangeX - rangeY)
       if rangeX > rangeY
-        @maxY += diff/2
-        @minY -= diff/2
-      else
-        @maxX += diff/2
-        @minX -= diff/2
+        factor = (rangeX-rangeY)/2
+        @maxY += factor
+        @minY -= factor
+      else if rangeX < rangeY
+        factor = (rangeY-rangeX)/2
+        @maxX += factor
+        @minX -= factor
 
+      if @viewBoxDim.width > @viewBoxDim.height
+        rangeX = @maxX-@minX
+        factor = @viewBoxDim.width/@viewBoxDim.height - 1
+        @maxX += rangeX*factor/2
+        @minX -= rangeX*factor/2
+      else if @viewBoxDim.width < @viewBoxDim.height
+        rangeY = @maxY-@minY
+        factor = @viewBoxDim.height/@viewBoxDim.width - 1
+        @maxY += rangeY*factor/2
+        @minY -= rangeY*factor/2
 
     # If user has sent x and y boundaries, these hold higher priority
     @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)
