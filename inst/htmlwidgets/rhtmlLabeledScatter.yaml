@@ -27,7 +27,7 @@ dependencies:
      - State.js
      - PlotLabel.js
      - Links.js
-     - Trendline.js
+     - TrendLine.js
 
  - name: Utils
    version: 0.0.1
