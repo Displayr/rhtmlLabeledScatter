@@ -131,7 +131,7 @@ RectPlot = (function() {
       color: titleFontColor,
       anchor: 'middle',
       fontSize: titleFontSize,
-      fontWeight: 'bold',
+      fontWeight: 'normal',
       fontFamily: titleFontFamily
     };
     if (this.title.text === '') {
@@ -408,7 +408,7 @@ RectPlot = (function() {
       return d.transform;
     }).text(function(d) {
       return d.text;
-    }).style('font-weight', 'bold').style('display', function(d) {
+    }).style('font-weight', 'normal').style('display', function(d) {
       return d.display;
     });
   };
@@ -442,7 +442,7 @@ RectPlot = (function() {
               return d.x;
             }).attr('y', function(d) {
               return d.y - (legendFontSize * 1.5);
-            }).attr('text-anchor', 'middle').attr('font-family', _this.legendFontFamily).attr('font-weight', 'bold').attr('fill', _this.legendFontColor).text(_this.zTitle);
+            }).attr('text-anchor', 'middle').attr('font-family', _this.legendFontFamily).attr('font-weight', 'normal').attr('fill', _this.legendFontColor).text(_this.zTitle);
             SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendBubblesTitle, legendBubbleTitleSvg);
           }
         }
