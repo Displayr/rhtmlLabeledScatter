@@ -32,6 +32,8 @@ PlotData = (function() {
     this.getPtsAndLabs = __bind(this.getPtsAndLabs, this);
     this.normalizeZData = __bind(this.normalizeZData, this);
     this.normalizeData = __bind(this.normalizeData, this);
+    this.calculateMinMax = __bind(this.calculateMinMax, this);
+    this.revertMinMax = __bind(this.revertMinMax, this);
     this.origX = this.X.slice(0);
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
@@ -59,8 +61,19 @@ PlotData = (function() {
     }
   }
 
-  PlotData.prototype.normalizeData = function() {
-    var condensedPtsDataIdArray, draggedNormX, draggedNormY, factor, i, id, lp, markerTextX, markerTextY, newMarkerId, notMovedX, notMovedY, numDigitsInId, ptsOut, rangeX, rangeY, thres, x1, x2, xThres, y1, y2, yThres, _i, _len, _ref, _results;
+  PlotData.prototype.revertMinMax = function() {
+    this.minX = this.minXold;
+    this.maxX = this.maxXold;
+    this.minY = this.minYold;
+    return this.maxY = this.maxYold;
+  };
+
+  PlotData.prototype.calculateMinMax = function() {
+    var factor, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres;
+    this.minXold = this.minX;
+    this.maxXold = this.maxX;
+    this.minYold = this.minY;
+    this.maxYold = this.maxY;
     ptsOut = this.outsidePlotPtsId;
     notMovedX = _.filter(this.origX, function(val, key) {
       return !(_.includes(ptsOut, key));
@@ -96,25 +109,24 @@ PlotData = (function() {
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
+      factor = Math.abs(rangeX - rangeY) / 2;
       if (rangeX > rangeY) {
-        factor = (rangeX - rangeY) / 2;
         this.maxY += factor;
         this.minY -= factor;
       } else if (rangeX < rangeY) {
-        factor = (rangeY - rangeX) / 2;
         this.maxX += factor;
         this.minX -= factor;
       }
       if (this.viewBoxDim.width > this.viewBoxDim.height) {
         rangeX = this.maxX - this.minX;
-        factor = this.viewBoxDim.width / this.viewBoxDim.height - 1;
-        this.maxX += rangeX * factor / 2;
-        this.minX -= rangeX * factor / 2;
+        factor = (this.viewBoxDim.width / this.viewBoxDim.height - 1) / 2;
+        this.maxX += rangeX * factor;
+        this.minX -= rangeX * factor;
       } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
         rangeY = this.maxY - this.minY;
-        factor = this.viewBoxDim.height / this.viewBoxDim.width - 1;
-        this.maxY += rangeY * factor / 2;
-        this.minY -= rangeY * factor / 2;
+        factor = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
+        this.maxY += rangeY * factor;
+        this.minY -= rangeY * factor;
       }
     }
     if (Utils.get().isNum(this.bounds.xmax)) {
@@ -127,8 +139,13 @@ PlotData = (function() {
       this.maxY = this.bounds.ymax;
     }
     if (Utils.get().isNum(this.bounds.ymin)) {
-      this.minY = this.bounds.ymin;
+      return this.minY = this.bounds.ymin;
     }
+  };
+
+  PlotData.prototype.normalizeData = function() {
+    var condensedPtsDataIdArray, draggedNormX, draggedNormY, i, id, lp, markerTextX, markerTextY, newMarkerId, numDigitsInId, x1, x2, y1, y2, _i, _len, _ref, _results;
+    this.calculateMinMax();
     this.outsidePlotMarkers = [];
     this.outsidePlotMarkersIter = 0;
     _ref = this.legendPts;

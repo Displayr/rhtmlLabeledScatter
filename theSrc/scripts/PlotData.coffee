@@ -42,7 +42,18 @@ class PlotData
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
-  normalizeData: =>
+  revertMinMax: =>
+    @minX = @minXold
+    @maxX = @maxXold
+    @minY = @minYold
+    @maxY = @maxYold
+
+  calculateMinMax: =>
+    @minXold = @minX
+    @maxXold = @maxX
+    @minYold = @minY
+    @maxYold = @maxY
+
     ptsOut = @outsidePlotPtsId
     notMovedX = _.filter(@origX, (val, key) ->
       !(_.includes(ptsOut, key))
@@ -79,28 +90,28 @@ class PlotData
       @maxY = if @maxY < 0 then 0 else @maxY+yThres
       @minY = if @minY > 0 then 0 else @minY-yThres
 
+
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
+      factor = Math.abs(rangeX - rangeY)/2
       if rangeX > rangeY
-        factor = (rangeX-rangeY)/2
         @maxY += factor
         @minY -= factor
       else if rangeX < rangeY
-        factor = (rangeY-rangeX)/2
         @maxX += factor
         @minX -= factor
 
       if @viewBoxDim.width > @viewBoxDim.height
         rangeX = @maxX-@minX
-        factor = @viewBoxDim.width/@viewBoxDim.height - 1
-        @maxX += rangeX*factor/2
-        @minX -= rangeX*factor/2
+        factor = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
+        @maxX += rangeX*factor
+        @minX -= rangeX*factor
       else if @viewBoxDim.width < @viewBoxDim.height
-        rangeY = @maxY-@minY
-        factor = @viewBoxDim.height/@viewBoxDim.width - 1
-        @maxY += rangeY*factor/2
-        @minY -= rangeY*factor/2
+        rangeY = (@maxY-@minY)
+        factor = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
+        @maxY += rangeY*factor
+        @minY -= rangeY*factor
 
     # If user has sent x and y boundaries, these hold higher priority
     @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)
@@ -108,6 +119,8 @@ class PlotData
     @maxY = @bounds.ymax if Utils.get().isNum(@bounds.ymax)
     @minY = @bounds.ymin if Utils.get().isNum(@bounds.ymin)
 
+  normalizeData: =>
+    @calculateMinMax()
 
     #create list of movedOffPts that need markers
     @outsidePlotMarkers = []

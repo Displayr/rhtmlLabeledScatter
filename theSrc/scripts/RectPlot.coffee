@@ -261,6 +261,7 @@ class RectPlot
 
   drawDimensionMarkers: =>
     new Promise((resolve, reject) =>
+      @data.calculateMinMax()
       axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
       if @grid
@@ -361,6 +362,7 @@ class RectPlot
          initAxisTextColHeight != @axisDimensionText.colMaxHeight
         console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
         @setDim(@svg, @width, @height)
+        @data.revertMinMax()
         reject()
       resolve()
     )
@@ -517,6 +519,7 @@ class RectPlot
       if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z)) or @data.legendPts?
         if @data.resizedAfterLegendGroupsDrawn(@legendShow)
           console.log "rhtmlLabeledScatter: drawLegend false"
+          @data.revertMinMax()
           reject()
 
       resolve()

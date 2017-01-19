@@ -91,6 +91,7 @@ AxisUtils = (function() {
           });
         }
       };
+      data.calculateMinMax();
       dimensionMarkerStack = [];
       dimensionMarkerLeaderStack = [];
       dimensionMarkerLabelStack = [];
