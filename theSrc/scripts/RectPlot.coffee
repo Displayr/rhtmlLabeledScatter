@@ -114,7 +114,7 @@ class RectPlot
       color:        titleFontColor
       anchor:       'middle'
       fontSize:     titleFontSize
-      fontWeight:   'bold'
+      fontWeight:   'normal'
       fontFamily:   titleFontFamily
 
     if @title.text is ''
@@ -410,7 +410,7 @@ class RectPlot
              .attr('text-anchor', (d) -> d.anchor)
              .attr('transform', (d) -> d.transform)
              .text((d) -> d.text)
-             .style('font-weight', 'bold')
+             .style('font-weight', 'normal')
              .style('display', (d) -> d.display)
 
   drawLegend: =>
@@ -457,7 +457,7 @@ class RectPlot
               .attr('y', (d) -> d.y - (legendFontSize*1.5))
               .attr('text-anchor', 'middle')
               .attr('font-family', @legendFontFamily)
-              .attr('font-weight', 'bold')
+              .attr('font-weight', 'normal')
               .attr('fill', @legendFontColor)
               .text @zTitle
 
