@@ -210,3 +210,4 @@ testData3 =
   axisFontColor: "red"
   axisFontSize: '10'
   pointRadius: 2
+  showLabels: false

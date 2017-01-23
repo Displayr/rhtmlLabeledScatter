@@ -75,6 +75,8 @@ class AxisUtils
             type: 'row'
           })
 
+      data.calculateMinMax()
+
       dimensionMarkerStack = []
       dimensionMarkerLeaderStack = []
       dimensionMarkerLabelStack = []

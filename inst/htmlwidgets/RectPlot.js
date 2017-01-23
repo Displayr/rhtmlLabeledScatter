@@ -272,6 +272,7 @@ RectPlot = (function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
         var axisArrays, bb, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
+        _this.data.calculateMinMax();
         axisArrays = AxisUtils.get().getAxisDataArrays(_this, _this.data, _this.viewBoxDim);
         if (_this.grid) {
           _this.svg.selectAll('.origin').remove();
@@ -359,6 +360,7 @@ RectPlot = (function() {
         if (initAxisTextRowWidth !== _this.axisDimensionText.rowMaxWidth || initAxisTextColWidth !== _this.axisDimensionText.colMaxWidth || initAxisTextRowHeight !== _this.axisDimensionText.rowMaxHeight || initAxisTextColHeight !== _this.axisDimensionText.colMaxHeight) {
           console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
           _this.setDim(_this.svg, _this.width, _this.height);
+          _this.data.revertMinMax();
           reject();
         }
         return resolve();
@@ -498,6 +500,7 @@ RectPlot = (function() {
         if (_this.legendShow || (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) || (_this.data.legendPts != null)) {
           if (_this.data.resizedAfterLegendGroupsDrawn(_this.legendShow)) {
             console.log("rhtmlLabeledScatter: drawLegend false");
+            _this.data.revertMinMax();
             reject();
           }
         }
