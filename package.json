@@ -48,7 +48,6 @@
     "d3-extended": "^1.2.10",
     "jquery": "2.2.2",
     "lodash": "4.6.1",
-    "random-js": "^1.0.8",
-    "rhtmlBaseClasses": "git+https://github.com/NumbersInternational/rhtmlBaseClasses.git#v1.0.0"
+    "random-js": "^1.0.8"
   }
 }

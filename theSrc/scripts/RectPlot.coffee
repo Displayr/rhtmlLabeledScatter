@@ -61,7 +61,9 @@ class RectPlot
                 @yBoundsUnitsMajor = null,
                 trendLines = false,
                 trendLinesLineThickness = 1,
-                trendLinesPointSize = 2) ->
+                trendLinesPointSize = 2,
+                @plotBorderShow = true
+  ) ->
 
     @state = new State(stateObj, stateChangedCallback)
 
@@ -227,7 +229,7 @@ class RectPlot
         @drawAnc()
         @drawTrendLines() if @trendLines.show
         @drawDraggedMarkers()
-        @drawRect()
+        @drawRect() if @plotBorderShow
         @drawAxisLabels()
       catch error
         console.log error
