@@ -153,6 +153,43 @@ LabeledScatter(X = as.numeric(bigmac.df[, 1]),
               x.bounds.units.major = 10000)
 ```
 
+```
+coords <- structure(c(1.20717678273271, -0.358889576943445, -0.367284599847411, 
+0.990595089926661, -0.519827458998618, -0.250292165916519, -0.19576676936709, 
+-0.430238037160928, -0.534031839025636, -0.230483857439397, 0.977544489275776, 
+-0.0145085087387522, 0.061685015783486, -0.136918988930853, 1.36927458084186, 
+-0.593931432862893, -0.0228270116573135, -0.347388639852981, 
+0.523044026866707, -0.075687207952628, -0.390361214684736, 0.666436196168659, 
+-0.318827446504028, -0.420829887695947, -0.000403618372313634, 
+-0.457826124967497, -0.177012800372638, 0.612453744937109, 0.752924212816244, 
+-0.467713414118639, -0.129156630692344, 0.0199370131787323), .Dim = c(16L, 
+2L), .Dimnames = list(c("Coke", "Diet Coke", "Coke Zero", "Pepsi", 
+"Diet Pepsi", "Pepsi Max", "None of these", "Feminine", "Health-conscious", 
+"Innocent", "Older", "Open to new experiences", "Rebellious", 
+"Sleepy", "Traditional", "Weight-conscious"), c("Dim1", "Dim2"
+)))
+groups <- c("Brands", "Brands", "Brands", "Brands", "Brands", "Brands", 
+"Brands", "Attributes", "Attributes", "Attributes", "Attributes", 
+"Attributes", "Attributes", "Attributes", "Attributes", "Attributes"
+)
+colors <- c("#5B9BD5", "#ED7D31")
+column.labels <- c("Dimension 1 (62.4%)", "Dimension 2 (24.2%)")
+rhtmlLabeledScatter::LabeledScatter(X = coords[, 1],
+Y = coords[, 2],
+label = rownames(coords),
+group = groups,
+colors = colors,
+fixed.aspect = TRUE,
+title = "Correspondence analysis",
+x.title = column.labels[1],
+y.title = column.labels[2],
+axis.font.size = 8,
+labels.font.size = 12,
+title.font.size = 20,
+y.title.font.size = 16,
+x.title.font.size = 16)
+```
+
 Trend lines example:
 
 ```
