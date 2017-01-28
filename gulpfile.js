@@ -1,18 +1,20 @@
 'use strict';
 
-var widgetName = 'rhtmlLabeledScatter';
+const widgetName = 'rhtmlLabeledScatter';
 
-var _ = require('lodash');
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
-var Promise = require('bluebird');
-var fs =Promise.promisifyAll(require('fs-extra'));
+const _ = require('lodash');
+const gulp = require('gulp');
+const $ = require('gulp-load-plugins')();
+const Promise = require('bluebird');
+const fs =Promise.promisifyAll(require('fs-extra'));
+const path = require('path');
+const cliArgs = require('yargs').argv;
 
 gulp.task('default', function () {
   gulp.start('build');
 });
 
-gulp.task('core', ['compile-coffee', 'less', 'copy']);
+gulp.task('core', ['compile-coffee', 'less', 'copy', 'buildContentManifest']);
 gulp.task('build', ['core', 'makeDocs', 'makeExample']);
 
 gulp.task('serve', ['connect', 'watch'], function () {
@@ -21,8 +23,8 @@ gulp.task('serve', ['connect', 'watch'], function () {
 
 //@TODO clean doesn't finish before next task so I have left it out of build pipeline for now ..
 gulp.task('clean', function(done) {
-  var locationsToDelete = ['browser', 'inst', 'man', 'R', 'examples'];
-  var deletePromises = locationsToDelete.map(function(location) { return fs.removeAsync(location); });
+  const locationsToDelete = ['browser', 'inst', 'man', 'R', 'examples'];
+  const deletePromises = locationsToDelete.map(function(location) { return fs.removeAsync(location); });
   Promise.all(deletePromises).then(done);
   return true;
 });
@@ -116,9 +118,9 @@ gulp.task('copy', function () {
 });
 
 gulp.task('connect', ['core'], function () {
-  var serveStatic = require('serve-static');
-  var serveIndex = require('serve-index');
-  var app = require('connect')()
+  const serveStatic = require('serve-static');
+  const serveIndex = require('serve-index');
+  const app = require('connect')()
     .use(require('connect-livereload')({port: 35729}))
     .use(serveStatic('browser'))
     .use(serveIndex('browser'));
@@ -148,4 +150,60 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch('theSrc/scripts/lib/*.js', ['copy']);
   gulp.watch('theSrc/R/*.R', ['copy', 'makeDocs', 'makeExample']);
   gulp.watch('theSrc/R/*.yaml', ['copy', 'makeDocs', 'makeExample'])
+});
+
+
+// Testing Visual--------------------------------------
+gulp.task('webdriverUpdate', $.protractor.webdriver_update);
+
+function runProtractor(done) {
+    const args = [];
+    if (cliArgs.testLabel) {
+        args.push(`--params.testLabel=${cliArgs.testLabel}`);
+    } else {
+        args.push('--params.testLabel=Default');
+    }
+
+    if (cliArgs.specFilter) {
+        args.push(`--params.specFilter=${cliArgs.specFilter}`);
+    }
+
+    gulp.src(['build/scripts/testVisual.js', 'theSrc/visualRegression/*.js'])
+        .pipe($.protractor.protractor({
+            configFile: path.join(__dirname, '/build/config/protractor.conf.js'),
+            args,
+        }))
+        .on('error', function (err) {
+            throw err;
+        })
+        .on('end', function () {
+            done();
+        });
+}
+
+gulp.task('testVisual', ['webdriverUpdate', 'connect'], runProtractor);
+
+
+const buildContentManifest = require('./build/scripts/buildContentManifest');
+const gutil = require('gulp-util');
+const stream = require('stream');
+
+function stringSrc(filename, string) {
+    const src = stream.Readable({ objectMode: true });
+    src._read = function () {
+        this.push(new gutil.File({
+            cwd: '',
+            base: '',
+            path: filename,
+            contents: new Buffer(string),
+        }));
+        this.push(null);
+    };
+    return src;
+}
+
+gulp.task('buildContentManifest', function () {
+    const contentManifest = buildContentManifest();
+    return stringSrc('contentManifest.json', JSON.stringify(contentManifest, {}, 2))
+        .pipe(gulp.dest('browser/content'));
 });

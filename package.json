@@ -1,7 +1,7 @@
 {
   "private": true,
   "engines": {
-    "node": ">=5.8.0"
+    "node": ">=6.1.0"
   },
   "devDependencies": {
     "bluebird": "^3.3.5",
@@ -9,6 +9,7 @@
     "connect": "3.0.1",
     "connect-livereload": "0.5.0",
     "del": "0.1.0",
+    "eyes.protractor": "0.0.57",
     "fs-extra": "0.26.7",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "1.0.1",
@@ -22,9 +23,10 @@
     "gulp-jshint": "1.5.3",
     "gulp-less": "3.0.5",
     "gulp-livereload": "2.0.0",
-    "gulp-load-plugins": "0.7.1",
+    "gulp-load-plugins": "^0.7.1",
     "gulp-minify-html": "0.1.6",
     "gulp-plumber": "0.6.3",
+    "gulp-protractor": "^3.0.0",
     "gulp-rename": "1.2.2",
     "gulp-replace": "0.4.0",
     "gulp-ruby-sass": "0.7.1",
@@ -48,6 +50,8 @@
     "d3-extended": "^1.2.10",
     "jquery": "2.2.2",
     "lodash": "4.6.1",
-    "random-js": "^1.0.8"
+    "random-js": "^1.0.8",
+    "recursive-readdir-sync": "^1.0.6",
+    "yargs": "^6.6.0"
   }
 }
