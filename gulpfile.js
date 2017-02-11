@@ -122,8 +122,8 @@ gulp.task('connect', ['core'], function () {
   const serveIndex = require('serve-index');
   const app = require('connect')()
     .use(require('connect-livereload')({port: 35729}))
-    .use(serveStatic('browser'))
-    .use(serveIndex('browser'));
+    .use(serveStatic('browser/internal_www'))
+    .use(serveIndex('browser/internal_www'));
 
   require('http').createServer(app)
     .listen(9000)
@@ -205,5 +205,5 @@ function stringSrc(filename, string) {
 gulp.task('buildContentManifest', function () {
     const contentManifest = buildContentManifest();
     return stringSrc('contentManifest.json', JSON.stringify(contentManifest, {}, 2))
-        .pipe(gulp.dest('browser/content'));
+        .pipe(gulp.dest('browser/internal_www/content'));
 });

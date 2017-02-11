@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+  <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
+
+<h1>Features of the content page</h1>
+<p>Best to look at the source html for this so you can see what options are available to you.</p>
+
+<p>The widget size is defined for each row. You can override the size in each example or let it use the row size.</p>
+<div snapshot-name="big_and_small_widget">
+  <div class="row" data-ex-w="200" data-ex-h="200">
+    <pre class="example">{ "colors": ["pink", "blue", "aqua", "brown"] }</pre>
+    <pre class="example" data-ex-w="400" data-ex-h="400">{ "colors": ["pink", "blue", "aqua", "brown"] }</pre>
+  </div>
+</div>
+
+<p>You can hide the config so that all that is displayed is the widget</p>
+<div>
+  <div class="row" data-ex-w="200" data-ex-h="200">
+    <pre class="example hide-config">{ "colors": ["pink", "blue", "aqua", "brown"] }</pre>
+  </div>
+</div>
+
+<p>You can remove the dashed border around the widget</p>
+<div>
+  <div class="row" data-ex-w="200" data-ex-h="200">
+    <pre class="example hide-config no-border">{ "colors": ["pink", "blue", "aqua", "brown"] }</pre>
+  </div>
+</div>
+
+<p>You can add resize controls. This will only work if your widget is resizeable.</p>
+<div>
+  <div class="row" data-ex-w="200" data-ex-h="200">
+    <pre class="example" data-resize-controls="true">{ "colors": ["pink", "blue", "aqua", "brown"] }</pre>
+  </div>
+</div>
+
+<ul>
+  <li> You can make the text look like <span class="code">this</span></li>
+  <li> You can make the text look like <span class="note">this</span></li>
+  <li> You can make the text look like <span class="emphasis">this</span></li>
+</ul>
+
+<script src="/js/renderContentPage.js"></script>
+</body>
+</html>

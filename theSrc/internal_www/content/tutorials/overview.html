@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+  <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
+
+<h1>RHTML Template Example Tutorial</h1>
+
+<section>
+  <h2 class="hidden">Intro</h2>
+  <p>The rhtmlTemplate is just a trivial HTML Widget that displays a square with four quadrants.</p>
+  <p>The purpose of this repo is to capture a reusable project layout of other HTML Widgets.</p>
+  <p>The html source for all tutorial pages is structured in a specific way so that the build tools can generate example R files.</p>
+  <p>For example, the html source for this file: <span class="code">theSrc/content/tutorials/overview.html</span> is used to generate this example R file: <span class="code">examples/tutorials/overview.r</span></p>
+</section>
+
+<section>
+  <h2>Default Invocation</h2>
+  <p>By default the widget will draw a square with 4 sections, where the color scheme used is red, blue, green, orange.</p>
+  <p>This is shown below.</p>
+  <p>In all of the content page types, (i.e. tutorials, examples, regression_suites, and bugs/improvements) we can place a widget config inside a section marked with <span class="code">class="example"</span> and this will cause a widget to be drawn!</p>
+  <div snapshot-name="default-colors">
+    <div class="row" data-ex-w="400" data-ex-h="400">
+      <pre class="example">{ "initialState": { "selected": "green" } }</pre>
+    </div>
+  </div>
+</section>
+
+<script src="/js/renderContentPage.js"></script>
+</body>
+</html>
