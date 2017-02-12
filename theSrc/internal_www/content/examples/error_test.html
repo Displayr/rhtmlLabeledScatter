@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+
+    <!--Scripts below used by rhtmlLabeledScatter-->
+    <script src="../../external/lodash.min.js"></script>
+    <script src="../../external/jquery.min.js"></script>
+    <script src="../../external/d3.min.js"></script>
+    <script src="../../external/random.min.js"></script>
+    <script src="../../external/bluebird.min.js"></script>
+    <script src="../../external/bignumber.min.js"></script>
+</head>
+<body>
+
+<section>
+    <h2>Error message test</h2>
+    <div class="scatterplot13" snapshot-name='rhtmlLabeledScatter-scatterplot-13'></div>
+    <script>
+        myWidgetDefinition = null;
+
+        // This is a stub that will capture the widget definition,
+        // so that we can use it once the page finishes loading
+        HTMLWidgets = {
+            widget: function(widgetDefinition) {
+                console.log("widget create called!");
+                myWidgetDefinition = widgetDefinition;
+            }
+        };
+
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance13 = myWidgetDefinition.factory($('.scatterplot13')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance13.renderValue(testData13, {}, myWidgetInstance13);
+
+        });
+    </script>
+</section>
+
+<script src="../../scripts/data/bubbledata1.js"></script>
+
+
+<script src="../../scripts/PlotColors.js"></script>
+<script src="../../scripts/State.js"></script>
+<script src="../../scripts/rhtmlLabeledScatter.js"></script>
+<script src="../../scripts/LabeledScatter.js"></script>
+<script src="../../scripts/PlotData.js"></script>
+<script src="../../scripts/RectPlot.js"></script>
+<script src="../../scripts/Links.js"></script>
+<script src="../../scripts/PlotLabel.js"></script>
+<script src="../../scripts/Utils.js"></script>
+<script src="../../scripts/TrendLine.js"></script>
+<script src="../../scripts/DisplayError.js"></script>
+<script src="../../scripts/utils/LegendUtils.js"></script>
+<script src="../../scripts/utils/DragUtils.js"></script>
+<script src="../../scripts/utils/SvgUtils.js"></script>
+<script src="../../scripts/utils/AxisUtils.js"></script>
+<script src="../../scripts/utils/Utils.js"></script>
+<script src="../../scripts/data/testData.js"></script>
+<script src="../../scripts/data/testData2.js"></script>
+<script src="../../scripts/data/testData3.js"></script>
+<script src="../../scripts/data/testData4.js"></script>
+<script src="../../scripts/data/testData5.js"></script>
+<script src="../../scripts/data/testData6.js"></script>
+<script src="../../scripts/data/testData7.js"></script>
+<script src="../../scripts/data/testData8.js"></script>
+<script src="../../scripts/data/testData9.js"></script>
+<script src="../../scripts/data/testData10.js"></script>
+<script src="../../scripts/data/testData11.js"></script>
+<script src="../../scripts/data/testData12.js"></script>
+<script src="../../scripts/data/testData13.js"></script>
+<script src="../../scripts/data/trendData1.js"></script>
+<script src="../../scripts/data/trendData2.js"></script>
+<script src="../../scripts/lib/labeler.js"></script>
+</body>
+</html>

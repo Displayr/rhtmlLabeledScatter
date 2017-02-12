@@ -76,7 +76,7 @@ testData =
   fixedAspectRatio: true,
   grid: true,
   origin: true,
-  title: "TEST of the font",
+  title: "Basic Scatter Plot",
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Verdana',
   xTitleFontFamily: 'Arial',

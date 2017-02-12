@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<script src="/js/renderIndexPage.js"></script>
+
+<h2>The Internal WWW Server</h2>
+<p>
+  <span class="note">Delete this description in your new widget repo</span><br/>
+  This internal WWW server hosts content that allows you to see your work while making updates to the html widget.<br/>
+  There are currently 5 content sections, 4 of them use the same renderer: <span class="code">js/renderContentPage.js</span> to convert the configs in the HTML into actual wrking HTML widgets<br/>
+  The 5th space is 'experiements', which is nothing more than statically hosted free form HTML with no processing.<br/>
+  <br/>
+  This logical grouping of content was useful in the rhtmlPictograph project and it might be useful for you.<br/>
+  Though the Tutorial, Examples, Visual Regression Suite, and Bugs and Improvements sections below serve different purposes, under the hood they are all using the same renderer;<br/>
+  there is no reason you cant just add all content to one or structure things in a different way.<br/>
+
+  Any content within the 'internal_www/content' area will be snapshotted by the visual regression suite if the HTML content contains a <span class="code">snapshot-name="NAME"</span> html attribute.<br/>
+  When you run <span class="code">gulp testVisual</span> a snapshot will be taken of every piece of content marked with the <span class="code">snapshot-name="NAME"</span> html attribute.<br/>
+</p>
+
+Here are the intended purposes of each section, keeping in mind they all do the same thing:
+<ul>
+  <li><span class="emphasis">Tutorial</span>: Build one or more tutorial pages to describe how your app works. The content should be descriptive and should serve to demonstrate key features to a future maintainer or the author of the consuming 'flip' project.</li>
+  <li><span class="emphasis">Examples</span>: Capture key reference examples of use here.</li>
+  <li><span class="emphasis">Regression </span>Suite: If there are complex cases you wish to capture outside of the tutorial or example section, for the purposes of running through the regression test suite, put them here.</li>
+  <li><span class="emphasis">Bugs and Improvements</span>: If there are outstanding bugs or improvements, capture examples of these bugs and improvements here.</li>
+  <li><span class="emphasis">Experiments</span>: This is just a scratch space to capture any ongoing dev work.</li>
+</ul>
+
+<h2 class="tutorial"><a href="/content/tutorials/">Tutorial</a></h2>
+<p></p>
+<ul class='tutorials'>
+</ul>
+
+<h2><a href="/content/examples/">Examples</a></h2>
+<ul class='examples'>
+</ul>
+
+<h2><a href="/content/regression_suite">Visual Regression Suite</a></h2>
+<ul class='regression_suite'>
+</ul>
+
+
+<h2><a href="/content/bugs_and_improvements">Bugs and Improvements</a></h2>
+<ul class='bugs_and_improvements'>
+</ul>
+
+<h2 style="margin-bottom:0px"><a href="/experiments">Experiments</a></h2>
+<span class="note">Experiments are not auto listed, so you will need to click through to see the list</span>
+
+</body>
+</html>

@@ -32,7 +32,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   x.bounds.units.major = NULL, y.bounds.units.major = NULL,
   tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
-  point.radius = 2, width = NULL, height = NULL)
+  point.radius = 2, trend.lines.show = FALSE,
+  trend.lines.line.thickness = 1, trend.lines.point.size = 2,
+  plot.border.show = TRUE, width = NULL, height = NULL)
 }
 \arguments{
 \item{X}{is array of x coordinates of data set}
@@ -139,6 +141,14 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{point.radius}{Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.}
 
+\item{trend.lines.show}{Boolean toggle to show trendlines based on groups given}
+
+\item{trend.lines.line.thickness}{An integer for the thickness of the trendlines (Default is 1px)}
+
+\item{trend.lines.point.size}{An integer to set the size of the data points when a trendline is drawn. This setting overrides Z sizes.}
+
+\item{plot.border.show}{Boolean toggle to show black border around plot area (Default is TRUE).}
+
 \item{width}{is the width of the plot. Defaults to max of window}
 
 \item{height}{is the height of the plot. Defaults to the max of window}
@@ -155,6 +165,5 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 A HTMLWidget that creates a labeled scatter plot.
 }
 \author{
-Po Liu <pliu0771@uni.sydney.edu.au>
+Po Liu <po.liu@numbers.net.au>
 }
-
