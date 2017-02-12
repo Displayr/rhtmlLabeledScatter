@@ -50,7 +50,7 @@ gulp.task('less', function () {
   var less = require('gulp-less');
   return gulp.src('theSrc/styles/**/*.less')
     .pipe(less({}))
-    .pipe(gulp.dest('browser/styles'))
+    .pipe(gulp.dest('browser/internal_www/styles'))
     .pipe(gulp.dest('inst/htmlwidgets/lib/style'));
 });
 
@@ -59,7 +59,7 @@ gulp.task('compile-coffee', function () {
 
   gulp.src('theSrc/scripts/**/*.coffee')
     .pipe(gulp_coffee({ bare: true, header: true }))
-    .pipe(gulp.dest('browser/scripts'))
+    .pipe(gulp.dest('browser/internal_www/scripts'))
     .pipe(gulp.dest('inst/htmlwidgets/'));
 });
 
@@ -70,7 +70,7 @@ gulp.task('copy', function () {
 
   gulp.src([
     'theSrc/scripts/lib/*.js'
-  ], {}).pipe(gulp.dest('browser/scripts/lib'));
+  ], {}).pipe(gulp.dest('browser/internal_www/scripts/lib'));
 
   gulp.src([
     'theSrc/scripts/lib/*.js'
@@ -78,7 +78,7 @@ gulp.task('copy', function () {
 
   gulp.src([
     'theSrc/scripts/data/*.js'
-  ], {}).pipe(gulp.dest('browser/scripts/data'));
+  ], {}).pipe(gulp.dest('browser/internal_www/scripts/data'));
 
   gulp.src([
     'theSrc/scripts/data/*.js'
@@ -86,11 +86,11 @@ gulp.task('copy', function () {
 
   gulp.src([
     'theSrc/images/**/*'
-  ], {}).pipe(gulp.dest('browser/images'));
+  ], {}).pipe(gulp.dest('browser/internal_www/images'));
 
   gulp.src([
     'theSrc/features/*.json'
-  ], {}).pipe(gulp.dest('browser/features'));
+  ], {}).pipe(gulp.dest('browser/internal_www/features'));
 
   var rename = require('gulp-rename');
   gulp.src('theSrc/R/htmlwidget.yaml')
@@ -113,7 +113,7 @@ gulp.task('copy', function () {
 
   gulp.src(extLibs)
     .pipe(gulp.dest('inst/htmlwidgets/lib/'))
-    .pipe(gulp.dest('browser/external/'))
+    .pipe(gulp.dest('browser/internal_www/external/'))
 
 });
 
@@ -154,6 +154,30 @@ gulp.task('watch', ['connect'], function () {
 
 
 // Testing Visual--------------------------------------
+const buildContentManifest = require('./build/scripts/buildContentManifest');
+const gutil = require('gulp-util');
+const stream = require('stream');
+
+function stringSrc(filename, string) {
+    const src = stream.Readable({ objectMode: true });
+    src._read = function () {
+        this.push(new gutil.File({
+            cwd: '',
+            base: '',
+            path: filename,
+            contents: new Buffer(string),
+        }));
+        this.push(null);
+    };
+    return src;
+}
+
+gulp.task('buildContentManifest', function () {
+    const contentManifest = buildContentManifest();
+    return stringSrc('contentManifest.json', JSON.stringify(contentManifest, {}, 2))
+        .pipe(gulp.dest('browser/internal_www/content'));
+});
+
 gulp.task('webdriverUpdate', $.protractor.webdriver_update);
 
 function runProtractor(done) {
@@ -178,32 +202,13 @@ function runProtractor(done) {
         })
         .on('end', function () {
             done();
-        });
+        })
+        .pipe($.exit());
 }
 
 gulp.task('testVisual', ['webdriverUpdate', 'connect'], runProtractor);
+// NB p_skip skips the webdriver download step - it is downloading gecko drivers every time (30MB / run)
+// TODO - need to detect which browser drivers are required - probavbly in protractor conf
+gulp.task('testVisual_s', runProtractor);
 
 
-const buildContentManifest = require('./build/scripts/buildContentManifest');
-const gutil = require('gulp-util');
-const stream = require('stream');
-
-function stringSrc(filename, string) {
-    const src = stream.Readable({ objectMode: true });
-    src._read = function () {
-        this.push(new gutil.File({
-            cwd: '',
-            base: '',
-            path: filename,
-            contents: new Buffer(string),
-        }));
-        this.push(null);
-    };
-    return src;
-}
-
-gulp.task('buildContentManifest', function () {
-    const contentManifest = buildContentManifest();
-    return stringSrc('contentManifest.json', JSON.stringify(contentManifest, {}, 2))
-        .pipe(gulp.dest('browser/internal_www/content'));
-});
