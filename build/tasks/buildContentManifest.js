@@ -1,5 +1,5 @@
 const gulp = require('gulp');
-const buildContentManifest = require('../scripts/buildContentManifest');
+const buildContentManifest = require('../scripts/buildContentManifest.js');
 const gutil = require('gulp-util');
 const stream = require('stream');
 

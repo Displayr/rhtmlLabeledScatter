@@ -11,28 +11,17 @@
   <script src="../../external/random.min.js"></script>
   <script src="../../external/bluebird.min.js"></script>
   <script src="../../external/bignumber.min.js"></script>
-
-
 </head>
 <body>
 <!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
 
-<h1>rHTML Labeled Scatter Example Tutorial</h1>
 
 <section>
-  <h2 class="hidden">Intro</h2>
-  <p>The rhtmlLabeledScatter is HTML widget that creates plots with a label placement algorithm.</p>
-  <p>This widget additionally allows the plotting of bubble plots and trend lines.</p>
-  <p>For example, the html source for this file: <span class="code">theSrc/content/tutorials/overview.html</span> is used to generate this example R file: <span class="code">examples/tutorials/overview.r</span></p>
-</section>
-
-<section>
-  <h2>Basic scatter plot</h2>
-  <div class="basic-scatterplot" snapshot-name='rhtmlLabeledScatter-basic-scatterplot'></div>
+  <h2>Scatter plot showing origin lines</h2>
+  <p>Quadrant 1</p>
+  <div class="scatterplot6" snapshot-name='rhtmlLabeledScatter-scatterplot-6'></div>
   <script>
       myWidgetDefinition = null;
-      myWidgetInstance = null;
-      const container = $('.basic-scatterplot')[0];
 
       // This is a stub that will capture the widget definition,
       // so that we can use it once the page finishes loading
@@ -46,27 +35,59 @@
       $(document).ready( function() {
           console.log("Document ready.");
 
-          myWidgetInstance = myWidgetDefinition.factory(container, window.innerWidth, window.innerHeight);
-          myWidgetInstance.renderValue(testData, {}, myWidgetInstance);
+          myWidgetInstance6 = myWidgetDefinition.factory($('.scatterplot6')[0], window.innerWidth, window.innerHeight);
+          myWidgetInstance6.renderValue(testData6, {}, myWidgetInstance6);
 
       });
   </script>
 </section>
 
 <section>
-  <h2>Scatter plot with SVGs</h2>
-  <div class="scatterplot2" snapshot-name='rhtmlLabeledScatter-scatterplot-2'></div>
+  <h2>Scatter plot showing origin lines</h2>
+  <p>Quadrant 3</p>
+  <div class="scatterplot7" snapshot-name='rhtmlLabeledScatter-scatterplot-7'></div>
   <script>
       $(document).ready( function() {
           console.log("Document ready.");
 
-          myWidgetInstance2 = myWidgetDefinition.factory($('.scatterplot2')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance2.renderValue(testData2, {}, myWidgetInstance2);
+          myWidgetInstance7 = myWidgetDefinition.factory($('.scatterplot7')[0], window.innerWidth, window.innerHeight);
+          myWidgetInstance7.renderValue(testData7, {}, myWidgetInstance7);
 
       });
   </script>
 </section>
 
+<section>
+  <h2>Scatter plot showing origin lines</h2>
+  <p>Quadrant 4</p>
+  <div class="scatterplot8" snapshot-name='rhtmlLabeledScatter-scatterplot-8'></div>
+  <script>
+      $(document).ready( function() {
+          console.log("Document ready.");
+
+          myWidgetInstance8 = myWidgetDefinition.factory($('.scatterplot8')[0], window.innerWidth, window.innerHeight);
+          myWidgetInstance8.renderValue(testData8, {}, myWidgetInstance8);
+
+      });
+  </script>
+</section>
+
+<section>
+  <h2>Scatter plot showing origin lines</h2>
+  <p>Quadrant 2</p>
+  <div class="scatterplot9" snapshot-name='rhtmlLabeledScatter-scatterplot-9'></div>
+  <script>
+      $(document).ready( function() {
+          console.log("Document ready.");
+
+          myWidgetInstance9 = myWidgetDefinition.factory($('.scatterplot9')[0], window.innerWidth, window.innerHeight);
+          myWidgetInstance9.renderValue(testData9, {}, myWidgetInstance9);
+
+      });
+  </script>
+</section>
+
+<script src="/js/renderContentPage.js"></script>
 <script src="../../scripts/data/bubbledata1.js"></script>
 
 
@@ -103,6 +124,5 @@
 <script src="../../scripts/data/trendData2.js"></script>
 <script src="../../scripts/lib/labeler.js"></script>
 
-<script src="/js/renderContentPage.js"></script>
 </body>
 </html>

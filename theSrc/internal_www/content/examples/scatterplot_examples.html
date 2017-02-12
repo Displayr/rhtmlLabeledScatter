@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+    <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+
+    <!--Scripts below used by rhtmlLabeledScatter-->
+    <script src="../../external/lodash.min.js"></script>
+    <script src="../../external/jquery.min.js"></script>
+    <script src="../../external/d3.min.js"></script>
+    <script src="../../external/random.min.js"></script>
+    <script src="../../external/bluebird.min.js"></script>
+    <script src="../../external/bignumber.min.js"></script>
+</head>
+<body>
+
+<section>
+    <h2>Scatter plot with fixed aspect ratio and labels turned off</h2>
+    <div class="scatterplot3" snapshot-name='rhtmlLabeledScatter-scatterplot-3'></div>
+    <script>
+        myWidgetDefinition = null;
+
+        // This is a stub that will capture the widget definition,
+        // so that we can use it once the page finishes loading
+        HTMLWidgets = {
+            widget: function(widgetDefinition) {
+                console.log("widget create called!");
+                myWidgetDefinition = widgetDefinition;
+            }
+        };
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance3 = myWidgetDefinition.factory($('.scatterplot3')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance3.renderValue(testData3, {}, myWidgetInstance3);
+
+        });
+    </script>
+</section>
+
+<section>
+    <h2>Full scatter plot</h2>
+    <div class="scatterplot4" snapshot-name='rhtmlLabeledScatter-scatterplot-4'></div>
+    <script>
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance4 = myWidgetDefinition.factory($('.scatterplot4')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance4.renderValue(testData4, {}, myWidgetInstance4);
+
+        });
+    </script>
+</section>
+
+<section>
+    <h2>Scatter plot with big X axis labels</h2>
+    <div class="scatterplot5" snapshot-name='rhtmlLabeledScatter-scatterplot-5'></div>
+    <script>
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance5 = myWidgetDefinition.factory($('.scatterplot5')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance5.renderValue(testData5, {}, myWidgetInstance5);
+
+        });
+    </script>
+</section>
+
+
+
+<section>
+    <h2>Scatter plot with X and Y data inversed</h2>
+    <div class="scatterplot10" snapshot-name='rhtmlLabeledScatter-scatterplot-10'></div>
+    <script>
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance10 = myWidgetDefinition.factory($('.scatterplot10')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance10.renderValue(testData10, {}, myWidgetInstance10);
+
+        });
+    </script>
+</section>
+
+<section>
+    <h2>Scatter plot with X and Y data inversed</h2>
+    <div class="scatterplot11" snapshot-name='rhtmlLabeledScatter-scatterplot-11'></div>
+    <script>
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance11 = myWidgetDefinition.factory($('.scatterplot11')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance11.renderValue(testData11, {}, myWidgetInstance11);
+
+        });
+    </script>
+</section>
+
+<section>
+    <h2>Scatter plot with points along X axis</h2>
+    <div class="scatterplot12" snapshot-name='rhtmlLabeledScatter-scatterplot-12'></div>
+    <script>
+        $(document).ready( function() {
+            console.log("Document ready.");
+
+            myWidgetInstance12 = myWidgetDefinition.factory($('.scatterplot12')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance12.renderValue(testData12, {}, myWidgetInstance12);
+
+        });
+    </script>
+</section>
+
+
+<script src="../../scripts/data/bubbledata1.js"></script>
+
+
+<script src="../../scripts/PlotColors.js"></script>
+<script src="../../scripts/State.js"></script>
+<script src="../../scripts/rhtmlLabeledScatter.js"></script>
+<script src="../../scripts/LabeledScatter.js"></script>
+<script src="../../scripts/PlotData.js"></script>
+<script src="../../scripts/RectPlot.js"></script>
+<script src="../../scripts/Links.js"></script>
+<script src="../../scripts/PlotLabel.js"></script>
+<script src="../../scripts/Utils.js"></script>
+<script src="../../scripts/TrendLine.js"></script>
+<script src="../../scripts/DisplayError.js"></script>
+<script src="../../scripts/utils/LegendUtils.js"></script>
+<script src="../../scripts/utils/DragUtils.js"></script>
+<script src="../../scripts/utils/SvgUtils.js"></script>
+<script src="../../scripts/utils/AxisUtils.js"></script>
+<script src="../../scripts/utils/Utils.js"></script>
+<script src="../../scripts/data/testData.js"></script>
+<script src="../../scripts/data/testData2.js"></script>
+<script src="../../scripts/data/testData3.js"></script>
+<script src="../../scripts/data/testData4.js"></script>
+<script src="../../scripts/data/testData5.js"></script>
+<script src="../../scripts/data/testData6.js"></script>
+<script src="../../scripts/data/testData7.js"></script>
+<script src="../../scripts/data/testData8.js"></script>
+<script src="../../scripts/data/testData9.js"></script>
+<script src="../../scripts/data/testData10.js"></script>
+<script src="../../scripts/data/testData11.js"></script>
+<script src="../../scripts/data/testData12.js"></script>
+<script src="../../scripts/data/testData13.js"></script>
+<script src="../../scripts/data/trendData1.js"></script>
+<script src="../../scripts/data/trendData2.js"></script>
+<script src="../../scripts/lib/labeler.js"></script>
+</body>
+</html>
