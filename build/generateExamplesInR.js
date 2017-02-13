@@ -8,7 +8,7 @@ module.exports = function (parsedFileContents) {
     content += '\n'
     content += 'library(devtools)\n'
     // TEMPLATE! - this reponame needs to be updated to match your widget
-    content += 'install_github("NumbersInternational/rhtmlLabeledScatter", auth_token="d8d69ec8f7941263cf1f9d1105292e698b803fce")\n'
+    content += 'install_github("Displayr/rhtmlLabeledScatter", auth_token="d8d69ec8f7941263cf1f9d1105292e698b803fce")\n'
 
     _.forEach(parsedFileContents.features, function(feature) {
       content += '#' + feature.name + "\n";

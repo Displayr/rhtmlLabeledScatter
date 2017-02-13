@@ -48,9 +48,9 @@ You are free to throw descriptive errors via the `throw new Error("good descript
 
 If your widget has any state that needs to be persisted, you can extend the `RhtmlStatefulWidget` class. This is detailed below in the RhtmlStatefulWidget section.
 
-## `RhtmlStatefulWidget` - from [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses)
+## `RhtmlStatefulWidget` - from [rhtmlBaseClasses](https://github.com/Displayr/rhtmlBaseClasses)
 
-**Important Note** - the docs below are just a (potentially out of date) mirror of the docs in the [rhtmlBaseClasses](https://github.com/NumbersInternational/rhtmlBaseClasses) repo. You should check the docs in that repo.
+**Important Note** - the docs below are just a (potentially out of date) mirror of the docs in the [rhtmlBaseClasses](https://github.com/Displayr/rhtmlBaseClasses) repo. You should check the docs in that repo.
 
 If your widget has any state that needs to be persisted, you can extend the `RhtmlStatefulWidget` class. The `RhtmlStatefulWidget` defines an external API that users of your class can call to get and set state. It also defines internal methods that you can call to maintain widget state. Finally it requires that your class implement the function _redraw() to draw and redraw your widget.
 

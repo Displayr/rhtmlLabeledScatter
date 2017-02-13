@@ -4,7 +4,7 @@
 \alias{LabeledScatter}
 \title{rhtmlLabeledScatter HTML Widget}
 \source{
-https://github.com/NumbersInternational/rhtmlLabeledScatter
+https://github.com/Diplayr/rhtmlLabeledScatter
 }
 \usage{
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,

@@ -68,7 +68,7 @@
 #'
 #' @author Po Liu <po.liu@displayr.com>
 #'
-#' @source https://github.com/NumbersInternational/rhtmlLabeledScatter
+#' @source https://github.com/Displayr/rhtmlLabeledScatter
 #'
 #' @import htmlwidgets
 #'

@@ -3,7 +3,7 @@
 
 ## Overview
 
-(At least some of the) HTML Widgets written by Numbers International are maintained as coffeescript based nodejs projects that use gulp as a task manager. The twofold purpose(s) of these nodejs projects is to produce R HTMLWidget packages, and provide a framework for developing and testing the R htmlwidget pacakges. The [rhtmlTemplate](https://github.com/NumbersInternational/rhtmlTemplate) and [rhtmlPictographs](https://github.com/NumbersInternational/rhtmlPictographs) repositories are examples.
+(At least some of the) HTML Widgets written by Displayr are maintained as coffeescript based nodejs projects that use gulp as a task manager. The twofold purpose(s) of these nodejs projects is to produce R HTMLWidget packages, and provide a framework for developing and testing the R htmlwidget pacakges. The [rhtmlTemplate](https://github.com/Displayr/rhtmlTemplate) and [rhtmlPictographs](https://github.com/Displayr/rhtmlPictographs) repositories are examples.
 
 This document starts by listing the gulp `tasks` and why you would use them, then outlines the project structure and the purpose of each file. If this is all new to you you may want to start by jumping ahead to the `Terminology/Technology Breakdown` section, and then come back to the `gulp tasks` and `project structure` sections.
 

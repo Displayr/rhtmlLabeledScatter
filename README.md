@@ -4,7 +4,7 @@ An HTML widget that creates a labeled scatter plot
 # Installation in R
 
 1. `library(devtools)`
-1. `install_github('NumbersInternational/rhtmlLabeledScatter')`
+1. `install_github('Displayr/rhtmlLabeledScatter')`
 
 Simplest Example to verify installation:
 
@@ -61,7 +61,7 @@ print(LabeledScatter(X = coords[, 1],
     1. Tim note : Type enter when prompted for a passphrase when opening git shell
 1. Change directory to the place where you put git projects
     1. Tim note : Do not use a Dropbox synced directory. There will be 1000's of files created by `npm install` and your computer will catch fire
-1. type `git clone git@github.com:NumbersInternational/rhtmlLabeledScatter.git` ENTER
+1. type `git clone git@github.com:Displayr/rhtmlLabeledScatter.git` ENTER
 1. type `cd rhtmlLabeledScatter` ENTER
 1. type `npm install` ENTER
     1. `npm install` is noisy and will print several warnings about `UNMET` and `DEPRECATED`. Ignore these and only make note of errors. If it fails, try running it again.
@@ -114,7 +114,7 @@ See docs on the [htmlwidget_build_system](docs/htmlwidget_build_system.md) to un
 The [R file](theSrc/R/htmlwidget.R) has inline documentation that is compiled into an [Rd file](man/template.Rd). This documentation can be accessed from R using the following sequence:
 
 ```
-install_github("NumbersInternational/rhtmlTemplate")
+install_github("Displayr/rhtmlTemplate")
 library(rhtmlTemplate)
 help(template)
 ```

@@ -7,18 +7,18 @@ New widget time, excellent. It would be great if we had a [yeoman](http://yeoman
 1. Navigate to your projects directory
 1. Lets assume the new widget is called rhtmlNew
 1. Open (OSX) terminal / (Windows) git shell
-1. Create a clone of the rhtmlTemplate project by typing `git clone git@github.com:NumbersInternational/rhtmlTemplate.git`
+1. Create a clone of the rhtmlTemplate project by typing `git clone git@github.com:Displayr/rhtmlTemplate.git`
 1. The command above creates a directory called rhtmlTemplate. Rename the directory to rhtmlNew
 1. Change directory into the new directory. type `cd rhtmlNew` ENTER
 1. modify the `/.git/config` file using the editor and change the upsream origin to `rhtmlNew`. The `[remote "origin"]` should look like this:
 
 ```
     [remote "origin"]
-            url = git@github.com:NumbersInternational/rhtmlNew.git
+            url = git@github.com:Displayr/rhtmlNew.git
             fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 
-1. Go to github and create a new repository called `rhtmlNew` in the Numbers organization
+1. Go to github and create a new repository called `rhtmlNew` in the Displayr organization
 1. Push your new code to rhtmlNew master : `git push origin master`
 
 ## Project Customization
