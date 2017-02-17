@@ -2,9 +2,19 @@
 # Careful with alterations here as very old state types need to be defended against
 
 class State
-  constructor: (@stateObj, @stateChangedCallback) ->
+  constructor: (@stateObj, @stateChangedCallback, X, Y, label) ->
     if !(_.isObject(@stateObj))
       @stateObj = {}
+
+    # Check if given data has been reset compared with received state
+    storedX = if @isStoredInState('X') then @getStored('X') else []
+    storedY = if @isStoredInState('Y') then @getStored('Y') else []
+    storedLabel = if @isStoredInState('label') then @getStored('label') else []
+    unless _.isEqual(storedX, X) and _.isEqual(storedY, Y) and _.isEqual(storedLabel, label)
+      @stateObj = {}
+      @saveToState('X', X)
+      @saveToState('Y', Y)
+      @saveToState('label', label)
 
     @legendPts = if @isStoredInState('legendPts') then @getStored('legendPts') else []
     @userPositionedLabs = if @isStoredInState('userPositionedLabs') then @getStored('userPositionedLabs') else []

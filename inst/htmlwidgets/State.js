@@ -3,7 +3,8 @@ var State,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 State = (function() {
-  function State(stateObj, stateChangedCallback) {
+  function State(stateObj, stateChangedCallback, X, Y, label) {
+    var storedLabel, storedX, storedY;
     this.stateObj = stateObj;
     this.stateChangedCallback = stateChangedCallback;
     this.getUserPositionedLabIds = __bind(this.getUserPositionedLabIds, this);
@@ -18,6 +19,15 @@ State = (function() {
     this.isStoredInState = __bind(this.isStoredInState, this);
     if (!(_.isObject(this.stateObj))) {
       this.stateObj = {};
+    }
+    storedX = this.isStoredInState('X') ? this.getStored('X') : [];
+    storedY = this.isStoredInState('Y') ? this.getStored('Y') : [];
+    storedLabel = this.isStoredInState('label') ? this.getStored('label') : [];
+    if (!(_.isEqual(storedX, X) && _.isEqual(storedY, Y) && _.isEqual(storedLabel, label))) {
+      this.stateObj = {};
+      this.saveToState('X', X);
+      this.saveToState('Y', Y);
+      this.saveToState('label', label);
     }
     this.legendPts = this.isStoredInState('legendPts') ? this.getStored('legendPts') : [];
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : [];
