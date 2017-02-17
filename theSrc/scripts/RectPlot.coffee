@@ -1,7 +1,6 @@
 
 class RectPlot
-  constructor: (stateObj,
-                stateChangedCallback,
+  constructor: (@state,
                 @width,
                 @height,
                 @X,
@@ -64,8 +63,6 @@ class RectPlot
                 trendLinesPointSize = 2,
                 @plotBorderShow = true
   ) ->
-
-    @state = new State(stateObj, stateChangedCallback)
 
     @labelsFont =
       size:            labelsFontSize

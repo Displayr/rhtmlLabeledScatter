@@ -165,5 +165,5 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 A HTMLWidget that creates a labeled scatter plot.
 }
 \author{
-Po Liu <po.liu@numbers.net.au>
+Po Liu <po.liu@displayr.com>
 }

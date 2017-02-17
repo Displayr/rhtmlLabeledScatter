@@ -66,7 +66,7 @@
 #' @param trend.lines.point.size An integer to set the size of the data points when a trendline is drawn. This setting overrides Z sizes.
 #' @param plot.border.show Boolean toggle to show black border around plot area (Default is TRUE).
 #'
-#' @author Po Liu <po.liu@numbers.net.au>
+#' @author Po Liu <po.liu@displayr.com>
 #'
 #' @source https://github.com/Displayr/rhtmlLabeledScatter
 #'
