@@ -10,7 +10,9 @@ class State
     storedX = if @isStoredInState('X') then @getStored('X') else []
     storedY = if @isStoredInState('Y') then @getStored('Y') else []
     storedLabel = if @isStoredInState('label') then @getStored('label') else []
-    unless _.isEqual(storedX, X) and _.isEqual(storedY, Y) and _.isEqual(storedLabel, label)
+    unless _.isEqual(storedX, X) and
+           _.isEqual(storedY, Y) and
+           _.isEqual(storedLabel, label)
       @stateObj = {}
       @saveToState('X', X)
       @saveToState('Y', Y)
