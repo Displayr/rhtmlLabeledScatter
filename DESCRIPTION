@@ -2,10 +2,9 @@ Package: rhtmlLabeledScatter
 Type: Package
 Title: An HTML widget that creates a labeled scatter plot.
 Version: 0.1.0
-Date: 2016-05-09
-Authors@R: person("Po", "Liu", email = "pliu0771@uni.sydney.edu.au", role = c("aut", "cre"))
-Maintainer: Po Liu <pliu0771@uni.sydney.edu.au>
+Author: Displayr <opensource@displayr.com>
+Maintainer: Displayr <opensource@displayr.com>
 Description: An HTML widget that creates a labeled scatter plot.
-License: Numbers International Pty Ltd
+License: GPL-3
 LazyData: TRUE
 RoxygenNote: 6.0.0
