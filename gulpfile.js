@@ -1,24 +1,37 @@
-'use strict';
-
 const gulp = require('gulp');
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs-extra'));
+const _ = require('lodash');
+const fs = require('fs-extra');
+const opn = require('opn');
+const runSequence = require('run-sequence');
+const widgetConfig = require('./build/config/widget.config.json');
 
-fs.readdirSync('./build/tasks').filter(function(file) {
-    return (/\.js$/i).test(file);
-}).map(function(file) {
-    require(`./build/tasks/${file}`);
+if (!_.has(gulp, 'context')) {
+  gulp.context = {
+    widgetName: widgetConfig.widgetName,
+  };
+} else {
+  console.error('Unexpected build failure. gulp already has a context.');
+  process.exit(1);
+}
+
+fs.readdirSync('./build/tasks').filter(function (file) {
+  return (/\.js$/i).test(file);
+}).map(function (file) {
+  /* eslint-disable global-require */
+  return require(`./build/tasks/${file}`);
+  /* eslint-enable global-require */
 });
 
 gulp.task('default', function () {
   gulp.start('build');
 });
 
-gulp.task('core', ['compile-coffee', 'less', 'copy', 'buildContentManifest']);
-gulp.task('build', ['core', 'makeDocs', 'makeExample']);
-
-gulp.task('serve', ['connect', 'watch'], function () {
-  require('opn')('http://localhost:9000');
+gulp.task('build', function (done) {
+  runSequence('clean', 'core', ['makeDocs', 'makeExample'], done);
 });
 
+gulp.task('core', ['compile-coffee', 'less', 'copy', 'buildContentManifest']);
 
+gulp.task('serve', ['connect', 'watch'], function () {
+  opn('http://localhost:9000');
+});
