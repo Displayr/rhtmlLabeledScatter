@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const widgetName = require('../config/widget.config.json').widgetName;
-const contentManifest = require('../../browser/internal_www/content/contentManifest.json');
+const contentManifest = require('../../browser/content/contentManifest.json');
 
 // NB global.visualDiffConfig is set globally in protractor.conf.js
 const eyes = require('./initializeApplitools').getEyes(global.visualDiffConfig);
@@ -25,12 +25,6 @@ describe('Take visual regression snapshots', function () {
   _.forEach(contentFiles, (contentPath) => {
     it(`Capturing ${contentPath} visual regression content`, function (done) {
       let openedEyes = false;
-
-      loadPage()
-        .then(conditionallyOpenEyesAndWaitForSnapshotsToLoad)
-        .then(takeSnapshots)
-        .catch(catchAll)
-        .finally(conditionallyCloseEyesAndEndTest);
 
       function loadPage() {
         return browser.get(contentPath).then(() => {
@@ -87,6 +81,12 @@ describe('Take visual regression snapshots', function () {
         if (openedEyes) { eyes.close(false); }
         done();
       }
+
+      loadPage()
+        .then(conditionallyOpenEyesAndWaitForSnapshotsToLoad)
+        .then(takeSnapshots)
+        .catch(catchAll)
+        .finally(conditionallyCloseEyesAndEndTest);
     });
   });
 });

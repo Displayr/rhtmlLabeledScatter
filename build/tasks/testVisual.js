@@ -18,17 +18,17 @@ function runProtractor(done) {
   }
 
   gulp.src(['build/scripts/testVisual.js', 'theSrc/visualRegression/*.js'])
-        .pipe($.protractor.protractor({
-          configFile: path.join(__dirname, '../config/protractor.conf.js'),
-          args,
-        }))
-        .on('error', function (err) {
-          throw err;
-        })
-        .on('end', function () {
-          done();
-        })
-        .pipe($.exit());
+    .pipe($.protractor.protractor({
+      configFile: path.join(__dirname, '../config/protractor.conf.js'),
+      args,
+    }))
+    .on('error', function (err) {
+      throw err;
+    })
+    .on('end', function () {
+      done();
+    })
+    .pipe($.exit());
 }
 
 gulp.task('testVisual', ['webdriverUpdate', 'connect'], runProtractor);

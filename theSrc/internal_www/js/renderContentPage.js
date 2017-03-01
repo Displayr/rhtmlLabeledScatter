@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 // TEMPLATE : you will need to import your widget here
-import Template from '../../scripts/Template';
+import Template from '../../internal_www/scripts/Template';
 
 let exampleCounter = 0;
 

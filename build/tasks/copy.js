@@ -3,7 +3,8 @@ const rename = require('gulp-rename');
 
 gulp.task('copy', function () {
   gulp.src([
-    'theSrc/**/*.html',
+    'theSrc/internal_www/**/*.html',
+    'theSrc/internal_www/**/*.css',
   ], {}).pipe(gulp.dest('browser'));
 
   gulp.src([

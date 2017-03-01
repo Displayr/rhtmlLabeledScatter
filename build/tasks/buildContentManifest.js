@@ -20,5 +20,5 @@ function stringSrc(filename, string) {
 gulp.task('buildContentManifest', function () {
   const contentManifest = buildContentManifest();
   return stringSrc('contentManifest.json', JSON.stringify(contentManifest, {}, 2))
-        .pipe(gulp.dest('browser/internal_www/content'));
+        .pipe(gulp.dest('browser/content'));
 });

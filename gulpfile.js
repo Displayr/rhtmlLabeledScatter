@@ -32,6 +32,6 @@ gulp.task('build', function (done) {
 
 gulp.task('core', ['compile-coffee', 'less', 'copy', 'buildContentManifest']);
 
-gulp.task('serve', ['connect', 'watch'], function () {
+gulp.task('serve', ['core', 'compileRenderIndexPage', 'connect', 'watch'], function () {
   opn('http://localhost:9000');
 });
