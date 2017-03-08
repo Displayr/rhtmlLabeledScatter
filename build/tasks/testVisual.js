@@ -6,29 +6,29 @@ const cliArgs = require('yargs').argv;
 gulp.task('webdriverUpdate', $.protractor.webdriver_update);
 
 function runProtractor(done) {
-    const args = [];
-    if (cliArgs.testLabel) {
-        args.push(`--params.testLabel=${cliArgs.testLabel}`);
-    } else {
-        args.push('--params.testLabel=Default');
-    }
+  const args = [];
+  if (cliArgs.testLabel) {
+    args.push(`--params.testLabel=${cliArgs.testLabel}`);
+  } else {
+    args.push('--params.testLabel=Default');
+  }
 
-    if (cliArgs.specFilter) {
-        args.push(`--params.specFilter=${cliArgs.specFilter}`);
-    }
+  if (cliArgs.specFilter) {
+    args.push(`--params.specFilter=${cliArgs.specFilter}`);
+  }
 
-    gulp.src(['build/scripts/testVisual.js', 'theSrc/visualRegression/*.js'])
-        .pipe($.protractor.protractor({
-            configFile: path.join(__dirname, '../config/protractor.conf.js'),
-            args,
-        }))
-        .on('error', function (err) {
-            throw err;
-        })
-        .on('end', function () {
-            done();
-        })
-        .pipe($.exit());
+  gulp.src(['build/scripts/testVisual.js', 'theSrc/visualRegression/*.js'])
+    .pipe($.protractor.protractor({
+      configFile: path.join(__dirname, '../config/protractor.conf.js'),
+      args,
+    }))
+    .on('error', function (err) {
+      throw err;
+    })
+    .on('end', function () {
+      done();
+    })
+    .pipe($.exit());
 }
 
 gulp.task('testVisual', ['webdriverUpdate', 'connect'], runProtractor);

@@ -4,7 +4,7 @@
 \alias{LabeledScatter}
 \title{rhtmlLabeledScatter HTML Widget}
 \source{
-https://github.com/Diplayr/rhtmlLabeledScatter
+https://github.com/Displayr/rhtmlLabeledScatter
 }
 \usage{
 LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
@@ -167,3 +167,4 @@ A HTMLWidget that creates a labeled scatter plot.
 \author{
 Po Liu <po.liu@displayr.com>
 }
+
