@@ -13,8 +13,7 @@
   <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-<!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
-
+<a href="/">Back To Index</a>
 
 <section>
   <h2>Scatter plot showing origin lines</h2>
@@ -22,6 +21,7 @@
   <div class="scatterplot6" snapshot-name='rhtmlLabeledScatter-scatterplot-6'></div>
   <script>
       myWidgetDefinition = null;
+      let initialState = {};
 
       // This is a stub that will capture the widget definition,
       // so that we can use it once the page finishes loading
@@ -36,7 +36,7 @@
           console.log("Document ready.");
 
           myWidgetInstance6 = myWidgetDefinition.factory($('.scatterplot6')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance6.renderValue(testData6, {}, myWidgetInstance6);
+          myWidgetInstance6.renderValue(testData6, initialState);
 
       });
   </script>
@@ -51,7 +51,7 @@
           console.log("Document ready.");
 
           myWidgetInstance7 = myWidgetDefinition.factory($('.scatterplot7')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance7.renderValue(testData7, {}, myWidgetInstance7);
+          myWidgetInstance7.renderValue(testData7, initialState);
 
       });
   </script>
@@ -66,7 +66,7 @@
           console.log("Document ready.");
 
           myWidgetInstance8 = myWidgetDefinition.factory($('.scatterplot8')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance8.renderValue(testData8, {}, myWidgetInstance8);
+          myWidgetInstance8.renderValue(testData8, initialState);
 
       });
   </script>
@@ -81,13 +81,13 @@
           console.log("Document ready.");
 
           myWidgetInstance9 = myWidgetDefinition.factory($('.scatterplot9')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance9.renderValue(testData9, {}, myWidgetInstance9);
+          myWidgetInstance9.renderValue(testData9, initialState);
 
       });
   </script>
 </section>
 
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
+
 
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>

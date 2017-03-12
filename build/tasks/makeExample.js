@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const generateR = require('../generateExamplesInR.js');
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs-extra'));
+const bluebird = require('bluebird');
+const fs = bluebird.promisifyAll(require('fs-extra'));
 
 gulp.task('makeExample', function (done) {
   fs.mkdirpAsync('examples')

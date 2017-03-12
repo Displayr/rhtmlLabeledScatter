@@ -1,6 +1,4 @@
 {
-  "widgetClassFile": "theSrc/scripts/Template.js",
-  "widgetEntryPoint": "browser/rhtmlLabeledScatter.js",
   "widgetName": "rhtmlLabeledScatter",
   "rFunction": "rhtmlLabeledScatter::LabeledScatter"
 }

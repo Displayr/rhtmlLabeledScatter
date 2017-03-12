@@ -49,10 +49,6 @@ class LabeledScatter
 
     if data.X? and data.Y?
       @data = data
-    else # For debuggning in browser
-#       @data = bubble1
-      @data = testData
-#      @data = trendData1
 
     console.log "rhtmlLabeledScatter: received state"
     console.log state
