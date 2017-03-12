@@ -54,8 +54,6 @@ LabeledScatter = (function() {
     svg = d3.select(el).append('svg').attr('width', this.width).attr('height', this.height).attr('class', 'plot-container');
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
-    } else {
-      this.data = testData;
     }
     console.log("rhtmlLabeledScatter: received state");
     console.log(state);

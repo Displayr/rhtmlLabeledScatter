@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
+  <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+
+  <!--Scripts below used by rhtmlLabeledScatter-->
+  <script src="../../internal_www/external/lodash.min.js"></script>
+  <script src="../../internal_www/external/jquery.min.js"></script>
+  <script src="../../internal_www/external/d3.min.js"></script>
+  <script src="../../internal_www/external/random.min.js"></script>
+  <script src="../../internal_www/external/bignumber.min.js"></script>
+</head>
+<body>
+<a href="/">Back To Index</a>
+<section>
+  <h2>Full scatter plot</h2>
+  <div class="scatterplot" style="display:inline-block"></div>
+  <script>
+
+    window.stateUpdates = [];
+    // This is a stub that will capture the widget definition,
+    // so that we can use it once the page finishes loading
+    HTMLWidgets = {
+      widget: function(widgetDefinition) {
+        console.log("widget create called!");
+        myWidgetDefinition = widgetDefinition;
+      }
+    };
+
+    const stateChangedCallback = (newState) => {
+      console.log('fake callback called');
+      console.log(JSON.stringify(newState, {}, 2));
+      window.stateUpdates.push(_.clone(newState));
+    };
+
+    function getUrlVars() {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++)
+      {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }
+
+    $(document).ready( function() {
+
+      const urlVars = getUrlVars();
+
+      const configName = urlVars.config;
+      const stateName = urlVars.state;
+      const width = urlVars.width || window.innerWidth;
+      const height = urlVars.height || window.innerHeight;
+
+      if (_.isNaN(width)) { throw new Error(`Invalid width: '${width}'`); }
+      if (_.isNaN(height)) { throw new Error(`Invalid height: '${height}'`); }
+
+      if (!configName) { throw new Error('must provide config path via query parameter'); }
+
+      const configPromise = new Promise( (resolve, reject) => {
+        $.ajax(`/internal_www/scripts/data/${configName}/config.json`).done(resolve).error(reject);
+      }).catch((error) => {
+        $('.scatterplot').append( $('<div style="color:red;font-weight:bold">').html(`Could not fetch config from /internal_www/scripts/data/${configName}/config.json. Check the path and try again.`));
+        return Promise.reject(error);
+      });
+
+      const statePromise = new Promise( (resolve, reject) => {
+        if (!stateName) { return resolve({}); }
+        $.ajax(`/internal_www/scripts/data/${configName}/${stateName}.json`).done(resolve).error(reject);
+      }).catch((error) => {
+        $('.scatterplot').append( $('<div style="color:red;font-weight:bold">').html(`Could not fetch config from /internal_www/scripts/data/${configName}/${stateName}.json. Check the path and try again.`));
+        return Promise.reject(error);
+      });
+
+      Promise.all([configPromise, statePromise]).then(([config, state]) => {
+        console.log("loading widget with config");
+        console.log(config);
+
+        console.log("loading widget with state");
+        console.log(state);
+
+        const widgetInstance = myWidgetDefinition.factory($('.scatterplot')[0], width, height, stateChangedCallback);
+        widgetInstance.renderValue(config, state);
+      });
+    });
+  </script>
+</section>
+
+<script src="../../internal_www/scripts/PlotColors.js"></script>
+<script src="../../internal_www/scripts/State.js"></script>
+<script src="../../internal_www/scripts/rhtmlLabeledScatter.js"></script>
+<script src="../../internal_www/scripts/LabeledScatter.js"></script>
+<script src="../../internal_www/scripts/PlotData.js"></script>
+<script src="../../internal_www/scripts/RectPlot.js"></script>
+<script src="../../internal_www/scripts/Links.js"></script>
+<script src="../../internal_www/scripts/PlotLabel.js"></script>
+<script src="../../internal_www/scripts/TrendLine.js"></script>
+<script src="../../internal_www/scripts/DisplayError.js"></script>
+<script src="../../internal_www/scripts/utils/LegendUtils.js"></script>
+<script src="../../internal_www/scripts/utils/DragUtils.js"></script>
+<script src="../../internal_www/scripts/utils/SvgUtils.js"></script>
+<script src="../../internal_www/scripts/utils/AxisUtils.js"></script>
+<script src="../../internal_www/scripts/utils/Utils.js"></script>
+<script src="../../internal_www/scripts/lib/labeler.js"></script>
+</body>
+</html>

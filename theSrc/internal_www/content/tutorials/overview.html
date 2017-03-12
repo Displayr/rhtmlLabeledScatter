@@ -11,8 +11,6 @@
   <script src="../../internal_www/external/random.min.js"></script>
   <script src="../../internal_www/external/bluebird.min.js"></script>
   <script src="../../internal_www/external/bignumber.min.js"></script>
-
-
 </head>
 <body>
 <!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
@@ -28,65 +26,27 @@
 
 <section>
   <h2>Basic scatter plot</h2>
-  <div class="basic-scatterplot" snapshot-name='rhtmlLabeledScatter-basic-scatterplot'></div>
-  <script>
-      myWidgetDefinition = null;
-      myWidgetInstance = null;
-      container = $('.basic-scatterplot')[0];
-
-      // This is a stub that will capture the widget definition,
-      // so that we can use it once the page finishes loading
-      HTMLWidgets = {
-          widget: function(widgetDefinition) {
-              console.log("widget create called!");
-              myWidgetDefinition = widgetDefinition;
-          }
-      };
-
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance = myWidgetDefinition.factory(container, window.innerWidth, window.innerHeight);
-          myWidgetInstance.renderValue(testData, {}, myWidgetInstance);
-
-      });
-  </script>
+  <div class="basic-scatterplot" snapshot-name='basic-scatterplot'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData1"></div>
+  </div>
 </section>
 
 <section>
   <h2>Busy scatter plot</h2>
-  <div class="busy-scatterplot" snapshot-name='rhtmlLabeledScatter-busy-scatterplot'></div>
-  <script>
-    $(document).ready( function() {
-      console.log("Document ready.");
-
-      myWidgetInstance3 = myWidgetDefinition.factory($('.busy-scatterplot')[0], window.innerWidth, window.innerHeight);
-      myWidgetInstance3.renderValue(testData4, {}, myWidgetInstance3);
-
-    });
-  </script>
+  <div class="busy-scatterplot" snapshot-name='busy-scatterplot'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData4"></div>
+  </div>
 </section>
 
 <section>
   <h2>Scatter plot with SVGs</h2>
-  <div class="scatterplot2" snapshot-name='rhtmlLabeledScatter-scatterplot-2'></div>
-  <script>
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance2 = myWidgetDefinition.factory($('.scatterplot2')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance2.renderValue(testData2, {}, myWidgetInstance2);
-
-      });
-  </script>
+  <div class="scatterplot2" snapshot-name='scatterplot-2'>
+    <div class="example" data-width="1800" data-height="900" data-config="cola_plots_with_labels"></div>
+  </div>
 </section>
-
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
-
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>
 <script src="../../internal_www/scripts/State.js"></script>
-<script src="../../internal_www/scripts/rhtmlLabeledScatter.js"></script>
 <script src="../../internal_www/scripts/LabeledScatter.js"></script>
 <script src="../../internal_www/scripts/PlotData.js"></script>
 <script src="../../internal_www/scripts/RectPlot.js"></script>
@@ -99,22 +59,9 @@
 <script src="../../internal_www/scripts/utils/SvgUtils.js"></script>
 <script src="../../internal_www/scripts/utils/AxisUtils.js"></script>
 <script src="../../internal_www/scripts/utils/Utils.js"></script>
-<script src="../../internal_www/scripts/data/testData.js"></script>
-<script src="../../internal_www/scripts/data/testData2.js"></script>
-<script src="../../internal_www/scripts/data/testData3.js"></script>
-<script src="../../internal_www/scripts/data/testData4.js"></script>
-<script src="../../internal_www/scripts/data/testData5.js"></script>
-<script src="../../internal_www/scripts/data/testData6.js"></script>
-<script src="../../internal_www/scripts/data/testData7.js"></script>
-<script src="../../internal_www/scripts/data/testData8.js"></script>
-<script src="../../internal_www/scripts/data/testData9.js"></script>
-<script src="../../internal_www/scripts/data/testData10.js"></script>
-<script src="../../internal_www/scripts/data/testData11.js"></script>
-<script src="../../internal_www/scripts/data/testData12.js"></script>
-<script src="../../internal_www/scripts/data/testData13.js"></script>
-<script src="../../internal_www/scripts/data/trendData1.js"></script>
-<script src="../../internal_www/scripts/data/trendData2.js"></script>
 <script src="../../internal_www/scripts/lib/labeler.js"></script>
+<script src="../../internal_www/scripts/lib/labeler.js"></script>
+<script src="/js/renderContentPage.js"></script>
 
 </body>
 </html>
