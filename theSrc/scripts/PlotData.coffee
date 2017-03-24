@@ -94,24 +94,49 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
-      factor = Math.abs(rangeX - rangeY)/2
+      factorRange = Math.abs(rangeX - rangeY)/2
+
       if rangeX > rangeY
-        @maxY += factor
-        @minY -= factor
+        @maxY += factorRange
+        @minY -= factorRange
       else if rangeX < rangeY
-        @maxX += factor
-        @minX -= factor
+        @maxX += factorRange
+        @minX -= factorRange
+
 
       if @viewBoxDim.width > @viewBoxDim.height
-        rangeX = @maxX-@minX
-        factor = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
-        @maxX += rangeX*factor
-        @minX -= rangeX*factor
+        factorWidget = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
+
+        if rangeX > rangeY
+          factorDiff = factorWidget - factorRange
+
+          if factorDiff > 0
+            @maxY -= factorRange
+            @minY += factorRange
+            @maxX += rangeX*factorDiff
+            @minX -= rangeX*factorDiff
+          else
+            @maxY -= (factorRange - Math.abs(factorDiff))
+            @minY += (factorRange - Math.abs(factorDiff))
+
+        else
+          @maxX += rangeX*factorWidget
+          @minX -= rangeX*factorWidget
+
+
       else if @viewBoxDim.width < @viewBoxDim.height
-        rangeY = (@maxY-@minY)
-        factor = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
-        @maxY += rangeY*factor
-        @minY -= rangeY*factor
+        factorWidget = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
+
+        if rangeX < rangeY
+          factorDiff = factorWidget - factorRange
+          @maxX -= factorRange
+          @minX += factorRange
+          @maxY += rangeY*factorDiff
+          @minY -= rangeY*factorDiff
+        else
+          @maxY += rangeY*factorWidget
+          @minY -= rangeY*factorWidget
+
 
     # If user has sent x and y boundaries, these hold higher priority
     @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)

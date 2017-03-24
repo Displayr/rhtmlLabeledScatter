@@ -54,6 +54,20 @@
 </section>
 
 <section>
+  <h2>Busy scatter plot</h2>
+  <div class="busy-scatterplot" snapshot-name='rhtmlLabeledScatter-busy-scatterplot'></div>
+  <script>
+    $(document).ready( function() {
+      console.log("Document ready.");
+
+      myWidgetInstance3 = myWidgetDefinition.factory($('.busy-scatterplot')[0], window.innerWidth, window.innerHeight);
+      myWidgetInstance3.renderValue(testData4, {}, myWidgetInstance3);
+
+    });
+  </script>
+</section>
+
+<section>
   <h2>Scatter plot with SVGs</h2>
   <div class="scatterplot2" snapshot-name='rhtmlLabeledScatter-scatterplot-2'></div>
   <script>
