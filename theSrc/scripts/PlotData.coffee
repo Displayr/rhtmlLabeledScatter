@@ -96,14 +96,6 @@ class PlotData
       rangeY = @maxY - @minY
       factorRange = Math.abs(rangeX - rangeY)/2
 
-      if rangeX > rangeY
-        @maxY += factorRange
-        @minY -= factorRange
-      else if rangeX < rangeY
-        @maxX += factorRange
-        @minX -= factorRange
-
-
       if @viewBoxDim.width > @viewBoxDim.height
         factorWidget = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
 
@@ -111,17 +103,15 @@ class PlotData
           factorDiff = factorWidget - factorRange
 
           if factorDiff > 0
-            @maxY -= factorRange
-            @minY += factorRange
             @maxX += rangeX*factorDiff
             @minX -= rangeX*factorDiff
           else
-            @maxY -= (factorRange - Math.abs(factorDiff))
-            @minY += (factorRange - Math.abs(factorDiff))
+            @maxY += Math.abs(factorDiff)
+            @minY -= Math.abs(factorDiff)
 
         else
-          @maxX += rangeX*factorWidget
-          @minX -= rangeX*factorWidget
+          @maxX += rangeX*(factorRange + factorWidget)
+          @minX -= rangeX*(factorRange + factorWidget)
 
 
       else if @viewBoxDim.width < @viewBoxDim.height
@@ -129,13 +119,16 @@ class PlotData
 
         if rangeX < rangeY
           factorDiff = factorWidget - factorRange
-          @maxX -= factorRange
-          @minX += factorRange
-          @maxY += rangeY*factorDiff
-          @minY -= rangeY*factorDiff
+
+          if factorDiff > 0
+            @maxY += rangeY*factorDiff
+            @minY -= rangeY*factorDiff
+          else
+            @maxX += Math.abs(factorDiff)
+            @minX -= Math.abs(factorDiff)
         else
-          @maxY += rangeY*factorWidget
-          @minY -= rangeY*factorWidget
+          @maxY += rangeY*(factorRange + factorWidget)
+          @minY -= rangeY*(factorRange + factorWidget)
 
 
     # If user has sent x and y boundaries, these hold higher priority

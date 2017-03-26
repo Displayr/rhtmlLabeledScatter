@@ -110,41 +110,35 @@ PlotData = (function() {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
       factorRange = Math.abs(rangeX - rangeY) / 2;
-      if (rangeX > rangeY) {
-        this.maxY += factorRange;
-        this.minY -= factorRange;
-      } else if (rangeX < rangeY) {
-        this.maxX += factorRange;
-        this.minX -= factorRange;
-      }
       if (this.viewBoxDim.width > this.viewBoxDim.height) {
         factorWidget = (this.viewBoxDim.width / this.viewBoxDim.height - 1) / 2;
         if (rangeX > rangeY) {
           factorDiff = factorWidget - factorRange;
           if (factorDiff > 0) {
-            this.maxY -= factorRange;
-            this.minY += factorRange;
             this.maxX += rangeX * factorDiff;
             this.minX -= rangeX * factorDiff;
           } else {
-            this.maxY -= factorRange - Math.abs(factorDiff);
-            this.minY += factorRange - Math.abs(factorDiff);
+            this.maxY += Math.abs(factorDiff);
+            this.minY -= Math.abs(factorDiff);
           }
         } else {
-          this.maxX += rangeX * factorWidget;
-          this.minX -= rangeX * factorWidget;
+          this.maxX += rangeX * (factorRange + factorWidget);
+          this.minX -= rangeX * (factorRange + factorWidget);
         }
       } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
         factorWidget = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
         if (rangeX < rangeY) {
           factorDiff = factorWidget - factorRange;
-          this.maxX -= factorRange;
-          this.minX += factorRange;
-          this.maxY += rangeY * factorDiff;
-          this.minY -= rangeY * factorDiff;
+          if (factorDiff > 0) {
+            this.maxY += rangeY * factorDiff;
+            this.minY -= rangeY * factorDiff;
+          } else {
+            this.maxX += Math.abs(factorDiff);
+            this.minX -= Math.abs(factorDiff);
+          }
         } else {
-          this.maxY += rangeY * factorWidget;
-          this.minY -= rangeY * factorWidget;
+          this.maxY += rangeY * (factorRange + factorWidget);
+          this.minY -= rangeY * (factorRange + factorWidget);
         }
       }
     }
