@@ -42,8 +42,7 @@ DisplayError = (function() {
       errorContainer.append(errorImage);
       errorContainer.append(errorText);
       $(svg).empty();
-      $(svg).append(errorContainer);
-      throw new Error(msg);
+      return $(svg).append(errorContainer);
     };
 
     Err.prototype.getErrorImgUrl = function() {

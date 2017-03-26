@@ -58,13 +58,11 @@ class LabeledScatter
     console.log state
 
     # Error checking
-#    DisplayError.get().checkIfArrayOfNums(@data.X, el, 'Given X value is not an array of numbers')
-#    DisplayError.get().checkIfArrayOfNums(@data.Y, el, 'Given Y value is not an array of numbers')
-    console.log 'rhtmlLabeledScatter: error check done' 
+    DisplayError.get().checkIfArrayOfNums(@data.X, el, 'Given X value is not an array of numbers')
+    DisplayError.get().checkIfArrayOfNums(@data.Y, el, 'Given Y value is not an array of numbers')
 
     stateObj = new State(state, @stateChangedCallback, @data.X, @data.Y, @data.label)
 
-    console.log 'rhtmlLabeledScatter: new rectplot'
     @plot = new RectPlot(stateObj,
                         @width,
                         @height,
