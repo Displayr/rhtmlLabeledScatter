@@ -121,9 +121,12 @@ PlotData = (function() {
             this.maxY += Math.abs(factorDiff);
             this.minY -= Math.abs(factorDiff);
           }
-        } else {
-          this.maxX += rangeX * (factorRange + factorWidget);
-          this.minX -= rangeX * (factorRange + factorWidget);
+        } else if (rangeX < rangeY) {
+          this.maxX += factorRange;
+          this.minX -= factorRange;
+          rangeX = this.maxX - this.minX;
+          this.maxX += rangeX * factorWidget;
+          this.minX -= rangeX * factorWidget;
         }
       } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
         factorWidget = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
@@ -136,9 +139,12 @@ PlotData = (function() {
             this.maxX += Math.abs(factorDiff);
             this.minX -= Math.abs(factorDiff);
           }
-        } else {
-          this.maxY += rangeY * (factorRange + factorWidget);
-          this.minY -= rangeY * (factorRange + factorWidget);
+        } else if (rangeX > rangeY) {
+          this.maxY += factorRange;
+          this.minY -= factorRange;
+          rangeY = this.maxY - this.minY;
+          this.maxY += rangeY * factorWidget;
+          this.minY -= rangeY * factorWidget;
         }
       }
     }
