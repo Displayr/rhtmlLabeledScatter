@@ -69,7 +69,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calculateMinMax = function() {
-    var factor, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres;
+    var factorDiff, factorRange, factorWidget, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres;
     this.minXold = this.minX;
     this.maxXold = this.maxX;
     this.minYold = this.minY;
@@ -109,24 +109,43 @@ PlotData = (function() {
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
-      factor = Math.abs(rangeX - rangeY) / 2;
-      if (rangeX > rangeY) {
-        this.maxY += factor;
-        this.minY -= factor;
-      } else if (rangeX < rangeY) {
-        this.maxX += factor;
-        this.minX -= factor;
-      }
+      factorRange = Math.abs(rangeX - rangeY) / 2;
       if (this.viewBoxDim.width > this.viewBoxDim.height) {
-        rangeX = this.maxX - this.minX;
-        factor = (this.viewBoxDim.width / this.viewBoxDim.height - 1) / 2;
-        this.maxX += rangeX * factor;
-        this.minX -= rangeX * factor;
+        factorWidget = (this.viewBoxDim.width / this.viewBoxDim.height - 1) / 2;
+        if (rangeX > rangeY) {
+          factorDiff = factorWidget - factorRange;
+          if (factorDiff > 0) {
+            this.maxX += rangeX * factorDiff;
+            this.minX -= rangeX * factorDiff;
+          } else {
+            this.maxY += Math.abs(factorDiff);
+            this.minY -= Math.abs(factorDiff);
+          }
+        } else if (rangeX < rangeY) {
+          this.maxX += factorRange;
+          this.minX -= factorRange;
+          rangeX = this.maxX - this.minX;
+          this.maxX += rangeX * factorWidget;
+          this.minX -= rangeX * factorWidget;
+        }
       } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
-        rangeY = this.maxY - this.minY;
-        factor = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
-        this.maxY += rangeY * factor;
-        this.minY -= rangeY * factor;
+        factorWidget = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
+        if (rangeX < rangeY) {
+          factorDiff = factorWidget - factorRange;
+          if (factorDiff > 0) {
+            this.maxY += rangeY * factorDiff;
+            this.minY -= rangeY * factorDiff;
+          } else {
+            this.maxX += Math.abs(factorDiff);
+            this.minX -= Math.abs(factorDiff);
+          }
+        } else if (rangeX > rangeY) {
+          this.maxY += factorRange;
+          this.minY -= factorRange;
+          rangeY = this.maxY - this.minY;
+          this.maxY += rangeY * factorWidget;
+          this.minY -= rangeY * factorWidget;
+        }
       }
     }
     if (Utils.get().isNum(this.bounds.xmax)) {

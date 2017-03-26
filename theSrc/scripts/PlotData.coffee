@@ -94,24 +94,49 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
-      factor = Math.abs(rangeX - rangeY)/2
-      if rangeX > rangeY
-        @maxY += factor
-        @minY -= factor
-      else if rangeX < rangeY
-        @maxX += factor
-        @minX -= factor
+      factorRange = Math.abs(rangeX - rangeY)/2
 
       if @viewBoxDim.width > @viewBoxDim.height
-        rangeX = @maxX-@minX
-        factor = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
-        @maxX += rangeX*factor
-        @minX -= rangeX*factor
+        factorWidget = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
+
+        if rangeX > rangeY
+          factorDiff = factorWidget - factorRange
+
+          if factorDiff > 0
+            @maxX += rangeX*factorDiff
+            @minX -= rangeX*factorDiff
+          else
+            @maxY += Math.abs(factorDiff)
+            @minY -= Math.abs(factorDiff)
+
+        else if rangeX < rangeY
+          @maxX += factorRange
+          @minX -= factorRange
+          rangeX = @maxX - @minX
+          @maxX += rangeX*factorWidget
+          @minX -= rangeX*factorWidget
+
+
       else if @viewBoxDim.width < @viewBoxDim.height
-        rangeY = (@maxY-@minY)
-        factor = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
-        @maxY += rangeY*factor
-        @minY -= rangeY*factor
+        factorWidget = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
+
+        if rangeX < rangeY
+          factorDiff = factorWidget - factorRange
+
+          if factorDiff > 0
+            @maxY += rangeY*factorDiff
+            @minY -= rangeY*factorDiff
+          else
+            @maxX += Math.abs(factorDiff)
+            @minX -= Math.abs(factorDiff)
+
+        else if rangeX > rangeY
+          @maxY += factorRange
+          @minY -= factorRange
+          rangeY = @maxY - @minY
+          @maxY += rangeY*factorWidget
+          @minY -= rangeY*factorWidget
+
 
     # If user has sent x and y boundaries, these hold higher priority
     @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)

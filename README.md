@@ -190,6 +190,75 @@ y.title.font.size = 16,
 x.title.font.size = 16)
 ```
 
+Fixed aspect ratio example:
+```
+library(rhtmlLabeledScatter)
+ 
+X <- structure(c(-0.432905868184257, -0.693333270946253, -0.759205446468168,
+0.365804297093451, -0.0809446140374646, 0.485215412599398, -0.221894905796498,
+0.420002156905969, 0.21825659158202, -0.134771028445111, 0.133565377235242,
+-0.0750160438174591, 0.127601145997133, -0.249727663633664, 0.543745260097428,
+-1.18852527816253, 0.739928412895668, -0.228348435358677, 0.3317570110704,
+0.629290842341913, 0.411488471989772, -0.600882653660674, 0.374423391820461,
+0.42699632374155, 0.234078846118916, -0.273672896492856, -0.810474419247493
+), .Names = c("AAPT/Cellular One", "New Tel", "One-tel", "Optus",
+"Orange (Hutchison)", "Telstra (Mobile Net)", "Virgin Mobile",
+"Vodafone", "Bureaucratic", "Slow service", "Friendly", "Low prices",
+"Fashionable", "Unfashionable", "Reliable", "Here today, gone tomorrow",
+"Good coverage", "Network often down", "The best phones", "Conveniently located stores",
+"High prices", "Unreliable", "Meet all my communication needs",
+"Leaders in mobile phone technology", "I like them", "I hate them",
+"Don't know much about them"))
+ 
+Y <- structure(c(-0.196774100144866, -0.0809771977755882, 0.445169068736481,
+-0.017959017172487, -0.219998595306152, 0.281132046825253, -0.377854432575485,
+-0.122436041939718, 0.266697343245676, 0.109247603851489, -0.290633123889276,
+-0.343742241256154, -0.395197456128867, 0.106216380764122, 0.114825455485268,
+0.566580664016157, 0.26687534732185, -0.0394092244494879, -0.0873099302299906,
+0.0471460218946446, 0.278105188886833, 0.242649731911665, 0.0027300385224323,
+0.035858164179279, -0.155592787664005, 0.0391250477465646, -0.488239535858155
+), .Names = c("AAPT/Cellular One", "New Tel", "One-tel", "Optus",
+"Orange (Hutchison)", "Telstra (Mobile Net)", "Virgin Mobile",
+"Vodafone", "Bureaucratic", "Slow service", "Friendly", "Low prices",
+"Fashionable", "Unfashionable", "Reliable", "Here today, gone tomorrow",
+"Good coverage", "Network often down", "The best phones", "Conveniently located stores",
+"High prices", "Unreliable", "Meet all my communication needs",
+"Leaders in mobile phone technology", "I like them", "I hate them",
+"Don't know much about them"))
+ 
+label <- c("AAPT/Cellular One", "New Tel", "One-tel", "Optus", "Orange (Hutchison)",
+"Telstra (Mobile Net)", "Virgin Mobile", "Vodafone", "Bureaucratic",
+"Slow service", "Friendly", "Low prices", "Fashionable", "Unfashionable",
+"Reliable", "Here today, gone tomorrow", "Good coverage", "Network often down",
+"The best phones", "Conveniently located stores", "High prices",
+"Unreliable", "Meet all my communication needs", "Leaders in mobile phone technology",
+"I like them", "I hate them", "Don't know much about them")
+ 
+groups <- c("Rows", "Rows", "Rows", "Rows", "Rows", "Rows", "Rows", "Rows",
+"Columns", "Columns", "Columns", "Columns", "Columns", "Columns",
+"Columns", "Columns", "Columns", "Columns", "Columns", "Columns",
+"Columns", "Columns", "Columns", "Columns", "Columns", "Columns",
+"Columns")
+ 
+LabeledScatter(X = X,
+                       Y = Y,
+                       Z = NULL,
+                       label = label,
+                       group = groups,
+                       colors = c("#5B9BD5", "#ED7D31"),
+                       fixed.aspect = TRUE,
+                       title = "Correspondence analysis",
+                       x.title = "Dimension 1 (65.8%)",
+                       y.title = "Dimension 2 (18.5%)",
+                       z.title = "",
+                       axis.font.size = 10,
+                       labels.font.size = 14,
+                       title.font.size = 20,
+                       legend.font.size = 15,
+                       y.title.font.size = 16,
+                       x.title.font.size = 16)
+```
+
 Trend lines example:
 
 ```

@@ -75,7 +75,7 @@ testData7 =
   fixedAspectRatio: true,
   grid: true,
   origin: true,
-  originAlign: false,
+  originAlign: true,
   title: "Brand Analysis",
   titleFontFamily: 'Arial',
   yTitleFontFamily: 'Arial',
