@@ -30,5 +30,7 @@ class DisplayError
       $(svg).empty()
       $(svg).append(errorContainer)
 
+      throw new Error(msg)
+
     getErrorImgUrl: =>
       'https://s3-ap-southeast-2.amazonaws.com/kyle-public-numbers-assets/htmlwidgets/CroppedImage/error_128.png'
