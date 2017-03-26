@@ -1,4 +1,4 @@
-# Testing fixed aspect spacing
+# Testing fixed aspect ratio spacing
 
 testData14 =
   label: [
