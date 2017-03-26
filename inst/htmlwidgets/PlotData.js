@@ -38,7 +38,7 @@ PlotData = (function() {
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
     this.normY = this.Y.slice(0);
-    if (Utils.get().isArr(this.Z)) {
+    if (Utils.get().isArr(this.Z) && this.Z.length === this.X.length) {
       this.normZ = this.Z.slice();
     }
     this.outsidePlotPtsId = [];

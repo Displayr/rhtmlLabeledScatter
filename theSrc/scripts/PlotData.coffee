@@ -23,7 +23,7 @@ class PlotData
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
-    @normZ = @Z.slice() if Utils.get().isArr(@Z)
+    @normZ = @Z.slice() if Utils.get().isArr(@Z) and @Z.length == @X.length
     @outsidePlotPtsId = []
     @legendPts = []
     @outsidePlotCondensedPts = []
