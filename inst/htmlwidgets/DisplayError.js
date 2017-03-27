@@ -29,6 +29,12 @@ DisplayError = (function() {
     };
 
     Err.prototype.isArrayOfNums = function(X) {
+      console.log(X);
+      console.log(X.constructor);
+      console.log(_.every(X, function(n) {
+        return !isNaN(n);
+      }));
+      console.log('-----------------');
       return X.constructor === Array && _.every(X, function(n) {
         return !isNaN(n);
       });
