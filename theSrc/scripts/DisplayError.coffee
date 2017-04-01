@@ -14,11 +14,7 @@ class DisplayError
         @displayErrorMessage(svg, errorMsg)
 
     isArrayOfNums: (X) ->
-      console.log X
-      console.log X.constructor
-      console.log _.every(X, (n) -> !isNaN(n))
-      console.log '-----------------'
-      X.constructor == Array and _.every(X, (n) -> !isNaN(n))
+      Array.isArray(X) and _.every(X, (n) -> !isNaN(n))
 
     displayErrorMessage: (svg, msg) =>
       errorContainer = $('<div class="rhtml-error-container">')
