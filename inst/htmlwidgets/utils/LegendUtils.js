@@ -50,7 +50,7 @@ LegendUtils = (function() {
       topQ = 0.8;
       midQ = 0.4;
       botQ = 0.1;
-      originalNum = (maxZ * topQ).toPrecision(2);
+      originalNum = (maxZ * topQ).toPrecision(1);
       exp = Math.log(originalNum);
       exp = Math.round(exp * 100000) / 100000;
       exp /= Math.LN10;
@@ -66,7 +66,7 @@ LegendUtils = (function() {
       return data.Zquartiles = {
         top: {
           val: final_base + final_shortForm,
-          lab: getZLabel(topQ, maxZ, 2)
+          lab: getZLabel(topQ, maxZ, 1)
         },
         mid: {
           val: (maxZ * midQ).toPrecision(1) / Math.pow(10, exp),
