@@ -29,7 +29,7 @@ DisplayError = (function() {
     };
 
     Err.prototype.isArrayOfNums = function(X) {
-      return X.constructor === Array && _.every(X, function(n) {
+      return Array.isArray(X) && _.every(X, function(n) {
         return !isNaN(n);
       });
     };
