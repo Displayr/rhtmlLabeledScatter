@@ -13,86 +13,41 @@
   <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-<!-- NB Important dev note: This file is used to auto generate r files in the examples directory. If you modify ensure you maintain the format of sections, containing h2, p, and div.example elements -->
-
 
 <section>
   <h2>Scatter plot showing origin lines</h2>
   <p>Quadrant 1</p>
-  <div class="scatterplot6" snapshot-name='rhtmlLabeledScatter-scatterplot-6'></div>
-  <script>
-      myWidgetDefinition = null;
-
-      // This is a stub that will capture the widget definition,
-      // so that we can use it once the page finishes loading
-      HTMLWidgets = {
-          widget: function(widgetDefinition) {
-              console.log("widget create called!");
-              myWidgetDefinition = widgetDefinition;
-          }
-      };
-
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance6 = myWidgetDefinition.factory($('.scatterplot6')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance6.renderValue(testData6, {}, myWidgetInstance6);
-
-      });
-  </script>
+  <div snapshot-name='scatterplot-6'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData6"></div>
+  </div>
 </section>
 
 <section>
   <h2>Scatter plot showing origin lines</h2>
   <p>Quadrant 3</p>
-  <div class="scatterplot7" snapshot-name='rhtmlLabeledScatter-scatterplot-7'></div>
-  <script>
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance7 = myWidgetDefinition.factory($('.scatterplot7')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance7.renderValue(testData7, {}, myWidgetInstance7);
-
-      });
-  </script>
+  <div snapshot-name='scatterplot-7'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData7"></div>
+  </div>
 </section>
 
 <section>
   <h2>Scatter plot showing origin lines</h2>
   <p>Quadrant 4</p>
-  <div class="scatterplot8" snapshot-name='rhtmlLabeledScatter-scatterplot-8'></div>
-  <script>
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance8 = myWidgetDefinition.factory($('.scatterplot8')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance8.renderValue(testData8, {}, myWidgetInstance8);
-
-      });
-  </script>
+  <div snapshot-name='scatterplot-8'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData8"></div>
+  </div>
 </section>
 
 <section>
   <h2>Scatter plot showing origin lines</h2>
   <p>Quadrant 2</p>
-  <div class="scatterplot9" snapshot-name='rhtmlLabeledScatter-scatterplot-9'></div>
-  <script>
-      $(document).ready( function() {
-          console.log("Document ready.");
-
-          myWidgetInstance9 = myWidgetDefinition.factory($('.scatterplot9')[0], window.innerWidth, window.innerHeight);
-          myWidgetInstance9.renderValue(testData9, {}, myWidgetInstance9);
-
-      });
-  </script>
+  <div snapshot-name='scatterplot-9'>
+    <div class="example" data-width="1800" data-height="900" data-config="testData9"></div>
+  </div>
 </section>
-
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
-
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>
 <script src="../../internal_www/scripts/State.js"></script>
-<script src="../../internal_www/scripts/rhtmlLabeledScatter.js"></script>
 <script src="../../internal_www/scripts/LabeledScatter.js"></script>
 <script src="../../internal_www/scripts/PlotData.js"></script>
 <script src="../../internal_www/scripts/RectPlot.js"></script>
@@ -105,22 +60,7 @@
 <script src="../../internal_www/scripts/utils/SvgUtils.js"></script>
 <script src="../../internal_www/scripts/utils/AxisUtils.js"></script>
 <script src="../../internal_www/scripts/utils/Utils.js"></script>
-<script src="../../internal_www/scripts/data/testData.js"></script>
-<script src="../../internal_www/scripts/data/testData2.js"></script>
-<script src="../../internal_www/scripts/data/testData3.js"></script>
-<script src="../../internal_www/scripts/data/testData4.js"></script>
-<script src="../../internal_www/scripts/data/testData5.js"></script>
-<script src="../../internal_www/scripts/data/testData6.js"></script>
-<script src="../../internal_www/scripts/data/testData7.js"></script>
-<script src="../../internal_www/scripts/data/testData8.js"></script>
-<script src="../../internal_www/scripts/data/testData9.js"></script>
-<script src="../../internal_www/scripts/data/testData10.js"></script>
-<script src="../../internal_www/scripts/data/testData11.js"></script>
-<script src="../../internal_www/scripts/data/testData12.js"></script>
-<script src="../../internal_www/scripts/data/testData13.js"></script>
-<script src="../../internal_www/scripts/data/trendData1.js"></script>
-<script src="../../internal_www/scripts/data/trendData2.js"></script>
 <script src="../../internal_www/scripts/lib/labeler.js"></script>
-
+<script src="/js/renderContentPage.js"></script>
 </body>
 </html>

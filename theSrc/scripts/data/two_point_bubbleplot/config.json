@@ -1,0 +1,67 @@
+{
+  "title": "Title",
+  "titleFontFamily": "Arial",
+  "titleFontColor": "black",
+  "titleFontSize": 40,
+  "label": [
+  "point1",
+  "point2"
+],
+  "X": [
+  10,
+  20
+],
+  "xTitle": "X Title",
+  "xTitleFontColor": "black",
+  "xTitleFontFamily": "Arial",
+  "xTitleFontSize": 20,
+  "xPrefix": "x",
+  "xSuffix": "x",
+  "xDecimals": 0,
+  "xBoundsMinimum": 4,
+  "xBoundsMaximum": 40,
+  "xBoundsUnitsMajor": 5,
+  "Y": [
+  10,
+  20
+],
+  "yTitle": "Y Title",
+  "yTitleFontColor": "black",
+  "yTitleFontFamily": "Verdana",
+  "yTitleFontSize": 16,
+  "yDecimals": 0,
+  "ySuffix": "y",
+  "yPrefix": "y",
+  "yBoundsMaximum": 4,
+  "yBoundsMinimum": 40,
+  "yBoundsUnitsMajor": 5,
+  "Z": [
+  10,
+  20
+],
+  "zTitle": "Z Title",
+  "zDecimals": 1,
+  "zPrefix": "z",
+  "zSuffix": "z",
+  "group": [
+  "G1",
+  "G2"
+],
+  "grid": true,
+  "origin": true,
+  "originAlign": false,
+  "showLabels": true,
+  "labelsFontFamily": "Arial",
+  "labelsFontSize": 16,
+  "labelsFontColor": null,
+  "legendShow": true,
+  "legendBubblesShow": true,
+  "legendFontFamily": "Arial",
+  "legendFontSize": 16,
+  "legendFontColor": "black",
+  "colors": [
+  "#5B9BD5",
+  "#ED7D31"
+],
+  "fixedAspectRatio": false
+}

@@ -9,3 +9,4 @@ browser
 bower_components
 .idea/
 .keys
+.tmp

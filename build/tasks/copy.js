@@ -16,7 +16,7 @@ gulp.task('copy', function () {
   ], {}).pipe(gulp.dest('inst/htmlwidgets/lib'));
 
   gulp.src([
-    'theSrc/scripts/data/*.js',
+    'theSrc/scripts/data/**/*',
   ], {}).pipe(gulp.dest('browser/internal_www/scripts/data'));
 
   gulp.src([
