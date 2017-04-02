@@ -13,15 +13,27 @@
     <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
+<a href="/">Back To Index</a>
 
 <section>
     <h2>Trendline Plot</h2>
     <div class="trendline1" snapshot-name='rhtmlLabeledScatter-trendline1'></div>
     <script>
-        $(document).ready( function() {
-            myWidgetInstance15 = myWidgetDefinition.factory($('.trendline1')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance15.renderValue(trendData1, {}, myWidgetInstance15);
+      myWidgetDefinition = null;
+      let initialState = {};
 
+      // This is a stub that will capture the widget definition,
+      // so that we can use it once the page finishes loading
+      HTMLWidgets = {
+        widget: function(widgetDefinition) {
+          console.log("widget create called!");
+          myWidgetDefinition = widgetDefinition;
+        }
+      };
+
+      $(document).ready( function() {
+            myWidgetInstance15 = myWidgetDefinition.factory($('.trendline1')[0], window.innerWidth, window.innerHeight);
+            myWidgetInstance15.renderValue(trendData1, initialState);
         });
     </script>
 </section>
@@ -31,27 +43,15 @@
     <h2>Trendline Plot testing label placement</h2>
     <div class="trendline2" snapshot-name='rhtmlLabeledScatter-trendline2'></div>
     <script>
-        myWidgetDefinition = null;
-
-        // This is a stub that will capture the widget definition,
-        // so that we can use it once the page finishes loading
-        HTMLWidgets = {
-            widget: function(widgetDefinition) {
-                console.log("widget create called!");
-                myWidgetDefinition = widgetDefinition;
-            }
-        };
-
         $(document).ready( function() {
             myWidgetInstance16 = myWidgetDefinition.factory($('.trendline2')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance16.renderValue(trendData2 , {}, myWidgetInstance16);
-
+            myWidgetInstance16.renderValue(trendData2, initialState);
         });
     </script>
 </section>
 
 
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
+
 
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>

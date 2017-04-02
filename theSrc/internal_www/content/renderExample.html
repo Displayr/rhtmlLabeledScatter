@@ -3,23 +3,22 @@
 <head>
   <link href='https://fonts.googleapis.com/css?family=Arvo:400,700italic,700,400italic' rel='stylesheet' type='text/css'>
   <link href='/styles/internal_www.css' rel='stylesheet' type='text/css'>
+
   <!--Scripts below used by rhtmlLabeledScatter-->
   <script src="../../internal_www/external/lodash.min.js"></script>
   <script src="../../internal_www/external/jquery.min.js"></script>
   <script src="../../internal_www/external/d3.min.js"></script>
   <script src="../../internal_www/external/random.min.js"></script>
-  <script src="../../internal_www/external/bluebird.min.js"></script>
   <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-
-
+<a href="/">Back To Index</a>
 <section>
-  <h2>Bubble plot</h2>
-  <div class="bubbleplot" snapshot-name='rhtmlLabeledScatter-bubbleplot'></div>
+  <h2>Full scatter plot</h2>
+  <div class="scatterplot" style="display:inline-block"></div>
   <script>
-    myWidgetDefinition = null;
 
+    window.stateUpdates = [];
     // This is a stub that will capture the widget definition,
     // so that we can use it once the page finishes loading
     HTMLWidgets = {
@@ -29,19 +28,60 @@
       }
     };
 
+    const stateChangedCallback = (newState) => {
+      console.log('fake callback called');
+      console.log(JSON.stringify(newState, {}, 2));
+      window.stateUpdates.push(_.clone(newState));
+    };
+
+    function getUrlVars() {
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++)
+      {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      }
+      return vars;
+    }
+
     $(document).ready( function() {
-      console.log("Document ready.");
 
-//      CHANGE ME !
-//      myWidgetInstance14 = myWidgetDefinition.factory($('.bubbleplot')[0], window.innerWidth, window.innerHeight);
-//      myWidgetInstance14.renderValue(bubble1, {}, myWidgetInstance14);
+      const urlVars = getUrlVars();
 
+      const configPath = urlVars.config;
+      const statePath = urlVars.state;
+      const width = urlVars.width || window.innerWidth;
+      const height = urlVars.height || window.innerHeight;
+
+      if (_.isNaN(width)) { throw new Error(`Invalid width: '${width}'`); }
+      if (_.isNaN(height)) { throw new Error(`Invalid height: '${height}'`); }
+
+      if (!configPath) { throw new Error('must provide config path via query parameter'); }
+
+      const configPromise = new Promise( (resolve, reject) => {
+        $.ajax(`/internal_www/scripts/data/${configPath}`).done(resolve).error(reject);
+      });
+
+      const statePromise = new Promise( (resolve, reject) => {
+        if (!statePath) { return resolve({}); }
+        $.ajax(`/internal_www/scripts/data/${statePath}`).done(resolve).error(reject);
+      });
+
+      Promise.all([configPromise, statePromise]).then(([config, state]) => {
+        console.log("loading widget with config");
+        console.log(config);
+
+        console.log("loading widget with state");
+        console.log(state);
+
+        const widgetInstance = myWidgetDefinition.factory($('.scatterplot')[0], width, height, stateChangedCallback);
+        widgetInstance.renderValue(config, state);
+      });
     });
   </script>
 </section>
-
-
-
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>
 <script src="../../internal_www/scripts/State.js"></script>
@@ -58,21 +98,6 @@
 <script src="../../internal_www/scripts/utils/SvgUtils.js"></script>
 <script src="../../internal_www/scripts/utils/AxisUtils.js"></script>
 <script src="../../internal_www/scripts/utils/Utils.js"></script>
-<script src="../../internal_www/scripts/data/testData.js"></script>
-<script src="../../internal_www/scripts/data/testData2.js"></script>
-<script src="../../internal_www/scripts/data/testData3.js"></script>
-<script src="../../internal_www/scripts/data/testData4.js"></script>
-<script src="../../internal_www/scripts/data/testData5.js"></script>
-<script src="../../internal_www/scripts/data/testData6.js"></script>
-<script src="../../internal_www/scripts/data/testData7.js"></script>
-<script src="../../internal_www/scripts/data/testData8.js"></script>
-<script src="../../internal_www/scripts/data/testData9.js"></script>
-<script src="../../internal_www/scripts/data/testData10.js"></script>
-<script src="../../internal_www/scripts/data/testData11.js"></script>
-<script src="../../internal_www/scripts/data/testData12.js"></script>
-<script src="../../internal_www/scripts/data/testData13.js"></script>
-<script src="../../internal_www/scripts/data/trendData1.js"></script>
-<script src="../../internal_www/scripts/data/trendData2.js"></script>
 <script src="../../internal_www/scripts/lib/labeler.js"></script>
 </body>
 </html>

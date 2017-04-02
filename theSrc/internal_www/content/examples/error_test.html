@@ -13,12 +13,13 @@
     <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-
+<a href="/">Back To Index</a>
 <section>
     <h2>Error message test</h2>
     <div class="scatterplot13" snapshot-name='rhtmlLabeledScatter-scatterplot-13'></div>
     <script>
         myWidgetDefinition = null;
+        let initialState = {};
 
         // This is a stub that will capture the widget definition,
         // so that we can use it once the page finishes loading
@@ -33,13 +34,13 @@
             console.log("Document ready.");
 
             myWidgetInstance13 = myWidgetDefinition.factory($('.scatterplot13')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance13.renderValue(testData13, {}, myWidgetInstance13);
+            myWidgetInstance13.renderValue(testData13, initialState);
 
         });
     </script>
 </section>
 
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
+
 
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>

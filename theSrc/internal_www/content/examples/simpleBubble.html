@@ -12,13 +12,13 @@
   <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-
-
+<a href="/">Back To Index</a>
 <section>
   <h2>Bubble plot</h2>
-  <div class="bubbleplot" snapshot-name='rhtmlLabeledScatter-bubbleplot'></div>
+  <div class="simple" snapshot-name='rhtmlLabeledScatter-simple'></div>
   <script>
     myWidgetDefinition = null;
+    let initialState = {};
 
     // This is a stub that will capture the widget definition,
     // so that we can use it once the page finishes loading
@@ -30,11 +30,84 @@
     };
 
     $(document).ready( function() {
-      console.log("Document ready.");
+        console.log("Document ready.");
 
-//      CHANGE ME !
-//      myWidgetInstance14 = myWidgetDefinition.factory($('.bubbleplot')[0], window.innerWidth, window.innerHeight);
-//      myWidgetInstance14.renderValue(bubble1, {}, myWidgetInstance14);
+      var widgetData = {
+        title: "Title",
+        titleFontFamily: 'Arial',
+        titleFontColor: 'black',
+        titleFontSize: 40,
+
+        label: [
+          'point1',
+          'point2'
+        ],
+
+        X: [
+          10,
+          20
+        ],
+        xTitle: "X Title",
+        xTitleFontColor: 'black',
+        xTitleFontFamily: 'Arial',
+        xTitleFontSize: 20,
+        xPrefix: "x",
+        xSuffix: "x",
+        xDecimals: 0,
+        xBoundsMinimum: 4,
+        xBoundsMaximum: 40,
+        xBoundsUnitsMajor: 5,
+
+        Y: [
+          10,
+          20
+        ],
+        yTitle: "Y Title",
+        yTitleFontColor: 'black',
+        yTitleFontFamily: 'Verdana',
+        yTitleFontSize: 16,
+        yDecimals: 0,
+        ySuffix: "y",
+        yPrefix: 'y',
+        yBoundsMaximum: 4,
+        yBoundsMinimum: 40,
+        yBoundsUnitsMajor: 5,
+
+        Z: [
+          10,
+          20
+        ],
+        zTitle: "Z Title",
+        zDecimals: 1,
+        zPrefix: 'z',
+        zSuffix: 'z',
+
+        group: [
+          'G1',
+          'G2'
+        ],
+
+        grid: true,
+        origin: true,
+        originAlign: false,
+
+        showLabels: true,
+        labelsFontFamily: 'Arial',
+        labelsFontSize: 16,
+        labelsFontColor: null,
+
+        legendShow: true,
+        legendBubblesShow: true,
+        legendFontFamily: 'Arial',
+        legendFontSize: 16,
+        legendFontColor: 'black',
+
+        colors: ['#5B9BD5', '#ED7D31' ],
+        fixedAspectRatio: false
+      };
+
+      myWidgetInstance14 = myWidgetDefinition.factory($('.simple')[0], window.innerWidth, window.innerHeight);
+      myWidgetInstance14.renderValue(widgetData, initialState);
 
     });
   </script>
@@ -58,21 +131,6 @@
 <script src="../../internal_www/scripts/utils/SvgUtils.js"></script>
 <script src="../../internal_www/scripts/utils/AxisUtils.js"></script>
 <script src="../../internal_www/scripts/utils/Utils.js"></script>
-<script src="../../internal_www/scripts/data/testData.js"></script>
-<script src="../../internal_www/scripts/data/testData2.js"></script>
-<script src="../../internal_www/scripts/data/testData3.js"></script>
-<script src="../../internal_www/scripts/data/testData4.js"></script>
-<script src="../../internal_www/scripts/data/testData5.js"></script>
-<script src="../../internal_www/scripts/data/testData6.js"></script>
-<script src="../../internal_www/scripts/data/testData7.js"></script>
-<script src="../../internal_www/scripts/data/testData8.js"></script>
-<script src="../../internal_www/scripts/data/testData9.js"></script>
-<script src="../../internal_www/scripts/data/testData10.js"></script>
-<script src="../../internal_www/scripts/data/testData11.js"></script>
-<script src="../../internal_www/scripts/data/testData12.js"></script>
-<script src="../../internal_www/scripts/data/testData13.js"></script>
-<script src="../../internal_www/scripts/data/trendData1.js"></script>
-<script src="../../internal_www/scripts/data/trendData2.js"></script>
 <script src="../../internal_www/scripts/lib/labeler.js"></script>
 </body>
 </html>

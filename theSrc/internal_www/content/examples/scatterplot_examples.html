@@ -13,12 +13,13 @@
     <script src="../../internal_www/external/bignumber.min.js"></script>
 </head>
 <body>
-
+<a href="/">Back To Index</a>
 <section>
     <h2>Scatter plot with fixed aspect ratio and labels turned off</h2>
     <div class="scatterplot3" snapshot-name='rhtmlLabeledScatter-scatterplot-3'></div>
     <script>
         myWidgetDefinition = null;
+        let initialState = {};
 
         // This is a stub that will capture the widget definition,
         // so that we can use it once the page finishes loading
@@ -32,7 +33,7 @@
             console.log("Document ready.");
 
             myWidgetInstance3 = myWidgetDefinition.factory($('.scatterplot3')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance3.renderValue(testData3, {}, myWidgetInstance3);
+            myWidgetInstance3.renderValue(testData3, initialState);
 
         });
     </script>
@@ -46,7 +47,7 @@
             console.log("Document ready.");
 
             myWidgetInstance4 = myWidgetDefinition.factory($('.scatterplot4')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance4.renderValue(testData4, {}, myWidgetInstance4);
+            myWidgetInstance4.renderValue(testData4, initialState);
 
         });
     </script>
@@ -60,7 +61,7 @@
             console.log("Document ready.");
 
             myWidgetInstance5 = myWidgetDefinition.factory($('.scatterplot5')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance5.renderValue(testData5, {}, myWidgetInstance5);
+            myWidgetInstance5.renderValue(testData5, initialState);
 
         });
     </script>
@@ -76,7 +77,7 @@
             console.log("Document ready.");
 
             myWidgetInstance10 = myWidgetDefinition.factory($('.scatterplot10')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance10.renderValue(testData10, {}, myWidgetInstance10);
+            myWidgetInstance10.renderValue(testData10, initialState);
 
         });
     </script>
@@ -90,7 +91,7 @@
             console.log("Document ready.");
 
             myWidgetInstance11 = myWidgetDefinition.factory($('.scatterplot11')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance11.renderValue(testData11, {}, myWidgetInstance11);
+            myWidgetInstance11.renderValue(testData11, initialState);
 
         });
     </script>
@@ -104,14 +105,14 @@
             console.log("Document ready.");
 
             myWidgetInstance12 = myWidgetDefinition.factory($('.scatterplot12')[0], window.innerWidth, window.innerHeight);
-            myWidgetInstance12.renderValue(testData12, {}, myWidgetInstance12);
+            myWidgetInstance12.renderValue(testData12, initialState);
 
         });
     </script>
 </section>
 
 
-<script src="../../internal_www/scripts/data/bubbledata1.js"></script>
+
 
 
 <script src="../../internal_www/scripts/PlotColors.js"></script>
