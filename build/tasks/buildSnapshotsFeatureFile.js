@@ -30,7 +30,7 @@ Feature: Take Snapshots in Content Directory
       '',
       '  @applitools @autogen',
       `  Scenario: ${scenarioUrl}`,
-      `  When I take all the snapshots on the page "${scenarioUrl}"`,
+      `    When I take all the snapshots on the page "${scenarioUrl}"`,
     ].join('\n');
   });
 

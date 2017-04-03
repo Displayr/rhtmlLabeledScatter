@@ -133,9 +133,15 @@ ${JSON.stringify(actualState, {}, 2)}
   });
 
   this.When(/^I take all the snapshots on the page "(.*)"$/, function (contentPath) {
+
     function loadContentPage(_contentPath) {
-      return browser.get(`http://localhost:9000${_contentPath}`).then(() => {
-        console.log(`Page ${_contentPath} is loaded`);
+      browser.get(`http://localhost:9000${_contentPath}`);
+      const plotContainerPresentPromise = browser.wait(browser.isElementPresent(by.css('.plot-container')));
+      const errorContainerPresentPromise = browser.wait(browser.isElementPresent(by.css('.rhtml-error-container')));
+      return Promise.all([plotContainerPresentPromise, errorContainerPresentPromise]).then((isPresentResults) => {
+        return (isPresentResults[0] || isPresentResults[1])
+          ? Promise.resolve()
+          : Promise.reject(new Error(`Fail to load http://localhost:9000${_contentPath}.`));
       });
     }
 
@@ -156,15 +162,9 @@ ${JSON.stringify(actualState, {}, 2)}
       });
     }
 
-    function catchAll(error) {
-      console.log('test error:');
-      console.log(error);
-    }
-
     return wrapInPromiseAndLogErrors(() => {
       return loadContentPage(contentPath)
         .then(takeSnapshots.bind(this))
-        .catch(catchAll.bind(this));
     });
   });
 };
