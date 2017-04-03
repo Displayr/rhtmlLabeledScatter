@@ -38,27 +38,6 @@ dependencies:
      - LegendUtils.js
      - DragUtils.js
 
-
- - name: Data
-   version: 0.0.1
-   src: htmlwidgets/data/
-   script:
-     - testData.js
-     - testData2.js
-     - testData3.js
-     - testData4.js
-     - testData5.js
-     - testData6.js
-     - testData7.js
-     - testData8.js
-     - testData9.js
-     - testData10.js
-     - testData11.js
-     - testData12.js
-     - testData13.js
-     - bubbledata1.js
-
-
  - name: style
    version: 1.0.0
    src: htmlwidgets/lib/style
