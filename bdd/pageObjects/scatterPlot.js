@@ -15,6 +15,10 @@ class ScatterPlot {
     return element(by.id(id));
   }
 
+  circleAnchor(id) {
+    return element(by.id(`anc-${id}`));
+  }
+
   get legendGroup() {
     return element.all(by.css('.legend-groups-text')).get(0);
   }

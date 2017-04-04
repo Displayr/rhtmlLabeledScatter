@@ -81,6 +81,17 @@ module.exports = function () {
     });
   });
 
+  this.When(/^I drag legend label (.+) to the canvas$/, function (labelId) {
+    return wrapInPromiseAndLogErrors(() => {
+      return browser.actions()
+        .mouseMove(this.context.scatterPlot.legendLabel(labelId))
+        .mouseDown()
+        .mouseMove({ x: -300, y: 0 })
+        .mouseUp()
+        .perform();
+    });
+  });
+
   this.Then(/^label (.+) should stay in the new location$/, function (labelId) {
     return wrapInPromiseAndLogErrors(() => {
       return this.context.scatterPlot.plotLabel(labelId).getLocation().then((locationObject) => {
@@ -102,6 +113,18 @@ module.exports = function () {
       return this.context.scatterPlot.legendLabel(labelId).getLocation().then((labelLocation) => {
         this.expect(labelLocation.x, 'Incorrect new x coordinate').to.be.closeTo(this.context.legendLocation.x, 100);
         this.expect(labelLocation.y, 'Incorrect new y coordinate').to.be.closeTo(this.context.legendLocation.y, 100);
+      });
+    });
+  });
+
+  this.Then(/^label (.+) should be near the circle anchor (.+)/, function (labelId, anchorId) {
+    return wrapInPromiseAndLogErrors(() => {
+      const anchorLocationPromise = this.context.scatterPlot.circleAnchor(anchorId).getLocation();
+      const labelLocationPromise = this.context.scatterPlot.plotLabel(labelId).getLocation();
+
+      return Promise.all([anchorLocationPromise, labelLocationPromise]).then(([anchorLocation, labelLocation]) => {
+        this.expect(labelLocation.x, 'Incorrect new x coordinate').to.be.closeTo(anchorLocation.x, 50);
+        this.expect(labelLocation.y, 'Incorrect new y coordinate').to.be.closeTo(anchorLocation.y, 50);
       });
     });
   });

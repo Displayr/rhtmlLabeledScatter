@@ -1,8 +1,10 @@
-const Eyes = require('eyes.selenium').Eyes;
+const Eyes = require('eyes.protractor').Eyes;
+// const Eyes = require('eyes.selenium').Eyes;
 const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');
-
+const ConsoleLogHandler = require('eyes.sdk').ConsoleLogHandler;
+const consoleLogHandler = new ConsoleLogHandler(true);
 
 const requiredConfigKeys = [
   'browserWidth',
@@ -37,6 +39,8 @@ module.exports = {
     eyes.setForceFullPageScreenshot(applitoolsConfig.forceFullPageScreenshot);
     eyes.setStitchMode(Eyes.StitchMode.CSS);
     eyes.setDefaultMatchTimeout(applitoolsConfig.defaultMatchTimeout);
+    console.log('eyes.setLogHandler')
+    eyes.setLogHandler(consoleLogHandler);
 
     return eyes;
   },

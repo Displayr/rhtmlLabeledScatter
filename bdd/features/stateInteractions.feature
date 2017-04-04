@@ -1,7 +1,7 @@
 Feature: State Interactions
   Interaction should cause a state callback, and when I rerender with that new state value, I should see the same state as caused by the interaction
 
-  @applitools @state
+  @applitools @state @foo
   Scenario: User can drag a scatterplot label on the canvas
     Given I am viewing "three_point_brand_scatterplot" with dimensions 1000x600
     Then the "three_point_brand_scatterplot_initial_load" snapshot matches the baseline
@@ -29,3 +29,10 @@ Feature: State Interactions
   Scenario: User can load a scatterplot label with saved state (user drag label to legend) and see their modified scatterplot
     Given I am viewing "three_point_brand_scatterplot" with state "porche_label_moved_to_legend" and dimensions 1000x600
     Then the "three_point_brand_scatterplot_after_label_drag_to_legend" snapshot matches the baseline
+
+  @applitools @state
+  Scenario: User can drag a scatterplot label from the legend back to the canvas and it will snap into the original position
+    Given I am viewing "three_point_brand_scatterplot" with state "porche_label_moved_to_legend" and dimensions 1000x600
+    When I drag legend label 0 to the canvas
+    Then label 0 should be near the circle anchor 0
+    And the "three_point_brand_scatterplot_initial_load" snapshot matches the baseline
