@@ -4,7 +4,6 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');
 const ConsoleLogHandler = require('eyes.sdk').ConsoleLogHandler;
-const consoleLogHandler = new ConsoleLogHandler(true);
 
 const requiredConfigKeys = [
   'browserWidth',
@@ -12,6 +11,7 @@ const requiredConfigKeys = [
   'defaultMatchTimeout',
   'pageLoadWaitSeconds',
   'forceFullPageScreenshot',
+  'logLevel',
 ];
 
 function getKey() {
@@ -39,8 +39,15 @@ module.exports = {
     eyes.setForceFullPageScreenshot(applitoolsConfig.forceFullPageScreenshot);
     eyes.setStitchMode(Eyes.StitchMode.CSS);
     eyes.setDefaultMatchTimeout(applitoolsConfig.defaultMatchTimeout);
-    console.log('eyes.setLogHandler')
-    eyes.setLogHandler(consoleLogHandler);
+
+    const logLevel = applitoolsConfig.logLevel.toLowerCase();
+    const loggingOn = (['info', 'debug'].includes(logLevel));
+    const debugLogging = (logLevel === 'debug');
+
+    if (loggingOn) {
+      const consoleLogHandler = new ConsoleLogHandler(debugLogging);
+      eyes.setLogHandler(consoleLogHandler);
+    }
 
     return eyes;
   },
