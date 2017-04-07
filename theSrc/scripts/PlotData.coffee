@@ -23,7 +23,7 @@ class PlotData
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
-    @normZ = @Z.slice() if Utils.get().isArr(@Z) and @Z.length == @X.length
+    @normZ = @Z.slice() if Utils.get().isArrOfNums(@Z) and @Z.length == @X.length
     @outsidePlotPtsId = []
     @legendPts = []
     @outsidePlotCondensedPts = []
@@ -35,7 +35,7 @@ class PlotData
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData()
-      @normalizeZData() if Utils.get().isArr(@Z)
+      @normalizeZData() if Utils.get().isArrOfNums(@Z)
       @plotColors = new PlotColors(@)
       @labelNew = new PlotLabel(@label, @labelAlt, @viewBoxDim.labelLogoScale)
       @getPtsAndLabs()
@@ -253,7 +253,7 @@ class PlotData
           x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
           y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
           r = @pointRadius
-          if Utils.get().isArr(@Z)
+          if Utils.get().isArrOfNums(@Z)
             legendUtils = LegendUtils.get()
             r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
           fillOpacity = @plotColors.getFillOpacity(@transparency)
@@ -264,7 +264,7 @@ class PlotData
           height = resolvedLabels[i].height
           url = resolvedLabels[i].url
 
-          labelZ = if Utils.get().isArr(@Z) then @Z[i].toString() else ''
+          labelZ = if Utils.get().isArrOfNums(@Z) then @Z[i].toString() else ''
           fontSize = @viewBoxDim.labelFontSize
 
           # If pt hsa been already condensed

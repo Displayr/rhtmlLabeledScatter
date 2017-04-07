@@ -13,6 +13,8 @@ class Utils
 
     isArr: (arr) -> arr? and arr instanceof Array
 
+    isArrOfNums: (arr) -> @isArr(arr) and _.every(arr, (n) -> _.isFinite(n))
+
     getSuperscript: (id) ->
       superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] # '⁰¹²³⁴⁵⁶⁷⁸⁹'
       ss = ''

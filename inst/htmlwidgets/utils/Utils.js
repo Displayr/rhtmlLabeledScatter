@@ -26,6 +26,12 @@ Utils = (function() {
       return (arr != null) && arr instanceof Array;
     };
 
+    U.prototype.isArrOfNums = function(arr) {
+      return this.isArr(arr) && _.every(arr, function(n) {
+        return _.isFinite(n);
+      });
+    };
+
     U.prototype.getSuperscript = function(id) {
       var digit, ss, superscript;
       superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313];
