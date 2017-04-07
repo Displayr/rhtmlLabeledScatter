@@ -53,13 +53,13 @@ class LegendUtils
       data.Zquartiles =
         top:
           val: final_base + final_shortForm
-          lab: getZLabel topQ, maxZ, 1
+          lab: getZLabel topQ, maxZ, 2
         mid:
-          val: (maxZ * midQ).toPrecision(1)/10**exp
-          lab: getZLabel midQ, maxZ, 1
+          val: (originalNum * midQ).toPrecision(1)/10**exp
+          lab: getZLabel midQ, originalNum, 1
         bot:
-          val: (maxZ * botQ).toPrecision(1)/10**exp
-          lab: getZLabel botQ, maxZ, 1
+          val: (originalNum * botQ).toPrecision(1)/10**exp
+          lab: getZLabel botQ, originalNum, 1
 
     normalizeZValues: (data, maxZ) ->
       for z, i in data.Z

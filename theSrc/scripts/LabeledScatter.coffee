@@ -50,7 +50,7 @@ class LabeledScatter
     if data.X? and data.Y?
       @data = data
 
-    console.log "rhtmlLabeledScatter: received state"
+    console.log 'rhtmlLabeledScatter: received state'
     console.log state
 
     # Error checking
