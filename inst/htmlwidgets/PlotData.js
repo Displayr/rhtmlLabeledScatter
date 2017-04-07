@@ -38,7 +38,7 @@ PlotData = (function() {
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
     this.normY = this.Y.slice(0);
-    if (Utils.get().isArr(this.Z) && this.Z.length === this.X.length) {
+    if (Utils.get().isArrOfNums(this.Z) && this.Z.length === this.X.length) {
       this.normZ = this.Z.slice();
     }
     this.outsidePlotPtsId = [];
@@ -50,7 +50,7 @@ PlotData = (function() {
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData();
-      if (Utils.get().isArr(this.Z)) {
+      if (Utils.get().isArrOfNums(this.Z)) {
         this.normalizeZData();
       }
       this.plotColors = new PlotColors(this);
@@ -281,7 +281,7 @@ PlotData = (function() {
             x = _this.normX[i] * _this.viewBoxDim.width + _this.viewBoxDim.x;
             y = (1 - _this.normY[i]) * _this.viewBoxDim.height + _this.viewBoxDim.y;
             r = _this.pointRadius;
-            if (Utils.get().isArr(_this.Z)) {
+            if (Utils.get().isArrOfNums(_this.Z)) {
               legendUtils = LegendUtils.get();
               r = legendUtils.normalizedZtoRadius(_this.viewBoxDim, _this.normZ[i]);
             }
@@ -291,7 +291,7 @@ PlotData = (function() {
             width = resolvedLabels[i].width;
             height = resolvedLabels[i].height;
             url = resolvedLabels[i].url;
-            labelZ = Utils.get().isArr(_this.Z) ? _this.Z[i].toString() : '';
+            labelZ = Utils.get().isArrOfNums(_this.Z) ? _this.Z[i].toString() : '';
             fontSize = _this.viewBoxDim.labelFontSize;
             if (_.includes(_.map(_this.outsidePlotCondensedPts, function(e) {
               return e.dataId;

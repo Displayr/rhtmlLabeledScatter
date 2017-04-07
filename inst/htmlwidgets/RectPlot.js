@@ -423,7 +423,7 @@ RectPlot = (function() {
       return function(resolve, reject) {
         var drag, legendBubbleTitleSvg, legendFontSize;
         _this.data.setupLegendGroupsAndPts();
-        if (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) {
+        if (_this.legendBubblesShow && Utils.get().isArrOfNums(_this.Z)) {
           _this.svg.selectAll('.legend-bubbles').remove();
           _this.svg.selectAll('.legend-bubbles').data(_this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
             return d.cx;
@@ -500,7 +500,7 @@ RectPlot = (function() {
           });
           SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendGroups, _this.svg.selectAll('.legend-groups-text'));
         }
-        if (_this.legendShow || (_this.legendBubblesShow && Utils.get().isArr(_this.Z)) || (_this.data.legendPts != null)) {
+        if (_this.legendShow || (_this.legendBubblesShow && Utils.get().isArrOfNums(_this.Z)) || (_this.data.legendPts != null)) {
           if (_this.data.resizedAfterLegendGroupsDrawn(_this.legendShow)) {
             console.log("rhtmlLabeledScatter: drawLegend false");
             _this.data.revertMinMax();
@@ -534,7 +534,7 @@ RectPlot = (function() {
         }
       };
     })(this));
-    if (Utils.get().isArr(this.Z)) {
+    if (Utils.get().isArrOfNums(this.Z)) {
       return anc.append('title').text((function(_this) {
         return function(d) {
           var labelTxt, xlabel, ylabel, zlabel;

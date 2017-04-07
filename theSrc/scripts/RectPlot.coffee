@@ -418,7 +418,7 @@ class RectPlot
     new Promise((resolve, reject) =>
       @data.setupLegendGroupsAndPts()
 
-      if @legendBubblesShow and Utils.get().isArr(@Z)
+      if @legendBubblesShow and Utils.get().isArrOfNums(@Z)
         @svg.selectAll('.legend-bubbles').remove()
         @svg.selectAll('.legend-bubbles')
             .data(@data.legendBubbles)
@@ -515,7 +515,7 @@ class RectPlot
         # Height and width are not provided
         SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
 
-      if @legendShow or (@legendBubblesShow and Utils.get().isArr(@Z)) or @data.legendPts?
+      if @legendShow or (@legendBubblesShow and Utils.get().isArrOfNums(@Z)) or @data.legendPts?
         if @data.resizedAfterLegendGroupsDrawn(@legendShow)
           console.log "rhtmlLabeledScatter: drawLegend false"
           @data.revertMinMax()
@@ -541,7 +541,7 @@ class RectPlot
                       @trendLines.pointSize
                     else
                       d.r)
-    if Utils.get().isArr(@Z)
+    if Utils.get().isArrOfNums(@Z)
       anc.append('title')
          .text((d) =>
            xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
