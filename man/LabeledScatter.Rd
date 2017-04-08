@@ -167,4 +167,3 @@ A HTMLWidget that creates a labeled scatter plot.
 \author{
 Po Liu <po.liu@displayr.com>
 }
-
