@@ -32,34 +32,45 @@ class LegendUtils
       getZLabel = (val, maxZ, precision) ->
         Math.sqrt((maxZ * val).toPrecision(precision)/maxZ/Math.PI)
 
+      getExponential = (num) ->
+        num.toExponential().split('e')[1]
+
+      # Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
       topQ = 0.8
       midQ = 0.4
       botQ = 0.1
 
-      originalNum = (maxZ*topQ).toPrecision 1
-      exp = Math.log(originalNum)
+      topQuartileZ = (maxZ*topQ)
+
+      # VIS-262: Compensate for inconsistent sig figs in legend
+      differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ*topQuartileZ))
+      precision = if differenceInExponentials < 1 then 1 else 2
+      topQuartileZ = topQuartileZ.toPrecision(precision)
+
+      # Calculations necessary to figure out which short form to apply
+      exp = Math.log(topQuartileZ)
       exp = Math.round(exp*100000)/100000
       exp /= Math.LN10
       expDecimal = exp%1
       exp -= expDecimal
       digitsBtwnShortForms = exp % 3
       exp -= digitsBtwnShortForms
+      exp_shortForm = @getExponentialShortForm exp
+      unless exp_shortForm?
+        exp_shortForm = ''
 
-      final_base = originalNum / 10**exp
-      final_shortForm = @getExponentialShortForm exp
-      unless final_shortForm?
-        final_shortForm = ''
+      topQuartileVal = topQuartileZ / 10**exp
 
       data.Zquartiles =
         top:
-          val: final_base + final_shortForm
-          lab: getZLabel topQ, maxZ, 1
+          val: topQuartileVal + exp_shortForm
+          lab: getZLabel topQ, maxZ, precision
         mid:
-          val: (maxZ * midQ).toPrecision(1)/10**exp
-          lab: getZLabel midQ, maxZ, 1
+          val: (topQuartileZ * midQ).toPrecision(1)/10**exp
+          lab: getZLabel midQ, topQuartileZ, 1
         bot:
-          val: (maxZ * botQ).toPrecision(1)/10**exp
-          lab: getZLabel botQ, maxZ, 1
+          val: (topQuartileZ * botQ).toPrecision(1)/10**exp
+          lab: getZLabel botQ, topQuartileZ, 1
 
     normalizeZValues: (data, maxZ) ->
       for z, i in data.Z

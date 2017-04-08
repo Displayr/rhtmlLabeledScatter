@@ -55,7 +55,7 @@ LabeledScatter = (function() {
     if ((data.X != null) && (data.Y != null)) {
       this.data = data;
     }
-    console.log("rhtmlLabeledScatter: received state");
+    console.log('rhtmlLabeledScatter: received state');
     console.log(state);
     DisplayError.get().checkIfArrayOfNums(this.data.X, el, 'Given X value is not an array of numbers');
     DisplayError.get().checkIfArrayOfNums(this.data.Y, el, 'Given Y value is not an array of numbers');
