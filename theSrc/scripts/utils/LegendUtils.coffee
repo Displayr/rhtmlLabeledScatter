@@ -32,16 +32,23 @@ class LegendUtils
       getZLabel = (val, maxZ, precision) ->
         Math.sqrt((maxZ * val).toPrecision(precision)/maxZ/Math.PI)
 
+      getExponential = (num) ->
+        num.toExponential().split('e')[1]
+
+      # Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
       topQ = 0.8
       midQ = 0.4
       botQ = 0.1
 
       topQuartileZ = (maxZ*topQ)
-      exp = Math.log(topQuartileZ)
-      midQexp = Math.log(topQuartileZ*midQ)
-      precision = if midQexp is 0 then 1 else 2
+
+      # VIS-262: Compensate for inconsistent sig figs in legend
+      differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ*topQuartileZ))
+      precision = if differenceInExponentials < 1 then 1 else 2
       topQuartileZ = topQuartileZ.toPrecision(precision)
 
+      # Calculations necessary to figure out which short form to apply
+      exp = Math.log(topQuartileZ)
       exp = Math.round(exp*100000)/100000
       exp /= Math.LN10
       expDecimal = exp%1

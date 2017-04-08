@@ -43,18 +43,21 @@ LegendUtils = (function() {
     };
 
     LU.prototype.calcZQuartiles = function(data, maxZ) {
-      var botQ, digitsBtwnShortForms, exp, expDecimal, exp_shortForm, getZLabel, midQ, midQexp, precision, topQ, topQuartileVal, topQuartileZ;
+      var botQ, differenceInExponentials, digitsBtwnShortForms, exp, expDecimal, exp_shortForm, getExponential, getZLabel, midQ, precision, topQ, topQuartileVal, topQuartileZ;
       getZLabel = function(val, maxZ, precision) {
         return Math.sqrt((maxZ * val).toPrecision(precision) / maxZ / Math.PI);
+      };
+      getExponential = function(num) {
+        return num.toExponential().split('e')[1];
       };
       topQ = 0.8;
       midQ = 0.4;
       botQ = 0.1;
       topQuartileZ = maxZ * topQ;
-      exp = Math.log(topQuartileZ);
-      midQexp = Math.log(topQuartileZ * midQ);
-      precision = midQexp === 0 ? 1 : 2;
+      differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ * topQuartileZ));
+      precision = differenceInExponentials < 1 ? 1 : 2;
       topQuartileZ = topQuartileZ.toPrecision(precision);
+      exp = Math.log(topQuartileZ);
       exp = Math.round(exp * 100000) / 100000;
       exp /= Math.LN10;
       expDecimal = exp % 1;
