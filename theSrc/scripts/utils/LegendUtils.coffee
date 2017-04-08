@@ -36,30 +36,34 @@ class LegendUtils
       midQ = 0.4
       botQ = 0.1
 
-      originalNum = (maxZ*topQ).toPrecision 1
-      exp = Math.log(originalNum)
+      topQuartileZ = (maxZ*topQ)
+      exp = Math.log(topQuartileZ)
+      midQexp = Math.log(topQuartileZ*midQ)
+      precision = if midQexp is 0 then 1 else 2
+      topQuartileZ = topQuartileZ.toPrecision(precision)
+
       exp = Math.round(exp*100000)/100000
       exp /= Math.LN10
       expDecimal = exp%1
       exp -= expDecimal
       digitsBtwnShortForms = exp % 3
       exp -= digitsBtwnShortForms
+      exp_shortForm = @getExponentialShortForm exp
+      unless exp_shortForm?
+        exp_shortForm = ''
 
-      final_base = originalNum / 10**exp
-      final_shortForm = @getExponentialShortForm exp
-      unless final_shortForm?
-        final_shortForm = ''
+      topQuartileVal = topQuartileZ / 10**exp
 
       data.Zquartiles =
         top:
-          val: final_base + final_shortForm
-          lab: getZLabel topQ, maxZ, 2
+          val: topQuartileVal + exp_shortForm
+          lab: getZLabel topQ, maxZ, precision
         mid:
-          val: (originalNum * midQ).toPrecision(1)/10**exp
-          lab: getZLabel midQ, originalNum, 1
+          val: (topQuartileZ * midQ).toPrecision(1)/10**exp
+          lab: getZLabel midQ, topQuartileZ, 1
         bot:
-          val: (originalNum * botQ).toPrecision(1)/10**exp
-          lab: getZLabel botQ, originalNum, 1
+          val: (topQuartileZ * botQ).toPrecision(1)/10**exp
+          lab: getZLabel botQ, topQuartileZ, 1
 
     normalizeZValues: (data, maxZ) ->
       for z, i in data.Z

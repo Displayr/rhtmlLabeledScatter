@@ -64,6 +64,7 @@ class RectPlot
                 @plotBorderShow = true
   ) ->
 
+#    @Z = _.map(@Z, (o) -> o/10)
     @labelsFont =
       size:            labelsFontSize
       color:           labelsFontColor
