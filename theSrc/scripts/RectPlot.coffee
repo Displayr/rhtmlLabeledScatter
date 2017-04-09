@@ -232,8 +232,8 @@ class RectPlot
     ).then(() =>
       try
         @drawTitle()
-        @drawLabs()
         @drawAnc()
+        @drawLabs()
         @drawTrendLines() if @trendLines.show
         @drawDraggedMarkers()
         @drawRect() if @plotBorderShow
