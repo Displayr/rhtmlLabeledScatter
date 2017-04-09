@@ -81,7 +81,7 @@ PlotLabel = (function() {
   };
 
   PlotLabel.prototype._isStringLinkToImg = function(label) {
-    return (_.includes(label, 'http://') || _.includes(label, 'https://')) && (_.includes(label, '.png') || _.includes(label, '.svg') || _.includes(label, '.jpg') || _.includes(label, '.gif'));
+    return (_.includes(label, 'http://') || _.includes(label, 'https://') || _.includes(label, '/images/')) && (_.includes(label, '.png') || _.includes(label, '.svg') || _.includes(label, '.jpg') || _.includes(label, '.gif'));
   };
 
   return PlotLabel;

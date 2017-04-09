@@ -27,12 +27,14 @@ gulp.task('default', function () {
 });
 
 gulp.task('build', function (done) {
-  runSequence('clean', 'core', ['makeDocs', 'makeExample'], done);
+  runSequence('core', ['makeDocs', 'makeExample'], done);
 });
 
-gulp.task('core', ['compile-coffee', 'less', 'copy', 'buildContentManifest']);
+gulp.task('core', function (done) {
+  runSequence('clean', ['compile-coffee', 'less', 'copy', 'buildContentManifest'], done);
+});
 
-gulp.task('serve', function() {
+gulp.task('serve', function () {
   runSequence('core', ['compileRenderContentPage', 'compileRenderIndexPage'], 'watch', function () {
     opn('http://localhost:9000');
   });

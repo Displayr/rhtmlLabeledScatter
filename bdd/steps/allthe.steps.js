@@ -123,8 +123,10 @@ module.exports = function () {
       const labelLocationPromise = this.context.scatterPlot.plotLabel(labelId).getLocation();
 
       return Promise.all([anchorLocationPromise, labelLocationPromise]).then(([anchorLocation, labelLocation]) => {
-        this.expect(labelLocation.x, 'Incorrect new x coordinate').to.be.closeTo(anchorLocation.x, 50);
-        this.expect(labelLocation.y, 'Incorrect new y coordinate').to.be.closeTo(anchorLocation.y, 50);
+        // TODO 105 is enough tolerance such that the top left of a 100x100 image will be "close enough" to its anchor
+        // TODO fix this to calc image tolerance based on bounding rect so we dont hard code such a large value
+        this.expect(labelLocation.x, 'Incorrect new x coordinate').to.be.closeTo(anchorLocation.x, 105);
+        this.expect(labelLocation.y, 'Incorrect new y coordinate').to.be.closeTo(anchorLocation.y, 105);
       });
     });
   });

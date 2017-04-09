@@ -2,7 +2,7 @@
   "label": [
     "Porsche",
     "Nike athletic shoes",
-    "Mercedes"
+    "/images/apple.jpg"
   ],
   "X": [
     -0.37935216537080000,
@@ -17,7 +17,7 @@
   "group": [
     "Porsche",
     "Nike athletic shoes",
-    "Mercedes"
+    "Apple"
   ],
   "xTitle": "",
   "yTitle": "",
