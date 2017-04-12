@@ -157,6 +157,10 @@ ${JSON.stringify(actualState, {}, 2)}
     return browser.sleep(sleepSeconds * 1000);
   });
 
+  this.When(/^I wait for animations to complete$/, function () {
+    return browser.sleep(1000);
+  });
+
   this.When(/^I take all the snapshots on the page "(.*)"$/, function (contentPath) {
 
     function loadContentPage(_contentPath) {
