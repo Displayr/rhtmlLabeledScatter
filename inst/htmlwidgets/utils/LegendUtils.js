@@ -50,7 +50,7 @@ LegendUtils = (function() {
       getExponential = function(num) {
         return num.toExponential().split('e')[1];
       };
-      topQ = 0.8;
+      topQ = 0.9;
       midQ = 0.4;
       botQ = 0.1;
       topQuartileZ = maxZ * topQ;

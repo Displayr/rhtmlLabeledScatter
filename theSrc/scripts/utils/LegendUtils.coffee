@@ -36,7 +36,7 @@ class LegendUtils
         num.toExponential().split('e')[1]
 
       # Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
-      topQ = 0.8
+      topQ = 0.9
       midQ = 0.4
       botQ = 0.1
 
