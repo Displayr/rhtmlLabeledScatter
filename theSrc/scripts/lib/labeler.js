@@ -75,7 +75,7 @@
             labIsInsideBubbleAnc = (labRightBorder < anc[index].x + anc[index].r) && (labLeftBorder > anc[index].x - anc[index].r) && (labBotBorder < anc[index].y + anc[index].r) && (labTopBorder > anc[index].y - anc[index].r);
             
             if (labIsInsideBubbleAnc) {
-                dy = (lab[index].y - lab[index].height/2 - anc[index].y);
+                dy = (lab[index].y - lab[index].height/4 - anc[index].y);
                 ener += Math.sqrt(dx*dx + dy*dy) * w_len;
             } else {
                 // penalty for length of leader line
