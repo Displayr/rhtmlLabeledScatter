@@ -1,5 +1,10 @@
 'use strict'
 
+#To Refactor:
+#   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
+#
+
+
 class PlotData
   constructor: (@X,
                 @Y,
@@ -23,22 +28,20 @@ class PlotData
     @origY = @Y.slice(0)
     @normX = @X.slice(0)
     @normY = @Y.slice(0)
-    @normZ = @Z.slice() if Utils.get().isArrOfNums(@Z) and @Z.length == @X.length
+    @normZ = @Z.slice() if Utils.isArrOfNums(@Z) and @Z.length == @X.length
     @outsidePlotPtsId = []
     @legendPts = []
     @outsidePlotCondensedPts = []
     @legendBubbles = []
     @legendBubblesLab = []
-
-    @cIndex = 0 # color index
+    @legendRequiresRedraw = false
 
     if @X.length is @Y.length
       @len = @origLen= X.length
       @normalizeData()
-      @normalizeZData() if Utils.get().isArrOfNums(@Z)
+      @normalizeZData() if Utils.isArrOfNums(@Z)
       @plotColors = new PlotColors(@)
       @labelNew = new PlotLabel(@label, @labelAlt, @viewBoxDim.labelLogoScale)
-      @getPtsAndLabs()
     else
       throw new Error("Inputs X and Y lengths do not match!")
 
@@ -78,6 +81,7 @@ class PlotData
     if yThres == 0 # if there is no difference, add arbitrary threshold of 1
       yThres = 1
 
+    # TODO KZ this appears backwards ?
     @maxX += xThres
     @minX -= xThres
     @maxY += yThres
@@ -91,6 +95,7 @@ class PlotData
       @minY = if @minY > 0 then 0 else @minY-yThres
 
 
+    # TODO KZ (another) this can be simplified : see Pictograph utils/geometryUtils.js
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
@@ -138,13 +143,15 @@ class PlotData
           @minY -= rangeY*factorWidget
 
 
+    # TODO KZ this should be done first to skip the wasted computation (unless there are side effect in the above) ??
     # If user has sent x and y boundaries, these hold higher priority
-    @maxX = @bounds.xmax if Utils.get().isNum(@bounds.xmax)
-    @minX = @bounds.xmin if Utils.get().isNum(@bounds.xmin)
-    @maxY = @bounds.ymax if Utils.get().isNum(@bounds.ymax)
-    @minY = @bounds.ymin if Utils.get().isNum(@bounds.ymin)
+    @maxX = @bounds.xmax if Utils.isNum(@bounds.xmax)
+    @minX = @bounds.xmin if Utils.isNum(@bounds.xmin)
+    @maxY = @bounds.ymax if Utils.isNum(@bounds.ymax)
+    @minY = @bounds.ymin if Utils.isNum(@bounds.ymin)
 
   normalizeData: =>
+    # TODO KZ remove this side effect. Plus Data.calcMinMax is called over and over in the code. Why ??
     @calculateMinMax()
 
     #create list of movedOffPts that need markers
@@ -155,6 +162,7 @@ class PlotData
       id = lp.pt.id
       draggedNormX = (@X[id] - @minX)/(@maxX - @minX)
       draggedNormY = (@Y[id] - @minY)/(@maxY - @minY)
+      # TODO KZ the ++ should be immed. after the use of the iter !
       newMarkerId = @outsidePlotMarkersIter
       lp.markerId = newMarkerId
 
@@ -191,6 +199,7 @@ class PlotData
           markerTextX = x1 - @legendDim.markerCharWidth*(numDigitsInId)
           markerTextY = y1 + @legendDim.markerTextSize
 
+        # TODO KZ bug? : newMarkerId + 1, but lp.markerId = newMarker ??
         @outsidePlotMarkers.push
           markerLabel: newMarkerId + 1
           ptId: id
@@ -219,7 +228,7 @@ class PlotData
 
     # Remove pts that are outside plot if user bounds were set
     @outsideBoundsPtsId = []
-    if _.some(@bounds, (b) -> Utils.get().isNum(b))
+    if _.some(@bounds, (b) -> Utils.isNum(b))
       i = 0
       while i < @origLen
         unless _.includes(@outsideBoundsPtsId, i)
@@ -231,6 +240,7 @@ class PlotData
     i = 0
     while i < @origLen
       @normX[i] = if @minX == @maxX then @minX else (@X[i] - @minX)/(@maxX - @minX)
+      # copy/paste bug using x when calculating Y. WTF is this even doing ?
       @normY[i] = if @minY == @maxY then @minX else (@Y[i] - @minY)/(@maxY - @minY)
       i++
 
@@ -241,8 +251,12 @@ class PlotData
     legendUtils.calcZQuartiles(@, maxZ)
     legendUtils.normalizeZValues(@, maxZ)
 
-  getPtsAndLabs: =>
-    Promise.all(@labelNew.promiseLabelArray).then((resolvedLabels) =>
+  getPtsAndLabs: (calleeName) =>
+    console.log("getPtsAndLabs(#{calleeName})")
+    Promise.all(@labelNew.getLabels()).then((resolvedLabels) =>
+#      console.log("resolvedLabels for getPtsandLabs callee name #{calleeName}")
+#      console.log(resolvedLabels)
+
       @pts = []
       @lab = []
 
@@ -253,7 +267,7 @@ class PlotData
           x = @normX[i]*@viewBoxDim.width + @viewBoxDim.x
           y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
           r = @pointRadius
-          if Utils.get().isArrOfNums(@Z)
+          if Utils.isArrOfNums(@Z)
             legendUtils = LegendUtils.get()
             r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
           fillOpacity = @plotColors.getFillOpacity(@transparency)
@@ -264,7 +278,7 @@ class PlotData
           height = resolvedLabels[i].height
           url = resolvedLabels[i].url
 
-          labelZ = if Utils.get().isArrOfNums(@Z) then @Z[i].toString() else ''
+          labelZ = if Utils.isArrOfNums(@Z) then @Z[i].toString() else ''
           fontSize = @viewBoxDim.labelFontSize
 
           # If pt hsa been already condensed
@@ -312,6 +326,8 @@ class PlotData
         @addElemToLegend(p) unless _.includes(@outsidePlotPtsId, p)
     ).catch((err) -> console.log err)
 
+  # TODO KZ rename to numColumns once meaning is confirmed
+  # TODO KZ If I have an array, I dont need to be told its length
   setLegendItemsPositions: (numItems, itemsArray, cols) =>
     bubbleLegendTextHeight = 20
     @legendHeight = @viewBoxDim.height
@@ -363,6 +379,8 @@ class PlotData
       legendItemArray = []
       i = 0
       j = 0
+
+      # KZ TODO possibly the worst array concat ive ever seen
       while i < totalLegendItems
         if i < @legendGroups.length
           legendItemArray.push @legendGroups[i]
@@ -445,10 +463,13 @@ class PlotData
       color: movedPt[0].color
       isDraggedPt: true
     }
+#    console.log("pushed legendPt : #{JSON.stringify(@legendPts[@legendPts.length-1])}")
+
     @outsidePlotPtsId.push id
     @normalizeData()
-    @getPtsAndLabs()
+    @getPtsAndLabs('PlotData.addElemToLegend')
     @setupLegendGroupsAndPts()
+    @legendRequiresRedraw = true
 
   removeElemFromLegend: (id) =>
     checkId = (e) -> e.id == id
@@ -460,5 +481,5 @@ class PlotData
     _.remove @outsidePlotCondensedPts, (i) -> i.dataId == id
 
     @normalizeData()
-    @getPtsAndLabs()
+    @getPtsAndLabs('PlotData.removeElemFromLegend')
     @setupLegendGroupsAndPts()

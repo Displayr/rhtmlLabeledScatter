@@ -70,7 +70,7 @@ AxisUtils = (function() {
           dimensionMarkerLabelStack.push({
             x: x1,
             y: y2 + leaderLineLen + labelHeight,
-            label: Utils.get().getFormattedNum(label, xDecimals, xPrefix, xSuffix),
+            label: Utils.getFormattedNum(label, xDecimals, xPrefix, xSuffix),
             anchor: 'middle',
             type: 'col'
           });
@@ -85,7 +85,7 @@ AxisUtils = (function() {
           return dimensionMarkerLabelStack.push({
             x: x1 - leaderLineLen,
             y: y2 + labelHeight / 3,
-            label: Utils.get().getFormattedNum(label, yDecimals, yPrefix, ySuffix),
+            label: Utils.getFormattedNum(label, yDecimals, yPrefix, ySuffix),
             anchor: 'end',
             type: 'row'
           });
@@ -95,12 +95,12 @@ AxisUtils = (function() {
       dimensionMarkerStack = [];
       dimensionMarkerLeaderStack = [];
       dimensionMarkerLabelStack = [];
-      if (Utils.get().isNum(plot.xBoundsUnitsMajor)) {
+      if (Utils.isNum(plot.xBoundsUnitsMajor)) {
         ticksX = plot.xBoundsUnitsMajor / 2;
       } else {
         ticksX = this._getTickRange(data.maxX, data.minX);
       }
-      if (Utils.get().isNum(plot.yBoundsUnitsMajor)) {
+      if (Utils.isNum(plot.yBoundsUnitsMajor)) {
         ticksY = plot.yBoundsUnitsMajor / 2;
       } else {
         ticksY = this._getTickRange(data.maxY, data.minY);

@@ -189,24 +189,33 @@ class RectPlot
                          @legendBubblesShow,
                          @axisDimensionText)
 
-  draw: =>
-    @drawDimensionMarkers().then(() =>
-      @drawLegend().then(() =>
-        @drawLabsAndPlot()
-      ).catch( => @draw())
-    ).catch((err) =>
-      if err?
-        console.log err
-        throw new Error(err)
+    @drawFailureCount = 0
 
-      console.log 'rhtmlLabeledScatter: redraw'
-      # Redraw is needed
-      @draw()
-    )
+  draw: =>
+    @drawDimensionMarkers()
+      .then(@drawLegend.bind(@))
+      .then(@drawLabsAndPlot.bind(@))
+      .then(() =>
+        console.log "draw succeeded after #{@drawFailureCount} failures"
+        @drawFailureCount = 0
+
+        if @data.legendRequiresRedraw
+          return @drawLegend()
+      )
+      .catch( (err) =>
+        @drawFailureCount++
+        if err and err.retry
+          console.log "draw failure #{err.message} (fail count: #{@drawFailureCount}). Redrawing"
+          @draw()
+          return null
+
+        throw err
+      )
 
   drawLabsAndPlot: =>
     @data.normalizeData()
-    @data.getPtsAndLabs().then(() =>
+
+    return @data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() =>
       @title.x = @viewBoxDim.x + @viewBoxDim.width/2
 
       unless @state.isLegendPtsSynced(@data.outsidePlotPtsId)
@@ -217,9 +226,10 @@ class RectPlot
         for pt in @data.outsidePlotPtsId
           unless _.includes @state.getLegendPts(), pt
             @state.pushLegendPt pt
-        console.log "rhtmlLabeledScatter: drawLabsAndPlot false"
-        throw new Error()
-
+        error = new Error("drawLabsAndPlot failed : state.isLegendPtsSynced = false")
+        error.retry = true
+        throw error
+    ).then(() =>
       try
         @drawTitle()
         @drawLabs()
@@ -230,7 +240,7 @@ class RectPlot
         @drawAxisLabels()
       catch error
         console.log error
-      )
+    )
 
   drawTitle: =>
     if @title.text != ''
@@ -260,9 +270,11 @@ class RectPlot
 
   drawDimensionMarkers: =>
     new Promise((resolve, reject) =>
+      # TODO: unnecessary double call ? PlotData.constructor calls PlotData.calculateMinMax ?
       @data.calculateMinMax()
       axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
 
+      # TODO KZ this sequence can be easily consolidated
       if @grid
         @svg.selectAll('.origin').remove()
         @svg.selectAll('.origin')
@@ -359,11 +371,12 @@ class RectPlot
          initAxisTextColWidth != @axisDimensionText.colMaxWidth or
          initAxisTextRowHeight != @axisDimensionText.rowMaxHeight or
          initAxisTextColHeight != @axisDimensionText.colMaxHeight
-        console.log "rhtmlLabeledScatter: drawDimensionMarkers fail"
         @setDim(@svg, @width, @height)
         @data.revertMinMax()
-        reject()
-      resolve()
+        error = new Error("axis marker out of bound")
+        error.retry = true
+        return reject(error)
+      return resolve()
     )
 
 
@@ -418,7 +431,7 @@ class RectPlot
     new Promise((resolve, reject) =>
       @data.setupLegendGroupsAndPts()
 
-      if @legendBubblesShow and Utils.get().isArrOfNums(@Z)
+      if @legendBubblesShow and Utils.isArrOfNums(@Z)
         @svg.selectAll('.legend-bubbles').remove()
         @svg.selectAll('.legend-bubbles')
             .data(@data.legendBubbles)
@@ -478,7 +491,7 @@ class RectPlot
           .attr('font-size', @legendFontSize)
           .attr('text-anchor', (d) -> d.anchor)
           .attr('fill', (d) -> d.color)
-          .text((d) -> if d.markerId? then Utils.get().getSuperscript(d.markerId+1) + d.text else d.text)
+          .text((d) -> if d.markerId? then Utils.getSuperscript(d.markerId+1) + d.text else d.text)
           .call(drag)
 
       SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
@@ -515,13 +528,13 @@ class RectPlot
         # Height and width are not provided
         SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
 
-      if @legendShow or (@legendBubblesShow and Utils.get().isArrOfNums(@Z)) or @data.legendPts?
+      if @legendShow or (@legendBubblesShow and Utils.isArrOfNums(@Z)) or @data.legendPts?
         if @data.resizedAfterLegendGroupsDrawn(@legendShow)
-          console.log "rhtmlLabeledScatter: drawLegend false"
           @data.revertMinMax()
-          reject()
-
-      resolve()
+          error = new Error("drawLegend Failed")
+          error.retry = true
+          return reject(error)
+      return resolve()
     )
 
   drawAnc: =>
@@ -541,19 +554,19 @@ class RectPlot
                       @trendLines.pointSize
                     else
                       d.r)
-    if Utils.get().isArrOfNums(@Z)
+    if Utils.isArrOfNums(@Z)
       anc.append('title')
          .text((d) =>
-           xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
-           ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
-           zlabel = Utils.get().getFormattedNum(d.labelZ, @zDecimals, @zPrefix, @zSuffix)
+           xlabel = Utils.getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
+           ylabel = Utils.getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
+           zlabel = Utils.getFormattedNum(d.labelZ, @zDecimals, @zPrefix, @zSuffix)
            labelTxt = if d.label == '' then d.labelAlt else d.label
            "#{labelTxt}, #{d.group}\n#{zlabel}\n(#{xlabel}, #{ylabel})")
     else
       anc.append('title')
          .text((d) =>
-           xlabel = Utils.get().getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
-           ylabel = Utils.get().getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
+           xlabel = Utils.getFormattedNum(d.labelX, @xDecimals, @xPrefix, @xSuffix)
+           ylabel = Utils.getFormattedNum(d.labelY, @yDecimals, @yPrefix, @ySuffix)
            labelTxt = if d.label == '' then d.labelAlt else d.label
            "#{labelTxt}, #{d.group}\n(#{xlabel}, #{ylabel})")
 

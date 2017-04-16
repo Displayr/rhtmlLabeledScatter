@@ -22,14 +22,11 @@
     // so that we can use it once the page finishes loading
     HTMLWidgets = {
       widget: function(widgetDefinition) {
-        console.log("widget create called!");
         myWidgetDefinition = widgetDefinition;
       }
     };
 
     const stateChangedCallback = (newState) => {
-      console.log('fake callback called');
-      console.log(JSON.stringify(newState, {}, 2));
       window.stateUpdates.push(_.clone(newState));
     };
 
@@ -75,12 +72,6 @@
       });
 
       Promise.all([configPromise, statePromise]).then(([config, state]) => {
-        console.log("loading widget with config");
-        console.log(config);
-
-        console.log("loading widget with state");
-        console.log(state);
-
         const widgetInstance = myWidgetDefinition.factory($('.scatterplot')[0], width, height, stateChangedCallback);
         widgetInstance.renderValue(config, state);
       });

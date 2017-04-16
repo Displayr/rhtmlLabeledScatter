@@ -1,5 +1,4 @@
-const Eyes = require('eyes.protractor').Eyes;
-// const Eyes = require('eyes.selenium').Eyes;
+const Eyes = require('eyes.selenium').Eyes;
 const _ = require('lodash');
 const fs = require('fs-extra');
 const path = require('path');

@@ -38,7 +38,7 @@ PlotData = (function() {
     this.origY = this.Y.slice(0);
     this.normX = this.X.slice(0);
     this.normY = this.Y.slice(0);
-    if (Utils.get().isArrOfNums(this.Z) && this.Z.length === this.X.length) {
+    if (Utils.isArrOfNums(this.Z) && this.Z.length === this.X.length) {
       this.normZ = this.Z.slice();
     }
     this.outsidePlotPtsId = [];
@@ -46,16 +46,15 @@ PlotData = (function() {
     this.outsidePlotCondensedPts = [];
     this.legendBubbles = [];
     this.legendBubblesLab = [];
-    this.cIndex = 0;
+    this.legendRequiresRedraw = false;
     if (this.X.length === this.Y.length) {
       this.len = this.origLen = X.length;
       this.normalizeData();
-      if (Utils.get().isArrOfNums(this.Z)) {
+      if (Utils.isArrOfNums(this.Z)) {
         this.normalizeZData();
       }
       this.plotColors = new PlotColors(this);
       this.labelNew = new PlotLabel(this.label, this.labelAlt, this.viewBoxDim.labelLogoScale);
-      this.getPtsAndLabs();
     } else {
       throw new Error("Inputs X and Y lengths do not match!");
     }
@@ -148,16 +147,16 @@ PlotData = (function() {
         }
       }
     }
-    if (Utils.get().isNum(this.bounds.xmax)) {
+    if (Utils.isNum(this.bounds.xmax)) {
       this.maxX = this.bounds.xmax;
     }
-    if (Utils.get().isNum(this.bounds.xmin)) {
+    if (Utils.isNum(this.bounds.xmin)) {
       this.minX = this.bounds.xmin;
     }
-    if (Utils.get().isNum(this.bounds.ymax)) {
+    if (Utils.isNum(this.bounds.ymax)) {
       this.maxY = this.bounds.ymax;
     }
-    if (Utils.get().isNum(this.bounds.ymin)) {
+    if (Utils.isNum(this.bounds.ymin)) {
       return this.minY = this.bounds.ymin;
     }
   };
@@ -237,7 +236,7 @@ PlotData = (function() {
     }
     this.outsideBoundsPtsId = [];
     if (_.some(this.bounds, function(b) {
-      return Utils.get().isNum(b);
+      return Utils.isNum(b);
     })) {
       i = 0;
       while (i < this.origLen) {
@@ -267,8 +266,9 @@ PlotData = (function() {
     return legendUtils.normalizeZValues(this, maxZ);
   };
 
-  PlotData.prototype.getPtsAndLabs = function() {
-    return Promise.all(this.labelNew.promiseLabelArray).then((function(_this) {
+  PlotData.prototype.getPtsAndLabs = function(calleeName) {
+    console.log("getPtsAndLabs(" + calleeName + ")");
+    return Promise.all(this.labelNew.getLabels()).then((function(_this) {
       return function(resolvedLabels) {
         var fillOpacity, fontColor, fontSize, group, height, i, label, labelAlt, labelZ, legendUtils, p, pt, ptColor, r, url, width, x, y, _i, _len, _ref, _ref1, _results;
         _this.pts = [];
@@ -281,7 +281,7 @@ PlotData = (function() {
             x = _this.normX[i] * _this.viewBoxDim.width + _this.viewBoxDim.x;
             y = (1 - _this.normY[i]) * _this.viewBoxDim.height + _this.viewBoxDim.y;
             r = _this.pointRadius;
-            if (Utils.get().isArrOfNums(_this.Z)) {
+            if (Utils.isArrOfNums(_this.Z)) {
               legendUtils = LegendUtils.get();
               r = legendUtils.normalizedZtoRadius(_this.viewBoxDim, _this.normZ[i]);
             }
@@ -291,7 +291,7 @@ PlotData = (function() {
             width = resolvedLabels[i].width;
             height = resolvedLabels[i].height;
             url = resolvedLabels[i].url;
-            labelZ = Utils.get().isArrOfNums(_this.Z) ? _this.Z[i].toString() : '';
+            labelZ = Utils.isArrOfNums(_this.Z) ? _this.Z[i].toString() : '';
             fontSize = _this.viewBoxDim.labelFontSize;
             if (_.includes(_.map(_this.outsidePlotCondensedPts, function(e) {
               return e.dataId;
@@ -494,8 +494,9 @@ PlotData = (function() {
     });
     this.outsidePlotPtsId.push(id);
     this.normalizeData();
-    this.getPtsAndLabs();
-    return this.setupLegendGroupsAndPts();
+    this.getPtsAndLabs('PlotData.addElemToLegend');
+    this.setupLegendGroupsAndPts();
+    return this.legendRequiresRedraw = true;
   };
 
   PlotData.prototype.removeElemFromLegend = function(id) {
@@ -513,7 +514,7 @@ PlotData = (function() {
       return i.dataId === id;
     });
     this.normalizeData();
-    this.getPtsAndLabs();
+    this.getPtsAndLabs('PlotData.removeElemFromLegend');
     return this.setupLegendGroupsAndPts();
   };
 

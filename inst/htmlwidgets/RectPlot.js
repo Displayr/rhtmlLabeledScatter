@@ -191,33 +191,35 @@ RectPlot = (function() {
     };
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
     this.title.x = this.viewBoxDim.x + this.viewBoxDim.width / 2;
-    return this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
+    this.data = new PlotData(this.X, this.Y, this.Z, this.group, this.label, this.labelAlt, this.viewBoxDim, this.legendDim, this.colors, this.fixedRatio, this.originAlign, this.pointRadius, this.bounds, this.transparency, this.legendShow, this.legendBubblesShow, this.axisDimensionText);
+    return this.drawFailureCount = 0;
   };
 
   RectPlot.prototype.draw = function() {
-    return this.drawDimensionMarkers().then((function(_this) {
+    return this.drawDimensionMarkers().then(this.drawLegend.bind(this)).then(this.drawLabsAndPlot.bind(this)).then((function(_this) {
       return function() {
-        return _this.drawLegend().then(function() {
-          return _this.drawLabsAndPlot();
-        })["catch"](function() {
-          return _this.draw();
-        });
+        console.log("draw succeeded after " + _this.drawFailureCount + " failures");
+        _this.drawFailureCount = 0;
+        if (_this.data.legendRequiresRedraw) {
+          return _this.drawLegend();
+        }
       };
     })(this))["catch"]((function(_this) {
       return function(err) {
-        if (err != null) {
-          console.log(err);
-          throw new Error(err);
+        _this.drawFailureCount++;
+        if (err && err.retry) {
+          console.log("draw failure " + err.message + " (fail count: " + _this.drawFailureCount + "). Redrawing");
+          _this.draw();
+          return null;
         }
-        console.log('rhtmlLabeledScatter: redraw');
-        return _this.draw();
+        throw err;
       };
     })(this));
   };
 
   RectPlot.prototype.drawLabsAndPlot = function() {
     this.data.normalizeData();
-    return this.data.getPtsAndLabs().then((function(_this) {
+    return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then((function(_this) {
       return function() {
         var error, pt, _i, _j, _len, _len1, _ref, _ref1;
         _this.title.x = _this.viewBoxDim.x + _this.viewBoxDim.width / 2;
@@ -236,9 +238,14 @@ RectPlot = (function() {
               _this.state.pushLegendPt(pt);
             }
           }
-          console.log("rhtmlLabeledScatter: drawLabsAndPlot false");
-          throw new Error();
+          error = new Error("drawLabsAndPlot failed : state.isLegendPtsSynced = false");
+          error.retry = true;
+          throw error;
         }
+      };
+    })(this)).then((function(_this) {
+      return function() {
+        var error;
         try {
           _this.drawTitle();
           _this.drawLabs();
@@ -274,7 +281,7 @@ RectPlot = (function() {
   RectPlot.prototype.drawDimensionMarkers = function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        var axisArrays, bb, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
+        var axisArrays, bb, error, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
         _this.data.calculateMinMax();
         axisArrays = AxisUtils.get().getAxisDataArrays(_this, _this.data, _this.viewBoxDim);
         if (_this.grid) {
@@ -361,10 +368,11 @@ RectPlot = (function() {
           }
         }
         if (initAxisTextRowWidth !== _this.axisDimensionText.rowMaxWidth || initAxisTextColWidth !== _this.axisDimensionText.colMaxWidth || initAxisTextRowHeight !== _this.axisDimensionText.rowMaxHeight || initAxisTextColHeight !== _this.axisDimensionText.colMaxHeight) {
-          console.log("rhtmlLabeledScatter: drawDimensionMarkers fail");
           _this.setDim(_this.svg, _this.width, _this.height);
           _this.data.revertMinMax();
-          reject();
+          error = new Error("axis marker out of bound");
+          error.retry = true;
+          return reject(error);
         }
         return resolve();
       };
@@ -421,9 +429,9 @@ RectPlot = (function() {
   RectPlot.prototype.drawLegend = function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        var drag, legendBubbleTitleSvg, legendFontSize;
+        var drag, error, legendBubbleTitleSvg, legendFontSize;
         _this.data.setupLegendGroupsAndPts();
-        if (_this.legendBubblesShow && Utils.get().isArrOfNums(_this.Z)) {
+        if (_this.legendBubblesShow && Utils.isArrOfNums(_this.Z)) {
           _this.svg.selectAll('.legend-bubbles').remove();
           _this.svg.selectAll('.legend-bubbles').data(_this.data.legendBubbles).enter().append('circle').attr('class', 'legend-bubbles').attr('cx', function(d) {
             return d.cx;
@@ -465,7 +473,7 @@ RectPlot = (function() {
           return d.color;
         }).text(function(d) {
           if (d.markerId != null) {
-            return Utils.get().getSuperscript(d.markerId + 1) + d.text;
+            return Utils.getSuperscript(d.markerId + 1) + d.text;
           } else {
             return d.text;
           }
@@ -500,11 +508,12 @@ RectPlot = (function() {
           });
           SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendGroups, _this.svg.selectAll('.legend-groups-text'));
         }
-        if (_this.legendShow || (_this.legendBubblesShow && Utils.get().isArrOfNums(_this.Z)) || (_this.data.legendPts != null)) {
+        if (_this.legendShow || (_this.legendBubblesShow && Utils.isArrOfNums(_this.Z)) || (_this.data.legendPts != null)) {
           if (_this.data.resizedAfterLegendGroupsDrawn(_this.legendShow)) {
-            console.log("rhtmlLabeledScatter: drawLegend false");
             _this.data.revertMinMax();
-            reject();
+            error = new Error("drawLegend Failed");
+            error.retry = true;
+            return reject(error);
           }
         }
         return resolve();
@@ -534,13 +543,13 @@ RectPlot = (function() {
         }
       };
     })(this));
-    if (Utils.get().isArrOfNums(this.Z)) {
+    if (Utils.isArrOfNums(this.Z)) {
       return anc.append('title').text((function(_this) {
         return function(d) {
           var labelTxt, xlabel, ylabel, zlabel;
-          xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
-          ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
-          zlabel = Utils.get().getFormattedNum(d.labelZ, _this.zDecimals, _this.zPrefix, _this.zSuffix);
+          xlabel = Utils.getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
+          ylabel = Utils.getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
+          zlabel = Utils.getFormattedNum(d.labelZ, _this.zDecimals, _this.zPrefix, _this.zSuffix);
           labelTxt = d.label === '' ? d.labelAlt : d.label;
           return "" + labelTxt + ", " + d.group + "\n" + zlabel + "\n(" + xlabel + ", " + ylabel + ")";
         };
@@ -549,8 +558,8 @@ RectPlot = (function() {
       return anc.append('title').text((function(_this) {
         return function(d) {
           var labelTxt, xlabel, ylabel;
-          xlabel = Utils.get().getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
-          ylabel = Utils.get().getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
+          xlabel = Utils.getFormattedNum(d.labelX, _this.xDecimals, _this.xPrefix, _this.xSuffix);
+          ylabel = Utils.getFormattedNum(d.labelY, _this.yDecimals, _this.yPrefix, _this.ySuffix);
           labelTxt = d.label === '' ? d.labelAlt : d.label;
           return "" + labelTxt + ", " + d.group + "\n(" + xlabel + ", " + ylabel + ")";
         };
