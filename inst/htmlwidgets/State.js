@@ -29,7 +29,7 @@ State = (function() {
       this.saveToState('Y', Y);
       this.saveToState('label', label);
     }
-    this.legendPts = this.isStoredInState('legendPts') ? this.getStored('legendPts') : [];
+    this.legendPts = this.isStoredInState('legendPts') ? _.uniq(this.getStored('legendPts')) : [];
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : [];
   }
 
