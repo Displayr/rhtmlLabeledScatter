@@ -18,7 +18,7 @@ class State
       @saveToState('Y', Y)
       @saveToState('label', label)
 
-    @legendPts = if @isStoredInState('legendPts') then @getStored('legendPts') else []
+    @legendPts = if @isStoredInState('legendPts') then _.uniq(@getStored('legendPts')) else []
     @userPositionedLabs = if @isStoredInState('userPositionedLabs') then @getStored('userPositionedLabs') else []
 
   isStoredInState: (key) =>
