@@ -25,7 +25,7 @@ class Utils {
     return ss;
   }
 
-  static getFormattedNum(num, decimals, prefix, suffix) {
+  static getFormattedNum(num, decimals, prefix = '', suffix = '') {
     return prefix + (new BigNumber(num)).toFormat(decimals) + suffix;
   }
 }

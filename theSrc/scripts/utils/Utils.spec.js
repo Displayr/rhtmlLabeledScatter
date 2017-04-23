@@ -59,7 +59,7 @@ describe('Utils:', function () {
   describe('getFormattedNum(num, decimals, prefix, suffix):', function () {
     const tests = [
       { input: [1.234567, 2, 'p', 's'], expected: 'p1.23s' },
-      { input: [1.234567, 2], expected: 'undefined1.23undefined' }, // TODO this is a bug
+      { input: [1.234567, 2], expected: '1.23' },
       { input: [1.234567, 2, '', ''], expected: '1.23' },
       { input: [1.234567, 2, '$', ''], expected: '$1.23' },
     ];

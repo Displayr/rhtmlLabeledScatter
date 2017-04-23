@@ -245,7 +245,7 @@ class PlotData
       i++
 
   normalizeZData: =>
-    legendUtils = LegendUtils.get()
+    legendUtils = LegendUtils
 
     maxZ = _.max @Z
     legendUtils.calcZQuartiles(@, maxZ)
@@ -268,7 +268,7 @@ class PlotData
           y = (1-@normY[i])*@viewBoxDim.height + @viewBoxDim.y
           r = @pointRadius
           if Utils.isArrOfNums(@Z)
-            legendUtils = LegendUtils.get()
+            legendUtils = LegendUtils
             r = legendUtils.normalizedZtoRadius @viewBoxDim, @normZ[i]
           fillOpacity = @plotColors.getFillOpacity(@transparency)
 
@@ -335,7 +335,7 @@ class PlotData
       @legendHeight = @legendBubblesTitle[0].y - bubbleLegendTextHeight - @viewBoxDim.y
 
     if @Zquartiles?
-      legendUtils = LegendUtils.get()
+      legendUtils = LegendUtils
       legendUtils.setupBubbles(@)
 
     startOfCenteredLegendItems = (@viewBoxDim.y + @legendHeight/2 -
