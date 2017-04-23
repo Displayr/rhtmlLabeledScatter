@@ -5,6 +5,8 @@ gulp.task('copy', function () {
   gulp.src([
     'theSrc/internal_www/**/*.html',
     'theSrc/internal_www/**/*.png',
+    'theSrc/internal_www/**/*.gif',
+    'theSrc/internal_www/**/*.svg',
     'theSrc/internal_www/**/*.jpg',
     'theSrc/internal_www/**/*.css',
   ], {}).pipe(gulp.dest('browser'));

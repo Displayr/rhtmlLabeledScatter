@@ -50,12 +50,9 @@ class LabeledScatter
     if data.X? and data.Y?
       @data = data
 
-    console.log 'rhtmlLabeledScatter: received state'
-    console.log state
-
     # Error checking
-    DisplayError.get().checkIfArrayOfNums(@data.X, el, 'Given X value is not an array of numbers')
-    DisplayError.get().checkIfArrayOfNums(@data.Y, el, 'Given Y value is not an array of numbers')
+    DisplayError.checkIfArrayOfNums(@data.X, el, 'Given X value is not an array of numbers')
+    DisplayError.checkIfArrayOfNums(@data.Y, el, 'Given Y value is not an array of numbers')
 
     stateObj = new State(state, @stateChangedCallback, @data.X, @data.Y, @data.label)
 

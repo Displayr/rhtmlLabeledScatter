@@ -27,15 +27,24 @@ gulp.task('default', function () {
 });
 
 gulp.task('build', function (done) {
-  runSequence('core', ['makeDocs', 'makeExample'], done);
+  runSequence('core', 'testSpecs', ['makeDocs'], done);
 });
 
 gulp.task('core', function (done) {
-  runSequence('clean', ['compile-coffee', 'less', 'copy', 'buildContentManifest'], done);
+  runSequence('clean', ['compile-coffee', 'compileES6', 'less', 'copy', 'buildContentManifest'], done);
 });
 
 gulp.task('serve', function () {
-  runSequence('core', ['compileRenderContentPage', 'compileRenderIndexPage'], 'watch', function () {
+  runSequence('core', ['compileRenderContentPage', 'compileRenderIndexPage', 'buildSnapshotsFeatureFile'], 'watch', function () {
     opn('http://localhost:9000');
   });
 });
+
+gulp.task('testVisual', function (done) {
+  runSequence(['core', 'webdriverUpdate'], ['connect', 'buildSnapshotsFeatureFile'], 'runProtractor', done);
+});
+
+// NB p_skip skips the webdriver download step - it is downloading gecko drivers every time (30MB / run)
+// TODO - need to detect which browser drivers are required - probably in protractor conf
+gulp.task('testVisual_s', ['runProtractor']);
+
