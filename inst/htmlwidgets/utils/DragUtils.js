@@ -45,7 +45,7 @@ DragUtils = (function() {
         }
       };
       dragEnd = function() {
-        var anc, ancToHide, id, lab, _ref, _ref1;
+        var anc, ancToHide, id, lab, labOnTopOfAnc, _ref, _ref1;
         id = Number(d3.select(this).attr('id'));
         lab = _.find(plot.data.lab, function(l) {
           return l.id === id;
@@ -53,12 +53,13 @@ DragUtils = (function() {
         anc = _.find(plot.data.pts, function(a) {
           return a.id === id;
         });
+        labOnTopOfAnc = ((lab.x - lab.width / 2 < (_ref = anc.x) && _ref < lab.x + lab.width / 2)) && ((lab.y > (_ref1 = anc.y) && _ref1 > lab.y - lab.height));
         if (plot.data.isOutsideViewBox(lab) && !showTrendLine) {
           plot.data.addElemToLegend(id);
           plot.state.pushLegendPt(id);
           console.log('pushed lp');
           return plot.resetPlotAfterDragEvent();
-        } else if (((lab.x - lab.width / 2 < (_ref = anc.x) && _ref < lab.x + lab.width / 2)) && ((lab.y > (_ref1 = anc.y) && _ref1 > lab.y - lab.height))) {
+        } else if (labOnTopOfAnc && !(Utils.get().isArrOfNums(plot.data.Z))) {
           return ancToHide = plot.svg.select("#anc-" + id).attr('fill-opacity', 0);
         } else {
           plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim);

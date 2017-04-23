@@ -248,8 +248,8 @@ RectPlot = (function() {
         var error;
         try {
           _this.drawTitle();
-          _this.drawLabs();
           _this.drawAnc();
+          _this.drawLabs();
           if (_this.trendLines.show) {
             _this.drawTrendLines();
           }

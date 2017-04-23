@@ -66,35 +66,49 @@
                 dist8 = Math.sqrt(dx2 * dx2 + dy * dy),
                 overlap = true;
 
-            // penalty for length of leader line
-            perfect2penalty = 1.5;
-            perfect3penalty = 8;
-            perfect4penalty = 15;
-            minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
-            switch(minDist) {
-                case dist:
+  
+            // Check if label is inside bubble for centering of label inside bubble
+            labLeftBorder = lab[index].x - lab[index].width/2;
+            labRightBorder = lab[index].x + lab[index].width/2;
+            labBotBorder = lab[index].y;
+            labTopBorder = lab[index].y - lab[index].height;
+            labIsInsideBubbleAnc = (labRightBorder < anc[index].x + anc[index].r) && (labLeftBorder > anc[index].x - anc[index].r) && (labBotBorder < anc[index].y + anc[index].r) && (labTopBorder > anc[index].y - anc[index].r);
+            
+            if (labIsInsideBubbleAnc) {
+                dy = (lab[index].y - lab[index].height/4 - anc[index].y);
+                ener += Math.sqrt(dx*dx + dy*dy) * w_len;
+            } else {
+                // penalty for length of leader line
+                perfect2penalty = 1.5;
+                perfect3penalty = 8;
+                perfect4penalty = 15;
+    
+                minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8);
+                switch(minDist) {
+                  case dist:
                     ener += dist * w_len;
                     break;
-                case dist2:
+                  case dist2:
                     ener += dist2 * w_len * perfect2penalty;
                     break;
-                case dist3:
+                  case dist3:
                     ener += dist3 * w_len * perfect3penalty;
                     break;
-                case dist4:
+                  case dist4:
                     ener += dist4 * w_len * perfect3penalty;
                     break;
-                case dist5:
+                  case dist5:
                     ener += dist5 * w_len * perfect4penalty;
                     break;
-                case dist6:
+                  case dist6:
                     ener += dist6 * w_len * perfect4penalty;
                     break;
-                case dist7:
+                  case dist7:
                     ener += dist7 * w_len * perfect4penalty;
                     break;
-                case dist8:
+                  case dist8:
                     ener += dist8 * w_len * perfect4penalty;
+                }
             }
 
             var x21 = lab[index].x - lab[index].width/2,

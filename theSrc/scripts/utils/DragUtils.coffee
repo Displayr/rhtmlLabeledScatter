@@ -33,13 +33,16 @@ class DragUtils
         id = Number(d3.select(@).attr('id'))
         lab = _.find plot.data.lab, (l) -> l.id == id
         anc = _.find plot.data.pts, (a) -> a.id == id
+
+        labOnTopOfAnc = (lab.x - lab.width/2 < anc.x < lab.x + lab.width/2) and (lab.y > anc.y > lab.y - lab.height)
+
         if plot.data.isOutsideViewBox(lab) and !showTrendLine
           # Element dragged off plot
           plot.data.addElemToLegend(id)
           plot.state.pushLegendPt(id)
           console.log 'pushed lp'
           plot.resetPlotAfterDragEvent()
-        else if (lab.x - lab.width/2 < anc.x < lab.x + lab.width/2) and (lab.y > anc.y > lab.y - lab.height)
+        else if labOnTopOfAnc and !(Utils.get().isArrOfNums(plot.data.Z))
           ancToHide = plot.svg.select("#anc-#{id}").attr('fill-opacity', 0)
         else
           plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)

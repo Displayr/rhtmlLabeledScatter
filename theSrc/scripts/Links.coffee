@@ -1,12 +1,25 @@
 class Links
+
+  _labIsInsideBubblePt: (lab, pt) ->
+    labLeftBorder = lab.x - lab.width/2
+    labRightBorder = lab.x + lab.width/2
+    labBotBorder = lab.y
+    labTopBorder = lab.y - lab.height
+
+    (labRightBorder < pt.x + pt.r) and (labLeftBorder > pt.x - pt.r) and (labBotBorder < pt.y + pt.r) and (labTopBorder > pt.y - pt.r)
+
   constructor: (pts, lab) ->
+    _labIsText = (lab) -> lab.url == ''
+
+
     @links = []
     for pt, i in pts
       newLinkPt = null
-      if lab[i].url == ''
-        newLinkPt = @getNewPtOnTxtLabelBorder lab[i], pt, pts
-      else
-        newLinkPt = @getNewPtOnLogoLabelBorder lab[i], pt, pts
+      unless @_labIsInsideBubblePt(lab[i], pt)
+        if _labIsText(lab[i])
+          newLinkPt = @getNewPtOnTxtLabelBorder lab[i], pt, pts
+        else
+          newLinkPt = @getNewPtOnLogoLabelBorder lab[i], pt, pts
 
       if newLinkPt?
         ancBorderPt = @getPtOnAncBorder pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]
