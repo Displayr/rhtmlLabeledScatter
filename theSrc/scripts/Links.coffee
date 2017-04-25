@@ -1,4 +1,4 @@
-class Links
+ class Links
   constructor: (pts, lab) ->
     @links = []
     for pt, i in pts

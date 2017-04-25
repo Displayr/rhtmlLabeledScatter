@@ -64,6 +64,8 @@ class RectPlot
                 @plotBorderShow = true
   ) ->
 
+    @maxDrawFailureCount = 200
+
     @labelsFont =
       size:            labelsFontSize
       color:           labelsFontColor
@@ -192,22 +194,27 @@ class RectPlot
     @drawFailureCount = 0
 
   draw: =>
-    @drawDimensionMarkers()
+    return @drawDimensionMarkers()
       .then(@drawLegend.bind(@))
       .then(@drawLabsAndPlot.bind(@))
       .then(() =>
-        console.log "draw succeeded after #{@drawFailureCount} failures"
-        @drawFailureCount = 0
-
+        # TODO Po if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if @data.legendRequiresRedraw
           return @drawLegend()
       )
+      .then(() =>
+        console.log "draw succeeded after #{@drawFailureCount} failures"
+        @drawFailureCount = 0
+      )
       .catch( (err) =>
         @drawFailureCount++
+        if @drawFailureCount >= @maxDrawFailureCount
+          console.log "draw failure #{err.message} (fail count: #{@drawFailureCount}). Exceeded max draw failures of #{@maxDrawFailureCount}. Terminating"
+          throw err
+
         if err and err.retry
           console.log "draw failure #{err.message} (fail count: #{@drawFailureCount}). Redrawing"
-          @draw()
-          return null
+          return @draw()
 
         throw err
       )
@@ -272,7 +279,7 @@ class RectPlot
     new Promise((resolve, reject) =>
       # TODO: unnecessary double call ? PlotData.constructor calls PlotData.calculateMinMax ?
       @data.calculateMinMax()
-      axisArrays = AxisUtils.get().getAxisDataArrays(@, @data, @viewBoxDim)
+      axisArrays = AxisUtils.getAxisDataArrays(@, @data, @viewBoxDim)
 
       # TODO KZ this sequence can be easily consolidated
       if @grid
@@ -475,9 +482,9 @@ class RectPlot
               .attr('fill', @legendFontColor)
               .text @zTitle
 
-          SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
+          SvgUtils.setSvgBBoxWidthAndHeight @data.legendBubblesTitle, legendBubbleTitleSvg
 
-      drag = DragUtils.get().getLegendLabelDragAndDrop(@, @data)
+      drag = DragUtils.getLegendLabelDragAndDrop(@, @data)
       @svg.selectAll('.legend-dragged-pts-text').remove()
       @svg.selectAll('.legend-dragged-pts-text')
           .data(@data.legendPts)
@@ -494,7 +501,7 @@ class RectPlot
           .text((d) -> if d.markerId? then Utils.getSuperscript(d.markerId+1) + d.text else d.text)
           .call(drag)
 
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
+      SvgUtils.setSvgBBoxWidthAndHeight @data.legendPts, @svg.selectAll('.legend-dragged-pts-text')
 
       if @legendShow
         @svg.selectAll('.legend-groups-text').remove()
@@ -526,7 +533,7 @@ class RectPlot
                  .attr('fill-opacity', (d) -> d.fillOpacity)
 
         # Height and width are not provided
-        SvgUtils.get().setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
+        SvgUtils.setSvgBBoxWidthAndHeight @data.legendGroups, @svg.selectAll('.legend-groups-text')
 
       if @legendShow or (@legendBubblesShow and Utils.isArrOfNums(@Z)) or @data.legendPts?
         if @data.resizedAfterLegendGroupsDrawn(@legendShow)
@@ -618,7 +625,7 @@ class RectPlot
 
   drawLabs: =>
     if @showLabels and not @trendLines.show
-      drag = DragUtils.get().getLabelDragAndDrop(@)
+      drag = DragUtils.getLabelDragAndDrop(@)
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
       @svg.selectAll('.lab-img').remove()
@@ -654,7 +661,7 @@ class RectPlot
       labels_svg = @svg.selectAll('.lab')
       labels_img_svg = @svg.selectAll('.lab-img')
 
-      SvgUtils.get().setSvgBBoxWidthAndHeight @data.lab, labels_svg
+      SvgUtils.setSvgBBoxWidthAndHeight @data.lab, labels_svg
       console.log "rhtmlLabeledScatter: Running label placement algorithm..."
       labeler = d3.labeler()
                   .svg(@svg)
@@ -683,7 +690,7 @@ class RectPlot
       @tl = new TrendLine(@data.pts, @data.lab)
       @state.updateLabelsWithUserPositionedData(@data.lab, @data.viewBoxDim)
 
-      drag = DragUtils.get().getLabelDragAndDrop(@, @trendLines.show)
+      drag = DragUtils.getLabelDragAndDrop(@, @trendLines.show)
 
       @svg.selectAll('.lab-img').remove()
       @svg.selectAll('.lab-img')
@@ -718,7 +725,7 @@ class RectPlot
 
       labels_svg = @svg.selectAll('.lab')
       labels_img_svg = @svg.selectAll('.lab-img')
-      SvgUtils.get().setSvgBBoxWidthAndHeight @tl.arrowheadLabels, labels_svg
+      SvgUtils.setSvgBBoxWidthAndHeight @tl.arrowheadLabels, labels_svg
 
       labeler = d3.labeler()
                   .svg(@svg)

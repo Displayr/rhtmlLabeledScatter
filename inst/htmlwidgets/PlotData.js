@@ -260,7 +260,7 @@ PlotData = (function() {
 
   PlotData.prototype.normalizeZData = function() {
     var legendUtils, maxZ;
-    legendUtils = LegendUtils.get();
+    legendUtils = LegendUtils;
     maxZ = _.max(this.Z);
     legendUtils.calcZQuartiles(this, maxZ);
     return legendUtils.normalizeZValues(this, maxZ);
@@ -282,7 +282,7 @@ PlotData = (function() {
             y = (1 - _this.normY[i]) * _this.viewBoxDim.height + _this.viewBoxDim.y;
             r = _this.pointRadius;
             if (Utils.isArrOfNums(_this.Z)) {
-              legendUtils = LegendUtils.get();
+              legendUtils = LegendUtils;
               r = legendUtils.normalizedZtoRadius(_this.viewBoxDim, _this.normZ[i]);
             }
             fillOpacity = _this.plotColors.getFillOpacity(_this.transparency);
@@ -364,7 +364,7 @@ PlotData = (function() {
       this.legendHeight = this.legendBubblesTitle[0].y - bubbleLegendTextHeight - this.viewBoxDim.y;
     }
     if (this.Zquartiles != null) {
-      legendUtils = LegendUtils.get();
+      legendUtils = LegendUtils;
       legendUtils.setupBubbles(this);
     }
     startOfCenteredLegendItems = this.viewBoxDim.y + this.legendHeight / 2 - this.legendDim.heightOfRow * (numItems / cols) / 2 + this.legendDim.ptRadius;

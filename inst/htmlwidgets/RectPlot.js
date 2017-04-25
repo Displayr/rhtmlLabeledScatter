@@ -79,6 +79,7 @@ RectPlot = (function() {
     this.drawLabsAndPlot = __bind(this.drawLabsAndPlot, this);
     this.draw = __bind(this.draw, this);
     this.setDim = __bind(this.setDim, this);
+    this.maxDrawFailureCount = 200;
     this.labelsFont = {
       size: labelsFontSize,
       color: labelsFontColor,
@@ -198,19 +199,25 @@ RectPlot = (function() {
   RectPlot.prototype.draw = function() {
     return this.drawDimensionMarkers().then(this.drawLegend.bind(this)).then(this.drawLabsAndPlot.bind(this)).then((function(_this) {
       return function() {
-        console.log("draw succeeded after " + _this.drawFailureCount + " failures");
-        _this.drawFailureCount = 0;
         if (_this.data.legendRequiresRedraw) {
           return _this.drawLegend();
         }
       };
+    })(this)).then((function(_this) {
+      return function() {
+        console.log("draw succeeded after " + _this.drawFailureCount + " failures");
+        return _this.drawFailureCount = 0;
+      };
     })(this))["catch"]((function(_this) {
       return function(err) {
         _this.drawFailureCount++;
+        if (_this.drawFailureCount >= _this.maxDrawFailureCount) {
+          console.log("draw failure " + err.message + " (fail count: " + _this.drawFailureCount + "). Exceeded max draw failures of " + _this.maxDrawFailureCount + ". Terminating");
+          throw err;
+        }
         if (err && err.retry) {
           console.log("draw failure " + err.message + " (fail count: " + _this.drawFailureCount + "). Redrawing");
-          _this.draw();
-          return null;
+          return _this.draw();
         }
         throw err;
       };
@@ -283,7 +290,7 @@ RectPlot = (function() {
       return function(resolve, reject) {
         var axisArrays, bb, error, i, initAxisTextColHeight, initAxisTextColWidth, initAxisTextRowHeight, initAxisTextRowWidth, labelType, markerLabel, markerLabels, _i, _len, _ref;
         _this.data.calculateMinMax();
-        axisArrays = AxisUtils.get().getAxisDataArrays(_this, _this.data, _this.viewBoxDim);
+        axisArrays = AxisUtils.getAxisDataArrays(_this, _this.data, _this.viewBoxDim);
         if (_this.grid) {
           _this.svg.selectAll('.origin').remove();
           _this.svg.selectAll('.origin').data(axisArrays.gridOrigin).enter().append('line').attr('class', 'origin').attr('x1', function(d) {
@@ -456,10 +463,10 @@ RectPlot = (function() {
             }).attr('y', function(d) {
               return d.y - (legendFontSize * 1.5);
             }).attr('text-anchor', 'middle').attr('font-family', _this.legendFontFamily).attr('font-weight', 'normal').attr('fill', _this.legendFontColor).text(_this.zTitle);
-            SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendBubblesTitle, legendBubbleTitleSvg);
+            SvgUtils.setSvgBBoxWidthAndHeight(_this.data.legendBubblesTitle, legendBubbleTitleSvg);
           }
         }
-        drag = DragUtils.get().getLegendLabelDragAndDrop(_this, _this.data);
+        drag = DragUtils.getLegendLabelDragAndDrop(_this, _this.data);
         _this.svg.selectAll('.legend-dragged-pts-text').remove();
         _this.svg.selectAll('.legend-dragged-pts-text').data(_this.data.legendPts).enter().append('text').attr('class', 'legend-dragged-pts-text').attr('id', function(d) {
           return "legend-" + d.id;
@@ -478,7 +485,7 @@ RectPlot = (function() {
             return d.text;
           }
         }).call(drag);
-        SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendPts, _this.svg.selectAll('.legend-dragged-pts-text'));
+        SvgUtils.setSvgBBoxWidthAndHeight(_this.data.legendPts, _this.svg.selectAll('.legend-dragged-pts-text'));
         if (_this.legendShow) {
           _this.svg.selectAll('.legend-groups-text').remove();
           _this.svg.selectAll('.legend-groups-text').data(_this.data.legendGroups).enter().append('text').attr('class', 'legend-groups-text').attr('x', function(d) {
@@ -506,7 +513,7 @@ RectPlot = (function() {
           }).attr('fill-opacity', function(d) {
             return d.fillOpacity;
           });
-          SvgUtils.get().setSvgBBoxWidthAndHeight(_this.data.legendGroups, _this.svg.selectAll('.legend-groups-text'));
+          SvgUtils.setSvgBBoxWidthAndHeight(_this.data.legendGroups, _this.svg.selectAll('.legend-groups-text'));
         }
         if (_this.legendShow || (_this.legendBubblesShow && Utils.isArrOfNums(_this.Z)) || (_this.data.legendPts != null)) {
           if (_this.data.resizedAfterLegendGroupsDrawn(_this.legendShow)) {
@@ -607,7 +614,7 @@ RectPlot = (function() {
   RectPlot.prototype.drawLabs = function() {
     var drag, labeler, labels_img_svg, labels_svg;
     if (this.showLabels && !this.trendLines.show) {
-      drag = DragUtils.get().getLabelDragAndDrop(this);
+      drag = DragUtils.getLabelDragAndDrop(this);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
       this.svg.selectAll('.lab-img').remove();
       this.svg.selectAll('.lab-img').data(this.data.lab).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
@@ -647,7 +654,7 @@ RectPlot = (function() {
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
       labels_img_svg = this.svg.selectAll('.lab-img');
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
+      SvgUtils.setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log("rhtmlLabeledScatter: Running label placement algorithm...");
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.data.pts).label(this.data.lab).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
@@ -664,7 +671,7 @@ RectPlot = (function() {
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
-      drag = DragUtils.get().getLabelDragAndDrop(this, this.trendLines.show);
+      drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show);
       this.svg.selectAll('.lab-img').remove();
       this.svg.selectAll('.lab-img').data(this.tl.arrowheadLabels).enter().append('svg:image').attr('class', 'lab-img').attr('xlink:href', function(d) {
         return d.url;
@@ -703,7 +710,7 @@ RectPlot = (function() {
       }).call(drag);
       labels_svg = this.svg.selectAll('.lab');
       labels_img_svg = this.svg.selectAll('.lab-img');
-      SvgUtils.get().setSvgBBoxWidthAndHeight(this.tl.arrowheadLabels, labels_svg);
+      SvgUtils.setSvgBBoxWidthAndHeight(this.tl.arrowheadLabels, labels_svg);
       labeler = d3.labeler().svg(this.svg).w1(this.viewBoxDim.x).w2(this.viewBoxDim.x + this.viewBoxDim.width).h1(this.viewBoxDim.y).h2(this.viewBoxDim.y + this.viewBoxDim.height).anchor(this.tl.arrowheadPts).label(this.tl.arrowheadLabels).pinned(this.state.getUserPositionedLabIds()).start(500);
       labels_svg.transition().duration(800).attr('x', function(d) {
         return d.x;
