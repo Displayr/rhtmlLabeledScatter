@@ -15,7 +15,11 @@ gulp.task('compileRenderIndexPage', function () {
       file.contents = browserify(file.path, { debug: true })
         .transform(babelify, {
           presets: ['es2015-ie'],
-          plugins: ['transform-object-assign', 'array-includes'],
+          plugins: [
+            'transform-object-assign',
+            'array-includes',
+            'babel-plugin-transform-exponentiation-operator',
+          ],
         })
         .bundle();
     }))
