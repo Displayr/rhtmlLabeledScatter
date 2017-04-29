@@ -3,20 +3,34 @@ var Links,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Links = (function() {
+  Links.prototype._labIsInsideBubblePt = function(lab, pt) {
+    var labBotBorder, labLeftBorder, labRightBorder, labTopBorder;
+    labLeftBorder = lab.x - lab.width / 2;
+    labRightBorder = lab.x + lab.width / 2;
+    labBotBorder = lab.y;
+    labTopBorder = lab.y - lab.height;
+    return (labRightBorder < pt.x + pt.r) && (labLeftBorder > pt.x - pt.r) && (labBotBorder < pt.y + pt.r) && (labTopBorder > pt.y - pt.r);
+  };
+
   function Links(pts, lab) {
     this.getPtOnAncBorder = __bind(this.getPtOnAncBorder, this);
     this.getNewPtOnTxtLabelBorder = __bind(this.getNewPtOnTxtLabelBorder, this);
     this.getNewPtOnLogoLabelBorder = __bind(this.getNewPtOnLogoLabelBorder, this);
     this.getLinkData = __bind(this.getLinkData, this);
-    var ancBorderPt, i, newLinkPt, pt, _i, _len;
+    var ancBorderPt, i, newLinkPt, pt, _i, _labIsText, _len;
+    _labIsText = function(lab) {
+      return lab.url === '';
+    };
     this.links = [];
     for (i = _i = 0, _len = pts.length; _i < _len; i = ++_i) {
       pt = pts[i];
       newLinkPt = null;
-      if (lab[i].url === '') {
-        newLinkPt = this.getNewPtOnTxtLabelBorder(lab[i], pt, pts);
-      } else {
-        newLinkPt = this.getNewPtOnLogoLabelBorder(lab[i], pt, pts);
+      if (!this._labIsInsideBubblePt(lab[i], pt)) {
+        if (_labIsText(lab[i])) {
+          newLinkPt = this.getNewPtOnTxtLabelBorder(lab[i], pt, pts);
+        } else {
+          newLinkPt = this.getNewPtOnLogoLabelBorder(lab[i], pt, pts);
+        }
       }
       if (newLinkPt != null) {
         ancBorderPt = this.getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
