@@ -81,7 +81,7 @@ class PlotData
     if yThres == 0 # if there is no difference, add arbitrary threshold of 1
       yThres = 1
 
-    # TODO KZ this appears backwards ?
+    # Note: Thresholding increase the space around the points which is why we add to the max and min
     @maxX += xThres
     @minX -= xThres
     @maxY += yThres
