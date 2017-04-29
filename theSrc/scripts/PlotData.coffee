@@ -105,10 +105,9 @@ class PlotData
 
       if widgetAR >= 1
         if rangeX > rangeY
-
-          if rangeToWidgetARRatio < 0
-            @maxX += ((widgetAR*rangeY)/2)
-            @minX -= ((widgetAR*rangeY)/2)
+          if rangeToWidgetARRatio > 1
+            @maxX += ((widgetAR*rangeY - rangeX)/2)
+            @minX -= ((widgetAR*rangeY - rangeX)/2)
           else
             @maxY += ((1/widgetAR)*rangeX - rangeY)/2
             @minY -= ((1/widgetAR)*rangeX - rangeY)/2
@@ -119,12 +118,12 @@ class PlotData
 
       else
         if rangeX < rangeY
-          if rangeToWidgetARRatio > 0
+          if rangeToWidgetARRatio < 1
             @maxY += (1/widgetAR*rangeX - rangeY)/2
             @minY -= (1/widgetAR*rangeX - rangeY)/2
           else
-            @maxX += (widgetAR*rangeY)/2
-            @minX -= (widgetAR*rangeY)/2
+            @maxX += (widgetAR*rangeY - rangeX)/2
+            @minX -= (widgetAR*rangeY - rangeX)/2
 
         else if rangeX > rangeY
           @maxY += ((1/widgetAR)*rangeX - rangeY)/2

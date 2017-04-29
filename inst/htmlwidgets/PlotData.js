@@ -113,9 +113,9 @@ PlotData = (function() {
       rangeToWidgetARRatio = widgetAR / rangeAR;
       if (widgetAR >= 1) {
         if (rangeX > rangeY) {
-          if (rangeToWidgetARRatio < 0) {
-            this.maxX += (widgetAR * rangeY) / 2;
-            this.minX -= (widgetAR * rangeY) / 2;
+          if (rangeToWidgetARRatio > 1) {
+            this.maxX += (widgetAR * rangeY - rangeX) / 2;
+            this.minX -= (widgetAR * rangeY - rangeX) / 2;
           } else {
             this.maxY += ((1 / widgetAR) * rangeX - rangeY) / 2;
             this.minY -= ((1 / widgetAR) * rangeX - rangeY) / 2;
@@ -126,12 +126,12 @@ PlotData = (function() {
         }
       } else {
         if (rangeX < rangeY) {
-          if (rangeToWidgetARRatio > 0) {
+          if (rangeToWidgetARRatio < 1) {
             this.maxY += (1 / widgetAR * rangeX - rangeY) / 2;
             this.minY -= (1 / widgetAR * rangeX - rangeY) / 2;
           } else {
-            this.maxX += (widgetAR * rangeY) / 2;
-            this.minX -= (widgetAR * rangeY) / 2;
+            this.maxX += (widgetAR * rangeY - rangeX) / 2;
+            this.minX -= (widgetAR * rangeY - rangeX) / 2;
           }
         } else if (rangeX > rangeY) {
           this.maxY += ((1 / widgetAR) * rangeX - rangeY) / 2;
