@@ -27,52 +27,8 @@ var LegendUtils = function () {
       return Math.sqrt((max * val).toPrecision(precision) / max / Math.PI);
     };
 
-<<<<<<< HEAD
     var getExponential = function getExponential(num) {
       return num.toExponential().split('e')[1];
-=======
-    LU.prototype.calcZQuartiles = function(data, maxZ) {
-      var botQ, differenceInExponentials, digitsBtwnShortForms, exp, expDecimal, exp_shortForm, getExponential, getZLabel, midQ, precision, topQ, topQuartileVal, topQuartileZ;
-      getZLabel = function(val, maxZ, precision) {
-        return Math.sqrt((maxZ * val).toPrecision(precision) / maxZ / Math.PI);
-      };
-      getExponential = function(num) {
-        return num.toExponential().split('e')[1];
-      };
-      topQ = 0.9;
-      midQ = 0.4;
-      botQ = 0.1;
-      topQuartileZ = maxZ * topQ;
-      differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ * topQuartileZ));
-      precision = differenceInExponentials < 1 ? 1 : 2;
-      topQuartileZ = topQuartileZ.toPrecision(precision);
-      exp = Math.log(topQuartileZ);
-      exp = Math.round(exp * 100000) / 100000;
-      exp /= Math.LN10;
-      expDecimal = exp % 1;
-      exp -= expDecimal;
-      digitsBtwnShortForms = exp % 3;
-      exp -= digitsBtwnShortForms;
-      exp_shortForm = this.getExponentialShortForm(exp);
-      if (exp_shortForm == null) {
-        exp_shortForm = '';
-      }
-      topQuartileVal = topQuartileZ / Math.pow(10, exp);
-      return data.Zquartiles = {
-        top: {
-          val: topQuartileVal + exp_shortForm,
-          lab: getZLabel(topQ, maxZ, precision)
-        },
-        mid: {
-          val: (topQuartileZ * midQ).toPrecision(1) / Math.pow(10, exp),
-          lab: getZLabel(midQ, topQuartileZ, 1)
-        },
-        bot: {
-          val: (topQuartileZ * botQ).toPrecision(1) / Math.pow(10, exp),
-          lab: getZLabel(botQ, topQuartileZ, 1)
-        }
-      };
->>>>>>> Changes to fix legend bubbles
     };
 
     // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val

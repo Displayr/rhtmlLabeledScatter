@@ -3,11 +3,11 @@ const BigNumber = require('bignumber.js');
 class Utils {
 
   static isNum(num) {
-    return (num != null) && (typeof num === 'number');
+    return !(_.isNull(num)) && _.isNumber(num);
   }
 
   static isArr(arr) {
-    return (arr != null) && arr instanceof Array;
+    return !(_.isNull(arr)) && _.isArray(arr);
   }
 
   static isArrOfNums(arr) {
