@@ -32,7 +32,7 @@ class LegendUtils {
     const getExponential = num => num.toExponential().split('e')[1];
 
     // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
-    const topQ = 0.8;
+    const topQ = 0.9;
     const midQ = 0.4;
     const botQ = 0.1;
 
@@ -40,7 +40,8 @@ class LegendUtils {
 
     // VIS-262: Compensate for inconsistent sig figs in legend
     const differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ * topQuartileZ));
-    const precision = differenceInExponentials < 1 ? 1 : 2;
+    const isTopQuartileExponentialOne = (getExponential(topQuartileZ) === 1);
+    const precision = (differenceInExponentials < 1 && isTopQuartileExponentialOne) ? 1 : 2;
     topQuartileZ = topQuartileZ.toPrecision(precision);
 
     // Calculations necessary to figure out which short form to apply

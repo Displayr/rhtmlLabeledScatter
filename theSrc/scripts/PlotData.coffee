@@ -81,7 +81,7 @@ class PlotData
     if yThres == 0 # if there is no difference, add arbitrary threshold of 1
       yThres = 1
 
-    # TODO KZ this appears backwards ?
+    # Note: Thresholding increase the space around the points which is why we add to the max and min
     @maxX += xThres
     @minX -= xThres
     @maxY += yThres
@@ -99,49 +99,35 @@ class PlotData
     if @fixedAspectRatio
       rangeX = @maxX - @minX
       rangeY = @maxY - @minY
-      factorRange = Math.abs(rangeX - rangeY)/2
+      rangeAR = Math.abs(rangeX / rangeY)
+      widgetAR = (@viewBoxDim.width / @viewBoxDim.height)
+      rangeToWidgetARRatio = widgetAR / rangeAR
 
-      if @viewBoxDim.width > @viewBoxDim.height
-        factorWidget = (@viewBoxDim.width/@viewBoxDim.height - 1)/2
-
+      if widgetAR >= 1
         if rangeX > rangeY
-          factorDiff = factorWidget - factorRange
-
-          if factorDiff > 0
-            @maxX += rangeX*factorDiff
-            @minX -= rangeX*factorDiff
+          if rangeToWidgetARRatio > 1
+            @maxX += ((widgetAR*rangeY - rangeX)/2)
+            @minX -= ((widgetAR*rangeY - rangeX)/2)
           else
-            @maxY += Math.abs(factorDiff)
-            @minY -= Math.abs(factorDiff)
+            @maxY += ((1/widgetAR)*rangeX - rangeY)/2
+            @minY -= ((1/widgetAR)*rangeX - rangeY)/2
 
         else if rangeX < rangeY
-          @maxX += factorRange
-          @minX -= factorRange
-          rangeX = @maxX - @minX
-          @maxX += rangeX*factorWidget
-          @minX -= rangeX*factorWidget
+          @maxX += ((widgetAR*rangeY) - rangeX)/2
+          @minX -= ((widgetAR*rangeY) - rangeX)/2
 
-
-      else if @viewBoxDim.width < @viewBoxDim.height
-        factorWidget = (@viewBoxDim.height/@viewBoxDim.width - 1)/2
-
+      else
         if rangeX < rangeY
-          factorDiff = factorWidget - factorRange
-
-          if factorDiff > 0
-            @maxY += rangeY*factorDiff
-            @minY -= rangeY*factorDiff
+          if rangeToWidgetARRatio < 1
+            @maxY += (1/widgetAR*rangeX - rangeY)/2
+            @minY -= (1/widgetAR*rangeX - rangeY)/2
           else
-            @maxX += Math.abs(factorDiff)
-            @minX -= Math.abs(factorDiff)
+            @maxX += (widgetAR*rangeY - rangeX)/2
+            @minX -= (widgetAR*rangeY - rangeX)/2
 
         else if rangeX > rangeY
-          @maxY += factorRange
-          @minY -= factorRange
-          rangeY = @maxY - @minY
-          @maxY += rangeY*factorWidget
-          @minY -= rangeY*factorWidget
-
+          @maxY += ((1/widgetAR)*rangeX - rangeY)/2
+          @minY -= ((1/widgetAR)*rangeX - rangeY)/2
 
     # TODO KZ this should be done first to skip the wasted computation (unless there are side effect in the above) ??
     # If user has sent x and y boundaries, these hold higher priority
