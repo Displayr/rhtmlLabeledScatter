@@ -103,9 +103,6 @@ class PlotData
       widgetAR = (@viewBoxDim.width / @viewBoxDim.height)
       rangeToWidgetARRatio = widgetAR / rangeAR
 
-      console.log('Aspect ratio: ' + rangeAR)
-      console.log('ViewBox AR: '+ widgetAR)
-
       if widgetAR >= 1
         if rangeX > rangeY
 
@@ -133,7 +130,6 @@ class PlotData
           @maxY += ((1/widgetAR)*rangeX - rangeY)/2
           @minY -= ((1/widgetAR)*rangeX - rangeY)/2
 
-    console.log('Final AR: ' + ((@maxX - @minX)/(@maxY - @minY)))
     # TODO KZ this should be done first to skip the wasted computation (unless there are side effect in the above) ??
     # If user has sent x and y boundaries, these hold higher priority
     @maxX = @bounds.xmax if Utils.isNum(@bounds.xmax)

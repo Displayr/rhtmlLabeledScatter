@@ -111,8 +111,6 @@ PlotData = (function() {
       rangeAR = Math.abs(rangeX / rangeY);
       widgetAR = this.viewBoxDim.width / this.viewBoxDim.height;
       rangeToWidgetARRatio = widgetAR / rangeAR;
-      console.log('Aspect ratio: ' + rangeAR);
-      console.log('ViewBox AR: ' + widgetAR);
       if (widgetAR >= 1) {
         if (rangeX > rangeY) {
           if (rangeToWidgetARRatio < 0) {
@@ -141,7 +139,6 @@ PlotData = (function() {
         }
       }
     }
-    console.log('Final AR: ' + ((this.maxX - this.minX) / (this.maxY - this.minY)));
     if (Utils.isNum(this.bounds.xmax)) {
       this.maxX = this.bounds.xmax;
     }
