@@ -68,7 +68,7 @@ PlotData = (function() {
   };
 
   PlotData.prototype.calculateMinMax = function() {
-    var factorDiff, factorRange, factorWidget, notMovedX, notMovedY, ptsOut, rangeX, rangeY, thres, xThres, yThres;
+    var notMovedX, notMovedY, ptsOut, rangeAR, rangeToWidgetARRatio, rangeX, rangeY, thres, widgetAR, xThres, yThres;
     this.minXold = this.minX;
     this.maxXold = this.maxX;
     this.minYold = this.minY;
@@ -108,45 +108,40 @@ PlotData = (function() {
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
-      factorRange = Math.abs(rangeX - rangeY) / 2;
-      if (this.viewBoxDim.width > this.viewBoxDim.height) {
-        factorWidget = (this.viewBoxDim.width / this.viewBoxDim.height - 1) / 2;
+      rangeAR = Math.abs(rangeX / rangeY);
+      widgetAR = this.viewBoxDim.width / this.viewBoxDim.height;
+      rangeToWidgetARRatio = widgetAR / rangeAR;
+      console.log('Aspect ratio: ' + rangeAR);
+      console.log('ViewBox AR: ' + widgetAR);
+      if (widgetAR >= 1) {
         if (rangeX > rangeY) {
-          factorDiff = factorWidget - factorRange;
-          if (factorDiff > 0) {
-            this.maxX += rangeX * factorDiff;
-            this.minX -= rangeX * factorDiff;
+          if (rangeToWidgetARRatio < 0) {
+            this.maxX += (widgetAR * rangeY) / 2;
+            this.minX -= (widgetAR * rangeY) / 2;
           } else {
-            this.maxY += Math.abs(factorDiff);
-            this.minY -= Math.abs(factorDiff);
+            this.maxY += ((1 / widgetAR) * rangeX - rangeY) / 2;
+            this.minY -= ((1 / widgetAR) * rangeX - rangeY) / 2;
           }
         } else if (rangeX < rangeY) {
-          this.maxX += factorRange;
-          this.minX -= factorRange;
-          rangeX = this.maxX - this.minX;
-          this.maxX += rangeX * factorWidget;
-          this.minX -= rangeX * factorWidget;
+          this.maxX += ((widgetAR * rangeY) - rangeX) / 2;
+          this.minX -= ((widgetAR * rangeY) - rangeX) / 2;
         }
-      } else if (this.viewBoxDim.width < this.viewBoxDim.height) {
-        factorWidget = (this.viewBoxDim.height / this.viewBoxDim.width - 1) / 2;
+      } else {
         if (rangeX < rangeY) {
-          factorDiff = factorWidget - factorRange;
-          if (factorDiff > 0) {
-            this.maxY += rangeY * factorDiff;
-            this.minY -= rangeY * factorDiff;
+          if (rangeToWidgetARRatio > 0) {
+            this.maxY += (1 / widgetAR * rangeX - rangeY) / 2;
+            this.minY -= (1 / widgetAR * rangeX - rangeY) / 2;
           } else {
-            this.maxX += Math.abs(factorDiff);
-            this.minX -= Math.abs(factorDiff);
+            this.maxX += (widgetAR * rangeY) / 2;
+            this.minX -= (widgetAR * rangeY) / 2;
           }
         } else if (rangeX > rangeY) {
-          this.maxY += factorRange;
-          this.minY -= factorRange;
-          rangeY = this.maxY - this.minY;
-          this.maxY += rangeY * factorWidget;
-          this.minY -= rangeY * factorWidget;
+          this.maxY += ((1 / widgetAR) * rangeX - rangeY) / 2;
+          this.minY -= ((1 / widgetAR) * rangeX - rangeY) / 2;
         }
       }
     }
+    console.log('Final AR: ' + ((this.maxX - this.minX) / (this.maxY - this.minY)));
     if (Utils.isNum(this.bounds.xmax)) {
       this.maxX = this.bounds.xmax;
     }
