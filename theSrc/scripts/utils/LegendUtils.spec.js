@@ -10,21 +10,32 @@ describe('LegendUtils:', function () {
     it('computes top, mid, and bot quartile thresholds for zMax=10000', function () {
       const data = {};
       LegendUtils.calcZQuartiles(data, 10000);
-      expect(data.Zquartiles).to.deep.equal({
-        top: { val: '8k', lab: 0.504626504404032 },
-        mid: { val: 3, lab: 0.3454941494713355 },
-        bot: { val: 0.8, lab: 0.1784124116152771 },
+
+      const errorMessage = `
+      Quartiles did not pass test:
+      ${JSON.stringify(data.Zquartiles, {}, 2)}
+      `;
+
+      expect(data.Zquartiles, errorMessage).to.deep.equal({
+        top: { val: '9k', lab: 0.5352372348458313 },
+        mid: { val: 4, lab: 0.37612638903183754 },
+        bot: { val: 0.9, lab: 0.1784124116152771 },
       });
     });
 
     it('computes top, mid, and bot quartile thresholds for zMax=1000000', function () {
       const data = {};
       LegendUtils.calcZQuartiles(data, 1000000);
-      console.log(data.Zquartiles);
-      expect(data.Zquartiles).to.deep.equal({
-        top: { val: '800k', lab: 0.504626504404032 },
-        mid: { val: 300, lab: 0.3454941494713355 },
-        bot: { val: 80, lab: 0.1784124116152771 },
+
+      const errorMessage = `
+      Quartiles did not pass test:
+      ${JSON.stringify(data.Zquartiles, {}, 2)}
+      `;
+
+      expect(data.Zquartiles, errorMessage).to.deep.equal({
+        top: { val: '900k', lab: 0.5352372348458313 },
+        mid: { val: 400, lab: 0.37612638903183754 },
+        bot: { val: 90, lab: 0.1784124116152771 },
       });
     });
   });

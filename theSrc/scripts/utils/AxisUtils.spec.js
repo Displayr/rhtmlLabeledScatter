@@ -27,7 +27,7 @@ describe('AxisUtils:', function () {
 
       this.defaultData = {
         len: 1,
-        calculateMinMax: () => { console.log('calc min max'); },
+        calculateMinMax: _.noop,
         minX: -5,
         maxX: 5,
         minY: -5,
