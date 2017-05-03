@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 // This class interacts with Displayr's state mechanism
 // Careful with alterations here as very old state types need to be defended against
 

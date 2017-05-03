@@ -1,6 +1,6 @@
-// NB local require statements cannot be enabled until the ES6 porting is complete
-// const DisplayError = require('DisplayError')
-/* global DisplayError */
+import _ from 'lodash';
+import DisplayError from './DisplayError';
+
 /* global Image */ // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
 
 

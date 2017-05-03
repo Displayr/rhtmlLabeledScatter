@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const Utils = require('./Utils.es6');
+const Utils = require('./Utils.js');
 
 describe('Utils:', function () {
   describe('isNum():', function () {

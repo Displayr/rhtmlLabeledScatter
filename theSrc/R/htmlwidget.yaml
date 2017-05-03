@@ -1,46 +1,14 @@
 dependencies:
 
- - name: External
-   version: 0.0.1
-   src: htmlwidgets/lib/
-   script:
-     - jquery.min.js
-     - lodash.min.js
-     - d3.min.js
-     - random.min.js
-     - labeler.js
-     - bluebird.min.js
-     - bignumber.min.js
-     - d3-extended.min.js
-
- - name: Local
-   version: 0.0.1
+ - name: Maps
+   version: 1.0.0
    src: htmlwidgets/
    script:
-     - DisplayError.js
-     - LabeledScatter.js
-     - PlotData.js
-     - RectPlot.js
-     - rhtmlLabeledScatter.js
-     - PlotColors.js
-     - State.js
-     - PlotLabel.js
-     - Links.js
-     - TrendLine.js
-
- - name: Utils
-   version: 0.0.1
-   src: htmlwidgets/utils
-   script:
-     - Utils.js
-     - SvgUtils.js
-     - AxisUtils.js
-     - LegendUtils.js
-     - DragUtils.js
+     - rhtmlLabeledScatter.js.map
 
  - name: style
    version: 1.0.0
    src: htmlwidgets/lib/style
    stylesheet:
-   - main.css
-   - rhtmlLabeledScatter.css
+     - main.css
+     - rhtmlLabeledScatter.css

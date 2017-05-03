@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const AxisUtils = require('./AxisUtils.es6');
+const AxisUtils = require('./AxisUtils.js');
 
 /*
  * * not testing leaderlines as I suspect we can merge them with the labels and figure them out at presentation time

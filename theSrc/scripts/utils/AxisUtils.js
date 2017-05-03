@@ -1,6 +1,5 @@
-
-/* global Utils */
-// import Utils from './Utils.es6';
+import _ from 'lodash';
+import Utils from './Utils';
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time

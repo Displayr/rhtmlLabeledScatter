@@ -1,5 +1,4 @@
-/* global _ */
-// import _ from 'lodash';
+import _ from 'lodash';
 
 class SvgUtils {
   static setSvgBBoxWidthAndHeight(dataArray, svgArray) {

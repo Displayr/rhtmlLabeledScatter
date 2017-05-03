@@ -1,14 +1,11 @@
-// NB local require statements cannot be enabled until the ES6 porting is complete
-// const $ = require('jquery')
-// const Utils = require('./utils/Utils')
-/* global Utils */
-/* global $ */
-
 /* To Refactor:
  *   * use a data uri instead of an S3 asset pointing at Kyles S3 account
  *   * Are we allowed to use this image ?
  *
  */
+
+import $ from 'jquery';
+import Utils from './utils/Utils';
 
 class DisplayError {
   static checkIfArrayOfNums(candidateArray, svg, errorMsg) {

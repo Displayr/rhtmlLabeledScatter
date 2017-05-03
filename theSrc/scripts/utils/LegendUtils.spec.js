@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const LegendUtils = require('./LegendUtils.es6');
+const LegendUtils = require('./LegendUtils.js');
 
 describe('LegendUtils:', function () {
 

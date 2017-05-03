@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 class TrendLine {
   constructor(pts, labs) {
     this._createLineArrays = this._createLineArrays.bind(this);
@@ -71,7 +73,12 @@ class TrendLine {
           // Constructs the line array
           i = 0;
           while (i < this.linesMapped[groupName].length) {
-            this.lines[groupName].push([this.linesMapped[groupName][i].x, this.linesMapped[groupName][i].y, this.linesMapped[groupName][i + 1].x, this.linesMapped[groupName][i + 1].y]);
+            this.lines[groupName].push([
+              this.linesMapped[groupName][i].x,
+              this.linesMapped[groupName][i].y,
+              this.linesMapped[groupName][i + 1].x,
+              this.linesMapped[groupName][i + 1].y
+            ]);
             i += 2;
           }
 

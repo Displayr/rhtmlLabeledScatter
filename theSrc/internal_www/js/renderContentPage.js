@@ -1,7 +1,14 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import LabeledScatter from '../../scripts/LabeledScatter.js';
 
 let exampleCounter = 0;
+
+// NB The window.stateUpdates is used by the visualTesting suite to check what stateCallbacks are made
+window.stateUpdates = [];
+const stateChangedCallback = (newState) => {
+  window.stateUpdates.push(_.clone(newState));
+};
 
 const addLinkToIndex = function () {
   const indexLinkContainer = $('<div>')
@@ -26,7 +33,7 @@ const addExampleTo = function () {
   const exampleName = exampleConfig.config;
   const stateName = exampleConfig.state;
   const width = exampleConfig.width || window.innerWidth;
-  const height = exampleConfig.height || window.innerHeight;
+  const height = exampleConfig.height || window.innerHeight - 75;
 
   if (_.isNaN(width)) { throw new Error(`Invalid width: '${width}'`); }
   if (_.isNaN(height)) { throw new Error(`Invalid height: '${height}'`); }
@@ -37,8 +44,11 @@ const addExampleTo = function () {
   });
 
   const statePromise = new Promise((resolve, reject) => {
-    if (!stateName) { return resolve({}); }
-    $.ajax(`/internal_www/scripts/data/${exampleName}/${stateName}.json`).done(resolve).error(reject);
+    if (stateName) {
+      $.ajax(`/internal_www/scripts/data/${exampleName}/${stateName}.json`).done(resolve).error(reject);
+    } else {
+      resolve({});
+    }
   });
 
   Promise.all([configPromise, statePromise]).then(([config, state]) => {
@@ -50,9 +60,8 @@ const addExampleTo = function () {
 
     element.empty();
 
-    // TODO must assume this is in scope until we convert to ES6
-    const instance = new LabeledScatter(width, height);
-    instance.draw(config, `.${exampleNumber}`);
+    const instance = new LabeledScatter(width, height, stateChangedCallback);
+    instance.draw(config, `.${exampleNumber}`, state);
   }).catch((error) => {
     console.log(error);
   });
@@ -61,6 +70,8 @@ const addExampleTo = function () {
 $(document).ready(function () {
   addLinkToIndex();
   $('.example').each(addExampleTo);
-  return $('body').attr('loaded', '');
-});
+  $('body').attr('loaded', '');
 
+  // NB "export" addExampleTo function so it can be used in renderExample.html
+  window.addExampleTo = addExampleTo;
+});

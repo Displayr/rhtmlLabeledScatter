@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 class Links {
 
   _labIsInsideBubblePt(lab, pt) {
