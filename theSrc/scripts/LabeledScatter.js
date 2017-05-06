@@ -7,7 +7,7 @@ import State from './State';
 class LabeledScatter {
 
   getResizeDelayPromise() {
-    if (this.resizeDelayPromise == null) {
+    if (_.isNull(this.resizeDelayPromise)) {
       this.resizeDelayPromise = new Promise((function () {
         return setTimeout(() => {
           console.log('rhtmlLabeledScatter: resize timeout');
@@ -61,7 +61,7 @@ class LabeledScatter {
             .attr('height', this.height)
             .attr('class', 'plot-container');
 
-    if ((data.X != null) && (data.Y != null)) {
+    if (!(_.isNull(data.X)) && !(_.isNull(data.Y))) {
       this.data = data;
     }
 
