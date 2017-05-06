@@ -31,7 +31,7 @@ gulp.task('build', function (done) {
 });
 
 gulp.task('core', function (done) {
-  runSequence('clean', ['compile-coffee', 'compileES6', 'less', 'copy', 'buildContentManifest'], done);
+  runSequence('clean', ['compileES6ToInst', 'less', 'copy', 'buildContentManifest'], done);
 });
 
 gulp.task('serve', function () {

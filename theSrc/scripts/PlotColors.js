@@ -1,7 +1,5 @@
-
-// NB local require statements cannot be enabled until the ES6 porting is complete
-// const Utils = require('./utils/Utils.es6')
-/* global Utils */
+import _ from 'lodash';
+import Utils from './utils/Utils';
 
 /* To Refactor:
  *   * the constructor of PlotColors has a side effect that creates the legendGroup used by PlotData etc

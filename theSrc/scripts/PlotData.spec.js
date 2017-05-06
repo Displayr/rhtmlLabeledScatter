@@ -1,5 +1,5 @@
-const Utils = require('./utils/Utils.es6');
-const PlotData = require('./PlotData.es6');
+const Utils = require('./utils/Utils.js');
+const PlotData = require('./PlotData.js');
 
 // NB/TODO need these global additions until the ES6 port is complete
 window.Utils = Utils;

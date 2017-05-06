@@ -1,7 +1,7 @@
-/* global d3 */
-/* global _ */
 
-// import _ from 'lodash';
+import d3 from 'd3';
+import $ from 'jquery';
+import _ from 'lodash';
 
 class DragUtils {
 

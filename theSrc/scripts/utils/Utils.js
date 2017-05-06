@@ -1,4 +1,5 @@
-const BigNumber = require('bignumber.js');
+import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 
 class Utils {
 

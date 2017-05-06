@@ -1,13 +1,14 @@
 
-// KZ TODO replace global statements with imports once ES6 complete
-/* global PlotData */
-/* global AxisUtils */
-/* global d3 */
-/* global Utils */
-/* global SvgUtils */
-/* global DragUtils */
-/* global TrendLine */
-/* global Links */
+import _ from 'lodash';
+import d3 from 'd3';
+import labeler from './lib/labeler';
+import Links from './Links';
+import PlotData from './PlotData'; // busted when uglify is enabled
+import TrendLine from './TrendLine';
+import AxisUtils from './utils/AxisUtils'; // busted when uglify is enabled
+import DragUtils from './utils/DragUtils';
+import SvgUtils from './utils/SvgUtils';
+import Utils from './utils/Utils';
 
 class RectPlot {
   constructor(state,
@@ -763,7 +764,6 @@ class RectPlot {
 
   drawLabs() {
     let drag,
-      labeler,
       labels_img_svg,
       labels_svg;
     if (this.showLabels && !this.trendLines.show) {
@@ -805,16 +805,16 @@ class RectPlot {
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log('rhtmlLabeledScatter: Running label placement algorithm...');
-      labeler = d3.labeler()
-                  .svg(this.svg)
-                  .w1(this.viewBoxDim.x)
-                  .w2(this.viewBoxDim.x + this.viewBoxDim.width)
-                  .h1(this.viewBoxDim.y)
-                  .h2(this.viewBoxDim.y + this.viewBoxDim.height)
-                  .anchor(this.data.pts)
-                  .label(this.data.lab)
-                  .pinned(this.state.getUserPositionedLabIds())
-                  .start(500);
+      labeler()
+        .svg(this.svg)
+        .w1(this.viewBoxDim.x)
+        .w2(this.viewBoxDim.x + this.viewBoxDim.width)
+        .h1(this.viewBoxDim.y)
+        .h2(this.viewBoxDim.y + this.viewBoxDim.height)
+        .anchor(this.data.pts)
+        .label(this.data.lab)
+        .pinned(this.state.getUserPositionedLabIds())
+        .start(500);
 
       labels_svg.transition()
                 .duration(800)
@@ -868,16 +868,16 @@ class RectPlot {
       labels_img_svg = this.svg.selectAll('.lab-img');
       SvgUtils.setSvgBBoxWidthAndHeight(this.tl.arrowheadLabels, labels_svg);
 
-      labeler = d3.labeler()
-                  .svg(this.svg)
-                  .w1(this.viewBoxDim.x)
-                  .w2(this.viewBoxDim.x + this.viewBoxDim.width)
-                  .h1(this.viewBoxDim.y)
-                  .h2(this.viewBoxDim.y + this.viewBoxDim.height)
-                  .anchor(this.tl.arrowheadPts)
-                  .label(this.tl.arrowheadLabels)
-                  .pinned(this.state.getUserPositionedLabIds())
-                  .start(500);
+      labeler()
+         .svg(this.svg)
+         .w1(this.viewBoxDim.x)
+         .w2(this.viewBoxDim.x + this.viewBoxDim.width)
+         .h1(this.viewBoxDim.y)
+         .h2(this.viewBoxDim.y + this.viewBoxDim.height)
+         .anchor(this.tl.arrowheadPts)
+         .label(this.tl.arrowheadLabels)
+         .pinned(this.state.getUserPositionedLabIds())
+         .start(500);
 
       labels_svg.transition()
         .duration(800)

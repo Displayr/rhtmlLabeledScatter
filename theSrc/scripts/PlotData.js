@@ -1,3 +1,9 @@
+import _ from 'lodash';
+import PlotColors from './PlotColors';
+import PlotLabel from './PlotLabel';
+import LegendUtils from './utils/LegendUtils';
+import Utils from './utils/Utils';
+
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
 //

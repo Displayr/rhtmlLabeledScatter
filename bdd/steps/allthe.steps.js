@@ -45,7 +45,7 @@ module.exports = function () {
   });
 
   this.Then(/^the "(.*)" snapshot matches the baseline$/, function (snapshotName) {
-    const selectorExpression = '.scatterplot';
+    const selectorExpression = '#render-example-container';
     return wrapInPromiseAndLogErrors(() => {
       return this.eyes.checkRegionBy(by.css(selectorExpression), snapshotName);
     });

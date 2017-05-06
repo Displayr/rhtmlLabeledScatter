@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const DisplayError = require('./DisplayError.es6');
-const PlotLabel = require('./PlotLabel.es6');
+const DisplayError = require('./DisplayError.js');
+const PlotLabel = require('./PlotLabel.js');
 
 // NB need these global additions until the ES6 port is complete
 window.DisplayError = DisplayError;
