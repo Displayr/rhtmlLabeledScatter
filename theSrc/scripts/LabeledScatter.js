@@ -1,4 +1,5 @@
 import d3 from 'd3';
+import _ from 'lodash';
 import DisplayError from './DisplayError';
 import RectPlot from './RectPlot';
 import State from './State';
@@ -50,6 +51,10 @@ class LabeledScatter {
   }
 
   draw(data, el, state) {
+    // Reset widget if previous data present - see VIS-278
+    if (!(_.isUndefined(this.data))) {
+      throw new Error('rhtmlLabeledScatter reset');
+    }
     const svg = d3.select(el)
             .append('svg')
             .attr('width', this.width)
