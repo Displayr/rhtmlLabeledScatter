@@ -1,4 +1,5 @@
 import d3 from 'd3';
+import _ from 'lodash';
 import DisplayError from './DisplayError';
 import RectPlot from './RectPlot';
 import State from './State';
@@ -6,7 +7,7 @@ import State from './State';
 class LabeledScatter {
 
   getResizeDelayPromise() {
-    if (this.resizeDelayPromise == null) {
+    if (_.isNull(this.resizeDelayPromise)) {
       this.resizeDelayPromise = new Promise((function () {
         return setTimeout(() => {
           console.log('rhtmlLabeledScatter: resize timeout');
@@ -50,13 +51,17 @@ class LabeledScatter {
   }
 
   draw(data, el, state) {
+    // Reset widget if previous data present - see VIS-278
+    if (!(_.isUndefined(this.data))) {
+      throw new Error('rhtmlLabeledScatter reset');
+    }
     const svg = d3.select(el)
             .append('svg')
             .attr('width', this.width)
             .attr('height', this.height)
             .attr('class', 'plot-container');
 
-    if ((data.X != null) && (data.Y != null)) {
+    if (!(_.isNull(data.X)) && !(_.isNull(data.Y))) {
       this.data = data;
     }
 
