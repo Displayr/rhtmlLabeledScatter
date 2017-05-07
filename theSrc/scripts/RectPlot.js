@@ -702,8 +702,11 @@ class RectPlot {
              });
     TooltipUtils.appendTooltips(anc, this.Z, this.xDecimals, this.yDecimals,
       this.zDecimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix);
-    this.svg.selectAll('clipPath').remove();
-    SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.viewBoxDim);
+    // Clip paths used to crop bubbles if they expand beyond the plot's borders
+    if (Utils.isArrOfNums(this.Z)) {
+      this.svg.selectAll('clipPath').remove();
+      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.viewBoxDim);
+    }
   }
 
   drawDraggedMarkers() {
