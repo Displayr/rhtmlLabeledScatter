@@ -97,7 +97,7 @@ class PlotData {
     if (Utils.isArrOfNums(this.Z)) {
       bubbleRadiusArray = this.normZ;
     } else {
-      bubbleRadiusArray = Array(this.X.length).fill(0);
+      bubbleRadiusArray = _.map(this.X, v => 0); // creates an array of 0s
     }
     const origXmin = _.map(this.origX, (val, i) => val - bubbleRadiusArray[i]);
     const origXmax = _.map(this.origX, (val, i) => val + bubbleRadiusArray[i]);

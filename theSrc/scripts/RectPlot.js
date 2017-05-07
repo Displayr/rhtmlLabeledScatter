@@ -41,7 +41,7 @@ class RectPlot {
     yTitleFontFamily,
     yTitleFontSize,
     yTitleFontColor,
-    showLabels,
+    showLabels = true,
     labelsFontFamily,
     labelsFontSize,
     labelsFontColor,
