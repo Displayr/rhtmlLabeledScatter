@@ -20,12 +20,12 @@ class RectPlot {
     Z,
     group,
     label,
-    labelAlt,
+    labelAlt = [],
     svg,
     fixedRatio,
     xTitle,
     yTitle,
-    zTitle,
+    zTitle = '',
     title,
     colors,
     transparency,
@@ -45,18 +45,18 @@ class RectPlot {
     labelsFontFamily,
     labelsFontSize,
     labelsFontColor,
-    labelsLogoScale,
-    xDecimals,
-    yDecimals,
-    zDecimals,
-    xPrefix,
-    yPrefix,
-    zPrefix,
-    xSuffix,
-    ySuffix,
-    zSuffix,
+    labelsLogoScale = [],
+    xDecimals = null,
+    yDecimals = null,
+    zDecimals = null,
+    xPrefix = '',
+    yPrefix = '',
+    zPrefix = '',
+    xSuffix = '',
+    ySuffix = '',
+    zSuffix = '',
     legendShow,
-    legendBubblesShow,
+    legendBubblesShow = true,
     legendFontFamily,
     legendFontSize,
     legendFontColor,
@@ -64,16 +64,16 @@ class RectPlot {
     axisFontFamily,
     axisFontColor,
     axisFontSize,
-    pointRadius,
-    xBoundsMinimum,
-    xBoundsMaximum,
-    yBoundsMinimum,
-    yBoundsMaximum,
-    xBoundsUnitsMajor,
-    yBoundsUnitsMajor,
-    trendLines,
-    trendLinesLineThickness,
-    trendLinesPointSize,
+    pointRadius = 2,
+    xBoundsMinimum = null,
+    xBoundsMaximum = null,
+    yBoundsMinimum = null,
+    yBoundsMaximum = null,
+    xBoundsUnitsMajor = null,
+    yBoundsUnitsMajor = null,
+    trendLines = false,
+    trendLinesLineThickness = 1,
+    trendLinesPointSize = 2,
     plotBorderShow = true,
   ) {
     this.setDim = this.setDim.bind(this);
@@ -98,55 +98,30 @@ class RectPlot {
     this.Z = Z;
     this.group = group;
     this.label = label;
-    if (_.isNull(labelAlt)) { labelAlt = []; }
     this.labelAlt = labelAlt;
     this.svg = svg;
-    if (_.isNull(zTitle)) { zTitle = ''; }
     this.zTitle = zTitle;
     this.colors = colors;
     this.transparency = transparency;
     this.originAlign = originAlign;
-    if (_.isNull(showLabels)) { showLabels = true; }
     this.showLabels = showLabels;
-    if (_.isNull(labelsLogoScale)) { labelsLogoScale = []; }
-    if (_.isNull(xDecimals)) { xDecimals = null; }
     this.xDecimals = xDecimals;
-    if (_.isNull(yDecimals)) { yDecimals = null; }
     this.yDecimals = yDecimals;
-    if (_.isNull(zDecimals)) { zDecimals = null; }
     this.zDecimals = zDecimals;
-    if (_.isNull(xPrefix)) { xPrefix = ''; }
     this.xPrefix = xPrefix;
-    if (_.isNull(yPrefix)) { yPrefix = ''; }
     this.yPrefix = yPrefix;
-    if (_.isNull(zPrefix)) { zPrefix = ''; }
     this.zPrefix = zPrefix;
-    if (_.isNull(xSuffix)) { xSuffix = ''; }
     this.xSuffix = xSuffix;
-    if (_.isNull(ySuffix)) { ySuffix = ''; }
     this.ySuffix = ySuffix;
-    if (_.isNull(zSuffix)) { zSuffix = ''; }
     this.zSuffix = zSuffix;
     this.legendShow = legendShow;
-    if (_.isNull(legendBubblesShow)) { legendBubblesShow = true; }
     this.legendBubblesShow = legendBubblesShow;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
-    if (_.isNull(pointRadius)) { pointRadius = 2; }
     this.pointRadius = pointRadius;
-    if (_.isNull(xBoundsMinimum)) { xBoundsMinimum = null; }
-    if (_.isNull(xBoundsMaximum)) { xBoundsMaximum = null; }
-    if (_.isNull(yBoundsMinimum)) { yBoundsMinimum = null; }
-    if (_.isNull(yBoundsMaximum)) { yBoundsMaximum = null; }
-    if (_.isNull(xBoundsUnitsMajor)) { xBoundsUnitsMajor = null; }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor;
-    if (_.isNull(yBoundsUnitsMajor)) { yBoundsUnitsMajor = null; }
     this.yBoundsUnitsMajor = yBoundsUnitsMajor;
-    if (_.isNull(trendLines)) { trendLines = false; }
-    if (_.isNull(trendLinesLineThickness)) { trendLinesLineThickness = 1; }
-    if (_.isNull(trendLinesPointSize)) { trendLinesPointSize = 2; }
-    if (_.isNull(plotBorderShow)) { plotBorderShow = true; }
     this.plotBorderShow = plotBorderShow;
     this.maxDrawFailureCount = 200;
     

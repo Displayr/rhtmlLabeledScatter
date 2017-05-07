@@ -93,16 +93,17 @@ class PlotData {
     this.maxYold = this.maxY;
 
     const ptsOut = this.outsidePlotPtsId;
-    let bubbleRadiusArray;
-    if (Utils.isArrOfNums(this.Z)) {
-      bubbleRadiusArray = this.normZ;
-    } else {
-      bubbleRadiusArray = _.map(this.X, v => 0); // creates an array of 0s
-    }
-    const origXmin = _.map(this.origX, (val, i) => val - bubbleRadiusArray[i]);
-    const origXmax = _.map(this.origX, (val, i) => val + bubbleRadiusArray[i]);
-    const origYmin = _.map(this.origY, (val, i) => val - bubbleRadiusArray[i]);
-    const origYmax = _.map(this.origY, (val, i) => val + bubbleRadiusArray[i]);
+    const getNormalizedZOrZero = (i) => {
+      if (Utils.isArrOfNums(this.Z)) {
+        return this.normZ[i];
+      } else {
+        return 0;
+      }
+    };
+    const origXmin = _.map(this.origX, (val, i) => val - getNormalizedZOrZero(i));
+    const origXmax = _.map(this.origX, (val, i) => val + getNormalizedZOrZero(i));
+    const origYmin = _.map(this.origY, (val, i) => val - getNormalizedZOrZero(i));
+    const origYmax = _.map(this.origY, (val, i) => val + getNormalizedZOrZero(i));
     const getNotMoved = arr => _.filter(arr, (val, key) => !(_.includes(ptsOut, key)));
     const notMoved = {
       Xmin: getNotMoved(origXmin),
