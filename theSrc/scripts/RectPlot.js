@@ -74,7 +74,7 @@ class RectPlot {
     trendLines,
     trendLinesLineThickness,
     trendLinesPointSize,
-    plotBorderShow,
+    plotBorderShow = true,
   ) {
     this.setDim = this.setDim.bind(this);
     this.draw = this.draw.bind(this);

@@ -25,7 +25,7 @@ class LegendUtils {
   }
 
   // KZ TODO remove 'data' side effect
-  // TODO Po describe why
+  // Calculates the sizes of the Legend bubble plots and the labels that go with them
   static calcZQuartiles(data, maxZ) {
     const getZLabel = (val, max, precision) => Math.sqrt((max * val).toPrecision(precision) / max / Math.PI);
 
@@ -74,7 +74,7 @@ class LegendUtils {
   }
 
   // TODO KZ remove side effect, just return the normalized array
-  // TODO Po describe why
+  // Normalizes Z values so that the radius size reflects the actual pixel size in the rect plot
   static normalizeZValues(data, maxZ) {
     data.normZ = data.Z.map((z) => {
       const normalizedArea = z / maxZ;

@@ -37,8 +37,8 @@ class DragUtils {
         plot.data.addElemToLegend(id);
         plot.state.pushLegendPt(id);
         plot.resetPlotAfterDragEvent();
-      //  TODO KZ what does this statement mean ?
       } else if ((lab.x - (lab.width / 2) < anc.x && anc.x < lab.x + (lab.width / 2)) && (lab.y > anc.y && anc.y > lab.y - lab.height)) {
+        // For logo labels, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0);
       } else {
         plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim);
