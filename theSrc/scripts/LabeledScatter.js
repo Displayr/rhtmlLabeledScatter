@@ -119,6 +119,7 @@ class LabeledScatter {
                         this.data.legendFontFamily,
                         this.data.legendFontSize,
                         this.data.legendFontColor,
+                        this.data.showAxis,
                         this.data.axisFontFamily,
                         this.data.axisFontColor,
                         this.data.axisFontSize,
