@@ -98,55 +98,55 @@ class RectPlot {
     this.Z = Z;
     this.group = group;
     this.label = label;
-    if (labelAlt == null) { labelAlt = []; }
+    if (_.isNull(labelAlt)) { labelAlt = []; }
     this.labelAlt = labelAlt;
     this.svg = svg;
-    if (zTitle == null) { zTitle = ''; }
+    if (_.isNull(zTitle)) { zTitle = ''; }
     this.zTitle = zTitle;
     this.colors = colors;
     this.transparency = transparency;
     this.originAlign = originAlign;
-    if (showLabels == null) { showLabels = true; }
+    if (_.isNull(showLabels)) { showLabels = true; }
     this.showLabels = showLabels;
-    if (labelsLogoScale == null) { labelsLogoScale = []; }
-    if (xDecimals == null) { xDecimals = null; }
+    if (_.isNull(labelsLogoScale)) { labelsLogoScale = []; }
+    if (_.isNull(xDecimals)) { xDecimals = null; }
     this.xDecimals = xDecimals;
-    if (yDecimals == null) { yDecimals = null; }
+    if (_.isNull(yDecimals)) { yDecimals = null; }
     this.yDecimals = yDecimals;
-    if (zDecimals == null) { zDecimals = null; }
+    if (_.isNull(zDecimals)) { zDecimals = null; }
     this.zDecimals = zDecimals;
-    if (xPrefix == null) { xPrefix = ''; }
+    if (_.isNull(xPrefix)) { xPrefix = ''; }
     this.xPrefix = xPrefix;
-    if (yPrefix == null) { yPrefix = ''; }
+    if (_.isNull(yPrefix)) { yPrefix = ''; }
     this.yPrefix = yPrefix;
-    if (zPrefix == null) { zPrefix = ''; }
+    if (_.isNull(zPrefix)) { zPrefix = ''; }
     this.zPrefix = zPrefix;
-    if (xSuffix == null) { xSuffix = ''; }
+    if (_.isNull(xSuffix)) { xSuffix = ''; }
     this.xSuffix = xSuffix;
-    if (ySuffix == null) { ySuffix = ''; }
+    if (_.isNull(ySuffix)) { ySuffix = ''; }
     this.ySuffix = ySuffix;
-    if (zSuffix == null) { zSuffix = ''; }
+    if (_.isNull(zSuffix)) { zSuffix = ''; }
     this.zSuffix = zSuffix;
     this.legendShow = legendShow;
-    if (legendBubblesShow == null) { legendBubblesShow = true; }
+    if (_.isNull(legendBubblesShow)) { legendBubblesShow = true; }
     this.legendBubblesShow = legendBubblesShow;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
-    if (pointRadius == null) { pointRadius = 2; }
+    if (_.isNull(pointRadius)) { pointRadius = 2; }
     this.pointRadius = pointRadius;
-    if (xBoundsMinimum == null) { xBoundsMinimum = null; }
-    if (xBoundsMaximum == null) { xBoundsMaximum = null; }
-    if (yBoundsMinimum == null) { yBoundsMinimum = null; }
-    if (yBoundsMaximum == null) { yBoundsMaximum = null; }
-    if (xBoundsUnitsMajor == null) { xBoundsUnitsMajor = null; }
+    if (_.isNull(xBoundsMinimum)) { xBoundsMinimum = null; }
+    if (_.isNull(xBoundsMaximum)) { xBoundsMaximum = null; }
+    if (_.isNull(yBoundsMinimum)) { yBoundsMinimum = null; }
+    if (_.isNull(yBoundsMaximum)) { yBoundsMaximum = null; }
+    if (_.isNull(xBoundsUnitsMajor)) { xBoundsUnitsMajor = null; }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor;
-    if (yBoundsUnitsMajor == null) { yBoundsUnitsMajor = null; }
+    if (_.isNull(yBoundsUnitsMajor)) { yBoundsUnitsMajor = null; }
     this.yBoundsUnitsMajor = yBoundsUnitsMajor;
-    if (trendLines == null) { trendLines = false; }
-    if (trendLinesLineThickness == null) { trendLinesLineThickness = 1; }
-    if (trendLinesPointSize == null) { trendLinesPointSize = 2; }
-    if (plotBorderShow == null) { plotBorderShow = true; }
+    if (_.isNull(trendLines)) { trendLines = false; }
+    if (_.isNull(trendLinesLineThickness)) { trendLinesLineThickness = 1; }
+    if (_.isNull(trendLinesPointSize)) { trendLinesPointSize = 2; }
+    if (_.isNull(plotBorderShow)) { plotBorderShow = true; }
     this.plotBorderShow = plotBorderShow;
     this.maxDrawFailureCount = 200;
     
@@ -226,11 +226,11 @@ class RectPlot {
 
     this.title.y = this.verticalPadding + this.title.textHeight;
 
-    this.grid = (grid != null) ? grid : true;
-    this.origin = (origin != null) ? origin : true;
-    this.fixedRatio = (fixedRatio != null) ? fixedRatio : true;
+    this.grid = !(_.isNull(grid)) ? grid : true;
+    this.origin = !(_.isNull(origin)) ? origin : true;
+    this.fixedRatio = !(_.isNull(fixedRatio)) ? fixedRatio : true;
 
-    if (this.label == null) {
+    if (_.isNull(this.label)) {
       this.label = [];
       for (const x of Array.from(this.X)) {
         this.label.push('');
@@ -630,7 +630,7 @@ class RectPlot {
           .attr('font-size', this.legendFontSize)
           .attr('text-anchor', function (d) { return d.anchor; })
           .attr('fill', function (d) { return d.color; })
-          .text(function (d) { if (d.markerId != null) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
+          .text(function (d) { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
           .call(drag);
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
@@ -668,7 +668,7 @@ class RectPlot {
         SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       }
 
-      if (this.legendShow || (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) || (this.data.legendPts != null)) {
+      if (this.legendShow || (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
         if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
           this.data.revertMinMax();
           const error = new Error('drawLegend Failed');
