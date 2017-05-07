@@ -692,6 +692,7 @@ class RectPlot {
              .attr('cy', d => d.y)
              .attr('fill', d => d.color)
              .attr('fill-opacity', d => d.fillOpacity)
+             .attr('clip-path', d => `url(#cp-${d.id})`)
              .attr('r', (d) => {
                if (this.trendLines.show) {
                  return this.trendLines.pointSize;
@@ -701,6 +702,8 @@ class RectPlot {
              });
     TooltipUtils.appendTooltips(anc, this.Z, this.xDecimals, this.yDecimals,
       this.zDecimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix);
+    this.svg.selectAll('clipPath').remove();
+    SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.viewBoxDim);
   }
 
   drawDraggedMarkers() {

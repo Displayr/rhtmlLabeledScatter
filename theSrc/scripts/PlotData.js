@@ -345,7 +345,6 @@ class PlotData {
             url = '';
             width = null;
             height = null;
-            r = 2;
           }
 
           let fontColor = (ptColor = this.plotColors.getColor(i));
