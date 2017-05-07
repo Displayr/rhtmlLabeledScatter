@@ -59,5 +59,6 @@
   "trendLines":false,
   "trendLinesLineThickness":1,
   "trendLinesPointSize":2,
+  "showAxis": false,
   "plotBorderShow":true
 }

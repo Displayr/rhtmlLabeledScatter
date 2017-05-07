@@ -60,6 +60,7 @@ class RectPlot {
     legendFontFamily,
     legendFontSize,
     legendFontColor,
+    showAxis = true,
     axisFontFamily,
     axisFontColor,
     axisFontSize,
@@ -132,9 +133,6 @@ class RectPlot {
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
-    this.axisFontFamily = axisFontFamily;
-    this.axisFontColor = axisFontColor;
-    this.axisFontSize = axisFontSize;
     if (pointRadius == null) { pointRadius = 2; }
     this.pointRadius = pointRadius;
     if (xBoundsMinimum == null) { xBoundsMinimum = null; }
@@ -151,6 +149,13 @@ class RectPlot {
     if (plotBorderShow == null) { plotBorderShow = true; }
     this.plotBorderShow = plotBorderShow;
     this.maxDrawFailureCount = 200;
+    
+    this.axisSettings = {
+      fontFamily: axisFontFamily,
+      fontSize: axisFontSize,
+      fontColor: axisFontColor,
+      show: showAxis,
+    };
 
     this.labelsFont = {
       size: labelsFontSize,
@@ -445,63 +450,66 @@ class RectPlot {
       }
 
 
-      this.svg.selectAll('.dim-marker-leader').remove();
-      this.svg.selectAll('.dim-marker-leader')
-               .data(axisArrays.axisLeader)
-               .enter()
-               .append('line')
-               .attr('class', 'dim-marker-leader')
-               .attr('x1', function (d) { return d.x1; })
-               .attr('y1', function (d) { return d.y1; })
-               .attr('x2', function (d) { return d.x2; })
-               .attr('y2', function (d) { return d.y2; })
-               .attr('stroke-width', 1)
-               .attr('stroke', 'black');
-
-      this.svg.selectAll('.dim-marker-label').remove();
-      const markerLabels = this.svg.selectAll('.dim-marker-label')
-               .data(axisArrays.axisLeaderLabel)
-               .enter()
-               .append('text')
-               .attr('class', 'dim-marker-label')
-               .attr('x', function (d) { return d.x; })
-               .attr('y', function (d) { return d.y; })
-               .attr('font-family', this.axisFontFamily)
-               .attr('fill', this.axisFontColor)
-               .attr('font-size', this.axisFontSize)
-               .text(function (d) { return d.label; })
-               .attr('text-anchor', function (d) { return d.anchor; })
-               .attr('type', function (d) { return d.type; });
-
-      // Figure out the max width of the yaxis dimensional labels
-      const initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth;
-      const initAxisTextColWidth = this.axisDimensionText.colMaxWidth;
-      const initAxisTextRowHeight = this.axisDimensionText.rowMaxHeight;
-      const initAxisTextColHeight = this.axisDimensionText.colMaxHeight;
-      for (let i = 0; i < markerLabels[0].length; i++) {
-        const markerLabel = markerLabels[0][i];
-        const labelType = d3.select(markerLabel).attr('type');
-        const bb = markerLabel.getBBox();
-        if ((this.axisDimensionText.rowMaxWidth < bb.width) && (labelType === 'row')) { this.axisDimensionText.rowMaxWidth = bb.width; }
-        if ((this.axisDimensionText.colMaxWidth < bb.width) && (labelType === 'col')) { this.axisDimensionText.colMaxWidth = bb.width; }
-        if ((this.axisDimensionText.rowMaxHeight < bb.height) && (labelType === 'row')) { this.axisDimensionText.rowMaxHeight = bb.height; }
-        if ((this.axisDimensionText.colMaxHeight < bb.height) && (labelType === 'col')) { this.axisDimensionText.colMaxHeight = bb.height; }
-
-        if (this.width < (bb.x + bb.width)) {
-          this.axisDimensionText.rightPadding = bb.width / 2;
+      if (this.axisSettings.show) {
+        this.svg.selectAll('.dim-marker-leader').remove();
+        this.svg.selectAll('.dim-marker-leader')
+        .data(axisArrays.axisLeader)
+        .enter()
+        .append('line')
+        .attr('class', 'dim-marker-leader')
+        .attr('x1', function (d) { return d.x1; })
+        .attr('y1', function (d) { return d.y1; })
+        .attr('x2', function (d) { return d.x2; })
+        .attr('y2', function (d) { return d.y2; })
+        .attr('stroke-width', 1)
+        .attr('stroke', 'black');
+  
+        this.svg.selectAll('.dim-marker-label').remove();
+        const markerLabels = this.svg.selectAll('.dim-marker-label')
+        .data(axisArrays.axisLeaderLabel)
+        .enter()
+        .append('text')
+        .attr('class', 'dim-marker-label')
+        .attr('x', function (d) { return d.x; })
+        .attr('y', function (d) { return d.y; })
+        .attr('font-family', this.axisSettings.fontFamily)
+        .attr('fill', this.axisSettings.fontColor)
+        .attr('font-size', this.axisSettings.fontSize)
+        .text(function (d) { return d.label; })
+        .attr('text-anchor', function (d) { return d.anchor; })
+        .attr('type', function (d) { return d.type; });
+  
+        // Figure out the max width of the yaxis dimensional labels
+        const initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth;
+        const initAxisTextColWidth = this.axisDimensionText.colMaxWidth;
+        const initAxisTextRowHeight = this.axisDimensionText.rowMaxHeight;
+        const initAxisTextColHeight = this.axisDimensionText.colMaxHeight;
+        for (let i = 0; i < markerLabels[0].length; i++) {
+          const markerLabel = markerLabels[0][i];
+          const labelType = d3.select(markerLabel).attr('type');
+          const bb = markerLabel.getBBox();
+          if ((this.axisDimensionText.rowMaxWidth < bb.width) && (labelType === 'row')) { this.axisDimensionText.rowMaxWidth = bb.width; }
+          if ((this.axisDimensionText.colMaxWidth < bb.width) && (labelType === 'col')) { this.axisDimensionText.colMaxWidth = bb.width; }
+          if ((this.axisDimensionText.rowMaxHeight < bb.height) && (labelType === 'row')) { this.axisDimensionText.rowMaxHeight = bb.height; }
+          if ((this.axisDimensionText.colMaxHeight < bb.height) && (labelType === 'col')) { this.axisDimensionText.colMaxHeight = bb.height; }
+    
+          if (this.width < (bb.x + bb.width)) {
+            this.axisDimensionText.rightPadding = bb.width / 2;
+          }
+        }
+  
+        if ((initAxisTextRowWidth !== this.axisDimensionText.rowMaxWidth) ||
+          (initAxisTextColWidth !== this.axisDimensionText.colMaxWidth) ||
+          (initAxisTextRowHeight !== this.axisDimensionText.rowMaxHeight) ||
+          (initAxisTextColHeight !== this.axisDimensionText.colMaxHeight)) {
+          this.setDim(this.svg, this.width, this.height);
+          this.data.revertMinMax();
+          const error = new Error('axis marker out of bound');
+          error.retry = true;
+          return reject(error);
         }
       }
-
-      if ((initAxisTextRowWidth !== this.axisDimensionText.rowMaxWidth) ||
-         (initAxisTextColWidth !== this.axisDimensionText.colMaxWidth) ||
-         (initAxisTextRowHeight !== this.axisDimensionText.rowMaxHeight) ||
-         (initAxisTextColHeight !== this.axisDimensionText.colMaxHeight)) {
-        this.setDim(this.svg, this.width, this.height);
-        this.data.revertMinMax();
-        const error = new Error('axis marker out of bound');
-        error.retry = true;
-        return reject(error);
-      }
+      
       return resolve();
     }.bind(this)));
   }

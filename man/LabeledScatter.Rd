@@ -23,7 +23,7 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
   maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 12,
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12,
+  y.title.font.family = "Arial", y.title.font.size = 12, axis.show = TRUE,
   axis.font.family = "Arial", axis.font.color = "Black",
   axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
   255), x.title.font.family = "Arial", x.title.font.size = 12,
@@ -114,6 +114,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{y.title.font.family}{is the font family of the y axis title}
 
 \item{y.title.font.size}{is the font size of the y axis title}
+
+\item{axis.show}{Boolean toggle to show the axis tick markers (Default is TRUE).}
 
 \item{axis.font.family}{Font Family of the axis labels}
 
