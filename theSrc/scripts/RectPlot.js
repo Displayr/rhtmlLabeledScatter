@@ -20,12 +20,12 @@ class RectPlot {
     Z,
     group,
     label,
-    labelAlt,
+    labelAlt = [],
     svg,
     fixedRatio,
     xTitle,
     yTitle,
-    zTitle,
+    zTitle = '',
     title,
     colors,
     transparency,
@@ -41,22 +41,22 @@ class RectPlot {
     yTitleFontFamily,
     yTitleFontSize,
     yTitleFontColor,
-    showLabels,
+    showLabels = true,
     labelsFontFamily,
     labelsFontSize,
     labelsFontColor,
-    labelsLogoScale,
-    xDecimals,
-    yDecimals,
-    zDecimals,
-    xPrefix,
-    yPrefix,
-    zPrefix,
-    xSuffix,
-    ySuffix,
-    zSuffix,
+    labelsLogoScale = [],
+    xDecimals = null,
+    yDecimals = null,
+    zDecimals = null,
+    xPrefix = '',
+    yPrefix = '',
+    zPrefix = '',
+    xSuffix = '',
+    ySuffix = '',
+    zSuffix = '',
     legendShow,
-    legendBubblesShow,
+    legendBubblesShow = true,
     legendFontFamily,
     legendFontSize,
     legendFontColor,
@@ -64,17 +64,17 @@ class RectPlot {
     axisFontFamily,
     axisFontColor,
     axisFontSize,
-    pointRadius,
-    xBoundsMinimum,
-    xBoundsMaximum,
-    yBoundsMinimum,
-    yBoundsMaximum,
-    xBoundsUnitsMajor,
-    yBoundsUnitsMajor,
-    trendLines,
-    trendLinesLineThickness,
-    trendLinesPointSize,
-    plotBorderShow,
+    pointRadius = 2,
+    xBoundsMinimum = null,
+    xBoundsMaximum = null,
+    yBoundsMinimum = null,
+    yBoundsMaximum = null,
+    xBoundsUnitsMajor = null,
+    yBoundsUnitsMajor = null,
+    trendLines = false,
+    trendLinesLineThickness = 1,
+    trendLinesPointSize = 2,
+    plotBorderShow = true,
   ) {
     this.setDim = this.setDim.bind(this);
     this.draw = this.draw.bind(this);
@@ -98,55 +98,30 @@ class RectPlot {
     this.Z = Z;
     this.group = group;
     this.label = label;
-    if (labelAlt == null) { labelAlt = []; }
     this.labelAlt = labelAlt;
     this.svg = svg;
-    if (zTitle == null) { zTitle = ''; }
     this.zTitle = zTitle;
     this.colors = colors;
     this.transparency = transparency;
     this.originAlign = originAlign;
-    if (showLabels == null) { showLabels = true; }
     this.showLabels = showLabels;
-    if (labelsLogoScale == null) { labelsLogoScale = []; }
-    if (xDecimals == null) { xDecimals = null; }
     this.xDecimals = xDecimals;
-    if (yDecimals == null) { yDecimals = null; }
     this.yDecimals = yDecimals;
-    if (zDecimals == null) { zDecimals = null; }
     this.zDecimals = zDecimals;
-    if (xPrefix == null) { xPrefix = ''; }
     this.xPrefix = xPrefix;
-    if (yPrefix == null) { yPrefix = ''; }
     this.yPrefix = yPrefix;
-    if (zPrefix == null) { zPrefix = ''; }
     this.zPrefix = zPrefix;
-    if (xSuffix == null) { xSuffix = ''; }
     this.xSuffix = xSuffix;
-    if (ySuffix == null) { ySuffix = ''; }
     this.ySuffix = ySuffix;
-    if (zSuffix == null) { zSuffix = ''; }
     this.zSuffix = zSuffix;
     this.legendShow = legendShow;
-    if (legendBubblesShow == null) { legendBubblesShow = true; }
     this.legendBubblesShow = legendBubblesShow;
     this.legendFontFamily = legendFontFamily;
     this.legendFontSize = legendFontSize;
     this.legendFontColor = legendFontColor;
-    if (pointRadius == null) { pointRadius = 2; }
     this.pointRadius = pointRadius;
-    if (xBoundsMinimum == null) { xBoundsMinimum = null; }
-    if (xBoundsMaximum == null) { xBoundsMaximum = null; }
-    if (yBoundsMinimum == null) { yBoundsMinimum = null; }
-    if (yBoundsMaximum == null) { yBoundsMaximum = null; }
-    if (xBoundsUnitsMajor == null) { xBoundsUnitsMajor = null; }
     this.xBoundsUnitsMajor = xBoundsUnitsMajor;
-    if (yBoundsUnitsMajor == null) { yBoundsUnitsMajor = null; }
     this.yBoundsUnitsMajor = yBoundsUnitsMajor;
-    if (trendLines == null) { trendLines = false; }
-    if (trendLinesLineThickness == null) { trendLinesLineThickness = 1; }
-    if (trendLinesPointSize == null) { trendLinesPointSize = 2; }
-    if (plotBorderShow == null) { plotBorderShow = true; }
     this.plotBorderShow = plotBorderShow;
     this.maxDrawFailureCount = 200;
     
@@ -226,11 +201,11 @@ class RectPlot {
 
     this.title.y = this.verticalPadding + this.title.textHeight;
 
-    this.grid = (grid != null) ? grid : true;
-    this.origin = (origin != null) ? origin : true;
-    this.fixedRatio = (fixedRatio != null) ? fixedRatio : true;
+    this.grid = !(_.isNull(grid)) ? grid : true;
+    this.origin = !(_.isNull(origin)) ? origin : true;
+    this.fixedRatio = !(_.isNull(fixedRatio)) ? fixedRatio : true;
 
-    if (this.label == null) {
+    if (_.isNull(this.label)) {
       this.label = [];
       for (const x of Array.from(this.X)) {
         this.label.push('');
@@ -630,7 +605,7 @@ class RectPlot {
           .attr('font-size', this.legendFontSize)
           .attr('text-anchor', function (d) { return d.anchor; })
           .attr('fill', function (d) { return d.color; })
-          .text(function (d) { if (d.markerId != null) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
+          .text(function (d) { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
           .call(drag);
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
@@ -668,7 +643,7 @@ class RectPlot {
         SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
       }
 
-      if (this.legendShow || (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) || (this.data.legendPts != null)) {
+      if (this.legendShow || (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
         if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
           this.data.revertMinMax();
           const error = new Error('drawLegend Failed');
@@ -692,6 +667,7 @@ class RectPlot {
              .attr('cy', d => d.y)
              .attr('fill', d => d.color)
              .attr('fill-opacity', d => d.fillOpacity)
+             .attr('clip-path', d => `url(#cp-${d.id})`)
              .attr('r', (d) => {
                if (this.trendLines.show) {
                  return this.trendLines.pointSize;
@@ -701,6 +677,11 @@ class RectPlot {
              });
     TooltipUtils.appendTooltips(anc, this.Z, this.xDecimals, this.yDecimals,
       this.zDecimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix);
+    // Clip paths used to crop bubbles if they expand beyond the plot's borders
+    if (Utils.isArrOfNums(this.Z)) {
+      this.svg.selectAll('clipPath').remove();
+      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.viewBoxDim);
+    }
   }
 
   drawDraggedMarkers() {
