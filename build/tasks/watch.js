@@ -13,6 +13,6 @@ gulp.task('watch', ['connect'], function () {
     // for example when the json file changes rerun the copy command
   gulp.watch('theSrc/internal_www/**/*', ['copy']);
   gulp.watch('theSrc/styles/**/*.less', ['less']);
-  gulp.watch('theSrc/scripts/**/*.js', ['compileES6ToInst']);
+  gulp.watch('theSrc/scripts/**/*.js', ['compileES6ToInst', 'compileRenderContentPage']);
   gulp.watch('theSrc/scripts/data/**/*', ['copy']);
 });
