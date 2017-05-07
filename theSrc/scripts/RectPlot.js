@@ -9,6 +9,7 @@ import AxisUtils from './utils/AxisUtils'; // busted when uglify is enabled
 import DragUtils from './utils/DragUtils';
 import SvgUtils from './utils/SvgUtils';
 import Utils from './utils/Utils';
+import TooltipUtils from './utils/TooltipUtils';
 
 class RectPlot {
   constructor(state,
@@ -672,9 +673,6 @@ class RectPlot {
   }
 
   drawAnc() {
-    let labelTxt,
-      xlabel,
-      ylabel;
     this.svg.selectAll('.anc').remove();
     const anc = this.svg.selectAll('.anc')
              .data(this.data.pts)
@@ -693,24 +691,8 @@ class RectPlot {
                  return d.r;
                }
              });
-    if (Utils.isArrOfNums(this.Z)) {
-      return anc.append('title')
-         .text((d) => {
-           xlabel = Utils.getFormattedNum(d.labelX, this.xDecimals, this.xPrefix, this.xSuffix);
-           ylabel = Utils.getFormattedNum(d.labelY, this.yDecimals, this.yPrefix, this.ySuffix);
-           const zlabel = Utils.getFormattedNum(d.labelZ, this.zDecimals, this.zPrefix, this.zSuffix);
-           labelTxt = d.label === '' ? d.labelAlt : d.label;
-           return `${labelTxt}, ${d.group}\n${zlabel}\n(${xlabel}, ${ylabel})`;
-         });
-    } else {
-      return anc.append('title')
-         .text((d) => {
-           xlabel = Utils.getFormattedNum(d.labelX, this.xDecimals, this.xPrefix, this.xSuffix);
-           ylabel = Utils.getFormattedNum(d.labelY, this.yDecimals, this.yPrefix, this.ySuffix);
-           labelTxt = d.label === '' ? d.labelAlt : d.label;
-           return `${labelTxt}, ${d.group}\n(${xlabel}, ${ylabel})`;
-         });
-    }
+    TooltipUtils.appendTooltips(anc, this.Z, this.xDecimals, this.yDecimals,
+      this.zDecimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix);
   }
 
   drawDraggedMarkers() {
