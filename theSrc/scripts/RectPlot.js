@@ -3,9 +3,9 @@ import _ from 'lodash';
 import d3 from 'd3';
 import labeler from './lib/labeler';
 import Links from './Links';
-import PlotData from './PlotData'; // busted when uglify is enabled
+import PlotData from './PlotData';
 import TrendLine from './TrendLine';
-import AxisUtils from './utils/AxisUtils'; // busted when uglify is enabled
+import AxisUtils from './utils/AxisUtils';
 import DragUtils from './utils/DragUtils';
 import SvgUtils from './utils/SvgUtils';
 import Utils from './utils/Utils';

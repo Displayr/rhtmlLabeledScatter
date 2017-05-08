@@ -17,13 +17,17 @@ gulp.task('compileES6ToInst', function () {
       file.contents = browserify(file.path, { debug: true })
         .transform(babelify, {
           presets: ['es2015-ie'],
-          plugins: ['transform-object-assign', 'array-includes'],
+          plugins: [
+            'transform-object-assign',
+            'array-includes',
+            'babel-plugin-transform-exponentiation-operator'
+          ],
         })
         .bundle();
     }))
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
-    // .pipe(uglify())
+    .pipe(uglify())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('inst/htmlwidgets/'));
 });
