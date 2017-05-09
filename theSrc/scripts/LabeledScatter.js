@@ -51,8 +51,8 @@ class LabeledScatter {
   }
 
   draw(data, el, state) {
-    // Reset widget if previous data present - see VIS-278
-    if (!(_.isUndefined(this.data))) {
+    // Reset widget if previous data present but not equal in params - see VIS-278
+    if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
       throw new Error('rhtmlLabeledScatter reset');
     }
     const svg = d3.select(el)
