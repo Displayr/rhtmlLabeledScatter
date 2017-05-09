@@ -303,6 +303,23 @@ class RectPlot {
       });
   }
 
+  isEqual(otherPlot) {
+    // Test if RectPlot is equal to another, does not include all parameters for comparison (only those set in Displayr added now)
+    // TODO: Add rest of the data components
+    const eqX = _.isEqual(this.X, otherPlot.X);
+    const eqY = _.isEqual(this.Y, otherPlot.Y);
+    const eqZ = _.isEqual(this.Z, otherPlot.Z);
+    const eqGroup = _.isEqual(this.group, otherPlot.group);
+    const eqLabel = _.isEqual(this.label, otherPlot.label);
+    const eqLabelAlt = _.isEqual(this.labelAlt, otherPlot.labelAlt);
+    const eqTitle = _.isEqual(this.title.text, otherPlot.title);
+    const eqXTitle = _.isEqual(this.xTitle.text, otherPlot.xTitle);
+    const eqYTitle = _.isEqual(this.yTitle.text, otherPlot.yTitle);
+    const eqZTitle = _.isEqual(this.zTitle, otherPlot.zTitle);
+    const listOfComparisons = [eqX, eqY, eqZ, eqGroup, eqLabel, eqLabelAlt, eqTitle, eqXTitle, eqYTitle, eqZTitle];
+    return _.every(listOfComparisons, e => _.isEqual(e, true));
+  }
+
   drawLabsAndPlot() {
     this.data.normalizeData();
 
