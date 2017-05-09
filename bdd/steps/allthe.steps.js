@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const request = require('request-promise');
 const ScatterPlot = require('../pageObjects/scatterPlot');
 
@@ -22,6 +23,10 @@ const loadPage = function ({ configName, stateName, inputWidth, inputHeight }) {
 };
 
 module.exports = function () {
+  const isApplitoolsEnabled = () => {
+    return !(_.get(browser, 'params.applitools') === 'off');
+  };
+
   this.setDefaultTimeout(180 * 1000);
 
   this.Given(/^I am viewing "([^"]+)"$/, function (configName) {
@@ -45,10 +50,13 @@ module.exports = function () {
   });
 
   this.Then(/^the "(.*)" snapshot matches the baseline$/, function (snapshotName) {
-    const selectorExpression = '#render-example-container';
-    return wrapInPromiseAndLogErrors(() => {
-      return this.eyes.checkRegionBy(by.css(selectorExpression), snapshotName);
-    });
+    if (isApplitoolsEnabled()) {
+      const selectorExpression = '#render-example-container';
+      return wrapInPromiseAndLogErrors(() => {
+        return this.eyes.checkRegionBy(by.css(selectorExpression), snapshotName);
+      });
+    }
+    return Promise.resolve();
   });
 
   this.When(/^I drag label (.+) by (-?[0-9]+) x (-?[0-9]+)$/, function (labelId, xMovement, yMovement) {
@@ -131,9 +139,13 @@ module.exports = function () {
     });
   });
 
-  this.Then(/^the final state callback should match "(.*)"$/, function (expectedStateFile) {
+  this.Then(/^the final state callback should match "(.*)" within ([0-9.]+)$/, function (expectedStateFile, toleranceString) {
     if (!this.context.configName) {
       throw new Error('Cannot state match without configName');
+    }
+    const tolerance = parseFloat(toleranceString);
+    if (_.isNaN(tolerance)) {
+      throw new Error(`Invalid toleranceString '${toleranceString}', must be valid float`);
     }
 
     return wrapInPromiseAndLogErrors(() => {
@@ -142,19 +154,60 @@ module.exports = function () {
       const actualStatePromise = this.context.scatterPlot.getRecentState();
 
       return Promise.all([actualStatePromise, expectedStatePromise]).then(([actualState, expectedState]) => {
-        const errorMessageOnFail = `
+
+        const constantKeys = ['X', 'Y', 'label']; // these should not change unless the initial config changes
+        _(constantKeys).each((constantKey) => {
+          const errorMessageOnFail = `
+The ${constantKey} did not match.
 Expected:
-${JSON.stringify(expectedState, {}, 2)}
+${JSON.stringify(expectedState[constantKey], {}, 2)}
 Actual:
-${JSON.stringify(actualState, {}, 2)}
+${JSON.stringify(actualState[constantKey], {}, 2)}
 `;
-        this.expect(actualState, errorMessageOnFail).to.deep.equal(expectedState);
+
+          this.expect(actualState[constantKey], errorMessageOnFail).to.deep.equal(expectedState[constantKey]);
+
+          delete actualState[constantKey];
+          delete expectedState[constantKey];
+        });
+
+        const variableSections = _.union(_.keys(actualState), _.keys(expectedState));
+        _(variableSections).each((variableSection) => {
+          if (!_.isArray(actualState[variableSection]) || !_.isArray(expectedState[variableSection])) {
+            throw new Error(`Test Error: Expected ${variableSection} to be an array`);
+          }
+
+          this.expect(actualState[variableSection].length, `${variableSection} incorrect length`).to.equal(expectedState[variableSection].length);
+
+          _(actualState[variableSection]).each((actualValue, index) => {
+            const expectedValue = expectedState[variableSection][index];
+
+            if (_.isObject(expectedValue)) {
+              const allKeys = _.union(_.keys(expectedValue), _.keys(actualValue));
+              _(allKeys).each((keyToTest) => {
+                const errorMessage = `${variableSection}[${index}].${keyToTest} fail`;
+                // Print a warning if they do not equal, even if the test passes with the specified tolerance
+                if (actualValue[keyToTest] !== expectedValue[keyToTest]) {
+                  console.log(`WARN: ${variableSection}[${index}].${keyToTest} != expected: A: ${actualValue[keyToTest]} E: ${expectedValue[keyToTest]}`);
+                }
+                this.expect(actualValue[keyToTest], errorMessage).to.be.closeTo(expectedValue[keyToTest], tolerance);
+              });
+            } else {
+              const errorMessage = `${variableSection}[${index}] fail`;
+              this.expect(actualValue, errorMessage).to.be.closeTo(expectedValue, tolerance);
+            }
+          });
+        });
       });
     });
   });
 
   this.When(/^Sleep ([0-9]+)$/, function (sleepSeconds) {
     return browser.sleep(sleepSeconds * 1000);
+  });
+
+  this.When(/^Sleep ([0-9]+) milliseconds$/, function (sleepMilliseconds) {
+    return browser.sleep(sleepMilliseconds);
   });
 
   this.When(/^I wait for animations to complete$/, function () {
@@ -179,7 +232,10 @@ ${JSON.stringify(actualState, {}, 2)}
         return element.getAttribute('snapshot-name').then((snapshotName) => {
           if (snapshotName) {
             console.log(`take snapshot ${contentPath} ${snapshotName} (css '[snapshot-name="${snapshotName}"]')`);
-            return this.eyes.checkRegionBy(by.css(`[snapshot-name="${snapshotName}"]`), snapshotName);
+            if (isApplitoolsEnabled()) {
+              return this.eyes.checkRegionBy(by.css(`[snapshot-name="${snapshotName}"]`), snapshotName);
+            }
+            return Promise.resolve();
           } else {
             console.error(`snapshot on page ${contentPath} missing snapshot name`);
             return Promise.resolve();

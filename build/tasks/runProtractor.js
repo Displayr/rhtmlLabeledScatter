@@ -21,6 +21,10 @@ gulp.task('runProtractor', function (done) {
     _(tags).each(tag => args.push(`--cucumberOpts.tags=${tag}`));
   }
 
+  if (_.has(cliArgs, 'applitools') && !cliArgs.applitools) {
+    args.push('--params.applitools=off');
+  }
+
   gulp.src(['.tmp/snapshots.feature', 'bdd/features/stateInteractions.feature'])
     .pipe($.protractor.protractor({
       configFile: path.join(__dirname, '../config/protractor.conf.js'),

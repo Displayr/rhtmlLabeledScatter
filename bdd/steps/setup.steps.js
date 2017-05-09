@@ -1,4 +1,13 @@
 const World = require('../support/world');
+const _ = require('lodash');
+
+/* global browser */
+
+// this is duplicated in allTheSteps.js
+const isApplitoolsEnabled = () => {
+  return !(_.get(browser, 'params.applitools') === 'off');
+};
+
 
 module.exports = function () {
   this.World = World;
@@ -9,15 +18,19 @@ module.exports = function () {
   });
 
   this.Before('@applitools', function (scenario) {
-    this.eyes.open(
-      browser,
-      'rhtmlLabelScatter', // TODO pull from widget config
-      scenario.getName(),
-      { width: global.visualDiffConfig.browserWidth, height: global.visualDiffConfig.browserHeight }
-    );
+    if (isApplitoolsEnabled()) {
+      this.eyes.open(
+        browser,
+        'rhtmlLabelScatter', // TODO pull from widget config
+        scenario.getName(),
+        {width: global.visualDiffConfig.browserWidth, height: global.visualDiffConfig.browserHeight}
+      );
+    }
   });
 
   this.After('@applitools', function () {
-    this.eyes.close(false);
+    if (isApplitoolsEnabled()) {
+      this.eyes.close(false);
+    }
   });
 };

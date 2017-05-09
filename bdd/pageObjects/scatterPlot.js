@@ -1,6 +1,7 @@
 
 class ScatterPlot {
   constructor({ configName, stateName, inputWidth = 1000, inputHeight = 1000 }) {
+    this.animationDelayMilliseconds = 800;
     this.configName = configName;
     this.stateName = stateName;
     this.width = parseInt(inputWidth);
@@ -30,7 +31,8 @@ class ScatterPlot {
     }
 
     browser.get(url);
-    return browser.wait(browser.isElementPresent(by.css('.plot-title')));
+    browser.wait(browser.isElementPresent(by.css('.plot-title')));
+    return browser.sleep(this.animationDelayMilliseconds);
   }
 
   getRecentState() {
