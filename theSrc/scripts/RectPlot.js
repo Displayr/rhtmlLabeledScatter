@@ -55,7 +55,7 @@ class RectPlot {
     xSuffix = '',
     ySuffix = '',
     zSuffix = '',
-    legendShow,
+    legendShow = true,
     legendBubblesShow = true,
     legendFontFamily,
     legendFontSize,

@@ -505,7 +505,8 @@ class PlotData {
     this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x - this.axisDimensionText.rowMaxWidth;
     this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width;
 
-    return initWidth !== this.viewBoxDim.width;
+    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - this.viewBoxDim.width) > 0.1;
+    return isNewWidthSignficantlyDifferent;
   }
 
   isOutsideViewBox(lab) {
