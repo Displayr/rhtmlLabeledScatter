@@ -75,38 +75,38 @@ Feature: State Interactions
     And the "three_point_brand_scatterplot_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 0
 
-#  @applitools @state @bubbleplot
-#  Scenario: User can drag a bubbleplot label on the canvas
-#    Given I am viewing "simple_bubbleplot" with dimensions 600x600
-#    Then the "simple_bubbleplot_initial_load" snapshot matches the baseline
-#    When I drag label 2 by 100 x 100
-#    Then label 2 should stay in the new location
-#    And the "simple_bubbleplot_label_moved_100x100" snapshot matches the baseline
-#    And the final state callback should match "label_moved_100x100" within 0.02
-#
-#  @applitools @state @bubbleplot
-#  Scenario: User can load a bubbleplot with saved state (label drag on canvas) and see their modified bubbleplot
-#    Given I am viewing "simple_bubbleplot" with state "label_moved_100x100" and dimensions 600x600
-#    Then the "simple_bubbleplot_label_moved_100x100" snapshot matches the baseline
-#
-#  @applitools @state @bubbleplot
-#  Scenario: User can drag a bubbleplot label off of the canvas
-#    Given I am viewing "simple_bubbleplot" with dimensions 600x600
-#    And I wait for animations to complete
-#    When I drag label 2 to the legend
-#    Then label 2 should be in the legend
-#    And the "simple_bubbleplot_after_label_moved_to_legend" snapshot matches the baseline
-#    And the final state callback should match "label_moved_to_legend" within 0.02
-#
-#  @applitools @state @bubbleplot
-#  Scenario: User can load a bubbleplot label with saved state (label moved to legend) and see their modified scatterplot
-#    Given I am viewing "simple_bubbleplot" with state "label_moved_to_legend" and dimensions 600x600
-#    Then the "label_moved_to_legend" snapshot matches the baseline
-#
-#  @applitools @state @bubbleplot
-#  Scenario: User can drag a bubbleplot label from the legend back to the canvas and it will snap into the original position
-#    Given I am viewing "simple_bubbleplot" with state "label_moved_to_legend" and dimensions 600x600
-#    When I drag legend label 2 to the canvas
-#    Then label 2 should be near the circle anchor 2
-#    And the "simple_bubbleplot_initial_load" snapshot matches the baseline
-#    And the final state callback should match "back_to_original" within 0
+  @applitools @state @bubbleplot
+  Scenario: User can drag a bubbleplot label on the canvas
+    Given I am viewing "simple_bubbleplot" with dimensions 600x600
+    Then the "simple_bubbleplot_initial_load" snapshot matches the baseline
+    When I drag label 2 by 100 x 100
+    Then label 2 should stay in the new location
+    And the "simple_bubbleplot_label_moved_100x100" snapshot matches the baseline
+    And the final state callback should match "label_moved_100x100" within 0.02
+
+  @applitools @state @bubbleplot
+  Scenario: User can load a bubbleplot with saved state (label drag on canvas) and see their modified bubbleplot
+    Given I am viewing "simple_bubbleplot" with state "label_moved_100x100" and dimensions 600x600
+    Then the "simple_bubbleplot_label_moved_100x100" snapshot matches the baseline
+
+  @applitools @state @bubbleplot
+  Scenario: User can drag a bubbleplot label off of the canvas
+    Given I am viewing "simple_bubbleplot" with dimensions 600x600
+    And I wait for animations to complete
+    When I drag label 2 to the legend
+    Then label 2 should be in the legend
+    And the "simple_bubbleplot_after_label_moved_to_legend" snapshot matches the baseline
+    And the final state callback should match "label_moved_to_legend" within 0.02
+
+  @applitools @state @bubbleplot
+  Scenario: User can load a bubbleplot label with saved state (label moved to legend) and see their modified scatterplot
+    Given I am viewing "simple_bubbleplot" with state "label_moved_to_legend" and dimensions 600x600
+    Then the "label_moved_to_legend" snapshot matches the baseline
+
+  @applitools @state @bubbleplot
+  Scenario: User can drag a bubbleplot label from the legend back to the canvas and it will snap into the original position
+    Given I am viewing "simple_bubbleplot" with state "label_moved_to_legend" and dimensions 600x600
+    When I drag legend label 2 to the canvas
+    Then label 2 should be near the circle anchor 2
+    And the "simple_bubbleplot_initial_load" snapshot matches the baseline
+    And the final state callback should match "back_to_original" within 0
