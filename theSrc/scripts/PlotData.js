@@ -122,11 +122,14 @@ class PlotData {
     const thres = 0.08;
     let xThres = thres * rangeX;
     let yThres = thres * rangeY;
-    if (xThres === 0) { // if there is no difference, add arbitrary threshold of 1
+    // If both ranges are 0, then set default unary
+    if (xThres === 0 && yThres === 0) {
       xThres = 1;
-    }
-    if (yThres === 0) { // if there is no difference, add arbitrary threshold of 1
       yThres = 1;
+    } else if (xThres === 0) { // make the range limited to one axis
+      xThres = yThres;
+    } if (yThres === 0) { // make the range limited to one axis
+      yThres = xThres;
     }
 
     // Note: Thresholding increase the space around the points which is why we add to the max and min
