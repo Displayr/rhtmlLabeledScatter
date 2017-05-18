@@ -23,6 +23,7 @@ gulp.task('copy', function () {
     .pipe(rename(`${gulp.context.widgetName}.R`))
     .pipe(gulp.dest('R/'));
 
+  // only used directly in browser by renderExample.html
   const extLibs = [
     'node_modules/lodash/lodash.min.js',
     'node_modules/jquery/dist/jquery.min.js',
