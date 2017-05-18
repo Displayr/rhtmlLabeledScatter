@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import d3 from 'd3';
 import _ from 'lodash';
 import DisplayError from './DisplayError';
@@ -55,6 +56,9 @@ class LabeledScatter {
     if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
       throw new Error('rhtmlLabeledScatter reset');
     }
+
+    $(el).find('*').remove();
+
     const svg = d3.select(el)
             .append('svg')
             .attr('width', this.width)

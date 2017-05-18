@@ -51,7 +51,7 @@ const addExampleTo = function () {
     }
   });
 
-  Promise.all([configPromise, statePromise]).then(([config, state]) => {
+  return Promise.all([configPromise, statePromise]).then(([config, state]) => {
     console.log('loading widget with config');
     console.log(config);
 
@@ -62,6 +62,14 @@ const addExampleTo = function () {
 
     const instance = new LabeledScatter(width, height, stateChangedCallback);
     instance.draw(config, `.${exampleNumber}`, state);
+
+    // TODO expose as function that can be called from state interaction tests
+    // setTimeout( () => {
+    //   console.log('redrawing');
+    //   instance.draw(config, `.${exampleNumber}`, state);
+    // }, 3000);
+
+    return instance;
   }).catch((error) => {
     console.log(error);
   });
