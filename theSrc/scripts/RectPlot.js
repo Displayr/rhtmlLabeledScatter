@@ -795,17 +795,14 @@ class RectPlot {
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
       console.log('rhtmlLabeledScatter: Running label placement algorithm...');
       const labsToBePlaced = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''));
-      // const ancsToBePlaced = _.filter(this.data.pts, a => !_.includes(labsToBePlaced, l => l.id === a.id));
       labeler()
         .svg(this.svg)
         .w1(this.viewBoxDim.x)
         .w2(this.viewBoxDim.x + this.viewBoxDim.width)
         .h1(this.viewBoxDim.y)
         .h2(this.viewBoxDim.y + this.viewBoxDim.height)
-        // .anchor(ancsToBePlaced)
         .anchor(this.data.pts)
         .label(labsToBePlaced)
-        // .label(this.data.lab)
         .pinned(this.state.getUserPositionedLabIds())
         .start(500);
 

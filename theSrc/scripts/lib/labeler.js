@@ -15,8 +15,8 @@ const labeler = function () {
     pinned = [],
     minLabWidth = Infinity;
 
-    var investigate = 781;
-    var investigate2 = 182;
+    // var investigate = 781;
+    // var investigate2 = 182;
   const labelTopPadding = 5;
   let max_move = 5.0,
     max_angle = 2 * 3.1415,
