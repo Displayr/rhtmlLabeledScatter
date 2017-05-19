@@ -40,7 +40,9 @@
       if (urlVars.state) { scatterPlotDomElement.attr('data-state', urlVars.state); }
 
       // NB addExampleTo is a function added to window by renderContentPage.js
-      $('.example').each(addExampleTo);
+      addExampleTo.bind($('.example')[0])().then(widgetInstance => {
+        window.widgetInstance = widgetInstance;
+      });
     }, 0);
   });
 </script>
