@@ -47,14 +47,15 @@ const labeler = function () {
   function energy(index) {
     // energy function, tailored for label placement
 
-    let m = lab.length,
-      ener = 0,
-      dx = lab[index].x - anc[index].x,
-      dx2 = lab[index].x - 4 - lab[index].width / 2 - anc[index].x,
-      dx3 = lab[index].x + lab[index].width / 2 + 4 - anc[index].x,
-      dy = lab[index].y - (anc[index].y - 5),
-      dy2 = (lab[index].y - (lab[index].height - labelTopPadding)) - anc[index].y,
-      dy3 = (lab[index].y - lab[index].height / 2) - anc[index].y,
+    const currAnc = anc.find(e => e.id === index);
+    const currLab = lab[index];
+    let ener = 0,
+      dx = currLab.x - currAnc.x,
+      dx2 = currLab.x - 4 - currLab.width / 2 - currAnc.x,
+      dx3 = currLab.x + currLab.width / 2 + 4 - currAnc.x,
+      dy = currLab.y - (currAnc.y - 5),
+      dy2 = (currLab.y - (currLab.height - labelTopPadding)) - currAnc.y,
+      dy3 = (currLab.y - currLab.height / 2) - currAnc.y,
       dist = Math.sqrt(dx * dx + dy * dy),
       dist2 = Math.sqrt(dx * dx + dy2 * dy2),
       dist3 = Math.sqrt(dx2 * dx2 + dy3 * dy3),
@@ -67,14 +68,14 @@ const labeler = function () {
 
 
     // Check if label is inside bubble for centering of label inside bubble
-    const labLeftBorder = lab[index].x - lab[index].width / 2;
-    const labRightBorder = lab[index].x + lab[index].width / 2;
-    const labBotBorder = lab[index].y;
-    const labTopBorder = lab[index].y - lab[index].height;
-    const labIsInsideBubbleAnc = (labRightBorder < anc[index].x + anc[index].r) && (labLeftBorder > anc[index].x - anc[index].r) && (labBotBorder < anc[index].y + anc[index].r) && (labTopBorder > anc[index].y - anc[index].r);
+    const labLeftBorder = currLab.x - currLab.width / 2;
+    const labRightBorder = currLab.x + currLab.width / 2;
+    const labBotBorder = currLab.y;
+    const labTopBorder = currLab.y - currLab.height;
+    const labIsInsideBubbleAnc = (labRightBorder < currAnc.x + currAnc.r) && (labLeftBorder > currAnc.x - currAnc.r) && (labBotBorder < currAnc.y + currAnc.r) && (labTopBorder > currAnc.y - currAnc.r);
 
     if (labIsInsideBubbleAnc) {
-      dy = (lab[index].y - lab[index].height / 4 - anc[index].y);
+      dy = (currLab.y - currLab.height / 4 - currAnc.y);
       ener += Math.sqrt(dx * dx + dy * dy) * w_len;
     } else {
       // penalty for length of leader line
@@ -110,10 +111,10 @@ const labeler = function () {
       }
     }
 
-    let x21 = lab[index].x - lab[index].width / 2,
-      y21 = lab[index].y - (lab[index].height - labelTopPadding),
-      x22 = lab[index].x + lab[index].width / 2,
-      y22 = lab[index].y;
+    let x21 = currLab.x - currLab.width / 2,
+      y21 = currLab.y - (currLab.height - labelTopPadding),
+      x22 = currLab.x + currLab.width / 2,
+      y22 = currLab.y;
     let x11,
       x12,
       y11,
@@ -122,44 +123,50 @@ const labeler = function () {
       y_overlap,
       overlap_area;
 
-    for (let i = 0; i < m; i++) {
-      if (i != index) {
+    for (let i = 0; i < lab.length; i++) {
+      const comparisonLab = lab[i];
+      const comparisonAnc = anc.find(e => e.id === i);
+
+      if (i !== index) {
         // penalty for intersection of leader lines
-        overlap = intersect(anc[index].x, lab[index].x + lab[index].width / 2, anc[i].x, lab[i].x + lab[i].width / 2,
-          anc[index].y, lab[index].y, anc[i].y, lab[i].y);
+        overlap = intersect(currAnc.x, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+          currAnc.y, currLab.y, comparisonAnc.y, comparisonLab.y);
         if (overlap) ener += w_inter;
 
         // penalty for label-label overlap
-        x11 = lab[i].x - lab[i].width / 2;
-        y11 = lab[i].y - lab[i].height;
-        x12 = lab[i].x + lab[i].width / 2;
-        y12 = lab[i].y;
+        x11 = comparisonLab.x - comparisonLab.width / 2;
+        y11 = comparisonLab.y - comparisonLab.height;
+        x12 = comparisonLab.x + comparisonLab.width / 2;
+        y12 = comparisonLab.y;
         x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
         y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
         overlap_area = x_overlap * y_overlap;
         ener += (overlap_area * w_lab2);
       }
 
-      // penalty for label-anchor overlap
-      x11 = anc[i].x - anc[i].r;
-      y11 = anc[i].y - anc[i].r;
-      x12 = anc[i].x + anc[i].r;
-      y12 = anc[i].y + anc[i].r;
+      // penalty for label-leader line intersection
+      const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+        currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y,
+      );
+
+      const intersecTop = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+        currLab.y - currLab.height, currLab.y - currLab.height, comparisonAnc.y, comparisonLab.y,
+      );
+      if (intersecBottom) ener += w_lablink;
+      if (intersecTop) ener += w_lablink;
+    }
+  
+    // penalty for label-anchor overlap
+    // this is separate because there could be different number of anc to lab - see VIS-291
+    for (let a of anc) {
+      x11 = a.x - a.r;
+      y11 = a.y - a.r;
+      x12 = a.x + a.r;
+      y12 = a.y + a.r;
       x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21));
       y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21));
       overlap_area = x_overlap * y_overlap;
       ener += (overlap_area * w_lab_anc);
-
-      // penalty for label-leader line intersection
-      const intersecBottom = intersect(lab[index].x - lab[index].width / 2, lab[index].x + lab[index].width / 2, anc[i].x, lab[i].x + lab[i].width / 2,
-        lab[index].y, lab[index].y, anc[i].y, lab[i].y,
-      );
-
-      const intersecTop = intersect(lab[index].x - lab[index].width / 2, lab[index].x + lab[index].width / 2, anc[i].x, lab[i].x + lab[i].width / 2,
-        lab[index].y - lab[index].height, lab[index].y - lab[index].height, anc[i].y, lab[i].y,
-      );
-      if (intersecBottom) ener += w_lablink;
-      if (intersecTop) ener += w_lablink;
     }
     return ener;
   }
