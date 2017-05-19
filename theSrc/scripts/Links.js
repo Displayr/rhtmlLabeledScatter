@@ -8,7 +8,10 @@ class Links {
     const labBotBorder = lab.y;
     const labTopBorder = lab.y - lab.height;
 
-    return (labRightBorder < (pt.x + pt.r)) && (labLeftBorder > (pt.x - pt.r)) && (labBotBorder < (pt.y + pt.r)) && (labTopBorder > (pt.y - pt.r));
+    return (labRightBorder < (pt.x + pt.r)) &&
+      (labLeftBorder > (pt.x - pt.r)) &&
+      (labBotBorder < (pt.y + pt.r)) &&
+      (labTopBorder > (pt.y - pt.r));
   }
 
   constructor(pts, lab) {
@@ -18,6 +21,7 @@ class Links {
     this.getPtOnAncBorder = this.getPtOnAncBorder.bind(this);
 
     const _labIsText = labelData => labelData.url === '';
+    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === '';
 
 
     this.links = [];
@@ -25,14 +29,16 @@ class Links {
       const pt = pts[i];
       let newLinkPt = null;
       if (!this._labIsInsideBubblePt(lab[i], pt)) {
-        if (_labIsText(lab[i])) {
+        if (_labIsEmpty(lab[i])) {
+          newLinkPt = null;
+        } else if (_labIsText(lab[i])) {
           newLinkPt = this.getNewPtOnTxtLabelBorder(lab[i], pt, pts);
         } else {
           newLinkPt = this.getNewPtOnLogoLabelBorder(lab[i], pt, pts);
         }
       }
 
-      if (newLinkPt != null) {
+      if (!_.isNull(newLinkPt)) {
         const ancBorderPt = this.getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
         this.links.push({
           x1: ancBorderPt[0],
@@ -51,7 +57,8 @@ class Links {
   getNewPtOnLogoLabelBorder(label, anchor) {
     // Don't draw a link if anc is inside logo
     let region;
-    if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) && (label.y - label.height < anchor.y && anchor.y < label.y)) {
+    if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
+      (label.y - label.height < anchor.y && anchor.y < label.y)) {
       return null;
     }
 
