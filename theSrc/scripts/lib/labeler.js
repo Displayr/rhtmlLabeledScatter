@@ -15,8 +15,8 @@ const labeler = function () {
     pinned = [],
     minLabWidth = Infinity;
 
-    // var investigate = 7;
-    // var investigate2 = 14;
+    var investigate = 781;
+    var investigate2 = 182;
   const labelTopPadding = 5;
   let max_move = 5.0,
     max_angle = 2 * 3.1415,
@@ -47,8 +47,8 @@ const labeler = function () {
   function energy(index) {
     // energy function, tailored for label placement
 
-    const currAnc = anc.find(e => e.id === index);
     const currLab = lab[index];
+    const currAnc = anc.find(e => e.id === currLab.id);
     let ener = 0,
       dx = currLab.x - currAnc.x,
       dx2 = currLab.x - 4 - currLab.width / 2 - currAnc.x,
@@ -125,7 +125,7 @@ const labeler = function () {
 
     for (let i = 0; i < lab.length; i++) {
       const comparisonLab = lab[i];
-      const comparisonAnc = anc.find(e => e.id === i);
+      const comparisonAnc = anc.find(e => e.id === comparisonLab.id);
 
       if (i !== index) {
         // penalty for intersection of leader lines
@@ -143,7 +143,7 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap;
         ener += (overlap_area * w_lab2);
       }
-
+  
       // penalty for label-leader line intersection
       const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
         currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y,
@@ -157,7 +157,7 @@ const labeler = function () {
     }
   
     // penalty for label-anchor overlap
-    // this is separate because there could be different number of anc to lab - see VIS-291
+    // VIS-291 - this is separate because there could be different number of anc to lab
     for (let a of anc) {
       x11 = a.x - a.r;
       y11 = a.y - a.r;
@@ -236,13 +236,15 @@ const labeler = function () {
 
     // select a random label
     const i = Math.floor(random.real(0, 1) * lab.length);
+    const currLab = lab[i];
+    const currAnc = anc.find(e => e.id === currLab.id);
 
     // Ignore if user moved label
-    if (_.includes(pinned, lab[i].id)) { return; }
-
+    if (_.includes(pinned, currLab.id)) { return; }
+  
     // save old coordinates
-    const x_old = lab[i].x;
-    const y_old = lab[i].y;
+    const x_old = currLab.x;
+    const y_old = currLab.y;
 
     // old energy
     let old_energy;
@@ -255,28 +257,28 @@ const labeler = function () {
     const c = Math.cos(angle);
 
     // translate label (relative to anchor at origin):
-    lab[i].x -= anc[i].x + minLabWidth / 2;
-    lab[i].y -= anc[i].y;
+    currLab.x -= currAnc.x + minLabWidth / 2;
+    currLab.y -= currAnc.y;
 
     // rotate label
-    let x_new = lab[i].x * c - lab[i].y * s,
-      y_new = lab[i].x * s + lab[i].y * c;
+    let x_new = currLab.x * c - currLab.y * s,
+      y_new = currLab.x * s + currLab.y * c;
 
     // translate label back
-    lab[i].x = x_new + anc[i].x - lab[i].width / 2;
-    lab[i].y = y_new + anc[i].y;
+    currLab.x = x_new + currAnc.x - currLab.width / 2;
+    currLab.y = y_new + currAnc.y;
 
     // hard wall boundaries
-    if (lab[i].x + lab[i].width / 2 > w2) lab[i].x = w2 - lab[i].width / 2;
-    if (lab[i].x - lab[i].width / 2 < w1) lab[i].x = w1 + lab[i].width / 2;
-    if (lab[i].y > h2) lab[i].y = h2;
-    if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height;
+    if (currLab.x + currLab.width / 2 > w2) currLab.x = w2 - currLab.width / 2;
+    if (currLab.x - currLab.width / 2 < w1) currLab.x = w1 + currLab.width / 2;
+    if (currLab.y > h2) currLab.y = h2;
+    if (currLab.y - currLab.height < h1) currLab.y = h1 + currLab.height;
 
     // if (i == investigate)
-    // svg.append('rect').attr('x', lab[i].x)
-    //    .attr('y', lab[i].y - lab[i].height)
-    //    .attr('width', lab[i].width)
-    //    .attr('height', lab[i].height)
+    // svg.append('rect').attr('x', currLab.x)
+    //    .attr('y', currLab.y - currLab.height)
+    //    .attr('width', currLab.width)
+    //    .attr('height', currLab.height)
     //    .attr('fill', 'green')
     //    .attr('fill-opacity', 0.1);
 
@@ -291,23 +293,23 @@ const labeler = function () {
       acc += 1;
 
       // if (i == investigate || i == investigate2) {
-      //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
-      //                   .attr('y', lab[i].y - lab[i].height)
-      //                   .attr('width', lab[i].width)
-      //                   .attr('height', lab[i].height)
+      //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
+      //                   .attr('y', currLab.y - currLab.height)
+      //                   .attr('width', currLab.width)
+      //                   .attr('height', currLab.height)
       //                   .attr('fill', 'blue')
       //                   .attr('fill-opacity', 0.1);
       // }
     } else {
       // move back to old coordinates
-      lab[i].x = x_old;
-      lab[i].y = y_old;
+      currLab.x = x_old;
+      currLab.y = y_old;
       rej += 1;
       // if (i == investigate)
-      //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
-      //                   .attr('y', lab[i].y - lab[i].height)
-      //                   .attr('width', lab[i].width)
-      //                   .attr('height', lab[i].height)
+      //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
+      //                   .attr('y', currLab.y - currLab.height)
+      //                   .attr('width', currLab.width)
+      //                   .attr('height', currLab.height)
       //                   .attr('fill', 'red')
       //                   .attr('fill-opacity', 0.1);
     }
