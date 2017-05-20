@@ -48,7 +48,8 @@ const labeler = function () {
     // energy function, tailored for label placement
 
     const currLab = lab[index];
-    const currAnc = anc.find(e => e.id === currLab.id);
+    let currAnc = anc.find(e => e.id === currLab.id);
+    if (currAnc === undefined) currAnc = anc[index];
     let ener = 0,
       dx = currLab.x - currAnc.x,
       dx2 = currLab.x - 4 - currLab.width / 2 - currAnc.x,
@@ -125,7 +126,8 @@ const labeler = function () {
 
     for (let i = 0; i < lab.length; i++) {
       const comparisonLab = lab[i];
-      const comparisonAnc = anc.find(e => e.id === comparisonLab.id);
+      let comparisonAnc = anc.find(e => e.id === comparisonLab.id);
+      if (comparisonAnc === undefined) comparisonAnc = anc[i];
 
       if (i !== index) {
         // penalty for intersection of leader lines
@@ -237,7 +239,8 @@ const labeler = function () {
     // select a random label
     const i = Math.floor(random.real(0, 1) * lab.length);
     const currLab = lab[i];
-    const currAnc = anc.find(e => e.id === currLab.id);
+    let currAnc = anc.find(e => e.id === currLab.id);
+    if (currAnc === undefined) currAnc = anc[i];
 
     // Ignore if user moved label
     if (_.includes(pinned, currLab.id)) { return; }
