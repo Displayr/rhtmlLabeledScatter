@@ -77,7 +77,7 @@ class TrendLine {
               this.linesMapped[groupName][i].x,
               this.linesMapped[groupName][i].y,
               this.linesMapped[groupName][i + 1].x,
-              this.linesMapped[groupName][i + 1].y
+              this.linesMapped[groupName][i + 1].y,
             ]);
             i += 2;
           }

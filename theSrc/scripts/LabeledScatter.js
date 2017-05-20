@@ -74,6 +74,8 @@ class LabeledScatter {
     DisplayError.checkIfArrayOfNums(this.data.Y, el, 'Given Y value is not an array of numbers');
 
     const stateObj = new State(state, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label);
+    // console.log('rhtmlLabeledScatter data');
+    // console.log(JSON.stringify(this.data));
     this.plot = new RectPlot(stateObj,
                         this.width,
                         this.height,
