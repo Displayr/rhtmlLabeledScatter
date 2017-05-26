@@ -55,6 +55,9 @@ class SvgUtils {
            .attr('y', cp.y)
            .attr('width', cp.width)
            .attr('height', cp.height);
+
+        svg.select(`circle#anc-${pt.id}`)
+           .attr('clip-path', d => `url(#cp-${d.id})`);
       }
     });
   }
