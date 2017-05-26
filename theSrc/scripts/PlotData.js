@@ -93,28 +93,13 @@ class PlotData {
     this.maxYold = this.maxY;
 
     const ptsOut = this.outsidePlotPtsId;
-    const getNormalizedZOrZero = (i) => {
-      if (Utils.isArrOfNums(this.Z)) {
-        return this.normZ[i];
-      } else {
-        return 0;
-      }
-    };
-    const origXmin = _.map(this.origX, (val, i) => val - getNormalizedZOrZero(i));
-    const origXmax = _.map(this.origX, (val, i) => val + getNormalizedZOrZero(i));
-    const origYmin = _.map(this.origY, (val, i) => val - getNormalizedZOrZero(i));
-    const origYmax = _.map(this.origY, (val, i) => val + getNormalizedZOrZero(i));
-    const getNotMoved = arr => _.filter(arr, (val, key) => !(_.includes(ptsOut, key)));
-    const notMoved = {
-      Xmin: getNotMoved(origXmin),
-      Xmax: getNotMoved(origXmax),
-      Ymin: getNotMoved(origYmin),
-      Ymax: getNotMoved(origYmax),
-    };
-    this.minX = _.min(notMoved.Xmin);
-    this.maxX = _.max(notMoved.Xmax);
-    this.minY = _.min(notMoved.Ymin);
-    this.maxY = _.max(notMoved.Ymax);
+    const notMovedX = _.filter(this.origX, (val, key) => !(_.includes(ptsOut, key)));
+    const notMovedY = _.filter(this.origY, (val, key) => !(_.includes(ptsOut, key)));
+    
+    this.minX = _.min(notMovedX);
+    this.maxX = _.max(notMovedX);
+    this.minY = _.min(notMovedY);
+    this.maxY = _.max(notMovedY);
 
     // threshold used so pts are not right on border of plot
     let rangeX = this.maxX - this.minX;

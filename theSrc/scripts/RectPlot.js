@@ -685,7 +685,6 @@ class RectPlot {
              .attr('cy', d => d.y)
              .attr('fill', d => d.color)
              .attr('fill-opacity', d => d.fillOpacity)
-             .attr('clip-path', d => `url(#cp-${d.id})`)
              .attr('r', (d) => {
                if (this.trendLines.show) {
                  return this.trendLines.pointSize;
