@@ -401,10 +401,10 @@ class RectPlot {
             .enter()
             .append('line')
             .attr('class', 'origin')
-            .attr('x1', function (d) { return d.x1; })
-            .attr('y1', function (d) { return d.y1; })
-            .attr('x2', function (d) { return d.x2; })
-            .attr('y2', function (d) { return d.y2; })
+            .attr('x1', d => d.x1)
+            .attr('y1', d => d.y1)
+            .attr('x2', d => d.x2)
+            .attr('y2', d => d.y2)
             .attr('stroke-width', 0.2)
             .attr('stroke', 'grey');
         if (this.origin) {
@@ -420,10 +420,10 @@ class RectPlot {
                  .enter()
                  .append('line')
                  .attr('class', 'dim-marker')
-                 .attr('x1', function (d) { return d.x1; })
-                 .attr('y1', function (d) { return d.y1; })
-                 .attr('x2', function (d) { return d.x2; })
-                 .attr('y2', function (d) { return d.y2; })
+                 .attr('x1', d => d.x1)
+                 .attr('y1', d => d.y1)
+                 .attr('x2', d => d.x2)
+                 .attr('y2', d => d.y2)
                  .attr('stroke-width', 0.2)
                  .attr('stroke', 'grey');
       } else if (!this.grid && this.origin) {
@@ -433,10 +433,10 @@ class RectPlot {
             .enter()
             .append('line')
             .attr('class', 'origin')
-            .attr('x1', function (d) { return d.x1; })
-            .attr('y1', function (d) { return d.y1; })
-            .attr('x2', function (d) { return d.x2; })
-            .attr('y2', function (d) { return d.y2; })
+            .attr('x1', d => d.x1)
+            .attr('y1', d => d.y1)
+            .attr('x2', d => d.x2)
+            .attr('y2', d => d.y2)
             .style('stroke-dasharray', ('4, 6'))
             .attr('stroke-width', 1)
             .attr('stroke', 'black');
@@ -450,10 +450,10 @@ class RectPlot {
         .enter()
         .append('line')
         .attr('class', 'dim-marker-leader')
-        .attr('x1', function (d) { return d.x1; })
-        .attr('y1', function (d) { return d.y1; })
-        .attr('x2', function (d) { return d.x2; })
-        .attr('y2', function (d) { return d.y2; })
+        .attr('x1', d => d.x1)
+        .attr('y1', d => d.y1)
+        .attr('x2', d => d.x2)
+        .attr('y2', d => d.y2)
         .attr('stroke-width', 1)
         .attr('stroke', 'black');
   
@@ -463,14 +463,14 @@ class RectPlot {
         .enter()
         .append('text')
         .attr('class', 'dim-marker-label')
-        .attr('x', function (d) { return d.x; })
-        .attr('y', function (d) { return d.y; })
+        .attr('x', d => d.x)
+        .attr('y', d => d.y)
         .attr('font-family', this.axisSettings.fontFamily)
         .attr('fill', this.axisSettings.fontColor)
         .attr('font-size', this.axisSettings.fontSize)
-        .text(function (d) { return d.label; })
-        .attr('text-anchor', function (d) { return d.anchor; })
-        .attr('type', function (d) { return d.type; });
+        .text(d => d.label)
+        .attr('text-anchor', d => d.anchor)
+        .attr('type', d => d.type);
   
         // Figure out the max width of the yaxis dimensional labels
         const initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth;
@@ -568,9 +568,9 @@ class RectPlot {
             .enter()
             .append('circle')
             .attr('class', 'legend-bubbles')
-            .attr('cx', function (d) { return d.cx; })
-            .attr('cy', function (d) { return d.cy; })
-            .attr('r', function (d) { return d.r; })
+            .attr('cx', d => d.cx)
+            .attr('cy', d => d.cy)
+            .attr('r', d => d.r)
             .attr('fill', 'none')
             .attr('stroke', 'black')
             .attr('stroke-opacity', 0.5);
@@ -581,13 +581,13 @@ class RectPlot {
             .enter()
             .append('text')
             .attr('class', 'legend-bubbles-labels')
-            .attr('x', function (d) { return d.x; })
-            .attr('y', function (d) { return d.y; })
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
             .attr('text-anchor', 'middle')
             .attr('font-size', this.legendFontSize)
             .attr('font-family', this.legendFontFamily)
             .attr('fill', this.legendFontColor)
-            .text(function (d) { return d.text; });
+            .text(d => d.text);
 
         if (this.zTitle !== '') {
           ({ legendFontSize } = this);
@@ -597,8 +597,8 @@ class RectPlot {
               .enter()
               .append('text')
               .attr('class', 'legend-bubbles-title')
-              .attr('x', function (d) { return d.x; })
-              .attr('y', function (d) { return d.y - (legendFontSize * 1.5); })
+              .attr('x', d => d.x)
+              .attr('y', d => d.y - (legendFontSize * 1.5))
               .attr('text-anchor', 'middle')
               .attr('font-family', this.legendFontFamily)
               .attr('font-weight', 'normal')
@@ -616,14 +616,14 @@ class RectPlot {
           .enter()
           .append('text')
           .attr('class', 'legend-dragged-pts-text')
-          .attr('id', function (d) { return `legend-${d.id}`; })
-          .attr('x', function (d) { return d.x; })
-          .attr('y', function (d) { return d.y; })
+          .attr('id', d => `legend-${d.id}`)
+          .attr('x', d => d.x)
+          .attr('y', d => d.y)
           .attr('font-family', this.legendFontFamily)
           .attr('font-size', this.legendFontSize)
-          .attr('text-anchor', function (d) { return d.anchor; })
-          .attr('fill', function (d) { return d.color; })
-          .text(function (d) { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
+          .attr('text-anchor', d => d.anchor)
+          .attr('fill', d => d.color)
+          .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text; } else { return d.text; } })
           .call(drag);
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'));
@@ -635,13 +635,13 @@ class RectPlot {
             .enter()
             .append('text')
             .attr('class', 'legend-groups-text')
-            .attr('x', function (d) { return d.x; })
-            .attr('y', function (d) { return d.y; })
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
             .attr('font-family', this.legendFontFamily)
             .attr('fill', this.legendFontColor)
             .attr('font-size', this.legendFontSize)
-            .text(function (d) { return d.text; })
-            .attr('text-anchor', function (d) { return d.anchor; });
+            .text(d => d.text)
+            .attr('text-anchor', d => d.anchor);
 
         this.svg.selectAll('.legend-groups-pts').remove();
         this.svg.selectAll('.legend-groups-pts')
@@ -649,13 +649,13 @@ class RectPlot {
                  .enter()
                  .append('circle')
                  .attr('class', 'legend-groups-pts')
-                 .attr('cx', function (d) { return d.cx; })
-                 .attr('cy', function (d) { return d.cy; })
-                 .attr('r', function (d) { return d.r; })
-                 .attr('fill', function (d) { return d.color; })
-                 .attr('stroke', function (d) { return d.stroke; })
-                 .attr('stroke-opacity', function (d) { return d['stroke-opacity']; })
-                 .attr('fill-opacity', function (d) { return d.fillOpacity; });
+                 .attr('cx', d => d.cx)
+                 .attr('cy', d => d.cy)
+                 .attr('r', d => d.r)
+                 .attr('fill', d => d.color)
+                 .attr('stroke', d => d.stroke)
+                 .attr('stroke-opacity', d => d['stroke-opacity'])
+                 .attr('fill-opacity', d => d.fillOpacity);
 
         // Height and width are not provided
         SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'));
@@ -765,7 +765,7 @@ class RectPlot {
           .append('svg:image')
           .attr('class', 'lab-img')
           .attr('xlink:href', d => d.url)
-          .attr('id', function (d) { if (d.url !== '') { return d.id; } })
+          .attr('id', d => { if (d.url !== '') { return d.id; } })
           .attr('x', d => d.x - (d.width / 2))
           .attr('y', d => d.y - d.height)
           .attr('width', d => d.width)
@@ -778,11 +778,11 @@ class RectPlot {
                .enter()
                .append('text')
                .attr('class', 'lab')
-               .attr('id', function (d) { if (d.url === '') { return d.id; } })
+               .attr('id', d => { if (d.url === '') { return d.id; } })
                .attr('x', d => d.x)
                .attr('y', d => d.y)
                .attr('font-family', d => d.fontFamily)
-               .text(function (d) { if (d.url === '') { return d.text; } })
+               .text(d => { if (d.url === '') { return d.text; } })
                .attr('text-anchor', 'middle')
                .attr('fill', d => d.color)
                .attr('font-size', d => d.fontSize)
@@ -829,7 +829,7 @@ class RectPlot {
         .append('svg:image')
         .attr('class', 'lab-img')
         .attr('xlink:href', d => d.url)
-        .attr('id', function (d) { if (d.url !== '') { return d.id; } })
+        .attr('id', d => { if (d.url !== '') { return d.id; } })
         .attr('x', d => d.x - (d.width / 2))
         .attr('y', d => d.y - d.height)
         .attr('width', d => d.width)
@@ -843,11 +843,11 @@ class RectPlot {
         .enter()
         .append('text')
         .attr('class', 'lab')
-        .attr('id', function (d) { if (d.url === '') { return d.id; } })
+        .attr('id', d => { if (d.url === '') { return d.id; } })
         .attr('x', d => d.x)
         .attr('y', d => d.y)
         .attr('font-family', d => d.fontFamily)
-        .text(function (d) { if (d.url === '') { return d.text; } })
+        .text(d => { if (d.url === '') { return d.text; } })
         .attr('text-anchor', 'middle')
         .attr('fill', d => d.color)
         .attr('font-size', d => d.fontSize)
