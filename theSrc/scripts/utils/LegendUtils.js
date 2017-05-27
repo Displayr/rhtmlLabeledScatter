@@ -63,11 +63,11 @@ class LegendUtils {
         lab: getZLabel(topQ, maxZ, precision),
       },
       mid: {
-        val: (topQuartileZ * midQ).toPrecision(1) / (10 ** exp),
+        val: ((topQuartileZ * midQ).toPrecision(1) / (10 ** exp)) + expShortForm,
         lab: getZLabel(midQ, topQuartileZ, 1),
       },
       bot: {
-        val: (topQuartileZ * botQ).toPrecision(1) / (10 ** exp),
+        val: ((topQuartileZ * botQ).toPrecision(1) / (10 ** exp)) + expShortForm,
         lab: getZLabel(botQ, topQuartileZ, 1),
       },
     };
