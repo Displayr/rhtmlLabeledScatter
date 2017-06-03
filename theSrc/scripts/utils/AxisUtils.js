@@ -77,7 +77,6 @@ class AxisUtils {
       }
 
       if (type === 'row') {
-        console.log(tickIncrement);
         const numDecimals = computeNumDecimals(tickIncrement, yDecimals);
         dimensionMarkerLeaderStack.push({
           x1: x1 - leaderLineLen,
