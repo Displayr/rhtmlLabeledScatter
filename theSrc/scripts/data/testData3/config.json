@@ -203,8 +203,8 @@
     "#43682B",
     "#FF2323"
   ],
-  "xDecimals": 2,
-  "yDecimals": 2,
+  "xDecimals": null,
+  "yDecimals": null,
   "xPrefix": "",
   "yPrefix": "",
   "titleFontColor": "black",
