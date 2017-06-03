@@ -54,11 +54,24 @@ class State {
 
   pullLegendPt(id) {
     _.pull(this.legendPts, id);
-    return this.saveToState('legendPts', this.legendPts);
+    this.saveToState('legendPts', this.legendPts);
+  }
+  
+  resetStateLegendPtsAndUserPositionedLabs() {
+    this.legendPts = [];
+    this.userPositionedLabs = [];
+    this.saveToState('legendPts', []);
+    this.saveToState('userPositionedLabs', []);
   }
 
   getLegendPts() {
     return this.legendPts;
+  }
+  
+  hasStateBeenAlteredByUser() {
+    if (this.legendPts.length > 0) return true;
+    if (this.userPositionedLabs.length > 0) return true;
+    return false;
   }
 
   isLegendPtsSynced(currLegendPts) {
@@ -91,6 +104,10 @@ class State {
 
   getUserPositionedLabIds() {
     return _.map(this.userPositionedLabs, e => e.id);
+  }
+
+  setAllLabsAsPositioned(labels, viewBoxDim) {
+    _.map(labels, lab => this.pushUserPositionedLabel(lab.id, lab.x, lab.y, viewBoxDim));
   }
 }
 

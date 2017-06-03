@@ -275,7 +275,7 @@ class RectPlot {
   }
 
   draw() {
-    return this.drawDimensionMarkers()
+    this.drawDimensionMarkers()
       .then(this.drawLegend.bind(this))
       .then(this.drawLabsAndPlot.bind(this))
       .then(() => {
@@ -346,14 +346,15 @@ class RectPlot {
     }).then(() => {
       try {
         this.drawTitle();
+        this.drawResetButton();
         this.drawAnc();
         this.drawLabs();
         if (this.trendLines.show) { this.drawTrendLines(); }
         this.drawDraggedMarkers();
         if (this.plotBorderShow) { this.drawRect(); }
-        return this.drawAxisLabels();
+        this.drawAxisLabels();
       } catch (error) {
-        return console.log(error);
+        console.log(error);
       }
     });
   }
@@ -361,7 +362,7 @@ class RectPlot {
   drawTitle() {
     if (this.title.text !== '') {
       this.svg.selectAll('.plot-title').remove();
-      return this.svg.append('text')
+      this.svg.append('text')
           .attr('class', 'plot-title')
           .attr('font-family', this.title.fontFamily)
           .attr('x', this.title.x)
@@ -374,9 +375,35 @@ class RectPlot {
     }
   }
 
+  drawResetButton() {
+    this.svg.selectAll('.plot-reset-button').remove();
+    const svgResetButton = this.svg.append('text')
+        .attr('class', 'plot-reset-button')
+        .attr('font-family', this.title.fontFamily)
+        .attr('fill', '#5B9BD5')
+        .attr('font-size', 10)
+        .attr('font-weight', 'normal')
+        .style('opacity', 0)
+        .text('Reset')
+        .attr('cursor', 'pointer')
+        .on('click', () => {
+          this.state.resetStateLegendPtsAndUserPositionedLabs();
+          this.data.resetLegendPts();
+          this.draw();
+        });
+    this.svg
+        .on('mouseover', () => {if (this.state.hasStateBeenAlteredByUser()) svgResetButton.style('opacity', 1)})
+        .on('mouseout', () => svgResetButton.style('opacity', 0));
+    
+    const svgResetButtonBB = svgResetButton.node().getBBox();
+    const xAxisPadding = 5;
+    svgResetButton.attr('x', this.width - svgResetButtonBB.width - xAxisPadding)
+                  .attr('y', this.height - svgResetButtonBB.height);
+  }
+
   drawRect() {
     this.svg.selectAll('.plot-viewbox').remove();
-    return this.svg.append('rect')
+    this.svg.append('rect')
         .attr('class', 'plot-viewbox')
         .attr('x', this.viewBoxDim.x)
         .attr('y', this.viewBoxDim.y)
@@ -814,6 +841,7 @@ class RectPlot {
                     .duration(800)
                     .attr('x', d => d.x - (d.width / 2))
                     .attr('y', d => d.y - d.height);
+      // this.state.setAllLabsAsPositioned(labsToBePlaced, this.viewBoxDim);
 
       return this.drawLinks();
     } else if (this.showLabels && this.trendLines.show) {
@@ -872,7 +900,7 @@ class RectPlot {
         .duration(800)
         .attr('x', d => d.x)
         .attr('y', d => d.y);
-
+  
       return labels_img_svg.transition()
         .duration(800)
         .attr('x', d => d.x - (d.width / 2))
