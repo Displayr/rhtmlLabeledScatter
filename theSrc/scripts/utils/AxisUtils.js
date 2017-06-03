@@ -56,7 +56,7 @@ class AxisUtils {
         // Otherwise, return the inverse exponent of the tick increment
         const tickIncrExponentialForm = (tickIncr).toExponential();
         const tickExponent = _.toNumber(_.last(tickIncrExponentialForm.split('e')));
-        return Math.abs(tickExponent);
+        return ((tickExponent < 0) ? Math.abs(tickExponent) : 0);
       };
 
       if (type === 'col') {
