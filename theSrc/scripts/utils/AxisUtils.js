@@ -43,12 +43,24 @@ class AxisUtils {
     const dimensionMarkerLeaderStack = [];
     const dimensionMarkerLabelStack = [];
 
-    const pushDimensionMarker = function (type, x1, y1, x2, y2, label) {
+    const pushDimensionMarker = (type, x1, y1, x2, y2, label, tickIncrement) => {
       const leaderLineLen = plot.axisLeaderLineLength;
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight]);
       const { xDecimals, yDecimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot;
 
+      const computeNumDecimals = (tickIncr, userDecimals) => {
+        // Return user specified number of decimals or 0 if the tickIncr is an integer
+        if (!_.isNull(userDecimals)) return userDecimals;
+        if (_.isInteger(tickIncr)) return 0;
+
+        // Otherwise, return the inverse exponent of the tick increment
+        const tickIncrExponentialForm = (tickIncr).toExponential();
+        const tickExponent = _.toNumber(_.last(tickIncrExponentialForm.split('e')));
+        return Math.abs(tickExponent);
+      };
+
       if (type === 'col') {
+        const numDecimals = computeNumDecimals(tickIncrement, xDecimals);
         dimensionMarkerLeaderStack.push({
           x1,
           y1: y2,
@@ -58,13 +70,15 @@ class AxisUtils {
         dimensionMarkerLabelStack.push({
           x: x1,
           y: y2 + leaderLineLen + labelHeight,
-          label: Utils.getFormattedNum(label, xDecimals, xPrefix, xSuffix),
+          label: Utils.getFormattedNum(label, numDecimals, xPrefix, xSuffix),
           anchor: 'middle',
           type,
         });
       }
 
       if (type === 'row') {
+        console.log(tickIncrement);
+        const numDecimals = computeNumDecimals(tickIncrement, yDecimals);
         dimensionMarkerLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,
@@ -74,7 +88,7 @@ class AxisUtils {
         dimensionMarkerLabelStack.push({
           x: x1 - leaderLineLen,
           y: y2 + (labelHeight / 3),
-          label: Utils.getFormattedNum(label, yDecimals, yPrefix, ySuffix),
+          label: Utils.getFormattedNum(label, numDecimals, yPrefix, ySuffix),
           anchor: 'end',
           type,
         });
@@ -110,7 +124,7 @@ class AxisUtils {
         x2: viewBoxDim.x + viewBoxDim.width,
         y2: yCoordOfXAxisOrigin,
       };
-      pushDimensionMarker('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0);
+      pushDimensionMarker('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY);
       if ((data.minY !== 0) && (data.maxY !== 0)) {
         originAxis.push(xAxisOrigin);
       }
@@ -124,7 +138,7 @@ class AxisUtils {
         x2: xCoordOfYAxisOrigin,
         y2: viewBoxDim.y + viewBoxDim.height,
       };
-      pushDimensionMarker('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0);
+      pushDimensionMarker('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX);
       if ((data.minX !== 0) && (data.maxX !== 0)) {
         originAxis.push(yAxisOrigin);
       }
@@ -164,6 +178,7 @@ class AxisUtils {
       }
     }
 
+    // Build col markers
     let i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
       let val, x1, x2, y1, y2 = null;
@@ -180,7 +195,7 @@ class AxisUtils {
 
         dimensionMarkerStack.push({ x1, y1, x2, y2 });
         if (i % 2) {
-          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14));
+          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14), ticksX);
         }
       }
 
@@ -192,12 +207,13 @@ class AxisUtils {
         y2 = viewBoxDim.y + viewBoxDim.height;
         dimensionMarkerStack.push({ x1, y1, x2, y2 });
         if (i % 2) {
-          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14));
+          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14), ticksX);
         }
       }
       i++;
     }
 
+    // Build row markers
     i = 0;
     while (i < Math.max(rowsPositive, rowsNegative)) {
       let val, x1, x2, y1, y2 = null;
@@ -210,7 +226,7 @@ class AxisUtils {
         y2 = this._normalizeYCoords(data, val);
         dimensionMarkerStack.push({ x1, y1, x2, y2 });
         if (i % 2) {
-          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14));
+          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14), ticksY);
         }
       }
 
@@ -225,7 +241,7 @@ class AxisUtils {
         y2 = this._normalizeYCoords(data, val);
         dimensionMarkerStack.push({ x1, y1, x2, y2 });
         if (i % 2) {
-          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14));
+          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14), ticksY);
         }
       }
       i++;
