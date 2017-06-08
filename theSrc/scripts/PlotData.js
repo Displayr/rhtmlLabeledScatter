@@ -3,6 +3,7 @@ import PlotColors from './PlotColors';
 import PlotLabel from './PlotLabel';
 import LegendUtils from './utils/LegendUtils';
 import Utils from './utils/Utils';
+import AxisUtils from './utils/AxisUtils';
 
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
@@ -132,7 +133,7 @@ class PlotData {
     }
 
 
-    // TODO KZ (another) this can be simplified : see Pictograph utils/geometryUtils.js
+    // Fixed aspect ratio computations: not easily simplified as the boundaries cannot be reduced
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
@@ -166,6 +167,11 @@ class PlotData {
         this.minY -= (((1 / widgetAR) * rangeX) - rangeY) / 2;
       }
     }
+
+    this.maxX = AxisUtils.roundedMaxAxisBoundaryValue(this.maxX);
+    this.minX = AxisUtils.roundedMinAxisBoundaryValue(this.minX);
+    this.maxY = AxisUtils.roundedMaxAxisBoundaryValue(this.maxY);
+    this.minY = AxisUtils.roundedMinAxisBoundaryValue(this.minY);
 
     // TODO KZ this should be done first to skip the wasted computation (unless there are side effect in the above) ??
     // If user has sent x and y boundaries, these hold higher priority

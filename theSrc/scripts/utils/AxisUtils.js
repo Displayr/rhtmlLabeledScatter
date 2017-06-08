@@ -15,7 +15,27 @@ class AxisUtils {
 
     const pow10x = 10 ** (Math.ceil((Math.log(unroundedTickSize) / Math.LN10) - 1));
     const roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
-    return roundedTickRange;
+    let exponentTick = this.getExponentOfNum(roundedTickRange);
+    exponentTick *= -1;
+    return _.round(roundedTickRange, exponentTick);
+  }
+
+  static getExponentOfNum(num) {
+    const numExponentialForm = num.toExponential();
+    const exponent = _.toNumber(_.last(numExponentialForm.split('e')));
+    return exponent;
+  }
+  
+  static roundedMinAxisBoundaryValue(minVal) {
+    const exp = this.getExponentOfNum(minVal);
+    const invertSignExp = (exp * -1) + 1;
+    return _.floor(minVal, exp);
+  }
+  
+  static roundedMaxAxisBoundaryValue(maxVal) {
+    const exp = this.getExponentOfNum(maxVal);
+    const invertSignExp = (exp * -1) + 1;
+    return _.ceil(maxVal, exp);
   }
 
   static _between(num, min, max) {
@@ -54,8 +74,7 @@ class AxisUtils {
         if (_.isInteger(tickIncr)) return 0;
 
         // Otherwise, return the inverse exponent of the tick increment
-        const tickIncrExponentialForm = (tickIncr).toExponential();
-        const tickExponent = _.toNumber(_.last(tickIncrExponentialForm.split('e')));
+        const tickExponent = this.getExponentOfNum(tickIncr);
         return ((tickExponent < 0) ? Math.abs(tickExponent) : 0);
       };
 
