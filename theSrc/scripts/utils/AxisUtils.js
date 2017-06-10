@@ -25,17 +25,13 @@ class AxisUtils {
     const exponent = _.toNumber(_.last(numExponentialForm.split('e')));
     return exponent;
   }
-  
+
   static roundedMinAxisBoundaryValue(minVal) {
-    const exp = this.getExponentOfNum(minVal);
-    const invertSignExp = (exp * -1) + 1;
-    return _.floor(minVal, exp);
+    return _.floor(minVal, this.getExponentOfNum(minVal) + 1);
   }
-  
+
   static roundedMaxAxisBoundaryValue(maxVal) {
-    const exp = this.getExponentOfNum(maxVal);
-    const invertSignExp = (exp * -1) + 1;
-    return _.ceil(maxVal, exp);
+    return _.ceil(maxVal, this.getExponentOfNum(maxVal) + 1);
   }
 
   static _between(num, min, max) {
@@ -204,7 +200,7 @@ class AxisUtils {
       if (i < colsPositive) {
         val = (i + 1) * ticksX;
         if (!this._between(0, data.minX, data.maxX)) {
-          val = data.minX + (i * ticksX);
+          val = this.roundedMaxAxisBoundaryValue(data.minX) + (i * ticksX);
         }
         x1 = this._normalizeXCoords(data, val);
         y1 = viewBoxDim.y;
@@ -251,7 +247,7 @@ class AxisUtils {
       if (i < rowsNegative) {
         val = (i + 1) * ticksY;
         if (!this._between(0, data.minY, data.maxY)) {
-          val = data.minY + (i * ticksY);
+          val = this.roundedMinAxisBoundaryValue(data.minY) + (i * ticksY);
         }
         x1 = viewBoxDim.x;
         y1 = this._normalizeYCoords(data, val);
