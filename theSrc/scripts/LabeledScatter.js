@@ -38,7 +38,8 @@ class LabeledScatter {
     return this.resizeDelayPromise;
   }
 
-  constructor(width, height, stateChangedCallback) {
+  constructor(element, width, height, stateChangedCallback) {
+    this.rootElement = _.has(element, 'length') ? element[0] : element
     this.width = width;
     this.height = height;
     this.stateChangedCallback = stateChangedCallback;
@@ -51,32 +52,37 @@ class LabeledScatter {
     return this.getResizeDelayPromise();
   }
 
-  draw(data, el, state) {
+  setConfig(data) {
     // Reset widget if previous data present but not equal in params - see VIS-278
     if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
       throw new Error('rhtmlLabeledScatter reset');
     }
-
-    $(el).find('*').remove();
-
-    const svg = d3.select(el)
-            .append('svg')
-            .attr('width', this.width)
-            .attr('height', this.height)
-            .attr('class', 'plot-container');
-
     if (!(_.isNull(data.X)) && !(_.isNull(data.Y))) {
       this.data = data;
     }
+  }
+
+  setUserState(userState) {
+    this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label);
+  }
+
+  draw() {
+
+    $(this.rootElement).find('*').remove();
+
+    const svg = d3.select(this.rootElement)
+            .append('svg')
+            .attr('width', this.width)
+            .attr('height', this.height)
+            .attr('class', 'plot-container rhtmlwidget-outer-svg');
 
     // Error checking
-    DisplayError.checkIfArrayOfNums(this.data.X, el, 'Given X value is not an array of numbers');
-    DisplayError.checkIfArrayOfNums(this.data.Y, el, 'Given Y value is not an array of numbers');
+    DisplayError.checkIfArrayOfNums(this.data.X, this.rootElement, 'Given X value is not an array of numbers');
+    DisplayError.checkIfArrayOfNums(this.data.Y, this.rootElement, 'Given Y value is not an array of numbers');
 
-    const stateObj = new State(state, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label);
     // console.log('rhtmlLabeledScatter data');
     // console.log(JSON.stringify(this.data));
-    this.plot = new RectPlot(stateObj,
+    this.plot = new RectPlot(this.stateObj,
                         this.width,
                         this.height,
                         this.data.X,

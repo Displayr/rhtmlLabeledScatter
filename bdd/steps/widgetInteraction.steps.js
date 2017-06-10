@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const request = require('request-promise');
-const ScatterPlot = require('../pageObjects/scatterPlot');
 
+
+// TODO make this an exported module in rhtmlBuild
 // without this cucumber is not logging errors when steps fail which makes debugging painful
 // think this has to do with Applitools but dont really understand ...
 const wrapInPromiseAndLogErrors = function (fn) {
@@ -17,48 +18,7 @@ const wrapInPromiseAndLogErrors = function (fn) {
   });
 };
 
-const loadPage = function ({ configName, stateName, inputWidth, inputHeight }) {
-  this.context.scatterPlot = new ScatterPlot({ configName, stateName, inputWidth, inputHeight });
-  return this.context.scatterPlot.load();
-};
-
 module.exports = function () {
-  const isApplitoolsEnabled = () => {
-    return !(_.get(browser, 'params.applitools') === 'off');
-  };
-
-  this.setDefaultTimeout(180 * 1000);
-
-  this.Given(/^I am viewing "([^"]+)"$/, function (configName) {
-    this.context.configName = configName;
-    return loadPage.bind(this)({ configName });
-  });
-
-  this.Given(/^I am viewing "([^"]+)" with state "([^"]+)"$/, function (configName, stateName) {
-    this.context.configName = configName;
-    return loadPage.bind(this)({ configName, stateName });
-  });
-
-  this.Given(/^I am viewing "([^"]+)" with state "([^"]+)" and dimensions ([0-9]+)x([0-9]+)$/, function (configName, stateName, inputWidth, inputHeight) {
-    this.context.configName = configName;
-    return loadPage.bind(this)({ configName, stateName, inputWidth, inputHeight });
-  });
-
-  this.Given(/^I am viewing "([^"]+)" with dimensions ([0-9]+)x([0-9]+)$/, function (configName, inputWidth, inputHeight) {
-    this.context.configName = configName;
-    return loadPage.bind(this)({ configName, inputWidth, inputHeight });
-  });
-
-  this.Then(/^the "(.*)" snapshot matches the baseline$/, function (snapshotName) {
-    if (isApplitoolsEnabled()) {
-      const selectorExpression = '#render-example-container';
-      return wrapInPromiseAndLogErrors(() => {
-        return this.eyes.checkRegionBy(by.css(selectorExpression), snapshotName);
-      });
-    }
-    return Promise.resolve();
-  });
-
   this.When(/^I drag label (.+) by (-?[0-9]+) x (-?[0-9]+)$/, function (labelId, xMovement, yMovement) {
     return wrapInPromiseAndLogErrors(() => {
       this.context.scatterPlot.plotLabel(labelId).getLocation().then((locationObject) => {
@@ -149,9 +109,9 @@ module.exports = function () {
     }
 
     return wrapInPromiseAndLogErrors(() => {
-      const expectedStateUrl = `http://localhost:9000/internal_www/scripts/data/${this.context.configName}/${expectedStateFile}.json`;
+      const expectedStateUrl = `http://localhost:9000/data/${this.context.configName}/${expectedStateFile}.json`;
       const expectedStatePromise = request(expectedStateUrl).then(JSON.parse);
-      const actualStatePromise = this.context.scatterPlot.getRecentState();
+      const actualStatePromise = this.context.getRecentState();
 
       return Promise.all([actualStatePromise, expectedStatePromise]).then(([actualState, expectedState]) => {
 
@@ -202,54 +162,7 @@ ${JSON.stringify(actualState[constantKey], {}, 2)}
     });
   });
 
-  this.When(/^Sleep ([0-9]+)$/, function (sleepSeconds) {
-    return browser.sleep(sleepSeconds * 1000);
-  });
-
-  this.When(/^Sleep ([0-9]+) milliseconds$/, function (sleepMilliseconds) {
-    return browser.sleep(sleepMilliseconds);
-  });
-
   this.When(/^I wait for animations to complete$/, function () {
     return browser.sleep(1000);
-  });
-
-  this.When(/^I take all the snapshots on the page "(.*)"$/, function (contentPath) {
-
-    function loadContentPage(_contentPath) {
-      browser.get(`http://localhost:9000${_contentPath}`);
-      const plotContainerPresentPromise = browser.wait(browser.isElementPresent(by.css('.plot-container')));
-      const errorContainerPresentPromise = browser.wait(browser.isElementPresent(by.css('.rhtml-error-container')));
-      return Promise.all([plotContainerPresentPromise, errorContainerPresentPromise]).then((isPresentResults) => {
-        return (isPresentResults[0] || isPresentResults[1])
-          ? Promise.resolve()
-          : Promise.reject(new Error(`Fail to load http://localhost:9000${_contentPath}.`));
-      });
-    }
-
-    function takeSnapshots() {
-      const donePromises = element.all(by.css('[snapshot-name]')).each((element) => {
-        return element.getAttribute('snapshot-name').then((snapshotName) => {
-          if (snapshotName) {
-            console.log(`take snapshot ${contentPath} ${snapshotName} (css '[snapshot-name="${snapshotName}"]')`);
-            if (isApplitoolsEnabled()) {
-              return this.eyes.checkRegionBy(by.css(`[snapshot-name="${snapshotName}"]`), snapshotName);
-            }
-            return Promise.resolve();
-          } else {
-            console.error(`snapshot on page ${contentPath} missing snapshot name`);
-            return Promise.resolve();
-          }
-        });
-      });
-      return donePromises.then(() => {
-        console.log(`done taking snapshots on ${contentPath}`);
-      });
-    }
-
-    return wrapInPromiseAndLogErrors(() => {
-      return loadContentPage(contentPath)
-        .then(takeSnapshots.bind(this))
-    });
   });
 };
