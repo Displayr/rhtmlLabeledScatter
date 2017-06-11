@@ -1,4 +1,5 @@
 const LabeledScatter = require('./LabeledScatter.js');
+const $ = require('jquery');
 
 describe('LabeledScatter:', function () {
   describe('draw()', function () {
@@ -26,23 +27,34 @@ describe('LabeledScatter:', function () {
         X: [1, 1, 3],
         Y: [1, 2, 3],
       };
-      this.context.labeledScatter = new LabeledScatter(this.context.width, this.context.height,
-        this.context.stateChangedCallback);
+
+      const element = $('<div>');
+      this.context.labeledScatter = new LabeledScatter(
+        element,
+        this.context.width,
+        this.context.height,
+        this.context.stateChangedCallback
+      );
     });
 
     it('should return when called draw on initial data', function () {
-      expect(this.context.labeledScatter.draw(this.context.dataInitial)).to.equal(this.context.labeledScatter);
+      this.context.labeledScatter.setConfig(this.context.dataInitial)
+      this.context.labeledScatter.setUserState({})
+      expect(this.context.labeledScatter.draw()).to.equal(this.context.labeledScatter);
     });
 
     it('should throw error when called draw on different data', function () {
-      this.context.labeledScatter.draw(this.context.dataInitial);
-      expect(() => this.context.labeledScatter.draw(this.context.dataNew)).to.throw('rhtmlLabeledScatter reset');
+      this.context.labeledScatter.setConfig(this.context.dataInitial);
+      this.context.labeledScatter.setUserState({})
+      this.context.labeledScatter.draw()
+      expect(() => this.context.labeledScatter.setConfig(this.context.dataNew)).to.throw('rhtmlLabeledScatter reset');
     });
 
     it('should return when called on identical data', function () {
-      const ls = this.context.labeledScatter;
-      ls.draw(this.context.dataInitial);
-      expect(ls.draw(this.context.dataInitial)).to.equal(ls);
+      this.context.labeledScatter.setConfig(this.context.dataInitial);
+      this.context.labeledScatter.setUserState({})
+      this.context.labeledScatter.draw()
+      expect(() => this.context.labeledScatter.setConfig(this.context.dataInitial)).not.to.throw();
     });
   });
 });

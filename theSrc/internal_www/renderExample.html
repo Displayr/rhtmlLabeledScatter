@@ -38,11 +38,10 @@
       if (urlVars.height) { scatterPlotDomElement.attr('data-height', urlVars.height); }
       if (urlVars.config) { scatterPlotDomElement.attr('data-config', urlVars.config); }
       if (urlVars.state) { scatterPlotDomElement.attr('data-state', urlVars.state); }
+      if (urlVars.rerenderControls) { scatterPlotDomElement.attr('data-rerender', true); }
 
       // NB addExampleTo is a function added to window by renderContentPage.js
-      addExampleTo.bind($('.example')[0])().then(widgetInstance => {
-        window.widgetInstance = widgetInstance;
-      });
+      $('.example').each(addExampleTo);
     }, 0);
   });
 </script>
