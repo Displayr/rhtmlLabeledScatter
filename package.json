@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
+    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#1.0.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
   },
@@ -18,7 +19,6 @@
     "jquery": "2.2.2",
     "lodash": "4.6.1",
     "md5": "^2.2.1",
-    "random-js": "^1.0.8",
-    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#1.0.1"
+    "random-js": "^1.0.8"
   }
 }
