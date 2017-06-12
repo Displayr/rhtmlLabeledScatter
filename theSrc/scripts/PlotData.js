@@ -168,11 +168,6 @@ class PlotData {
       }
     }
 
-    // this.maxX = AxisUtils.roundedMaxAxisBoundaryValue(this.maxX);
-    // this.minX = AxisUtils.roundedMinAxisBoundaryValue(this.minX);
-    // this.maxY = AxisUtils.roundedMaxAxisBoundaryValue(this.maxY);
-    // this.minY = AxisUtils.roundedMinAxisBoundaryValue(this.minY);
-
     // TODO KZ this should be done first to skip the wasted computation (unless there are side effect in the above) ??
     // If user has sent x and y boundaries, these hold higher priority
     if (Utils.isNum(this.bounds.xmax)) { this.maxX = this.bounds.xmax; }
