@@ -1,113 +1,113 @@
 
-import _ from 'lodash';
+import _ from 'lodash'
 
 class Links {
 
   constructor(pts, lab) {
-    const _labIsText = labelData => labelData.url === '';
-    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === '';
+    const _labIsText = labelData => labelData.url === ''
+    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
 
-    this.links = [];
+    this.links = []
     for (let i = 0; i < pts.length; i++) {
-      const pt = pts[i];
-      let newLinkPt = null;
+      const pt = pts[i]
+      let newLinkPt = null
       if (!this._labIsInsideBubblePt(lab[i], pt)) {
         if (_labIsEmpty(lab[i])) {
-          newLinkPt = null;
+          newLinkPt = null
         } else if (_labIsText(lab[i])) {
-          newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts);
+          newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
         } else {
-          newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts);
+          newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts)
         }
       }
 
       if (!_.isNull(newLinkPt)) {
-        const ancBorderPt = this._getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
+        const ancBorderPt = this._getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1])
         this.links.push({
           x1: ancBorderPt[0],
           y1: ancBorderPt[1],
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
-          color: pt.color,
-        });
+          color: pt.color
+        })
       }
     }
   }
   
-  getLinkData() { return this.links; }
+  getLinkData() { return this.links }
   
   _labIsInsideBubblePt(lab, pt) {
-    const labLeftBorder = lab.x - (lab.width / 2);
-    const labRightBorder = lab.x + (lab.width / 2);
-    const labBotBorder = lab.y;
-    const labTopBorder = lab.y - lab.height;
+    const labLeftBorder = lab.x - (lab.width / 2)
+    const labRightBorder = lab.x + (lab.width / 2)
+    const labBotBorder = lab.y
+    const labTopBorder = lab.y - lab.height
 
     return (labRightBorder < (pt.x + pt.r)) &&
       (labLeftBorder > (pt.x - pt.r)) &&
       (labBotBorder < (pt.y + pt.r)) &&
-      (labTopBorder > (pt.y - pt.r));
+      (labTopBorder > (pt.y - pt.r))
   }
 
   _getNewPtOnLogoLabelBorder(label, anchor) {
     // Don't draw a link if anc is inside logo
-    let region;
+    let region
     if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
       (label.y - label.height < anchor.y && anchor.y < label.y)) {
-      return null;
+      return null
     }
 
     // Calculations reference - http://stackoverflow.com/questions/4061576/finding-points-on-a-rectangle-at-a-given-angle
-    const a = label.width;
-    const b = label.height;
-    const labx = label.x;
-    const laby = label.y - (label.height / 2);
+    const a = label.width
+    const b = label.height
+    const labx = label.x
+    const laby = label.y - (label.height / 2)
 
-    const dx = anchor.x - labx;
-    const dy = anchor.y - laby;
-    const angle = Math.atan(dy / dx);
+    const dx = anchor.x - labx
+    const dy = anchor.y - laby
+    const angle = Math.atan(dy / dx)
 
     if (-Math.atan(b / a) < angle && angle < Math.atan(b / a)) {
-      region = 1;
+      region = 1
     } else if (Math.atan(b / a) < angle && angle < Math.PI - Math.atan(b / a)) {
-      region = 2;
+      region = 2
     } else if (Math.PI - Math.atan(b / a) < angle && angle < Math.PI + Math.atan(b / a)) {
-      region = 3;
+      region = 3
     } else if (((Math.PI + Math.atan(b / a)) < angle) || (angle < -Math.atan(b / a))) {
-      region = 4;
+      region = 4
     }
 
     if ((region === 1) || (region === 3)) {
       if (dx > 0) {
-        return [labx + (a / 2), ((a / 2) * Math.tan(angle)) + laby];
+        return [labx + (a / 2), ((a / 2) * Math.tan(angle)) + laby]
       } else {
-        return [labx - (a / 2), -((a / 2) * Math.tan(angle)) + laby];
+        return [labx - (a / 2), -((a / 2) * Math.tan(angle)) + laby]
       }
     } else if ((region === 2) || (region === 4)) {
       if (dy > 0) {
-        return [labx + (b / (2 * Math.tan(angle))), (b / 2) + laby];
+        return [labx + (b / (2 * Math.tan(angle))), (b / 2) + laby]
       } else {
-        return [labx - (b / (2 * Math.tan(angle))), (-b / 2) + laby];
+        return [labx - (b / (2 * Math.tan(angle))), (-b / 2) + laby]
       }
     }
 
-    return null;
+    return null
   }
 
   // calc the links from anc to label text if ambiguous
   _getNewPtOnTxtLabelBorder(label, anchor, anchorArray) {
-    const labelXmid = label.x;
-    const labelXleft = label.x - (label.width / 2);
-    const labelXright = label.x + (label.width / 2);
+    const labelXmid = label.x
+    const labelXleft = label.x - (label.width / 2)
+    const labelXright = label.x + (label.width / 2)
 
-    const labelYbot = label.y;
-    const labelYtop = label.y - label.height;
-    const labelYmid = label.y - (label.height / 2);
+    const labelYbot = label.y
+    const labelYtop = label.y - label.height
+    const labelYmid = label.y - (label.height / 2)
 
-    const ancL = anchor.x - anchor.r;
-    const ancR = anchor.x + anchor.r;
-    const ancT = anchor.y + anchor.r;
-    const ancB = anchor.y - anchor.r;
+    const ancL = anchor.x - anchor.r
+    const ancR = anchor.x + anchor.r
+    const ancT = anchor.y + anchor.r
+    const ancB = anchor.y - anchor.r
 
     const labelBorder = {
       botL: [labelXleft, labelYbot],
@@ -117,88 +117,88 @@ class Links {
       topC: [labelXmid, labelYtop + 7],
       topR: [labelXright, labelYtop + 7],
       midL: [labelXleft, labelYmid],
-      midR: [labelXright, labelYmid],
-    };
+      midR: [labelXright, labelYmid]
+    }
 
-    const padding = 10;
-    const centered = (ancR > labelXleft) && (ancL < labelXright);
-    const abovePadded = ancB < (labelYtop - padding);
-    const above = ancB < labelYtop;
-    const belowPadded = ancT > (labelYbot + padding);
-    const below = ancT > labelYbot;
-    const left = ancR < labelXleft;
-    const right = ancL > labelXright;
-    const leftPadded = ancR < (labelXleft - padding);
-    const rightPadded = ancL > (labelXright + padding);
+    const padding = 10
+    const centered = (ancR > labelXleft) && (ancL < labelXright)
+    const abovePadded = ancB < (labelYtop - padding)
+    const above = ancB < labelYtop
+    const belowPadded = ancT > (labelYbot + padding)
+    const below = ancT > labelYbot
+    const left = ancR < labelXleft
+    const right = ancL > labelXright
+    const leftPadded = ancR < (labelXleft - padding)
+    const rightPadded = ancL > (labelXright + padding)
 
     if (centered && abovePadded) {
-      return labelBorder.topC;
+      return labelBorder.topC
     } else if (centered && belowPadded) {
-      return labelBorder.botC;
+      return labelBorder.botC
     } else if (above && left) {
-      return labelBorder.topL;
+      return labelBorder.topL
     } else if (above && right) {
-      return labelBorder.topR;
+      return labelBorder.topR
     } else if (below && left) {
-      return labelBorder.botL;
+      return labelBorder.botL
     } else if (below && right) {
-      return labelBorder.botR;
+      return labelBorder.botR
     } else if (leftPadded) {
-      return labelBorder.midL;
+      return labelBorder.midL
     } else if (rightPadded) {
-      return labelBorder.midR;
+      return labelBorder.midR
     } else {
       // Draw the link if there are any anc nearby
-      const ambiguityFactor = 10;
-      const padL = labelBorder.topL[0] - ambiguityFactor;
-      const padR = labelBorder.topR[0] + ambiguityFactor;
-      const padT = labelBorder.topL[1] - ambiguityFactor;
-      const padB = labelBorder.botR[1] + ambiguityFactor;
-      let ancNearby = 0;
+      const ambiguityFactor = 10
+      const padL = labelBorder.topL[0] - ambiguityFactor
+      const padR = labelBorder.topR[0] + ambiguityFactor
+      const padT = labelBorder.topL[1] - ambiguityFactor
+      const padB = labelBorder.botR[1] + ambiguityFactor
+      let ancNearby = 0
       _(anchorArray).each((a) => {
         if (((a.x > padL) && (a.x < padR)) && ((a.y > padT) && (a.y < padB))) {
-          ancNearby++;
+          ancNearby++
         }
-      });
+      })
       if (ancNearby > 1) {
         if (!left && !right && !above && !below) {
-          return labelBorder.botC;
+          return labelBorder.botC
         } else if (centered && above) {
-          return labelBorder.topC;
+          return labelBorder.topC
         } else if (centered && below) {
-          return labelBorder.botC;
+          return labelBorder.botC
         } else if (left && above) {
-          return labelBorder.topL;
+          return labelBorder.topL
         } else if (left && below) {
-          return labelBorder.botL;
+          return labelBorder.botL
         } else if (right && above) {
-          return labelBorder.topR;
+          return labelBorder.topR
         } else if (right && below) {
-          return labelBorder.botR;
+          return labelBorder.botR
         } else if (left) {
-          return labelBorder.midL;
+          return labelBorder.midL
         } else if (right) {
-          return labelBorder.midR;
+          return labelBorder.midR
         }
       }
     }
 
-    return null;
+    return null
   }
 
   _getPtOnAncBorder(cx, cy, cr, x, y) {
-    const opp = Math.abs(cy - y);
-    const adj = Math.abs(cx - x);
-    const angle = Math.atan(opp / adj);
+    const opp = Math.abs(cy - y)
+    const adj = Math.abs(cx - x)
+    const angle = Math.atan(opp / adj)
 
-    const dx = cr * Math.cos(angle);
-    const dy = cr * Math.sin(angle);
+    const dx = cr * Math.cos(angle)
+    const dy = cr * Math.sin(angle)
 
-    const finalX = x < cx ? cx - dx : cx + dx;
-    const finalY = y < cy ? cy - dy : cy + dy;
+    const finalX = x < cx ? cx - dx : cx + dx
+    const finalY = y < cy ? cy - dy : cy + dy
 
-    return [finalX, finalY];
+    return [finalX, finalY]
   }
 }
 
-module.exports = Links;
+module.exports = Links

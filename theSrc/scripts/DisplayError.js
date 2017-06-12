@@ -4,34 +4,34 @@
  *
  */
 
-import $ from 'jquery';
-import Utils from './utils/Utils';
+import $ from 'jquery'
+import Utils from './utils/Utils'
 
 class DisplayError {
-  static checkIfArrayOfNums(candidateArray, svg, errorMsg) {
+  static checkIfArrayOfNums (candidateArray, svg, errorMsg) {
     if (!Utils.isArrOfNums(candidateArray)) {
-      this.displayErrorMessage(svg, errorMsg);
+      this.displayErrorMessage(svg, errorMsg)
     }
   }
 
-  static displayErrorMessage(svg, msg) {
-    const errorContainer = $('<div class="rhtml-error-container">');
-    const errorImage = $(`<img width="32px" height="32px" src="${this.getErrorImgUrl()}"/>`);
+  static displayErrorMessage (svg, msg) {
+    const errorContainer = $('<div class="rhtml-error-container">')
+    const errorImage = $(`<img width="32px" height="32px" src="${this.getErrorImgUrl()}"/>`)
     const errorText = $('<span style="color:red;">')
-      .html(msg.toString());
+      .html(msg.toString())
 
-    errorContainer.append(errorImage);
-    errorContainer.append(errorText);
+    errorContainer.append(errorImage)
+    errorContainer.append(errorText)
 
-    $(svg).empty();
-    $(svg).append(errorContainer);
+    $(svg).empty()
+    $(svg).append(errorContainer)
 
-    throw new Error(msg);
+    throw new Error(msg)
   }
 
-  static getErrorImgUrl() {
-    return 'https://s3-ap-southeast-2.amazonaws.com/kyle-public-numbers-assets/htmlwidgets/CroppedImage/error_128.png';
+  static getErrorImgUrl () {
+    return 'https://s3-ap-southeast-2.amazonaws.com/kyle-public-numbers-assets/htmlwidgets/CroppedImage/error_128.png'
   }
 }
 
-module.exports = DisplayError;
+module.exports = DisplayError

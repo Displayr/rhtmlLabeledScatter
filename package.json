@@ -3,27 +3,28 @@
   "engines": {
     "node": ">=6.9.5"
   },
+  "scripts": {
+    "prepush": "node ./bin/prepush"
+  },
   "devDependencies": {
+    "chai": "^3.5.0",
     "gulp": "^3.9.1",
     "karma": "^1.7.0",
     "protractor": "^5.1.2",
     "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#1.1.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0",
-    "watchify": "^3.9.0",
-    "webdriver-manager": "^12.0.6"
+    "watchify": "^3.9.0"
   },
   "dependencies": {
     "bignumber.js": "^2.4.0",
     "bluebird": "^3.4.6",
-    "chai": "^3.5.0",
     "d3": "3.5.16",
     "d3-extended": "^1.2.10",
     "es6-promise": "^3.2.1",
     "jquery": "2.2.2",
     "lodash": "4.6.1",
     "md5": "^2.2.1",
-    "protractor-cucumber-framework": "^3.1.2",
     "random-js": "^1.0.8"
   }
 }

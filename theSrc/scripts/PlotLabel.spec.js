@@ -1,9 +1,9 @@
-const _ = require('lodash');
-const DisplayError = require('./DisplayError.js');
-const PlotLabel = require('./PlotLabel.js');
+const _ = require('lodash')
+const DisplayError = require('./DisplayError.js')
+const PlotLabel = require('./PlotLabel.js')
 
 // NB need these global additions until the ES6 port is complete
-window.DisplayError = DisplayError;
+window.DisplayError = DisplayError
 
 describe('PlotLabel:', function () {
   describe('_isStringLinkToImg(labelString)', function () {
@@ -16,13 +16,13 @@ describe('PlotLabel:', function () {
       { input: '/images/image.gif', expected: true },
       { input: '/images/image.txt', expected: false },
       { input: '/images/image.png?foo=bar', expected: true },
-      { input: 'foo', expected: false },
-    ];
+      { input: 'foo', expected: false }
+    ]
 
     _(tests).each((t) => {
       it(`_isStringLinkToImg(${t.input}) is ${t.expected}`, function () {
-        expect(PlotLabel._isStringLinkToImg(t.input)).to.equal(t.expected);
-      });
-    });
-  });
-});
+        expect(PlotLabel._isStringLinkToImg(t.input)).to.equal(t.expected)
+      })
+    })
+  })
+})
