@@ -562,6 +562,10 @@ class PlotData {
     this.getPtsAndLabs('PlotData.removeElemFromLegend');
     this.setupLegendGroupsAndPts();
   }
+
+  resetLegendPts() {
+    _.map(this.legendPts, lp => this.removeElemFromLegend(lp.id));
+  }
 }
 
 module.exports = PlotData;
