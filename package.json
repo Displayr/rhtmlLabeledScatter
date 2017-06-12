@@ -5,9 +5,13 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#1.0.1",
+    "karma": "^1.7.0",
+    "protractor": "^5.1.2",
+    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#1.0.2",
     "sinon": "^2.1.0",
-    "sinon-chai": "^2.9.0"
+    "sinon-chai": "^2.9.0",
+    "watchify": "^3.9.0",
+    "webdriver-manager": "^12.0.6"
   },
   "dependencies": {
     "bignumber.js": "^2.4.0",
@@ -19,6 +23,7 @@
     "jquery": "2.2.2",
     "lodash": "4.6.1",
     "md5": "^2.2.1",
+    "protractor-cucumber-framework": "^3.1.2",
     "random-js": "^1.0.8"
   }
 }

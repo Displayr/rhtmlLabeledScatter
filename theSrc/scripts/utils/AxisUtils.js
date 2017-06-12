@@ -15,7 +15,17 @@ class AxisUtils {
 
     const pow10x = 10 ** (Math.ceil((Math.log(unroundedTickSize) / Math.LN10) - 1));
     const roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
-    return roundedTickRange;
+    
+    // Round to 2 sig figs
+    let exponentTick = this.getExponentOfNum(roundedTickRange);
+    exponentTick *= -1;
+    return _.round(roundedTickRange, exponentTick);
+  }
+
+  static getExponentOfNum(num) {
+    const numExponentialForm = num.toExponential();
+    const exponent = _.toNumber(_.last(numExponentialForm.split('e')));
+    return exponent;
   }
 
   static _between(num, min, max) {
@@ -54,8 +64,7 @@ class AxisUtils {
         if (_.isInteger(tickIncr)) return 0;
 
         // Otherwise, return the inverse exponent of the tick increment
-        const tickIncrExponentialForm = (tickIncr).toExponential();
-        const tickExponent = _.toNumber(_.last(tickIncrExponentialForm.split('e')));
+        const tickExponent = this.getExponentOfNum(tickIncr);
         return ((tickExponent < 0) ? Math.abs(tickExponent) : 0);
       };
 
@@ -94,7 +103,7 @@ class AxisUtils {
       }
     };
 
-    // TODO KZ (another) Unecessary call to calculateMinMax ??
+    // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax();
 
     let ticksX = null;
@@ -111,6 +120,9 @@ class AxisUtils {
     } else {
       ticksY = this._getTickRange(data.maxY, data.minY);
     }
+    
+    const ticksXexponent = this.getExponentOfNum(ticksX);
+    const ticksYexponent = this.getExponentOfNum(ticksY);
 
     // Compute origins if they are within bounds
 
@@ -145,14 +157,19 @@ class AxisUtils {
 
     // calculate number of dimension markers
 
+    const rMinX = _.ceil(_.toNumber(data.minX), -ticksXexponent);
+    const rMaxX = data.maxX;
+    const rMinY = _.ceil(_.toNumber(data.minY), -ticksYexponent);
+    const rMaxY = data.maxY;
+    
     let colsPositive = 0;
     let colsNegative = 0;
-    if (this._between(0, data.minX, data.maxX)) {
-      colsPositive = (data.maxX / ticksX) - 1;
+    if (this._between(0, rMinX, rMaxX)) {
+      colsPositive = (rMaxX / ticksX) - 1;
       colsNegative = Math.abs(data.minX / ticksX) - 1;
     } else {
       const numColumns = (data.maxX - data.minX) / ticksX;
-      if (data.minX < 0) {
+      if (rMinX < 0) {
         colsNegative = numColumns;
         colsPositive = 0;
       } else {
@@ -163,12 +180,12 @@ class AxisUtils {
 
     let rowsPositive = 0;
     let rowsNegative = 0;
-    if (this._between(0, data.minY, data.maxY)) {
+    if (this._between(0, rMinY, rMaxY)) {
       rowsPositive = Math.abs(data.minY / ticksY) - 1;
       rowsNegative = (data.maxY / ticksY) - 1;
     } else {
       const numRows = (data.maxY - data.minY) / ticksY;
-      if (data.minY < 0) {
+      if (rMinY < 0) {
         rowsNegative = 0;
         rowsPositive = numRows;
       } else {
@@ -176,7 +193,7 @@ class AxisUtils {
         rowsPositive = 0;
       }
     }
-
+    
     // Build col markers
     let i = 0;
     while (i < Math.max(colsPositive, colsNegative)) {
@@ -184,29 +201,35 @@ class AxisUtils {
 
       if (i < colsPositive) {
         val = (i + 1) * ticksX;
-        if (!this._between(0, data.minX, data.maxX)) {
-          val = data.minX + (i * ticksX);
+        if (!this._between(0, rMinX, rMaxX)) {
+          val = rMinX + (i * ticksX);
         }
-        x1 = this._normalizeXCoords(data, val);
-        y1 = viewBoxDim.y;
-        x2 = this._normalizeXCoords(data, val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
-
-        dimensionMarkerStack.push({ x1, y1, x2, y2 });
-        if (i % 2) {
-          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14), ticksX);
+        
+        if (this._between(val, data.minX, data.maxX)) {
+          x1 = this._normalizeXCoords(data, val);
+          y1 = viewBoxDim.y;
+          x2 = this._normalizeXCoords(data, val);
+          y2 = viewBoxDim.y + viewBoxDim.height;
+  
+          dimensionMarkerStack.push({ x1, y1, x2, y2 });
+          if (i % 2) {
+            pushDimensionMarker('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX);
+          }
         }
       }
 
       if (i < colsNegative) {
         val = -(i + 1) * ticksX;
-        x1 = this._normalizeXCoords(data, val);
-        y1 = viewBoxDim.y;
-        x2 = this._normalizeXCoords(data, val);
-        y2 = viewBoxDim.y + viewBoxDim.height;
-        dimensionMarkerStack.push({ x1, y1, x2, y2 });
-        if (i % 2) {
-          pushDimensionMarker('col', x1, y1, x2, y2, val.toPrecision(14), ticksX);
+  
+        if (this._between(val, data.minX, data.maxX)) {
+          x1 = this._normalizeXCoords(data, val);
+          y1 = viewBoxDim.y;
+          x2 = this._normalizeXCoords(data, val);
+          y2 = viewBoxDim.y + viewBoxDim.height;
+          dimensionMarkerStack.push({x1, y1, x2, y2});
+          if (i % 2) {
+            pushDimensionMarker('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX);
+          }
         }
       }
       i++;
@@ -219,28 +242,34 @@ class AxisUtils {
 
       if (i < rowsPositive) {
         val = -(i + 1) * ticksY;
-        x1 = viewBoxDim.x;
-        y1 = this._normalizeYCoords(data, val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = this._normalizeYCoords(data, val);
-        dimensionMarkerStack.push({ x1, y1, x2, y2 });
-        if (i % 2) {
-          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14), ticksY);
+  
+        if (this._between(val, data.minY, data.maxY)) {
+          x1 = viewBoxDim.x;
+          y1 = this._normalizeYCoords(data, val);
+          x2 = viewBoxDim.x + viewBoxDim.width;
+          y2 = this._normalizeYCoords(data, val);
+          dimensionMarkerStack.push({x1, y1, x2, y2});
+          if (i % 2) {
+            pushDimensionMarker('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY);
+          }
         }
       }
 
       if (i < rowsNegative) {
         val = (i + 1) * ticksY;
-        if (!this._between(0, data.minY, data.maxY)) {
-          val = data.minY + (i * ticksY);
+        if (!this._between(0, rMinY, rMaxY)) {
+          val = rMinY + (i * ticksY);
         }
-        x1 = viewBoxDim.x;
-        y1 = this._normalizeYCoords(data, val);
-        x2 = viewBoxDim.x + viewBoxDim.width;
-        y2 = this._normalizeYCoords(data, val);
-        dimensionMarkerStack.push({ x1, y1, x2, y2 });
-        if (i % 2) {
-          pushDimensionMarker('row', x1, y1, x2, y2, val.toPrecision(14), ticksY);
+  
+        if (this._between(val, data.minY, data.maxY)) {
+          x1 = viewBoxDim.x;
+          y1 = this._normalizeYCoords(data, val);
+          x2 = viewBoxDim.x + viewBoxDim.width;
+          y2 = this._normalizeYCoords(data, val);
+          dimensionMarkerStack.push({x1, y1, x2, y2});
+          if (i % 2) {
+            pushDimensionMarker('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY);
+          }
         }
       }
       i++;

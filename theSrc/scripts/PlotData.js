@@ -3,6 +3,7 @@ import PlotColors from './PlotColors';
 import PlotLabel from './PlotLabel';
 import LegendUtils from './utils/LegendUtils';
 import Utils from './utils/Utils';
+import AxisUtils from './utils/AxisUtils';
 
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
@@ -132,7 +133,7 @@ class PlotData {
     }
 
 
-    // TODO KZ (another) this can be simplified : see Pictograph utils/geometryUtils.js
+    // Fixed aspect ratio computations: not easily simplified as the boundaries cannot be reduced
     if (this.fixedAspectRatio) {
       rangeX = this.maxX - this.minX;
       rangeY = this.maxY - this.minY;
@@ -564,7 +565,9 @@ class PlotData {
   }
 
   resetLegendPts() {
-    _.map(this.legendPts, lp => this.removeElemFromLegend(lp.id));
+    _.map(this.legendPts, lp => {
+      if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id);
+    });
   }
 }
 
