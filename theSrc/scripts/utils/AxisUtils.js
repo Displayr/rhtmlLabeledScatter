@@ -15,6 +15,8 @@ class AxisUtils {
 
     const pow10x = 10 ** (Math.ceil((Math.log(unroundedTickSize) / Math.LN10) - 1));
     const roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x;
+    
+    // Round to 2 sig figs
     let exponentTick = this.getExponentOfNum(roundedTickRange);
     exponentTick *= -1;
     return _.round(roundedTickRange, exponentTick);

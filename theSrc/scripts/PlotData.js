@@ -570,7 +570,9 @@ class PlotData {
   }
 
   resetLegendPts() {
-    _.map(this.legendPts, lp => this.removeElemFromLegend(lp.id));
+    _.map(this.legendPts, lp => {
+      if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id);
+    });
   }
 }
 
