@@ -819,7 +819,7 @@ class RectPlot {
         this.viewBoxDim,
         this.data.pts,
         this.data.lab,
-        this.state.getUserPositionedLabIds()
+        this.state
       )
 
       this.drawLinks()
@@ -864,7 +864,7 @@ class RectPlot {
         this.viewBoxDim,
         this.tl.arrowheadPts,
         this.tl.arrowheadLabels,
-        this.state.getUserPositionedLabIds()
+        this.state
       )
     }
   }
