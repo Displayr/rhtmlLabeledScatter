@@ -207,7 +207,7 @@ class RectPlot {
     this.fixedRatio = !(_.isNull(fixedRatio)) ? fixedRatio : true
 
     if (_.isNull(this.label)) {
-      this.label = this.X.map(() => { return '' })
+      this.label = _.map(X, () => { return '' })
       this.showLabels = false
     }
 
@@ -278,7 +278,7 @@ class RectPlot {
       .then(() => {
         // TODO Po if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if (this.data.legendRequiresRedraw) {
-          this.drawLegend()
+          return this.drawLegend()
         }
       })
       .then(() => {
@@ -294,7 +294,7 @@ class RectPlot {
 
         if (err && err.retry) {
           console.log(`draw failure ${err.message} (fail count: ${this.drawFailureCount}). Redrawing`)
-          this.draw()
+          return this.draw()
         }
 
         throw err
