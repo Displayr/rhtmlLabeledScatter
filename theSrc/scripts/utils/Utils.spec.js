@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const Utils = require('./Utils.js');
+const _ = require('lodash')
+const Utils = require('./Utils.js')
 
 describe('Utils:', function () {
   describe('isNum():', function () {
@@ -8,15 +8,15 @@ describe('Utils:', function () {
       { input: '4', expected: false },
       { input: ['4'], expected: false },
       { input: undefined, expected: false },
-      { input: null, expected: false },
-    ];
+      { input: null, expected: false }
+    ]
 
     _(tests).each((t) => {
       it(`Utils.isNum(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isNum(t.input)).to.equal(t.expected);
-      });
-    });
-  });
+        expect(Utils.isNum(t.input)).to.equal(t.expected)
+      })
+    })
+  })
 
   describe('isArr():', function () {
     const tests = [
@@ -25,15 +25,15 @@ describe('Utils:', function () {
       { input: ['4'], expected: true },
       { input: [4], expected: true },
       { input: undefined, expected: false },
-      { input: null, expected: false },
-    ];
+      { input: null, expected: false }
+    ]
 
     _(tests).each((t) => {
       it(`Utils.isArr(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isArr(t.input)).to.equal(t.expected);
-      });
-    });
-  });
+        expect(Utils.isArr(t.input)).to.equal(t.expected)
+      })
+    })
+  })
 
   describe('isArrOfNums():', function () {
     const tests = [
@@ -46,30 +46,30 @@ describe('Utils:', function () {
       { input: [4, '4.5', 5], expected: false },
       { input: [4.5, -5.5], expected: true },
       { input: undefined, expected: false },
-      { input: null, expected: false },
-    ];
+      { input: null, expected: false }
+    ]
 
     _(tests).each((t) => {
       it(`Utils.isArrOfNums(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isArrOfNums(t.input)).to.equal(t.expected);
-      });
-    });
-  });
+        expect(Utils.isArrOfNums(t.input)).to.equal(t.expected)
+      })
+    })
+  })
 
   describe('getFormattedNum(num, decimals, prefix, suffix):', function () {
     const tests = [
       { input: [1.234567, 2, 'p', 's'], expected: 'p1.23s' },
       { input: [1.234567, 2], expected: '1.23' },
       { input: [1.234567, 2, '', ''], expected: '1.23' },
-      { input: [1.234567, 2, '$', ''], expected: '$1.23' },
-    ];
+      { input: [1.234567, 2, '$', ''], expected: '$1.23' }
+    ]
 
     _(tests).each((t) => {
       it(`Utils.getFormattedNum(${t.input}) is ${t.expected}`, function () {
-        expect(Utils.getFormattedNum.apply(null, t.input)).to.equal(t.expected);
-      });
-    });
-  });
+        expect(Utils.getFormattedNum.apply(null, t.input)).to.equal(t.expected)
+      })
+    })
+  })
 
   describe('getSuperscript(id):', function () {
     const tests = [
@@ -84,13 +84,13 @@ describe('Utils:', function () {
       { input: 8, expected: '⁸' },
       { input: 9, expected: '⁹' },
       { input: 10, expected: '¹⁰' },
-      { input: 11, expected: '¹¹' },
-    ];
+      { input: 11, expected: '¹¹' }
+    ]
 
     _(tests).each((t) => {
       it(`Utils.getSuperscript(${t.input}) is ${t.expected}`, function () {
-        expect(Utils.getSuperscript(t.input)).to.equal(t.expected);
-      });
-    });
-  });
-});
+        expect(Utils.getSuperscript(t.input)).to.equal(t.expected)
+      })
+    })
+  })
+})

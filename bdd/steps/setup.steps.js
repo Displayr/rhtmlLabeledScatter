@@ -1,4 +1,4 @@
-const ScatterPlot = require('../pageObjects/scatterPlot');
+const ScatterPlot = require('../pageObjects/scatterPlot')
 
 module.exports = function () {
   this.Before(function () {

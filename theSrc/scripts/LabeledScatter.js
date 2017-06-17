@@ -1,84 +1,82 @@
-import $ from 'jquery';
-import d3 from 'd3';
-import _ from 'lodash';
-import DisplayError from './DisplayError';
-import RectPlot from './RectPlot';
-import State from './State';
+import $ from 'jquery'
+import d3 from 'd3'
+import _ from 'lodash'
+import DisplayError from './DisplayError'
+import RectPlot from './RectPlot'
+import State from './State'
 
 class LabeledScatter {
-
-  getResizeDelayPromise() {
+  getResizeDelayPromise () {
     if (_.isNull(this.resizeDelayPromise)) {
       this.resizeDelayPromise = new Promise((function () {
         return setTimeout(() => {
-          console.log('rhtmlLabeledScatter: resize timeout');
+          console.log('rhtmlLabeledScatter: resize timeout')
 
-          const resizeParams = this.resizeStack.pop();
-          const el = resizeParams[0];
-          const width = resizeParams[1];
-          const height = resizeParams[2];
-          this.resizeStack = [];
+          const resizeParams = this.resizeStack.pop()
+          const el = resizeParams[0]
+          const width = resizeParams[1]
+          const height = resizeParams[2]
+          this.resizeStack = []
 
-          this.width = width;
-          this.height = height;
-          d3.select('.plot-container').remove();
+          this.width = width
+          this.height = height
+          d3.select('.plot-container').remove()
           const svg = d3.select(el)
                   .append('svg')
                   .attr('width', this.width)
                   .attr('height', this.height)
-                  .attr('class', 'plot-container');
-          this.plot.setDim(svg, this.width, this.height);
-          this.plot.draw();
-          this.resizeDelayPromise = null;
+                  .attr('class', 'plot-container')
+          this.plot.setDim(svg, this.width, this.height)
+          this.plot.draw()
+          this.resizeDelayPromise = null
         }
-        , 500);
-      }.bind(this)));
+        , 500)
+      }.bind(this)))
     }
 
-    return this.resizeDelayPromise;
+    return this.resizeDelayPromise
   }
 
-  constructor(element, width, height, stateChangedCallback) {
+  constructor (element, width, height, stateChangedCallback) {
     this.rootElement = _.has(element, 'length') ? element[0] : element
-    this.width = width;
-    this.height = height;
-    this.stateChangedCallback = stateChangedCallback;
-    this.resizeStack = [];
-    this.resizeDelayPromise = null;
+    this.width = width
+    this.height = height
+    this.stateChangedCallback = stateChangedCallback
+    this.resizeStack = []
+    this.resizeDelayPromise = null
   }
 
-  resize(el, width, height) {
-    this.resizeStack.push([el, width, height]);
-    return this.getResizeDelayPromise();
+  resize (el, width, height) {
+    this.resizeStack.push([el, width, height])
+    return this.getResizeDelayPromise()
   }
 
-  setConfig(data) {
+  setConfig (data) {
     // Reset widget if previous data present but not equal in params - see VIS-278
     if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
-      throw new Error('rhtmlLabeledScatter reset');
+      throw new Error('rhtmlLabeledScatter reset')
     }
     if (!(_.isNull(data.X)) && !(_.isNull(data.Y))) {
-      this.data = data;
+      this.data = data
     }
   }
 
-  setUserState(userState) {
-    this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label);
+  setUserState (userState) {
+    this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label)
   }
 
-  draw() {
-
-    $(this.rootElement).find('*').remove();
+  draw () {
+    $(this.rootElement).find('*').remove()
 
     const svg = d3.select(this.rootElement)
             .append('svg')
             .attr('width', this.width)
             .attr('height', this.height)
-            .attr('class', 'plot-container rhtmlwidget-outer-svg');
+            .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // Error checking
-    DisplayError.checkIfArrayOfNums(this.data.X, this.rootElement, 'Given X value is not an array of numbers');
-    DisplayError.checkIfArrayOfNums(this.data.Y, this.rootElement, 'Given Y value is not an array of numbers');
+    DisplayError.checkIfArrayOfNums(this.data.X, this.rootElement, 'Given X value is not an array of numbers')
+    DisplayError.checkIfArrayOfNums(this.data.Y, this.rootElement, 'Given Y value is not an array of numbers')
 
     // console.log('rhtmlLabeledScatter data');
     // console.log(JSON.stringify(this.data));
@@ -144,11 +142,11 @@ class LabeledScatter {
                         this.data.trendLines,
                         this.data.trendLinesLineThickness,
                         this.data.trendLinesPointSize,
-                        this.data.plotBorderShow,
-    );
-    this.plot.draw();
-    return this;
+                        this.data.plotBorderShow
+    )
+    this.plot.draw()
+    return this
   }
 }
 
-module.exports = LabeledScatter;
+module.exports = LabeledScatter

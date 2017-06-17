@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import $ from 'jquery';
+import _ from 'lodash'
+import $ from 'jquery'
 
 $(document).ready(function () {
   $.ajax('/content/contentManifest.json').done((contents) => {
@@ -8,10 +8,10 @@ $(document).ready(function () {
         const listItem = $('<li>')
         const link = $('<a>')
           .attr('href', contentLink)
-          .html(_.last(contentLink.split('/')));
+          .html(_.last(contentLink.split('/')))
 
-        $(`ul.${contentType}`).append(listItem.append(link));
-      });
-    });
-  });
-});
+        $(`ul.${contentType}`).append(listItem.append(link))
+      })
+    })
+  })
+})
