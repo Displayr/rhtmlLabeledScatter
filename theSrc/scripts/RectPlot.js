@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import d3 from 'd3';
 import md5 from 'md5';
-import labeler from './lib/labeler';
 import Links from './Links';
 import PlotData from './PlotData';
 import TrendLine from './TrendLine';
@@ -11,6 +10,7 @@ import DragUtils from './utils/DragUtils';
 import SvgUtils from './utils/SvgUtils';
 import Utils from './utils/Utils';
 import TooltipUtils from './utils/TooltipUtils';
+import LabelPlacement from './LabelPlacement';
 
 class RectPlot {
   constructor(state,
@@ -778,9 +778,7 @@ class RectPlot {
   }
 
   drawLabs() {
-    let drag,
-      labels_img_svg,
-      labels_svg;
+    let drag;
     if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.getLabelDragAndDrop(this);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
@@ -815,35 +813,16 @@ class RectPlot {
                .attr('font-size', d => d.fontSize)
                .call(drag);
 
-      labels_svg = this.svg.selectAll('.lab');
-      labels_img_svg = this.svg.selectAll('.lab-img');
-
-      SvgUtils.setSvgBBoxWidthAndHeight(this.data.lab, labels_svg);
-      console.log('rhtmlLabeledScatter: Running label placement algorithm...');
-      const labsToBePlaced = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''));
-      labeler()
-        .svg(this.svg)
-        .w1(this.viewBoxDim.x)
-        .w2(this.viewBoxDim.x + this.viewBoxDim.width)
-        .h1(this.viewBoxDim.y)
-        .h2(this.viewBoxDim.y + this.viewBoxDim.height)
-        .anchor(this.data.pts)
-        .label(labsToBePlaced)
-        .pinned(this.state.getUserPositionedLabIds())
-        .start(500);
-
-      labels_svg.transition()
-                .duration(800)
-                .attr('x', d => d.x)
-                .attr('y', d => d.y);
-
-      labels_img_svg.transition()
-                    .duration(800)
-                    .attr('x', d => d.x - (d.width / 2))
-                    .attr('y', d => d.y - d.height);
-      // this.state.setAllLabsAsPositioned(labsToBePlaced, this.viewBoxDim);
-
-      return this.drawLinks();
+      LabelPlacement.placeLabels(
+        this.svg,
+        this.viewBoxDim,
+        this.data.pts,
+        this.data.lab,
+        this.state.getUserPositionedLabIds()
+      );
+      
+      this.drawLinks();
+      
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim);
@@ -881,48 +860,31 @@ class RectPlot {
         .attr('font-size', d => d.fontSize)
         .call(drag);
 
-      labels_svg = this.svg.selectAll('.lab');
-      labels_img_svg = this.svg.selectAll('.lab-img');
-      SvgUtils.setSvgBBoxWidthAndHeight(this.tl.arrowheadLabels, labels_svg);
-
-      labeler()
-         .svg(this.svg)
-         .w1(this.viewBoxDim.x)
-         .w2(this.viewBoxDim.x + this.viewBoxDim.width)
-         .h1(this.viewBoxDim.y)
-         .h2(this.viewBoxDim.y + this.viewBoxDim.height)
-         .anchor(this.tl.arrowheadPts)
-         .label(this.tl.arrowheadLabels)
-         .pinned(this.state.getUserPositionedLabIds())
-         .start(500);
-
-      labels_svg.transition()
-        .duration(800)
-        .attr('x', d => d.x)
-        .attr('y', d => d.y);
-  
-      return labels_img_svg.transition()
-        .duration(800)
-        .attr('x', d => d.x - (d.width / 2))
-        .attr('y', d => d.y - d.height);
+      LabelPlacement.placeTrendLabels(
+        this.svg,
+        this.viewBoxDim,
+        this.tl.arrowheadPts,
+        this.tl.arrowheadLabels,
+        this.state.getUserPositionedLabIds()
+      );
     }
   }
 
   drawLinks() {
     const links = new Links(this.data.pts, this.data.lab);
     this.svg.selectAll('.link').remove();
-    return this.svg.selectAll('.link')
-             .data(links.getLinkData())
-             .enter()
-             .append('line')
-             .attr('class', 'link')
-             .attr('x1', d => d.x1)
-             .attr('y1', d => d.y1)
-             .attr('x2', d => d.x2)
-             .attr('y2', d => d.y2)
-             .attr('stroke-width', d => d.width)
-             .attr('stroke', d => d.color)
-             .style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency));
+    this.svg.selectAll('.link')
+            .data(links.getLinkData())
+            .enter()
+            .append('line')
+            .attr('class', 'link')
+            .attr('x1', d => d.x1)
+            .attr('y1', d => d.y1)
+            .attr('x2', d => d.x2)
+            .attr('y2', d => d.y2)
+            .attr('stroke-width', d => d.width)
+            .attr('stroke', d => d.color)
+            .style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency));
   }
 
   drawTrendLines() {
@@ -931,7 +893,7 @@ class RectPlot {
       this.tl = new TrendLine(this.data.pts, this.data.lab);
     }
 
-    return _.map(this.tl.getUniqueGroups(), (group) => {
+    _.map(this.tl.getUniqueGroups(), (group) => {
       // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
       const cssGroupName = md5(group);
 

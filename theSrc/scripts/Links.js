@@ -1,7 +1,42 @@
+
 import _ from 'lodash';
 
 class Links {
 
+  constructor(pts, lab) {
+    const _labIsText = labelData => labelData.url === '';
+    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === '';
+
+    this.links = [];
+    for (let i = 0; i < pts.length; i++) {
+      const pt = pts[i];
+      let newLinkPt = null;
+      if (!this._labIsInsideBubblePt(lab[i], pt)) {
+        if (_labIsEmpty(lab[i])) {
+          newLinkPt = null;
+        } else if (_labIsText(lab[i])) {
+          newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts);
+        } else {
+          newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts);
+        }
+      }
+
+      if (!_.isNull(newLinkPt)) {
+        const ancBorderPt = this._getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
+        this.links.push({
+          x1: ancBorderPt[0],
+          y1: ancBorderPt[1],
+          x2: newLinkPt[0],
+          y2: newLinkPt[1],
+          width: 1,
+          color: pt.color,
+        });
+      }
+    }
+  }
+  
+  getLinkData() { return this.links; }
+  
   _labIsInsideBubblePt(lab, pt) {
     const labLeftBorder = lab.x - (lab.width / 2);
     const labRightBorder = lab.x + (lab.width / 2);
@@ -14,47 +49,7 @@ class Links {
       (labTopBorder > (pt.y - pt.r));
   }
 
-  constructor(pts, lab) {
-    this.getLinkData = this.getLinkData.bind(this);
-    this.getNewPtOnLogoLabelBorder = this.getNewPtOnLogoLabelBorder.bind(this);
-    this.getNewPtOnTxtLabelBorder = this.getNewPtOnTxtLabelBorder.bind(this);
-    this.getPtOnAncBorder = this.getPtOnAncBorder.bind(this);
-
-    const _labIsText = labelData => labelData.url === '';
-    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === '';
-
-
-    this.links = [];
-    for (let i = 0; i < pts.length; i++) {
-      const pt = pts[i];
-      let newLinkPt = null;
-      if (!this._labIsInsideBubblePt(lab[i], pt)) {
-        if (_labIsEmpty(lab[i])) {
-          newLinkPt = null;
-        } else if (_labIsText(lab[i])) {
-          newLinkPt = this.getNewPtOnTxtLabelBorder(lab[i], pt, pts);
-        } else {
-          newLinkPt = this.getNewPtOnLogoLabelBorder(lab[i], pt, pts);
-        }
-      }
-
-      if (!_.isNull(newLinkPt)) {
-        const ancBorderPt = this.getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1]);
-        this.links.push({
-          x1: ancBorderPt[0],
-          y1: ancBorderPt[1],
-          x2: newLinkPt[0],
-          y2: newLinkPt[1],
-          width: 1,
-          color: pt.color,
-        });
-      }
-    }
-  }
-
-  getLinkData() { return this.links; }
-
-  getNewPtOnLogoLabelBorder(label, anchor) {
+  _getNewPtOnLogoLabelBorder(label, anchor) {
     // Don't draw a link if anc is inside logo
     let region;
     if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
@@ -100,7 +95,7 @@ class Links {
   }
 
   // calc the links from anc to label text if ambiguous
-  getNewPtOnTxtLabelBorder(label, anchor, anchorArray) {
+  _getNewPtOnTxtLabelBorder(label, anchor, anchorArray) {
     const labelXmid = label.x;
     const labelXleft = label.x - (label.width / 2);
     const labelXright = label.x + (label.width / 2);
@@ -191,7 +186,7 @@ class Links {
     return null;
   }
 
-  getPtOnAncBorder(cx, cy, cr, x, y) {
+  _getPtOnAncBorder(cx, cy, cr, x, y) {
     const opp = Math.abs(cy - y);
     const adj = Math.abs(cx - x);
     const angle = Math.atan(opp / adj);
