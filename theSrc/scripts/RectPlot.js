@@ -772,7 +772,7 @@ class RectPlot {
     return this.draw()
   }
 
-  drawLabs() {
+  drawLabs () {
     let drag
     if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.getLabelDragAndDrop(this)
@@ -815,9 +815,8 @@ class RectPlot {
         this.data.lab,
         this.state.getUserPositionedLabIds()
       )
-      
+
       this.drawLinks()
-      
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
       this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim)
@@ -864,7 +863,7 @@ class RectPlot {
     }
   }
 
-  drawLinks() {
+  drawLinks () {
     const links = new Links(this.data.pts, this.data.lab)
     this.svg.selectAll('.link').remove()
     this.svg.selectAll('.link')

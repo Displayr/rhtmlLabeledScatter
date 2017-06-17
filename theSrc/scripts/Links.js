@@ -2,8 +2,7 @@
 import _ from 'lodash'
 
 class Links {
-
-  constructor(pts, lab) {
+  constructor (pts, lab) {
     const _labIsText = labelData => labelData.url === ''
     const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
 
@@ -34,10 +33,10 @@ class Links {
       }
     }
   }
-  
-  getLinkData() { return this.links }
-  
-  _labIsInsideBubblePt(lab, pt) {
+
+  getLinkData () { return this.links }
+
+  _labIsInsideBubblePt (lab, pt) {
     const labLeftBorder = lab.x - (lab.width / 2)
     const labRightBorder = lab.x + (lab.width / 2)
     const labBotBorder = lab.y
@@ -49,7 +48,7 @@ class Links {
       (labTopBorder > (pt.y - pt.r))
   }
 
-  _getNewPtOnLogoLabelBorder(label, anchor) {
+  _getNewPtOnLogoLabelBorder (label, anchor) {
     // Don't draw a link if anc is inside logo
     let region
     if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
@@ -95,7 +94,7 @@ class Links {
   }
 
   // calc the links from anc to label text if ambiguous
-  _getNewPtOnTxtLabelBorder(label, anchor, anchorArray) {
+  _getNewPtOnTxtLabelBorder (label, anchor, anchorArray) {
     const labelXmid = label.x
     const labelXleft = label.x - (label.width / 2)
     const labelXright = label.x + (label.width / 2)
@@ -186,7 +185,7 @@ class Links {
     return null
   }
 
-  _getPtOnAncBorder(cx, cy, cr, x, y) {
+  _getPtOnAncBorder (cx, cy, cr, x, y) {
     const opp = Math.abs(cy - y)
     const adj = Math.abs(cx - x)
     const angle = Math.atan(opp / adj)
