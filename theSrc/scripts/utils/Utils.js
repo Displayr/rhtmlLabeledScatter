@@ -14,6 +14,10 @@ class Utils {
     return this.isArr(arr) && _.every(arr, n => _.isFinite(n))
   }
 
+  static isArrOfPositiveNums (arr) {
+    return this.isArr(arr) && _.every(arr, n => _.isFinite(n) && n >= 0)
+  }
+
   static getSuperscript (id) {
     const superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] // '⁰¹²³⁴⁵⁶⁷⁸⁹'
     let ss = ''

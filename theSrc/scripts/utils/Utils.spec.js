@@ -56,6 +56,28 @@ describe('Utils:', function () {
     })
   })
 
+  describe('isArrOfPositiveNums():', function () {
+    const tests = [
+      { input: 4, expected: false },
+      { input: '4', expected: false },
+      { input: ['4'], expected: false },
+      { input: [4], expected: true },
+      { input: [4, 5], expected: true },
+      { input: [4, 'a', 5], expected: false },
+      { input: [4, '4.5', 5], expected: false },
+      { input: [4.5, -5.5], expected: false },
+      { input: [0, 1], expected: true },
+      { input: undefined, expected: false },
+      { input: null, expected: false }
+    ]
+
+    _(tests).each((t) => {
+      it(`Utils.isArrOfPositiveNums(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
+        expect(Utils.isArrOfPositiveNums(t.input)).to.equal(t.expected)
+      })
+    })
+  })
+
   describe('getFormattedNum(num, decimals, prefix, suffix):', function () {
     const tests = [
       { input: [1.234567, 2, 'p', 's'], expected: 'p1.23s' },
