@@ -77,6 +77,9 @@ class LabeledScatter {
     // Error checking
     DisplayError.checkIfArrayOfNums(this.data.X, this.rootElement, 'Given X value is not an array of numbers')
     DisplayError.checkIfArrayOfNums(this.data.Y, this.rootElement, 'Given Y value is not an array of numbers')
+    if (!_.isEmpty(this.data.Z)) {
+      DisplayError.checkIfArrayOfPositiveNums(this.data.Z, this.rootElement, 'Given Z value is not array of positive numbers')
+    }
 
     // console.log('rhtmlLabeledScatter data');
     // console.log(JSON.stringify(this.data));

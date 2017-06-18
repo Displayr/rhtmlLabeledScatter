@@ -8,6 +8,12 @@ import $ from 'jquery'
 import Utils from './utils/Utils'
 
 class DisplayError {
+  static checkIfArrayOfPositiveNums (candidateArray, svg, errorMsg) {
+    if (!Utils.isArrOfPositiveNums(candidateArray)) {
+      this.displayErrorMessage(svg, errorMsg)
+    }
+  }
+
   static checkIfArrayOfNums (candidateArray, svg, errorMsg) {
     if (!Utils.isArrOfNums(candidateArray)) {
       this.displayErrorMessage(svg, errorMsg)
