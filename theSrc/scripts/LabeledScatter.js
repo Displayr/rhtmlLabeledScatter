@@ -145,7 +145,9 @@ class LabeledScatter {
                         this.data.trendLines,
                         this.data.trendLinesLineThickness,
                         this.data.trendLinesPointSize,
-                        this.data.plotBorderShow
+                        this.data.plotBorderShow,
+                        this.data.plotBorderColor,
+                        this.data.plotBorderWidth
     )
     this.plot.draw()
     return this
