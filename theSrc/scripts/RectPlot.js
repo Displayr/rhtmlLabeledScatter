@@ -75,7 +75,9 @@ class RectPlot {
     trendLines = false,
     trendLinesLineThickness = 1,
     trendLinesPointSize = 2,
-    plotBorderShow = true
+    plotBorderShow = true,
+    plotBorderColor = 'black',
+    plotBorderWidth = 1
   ) {
     this.setDim = this.setDim.bind(this)
     this.draw = this.draw.bind(this)
@@ -123,7 +125,11 @@ class RectPlot {
     this.pointRadius = pointRadius
     this.xBoundsUnitsMajor = xBoundsUnitsMajor
     this.yBoundsUnitsMajor = yBoundsUnitsMajor
-    this.plotBorderShow = plotBorderShow
+    this.plotBorder = {
+      show: plotBorderShow,
+      color: plotBorderColor,
+      width: parseInt(plotBorderWidth) + 'px'
+    }
     this.maxDrawFailureCount = 200
 
     this.axisSettings = {
@@ -348,7 +354,7 @@ class RectPlot {
         this.drawLabs()
         if (this.trendLines.show) { this.drawTrendLines() }
         this.drawDraggedMarkers()
-        if (this.plotBorderShow) { this.drawRect() }
+        if (this.plotBorder.show) { this.drawRect() }
         this.drawAxisLabels()
       } catch (error) {
         console.log(error)
@@ -407,8 +413,8 @@ class RectPlot {
         .attr('width', this.viewBoxDim.width)
         .attr('height', this.viewBoxDim.height)
         .attr('fill', 'none')
-        .attr('stroke', 'black')
-        .attr('stroke-width', '1px')
+        .attr('stroke', this.plotBorder.color)
+        .attr('stroke-width', this.plotBorder.width)
   }
 
   drawDimensionMarkers () {

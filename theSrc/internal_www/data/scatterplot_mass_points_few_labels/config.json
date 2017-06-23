@@ -60,4 +60,7 @@
   "trendLines":false,
   "trendLinesLineThickness":1,
   "trendLinesPointSize":2,
-  "plotBorderShow":true}
+  "plotBorderShow":true,
+  "plotBorderColor": "black",
+  "plotBorderWidth": 1
+}

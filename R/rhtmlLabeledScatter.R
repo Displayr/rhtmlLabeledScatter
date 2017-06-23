@@ -65,7 +65,9 @@
 #' @param trend.lines.show Boolean toggle to show trendlines based on groups given
 #' @param trend.lines.line.thickness An integer for the thickness of the trendlines (Default is 1px)
 #' @param trend.lines.point.size An integer to set the size of the data points when a trendline is drawn. This setting overrides Z sizes.
-#' @param plot.border.show Boolean toggle to show black border around plot area (Default is TRUE).
+#' @param plot.border.show Boolean toggle to show border around plot area (Default is TRUE).
+#' @param plot.border.color Color of border around plot area (Default is black).
+#' @param plot.border.width Width of border around plot area in px (Default is 1).
 #'
 #' @author Po Liu <po.liu@displayr.com>
 #'
@@ -139,6 +141,8 @@ LabeledScatter <- function(
   trend.lines.line.thickness = 1,
   trend.lines.point.size=2,
   plot.border.show = TRUE,
+  plot.border.color = 'Black',
+  plot.border.width = 1,
   width = NULL,
   height = NULL
   ) {
@@ -205,7 +209,9 @@ LabeledScatter <- function(
     trendLines = trend.lines.show,
     trendLinesLineThickness = trend.lines.line.thickness,
     trendLinesPointSize = trend.lines.point.size,
-    plotBorderShow = plot.border.show
+    plotBorderShow = plot.border.show,
+    plotBorderColor = plot.border.color,
+    plotBorderWidth = plot.border.width
   )
 
   htmlwidgets::createWidget(
