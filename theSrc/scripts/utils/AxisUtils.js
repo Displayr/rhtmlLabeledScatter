@@ -10,15 +10,13 @@ class AxisUtils {
   static _getTickRange (max, min) {
     const maxTicks = 8
     const range = max - min
-    const unroundedTickSize = range / (maxTicks - 1)
+    let unroundedTickSize = range / (maxTicks - 1)
 
-    const pow10x = 10 ** (Math.ceil((Math.log(unroundedTickSize) / Math.LN10) - 1))
-    const roundedTickRange = Math.ceil(unroundedTickSize / pow10x) * pow10x
-
+    unroundedTickSize = unroundedTickSize / 2
     // Round to 2 sig figs
-    let exponentTick = this.getExponentOfNum(roundedTickRange)
+    let exponentTick = this.getExponentOfNum(unroundedTickSize)
     exponentTick *= -1
-    return _.round(roundedTickRange, exponentTick)
+    return 2 * _.round(unroundedTickSize, exponentTick)
   }
 
   static getExponentOfNum (num) {
