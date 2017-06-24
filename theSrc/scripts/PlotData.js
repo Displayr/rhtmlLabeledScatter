@@ -530,7 +530,7 @@ class PlotData {
     const movedPt = _.remove(this.pts, checkId)
     const movedLab = _.remove(this.lab, checkId)
     this.legendPts.push({
-      id,
+      id: id,
       pt: movedPt[0],
       lab: movedLab[0],
       anchor: 'start',
@@ -562,7 +562,7 @@ class PlotData {
   }
 
   resetLegendPts () {
-    _.map(this.legendPts, lp => {
+    _.forEachRight(this.legendPts, lp => {
       if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id)
     })
   }

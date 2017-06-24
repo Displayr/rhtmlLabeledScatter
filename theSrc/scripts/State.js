@@ -26,6 +26,7 @@ class State {
 
     this.legendPts = this.isStoredInState('legendPts') ? _.uniq(this.getStored('legendPts')) : []
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
+    this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
   }
 
   isStoredInState (key) {
@@ -56,11 +57,13 @@ class State {
     this.saveToState('legendPts', this.legendPts)
   }
 
-  resetStateLegendPtsAndUserPositionedLabs () {
+  resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
+    this.algoPositionedLabs = []
     this.saveToState('legendPts', [])
     this.saveToState('userPositionedLabs', [])
+    this.saveToState('algoPositionedLabs', [])
   }
 
   getLegendPts () {
@@ -89,6 +92,16 @@ class State {
     this.saveToState('userPositionedLabs', this.userPositionedLabs)
   }
 
+  pushAlgoPositionedLabel (id, labx, laby, viewBoxDim) {
+    _.remove(this.algoPositionedLabs, e => e.id === id)
+
+    this.algoPositionedLabs.push({
+      id,
+      x: (labx - viewBoxDim.x) / viewBoxDim.width,
+      y: (laby - viewBoxDim.y) / viewBoxDim.height
+    })
+  }
+
   updateLabelsWithUserPositionedData (labels, viewBoxDim) {
     if (!_.isEmpty(this.userPositionedLabs)) {
       _(labels).each((label) => {
@@ -105,8 +118,42 @@ class State {
     return _.map(this.userPositionedLabs, e => e.id)
   }
 
-  setAllLabsAsPositioned (labels, viewBoxDim) {
-    _.map(labels, lab => this.pushUserPositionedLabel(lab.id, lab.x, lab.y, viewBoxDim))
+  getAllPositionedLabsIs () {
+    const combinedLabs = this.userPositionedLabs.concat(this.algoPositionedLabs)
+    return _.map(combinedLabs, e => e.id)
+  }
+
+  getPositionedLabIds (currentViewboxdim) {
+    if (_.isEmpty(this.viewBoxDim)) {
+      // Since viewBoxDim is null, that means it is the first run of the algorithm
+      return this.getUserPositionedLabIds()
+    } else {
+      // Compare size of viewbox with prev and run algo if different
+      if (currentViewboxdim.height === this.viewBoxDim.height &&
+          currentViewboxdim.width === this.viewBoxDim.width &&
+          currentViewboxdim.x === this.viewBoxDim.x &&
+          currentViewboxdim.y === this.viewBoxDim.y) {
+        return this.getAllPositionedLabsIs()
+      } else {
+        this.viewBoxDim = currentViewboxdim
+        return this.getUserPositionedLabIds()
+      }
+    }
+  }
+
+  saveAlgoPositionedLabs (labels, viewBoxDim) {
+    if (!_.isEmpty(this.viewBoxDim) && (viewBoxDim.height !== this.viewBoxDim.height &&
+                                     viewBoxDim.width !== this.viewBoxDim.width &&
+                                     viewBoxDim.x !== this.viewBoxDim.x &&
+                                     viewBoxDim.y !== this.viewBoxDim.y)) {
+      _.map(labels, lab => {
+        if (!_.some(this.userPositionedLabs, userlab => userlab.id === lab.id)) {
+          this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, viewBoxDim)
+        }
+      })
+      this.saveToState('algoPositionedLabs', this.algoPositionedLabs)
+      this.viewBoxDim = viewBoxDim
+    }
   }
 }
 

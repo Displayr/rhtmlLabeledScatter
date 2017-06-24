@@ -390,8 +390,8 @@ class RectPlot {
         .text('Reset')
         .attr('cursor', 'pointer')
         .on('click', () => {
-          this.state.resetStateLegendPtsAndUserPositionedLabs()
           this.data.resetLegendPts()
+          this.state.resetStateLegendPtsAndPositionedLabs()
           this.draw()
         })
     this.svg

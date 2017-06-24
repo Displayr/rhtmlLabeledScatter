@@ -2,7 +2,6 @@
 import labeler from './lib/labeler'
 import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
-import State from './State'
 
 class LabelPlacement {
   static place (svg, viewBoxDim, anchors, labels, pinnedLabels, labelsSvg, state) {
@@ -23,13 +22,13 @@ class LabelPlacement {
     labelsSvg.attr('x', d => d.x)
               .attr('y', d => d.y)
 
-    state.setAllLabsAsPositioned(labels, viewBoxDim)
+    state.saveAlgoPositionedLabs(labels, viewBoxDim)
   }
 
   static placeTrendLabels (svg, viewBoxDim, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
     SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(svg, viewBoxDim, anchors, labels, state.getUserPositionedLabIds(), labelsSvg, state)
+    this.place(svg, viewBoxDim, anchors, labels, state.getPositionedLabIds(viewBoxDim), labelsSvg, state)
 
     const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
@@ -42,7 +41,7 @@ class LabelPlacement {
     SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
-    this.place(svg, viewBoxDim, anchors, labsToBePlaced, state.getUserPositionedLabIds(), labelsSvg, state)
+    this.place(svg, viewBoxDim, anchors, labsToBePlaced, state.getPositionedLabIds(viewBoxDim), labelsSvg, state)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                   .attr('y', d => d.y - d.height)
