@@ -222,7 +222,9 @@ class RectPlot {
 
   setDim (svg, width, height) {
     this.svg = svg
-    this.title.x = width / 2
+    this.width = width
+    this.height = height
+    this.title.x = this.width / 2
     this.legendDim = {
       width: 0,  // init value
       heightOfRow: this.legendFontSize + 9, // init val

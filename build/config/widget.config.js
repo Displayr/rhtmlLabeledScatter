@@ -1,4 +1,9 @@
 module.exports = {
   widgetEntryPoint: 'theSrc/scripts/rhtmlLabeledScatter.js',
-  widgetName: 'rhtmlLabeledScatter'
+  widgetName: 'rhtmlLabeledScatter',
+  visualRegressionSuite: {
+    applitools: {
+      defaultMatchTimeout: 2
+    }
+  }
 }
