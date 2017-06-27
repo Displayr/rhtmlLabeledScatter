@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "6"
+sudo: required
+dist: trusty
+before_install:
+  - sudo apt-get update
+before_script:
+  - "export PATH=$PATH:/usr/lib/chromium-browser/"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+script:
+  - gulp testSpecs && gulp testVisual --applitools.pageLoadDelay=3 --browserLogs=true
