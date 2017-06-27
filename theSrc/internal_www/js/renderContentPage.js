@@ -140,7 +140,7 @@ const addExampleTo = function () {
           widgetInstance.draw()
         }).catch((error) => {
           console.error('Error in rerender:')
-          console.error(JSON.stringify(error))
+          console.error(error)
         })
       }
 

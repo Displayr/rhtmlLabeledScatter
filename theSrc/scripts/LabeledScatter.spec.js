@@ -37,24 +37,10 @@ describe('LabeledScatter:', function () {
       )
     })
 
-    it('should return when called draw on initial data', function () {
+    it('should return self', function () {
       this.context.labeledScatter.setConfig(this.context.dataInitial)
       this.context.labeledScatter.setUserState({})
       expect(this.context.labeledScatter.draw()).to.equal(this.context.labeledScatter)
-    })
-
-    it('should throw error when called draw on different data', function () {
-      this.context.labeledScatter.setConfig(this.context.dataInitial)
-      this.context.labeledScatter.setUserState({})
-      this.context.labeledScatter.draw()
-      expect(() => this.context.labeledScatter.setConfig(this.context.dataNew)).to.throw('rhtmlLabeledScatter reset')
-    })
-
-    it('should return when called on identical data', function () {
-      this.context.labeledScatter.setConfig(this.context.dataInitial)
-      this.context.labeledScatter.setUserState({})
-      this.context.labeledScatter.draw()
-      expect(() => this.context.labeledScatter.setConfig(this.context.dataInitial)).not.to.throw()
     })
   })
 })

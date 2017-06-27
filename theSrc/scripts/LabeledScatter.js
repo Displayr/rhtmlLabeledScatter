@@ -25,7 +25,7 @@ class LabeledScatter {
                   .append('svg')
                   .attr('width', this.width)
                   .attr('height', this.height)
-                  .attr('class', 'plot-container')
+                  .attr('class', 'plot-container rhtmlwidget-outer-svg')
           this.plot.setDim(svg, this.width, this.height)
           this.plot.draw()
           this.resizeDelayPromise = null
@@ -54,7 +54,7 @@ class LabeledScatter {
   setConfig (data) {
     // Reset widget if previous data present but not equal in params - see VIS-278
     if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
-      throw new Error('rhtmlLabeledScatter reset')
+      delete this.plot
     }
     if (!(_.isNull(data.X)) && !(_.isNull(data.Y))) {
       this.data = data
