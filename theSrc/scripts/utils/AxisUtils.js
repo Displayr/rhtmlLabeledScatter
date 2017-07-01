@@ -1,22 +1,25 @@
 import _ from 'lodash'
 import Utils from './Utils'
+import d3 from 'd3'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
  */
 
 class AxisUtils {
-  // Calc tick increments - http://stackoverflow.com/questions/326679/choosing-an-attractive-linear-scale-for-a-graphs-y-axis
   static _getTickRange (max, min) {
-    const maxTicks = 8
     const range = max - min
-    let unroundedTickSize = range / (maxTicks - 1)
+    const scaleLinear = d3.scale.linear()
+                                .domain([min, max])
+                                .range(range)
+    const scaleTicks = scaleLinear.ticks(8)
+    const unroundedTickSize = Math.abs(scaleTicks[0] - scaleTicks[1])
 
-    unroundedTickSize = unroundedTickSize / 2
     // Round to 2 sig figs
     let exponentTick = this.getExponentOfNum(unroundedTickSize)
     exponentTick *= -1
-    return 2 * _.round(unroundedTickSize, exponentTick)
+
+    return _.round(unroundedTickSize, exponentTick)
   }
 
   static getExponentOfNum (num) {
