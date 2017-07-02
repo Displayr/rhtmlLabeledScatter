@@ -15,20 +15,50 @@ class AxisUtils {
     return scaleLinear.ticks(8)
   }
 
-  static _getStartingVal (min, max) {
-    const scaleTicks = this._getScaleLinear(min, max)
-    return scaleTicks[0]
+  static _getRoundedScaleLinear (min, max, unitMajor) {
+    let scaleLinear = []
+
+    if (_.isNull(unitMajor) || _.isUndefined(unitMajor)) {
+      const tickInterval = this._getTickInterval(min, max)
+      const tickExp = this._getTickExponential(tickInterval)
+      scaleLinear = this._getScaleLinear(min, max)
+      return _.map(scaleLinear, n => _.round(n, tickExp))
+    } else {
+      // If user has defined tick interval
+      let i = 0
+      if (min <= 0 && max >= 0) {
+        while ((i <= max) || (-i >= min)) {
+          if (i >= 0 && i < max) {
+            scaleLinear.push(i)
+          }
+          if (-i < 0 && -i > min) {
+            scaleLinear.push(-i)
+          }
+          i += unitMajor / 2
+        }
+      } else {
+        const tickExp = this._getTickExponential(unitMajor)
+        i = _.ceil(_.toNumber(min), -tickExp)
+        while (i < max) {
+          scaleLinear.push(_.round(i, tickExp))
+          i += unitMajor / 2
+        }
+      }
+      return _.sortBy(scaleLinear)
+    }
   }
 
-  static _getTickRange (min, max) {
+  static _getTickInterval (min, max) {
     const scaleTicks = this._getScaleLinear(min, max)
-    const unroundedTickSize = Math.abs(scaleTicks[0] - scaleTicks[1])
+    const unroundedTickInterval = Math.abs(scaleTicks[0] - scaleTicks[1])
+    return _.round(unroundedTickInterval, this._getTickExponential(unroundedTickInterval))
+  }
 
+  static _getTickExponential (unroundedTickSize) {
     // Round to 2 sig figs
     let exponentTick = this.getExponentOfNum(unroundedTickSize)
     exponentTick *= -1
-
-    return _.round(unroundedTickSize, exponentTick)
+    return exponentTick
   }
 
   static getExponentOfNum (num) {
@@ -37,8 +67,13 @@ class AxisUtils {
     return exponent
   }
 
-  static _between (num, min, max) {
-    return (num >= min) && (num <= max)
+  static _getFuncToDetermineTickLabelIndexes (arr) {
+    const i = _.findIndex(arr, n => n === 0)
+    if (i % 2 === 0) {
+      return (j) => j % 2 === 0
+    } else {
+      return (j) => j % 2 !== 0
+    }
   }
 
   static _normalizeXCoords (data, Xcoord) {
@@ -62,7 +97,7 @@ class AxisUtils {
     const dimensionMarkerLeaderStack = []
     const dimensionMarkerLabelStack = []
 
-    const pushDimensionMarker = (type, x1, y1, x2, y2, label, tickIncrement) => {
+    const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement) => {
       const leaderLineLen = plot.axisLeaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { xDecimals, yDecimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
@@ -121,157 +156,71 @@ class AxisUtils {
     if (Utils.isNum(plot.xBoundsUnitsMajor)) {
       ticksX = plot.xBoundsUnitsMajor / 2
     } else {
-      ticksX = this._getTickRange(data.minX, data.maxX)
+      ticksX = this._getTickInterval(data.minX, data.maxX)
     }
 
     if (Utils.isNum(plot.yBoundsUnitsMajor)) {
       ticksY = plot.yBoundsUnitsMajor / 2
     } else {
-      ticksY = this._getTickRange(data.minY, data.maxY)
+      ticksY = this._getTickInterval(data.minY, data.maxY)
     }
-
-    // const ticksXexponent = this.getExponentOfNum(ticksX)
-    // const ticksYexponent = this.getExponentOfNum(ticksY)
-
-    // Compute origins if they are within bounds
 
     const originAxis = []
-    const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
-    if ((yCoordOfXAxisOrigin <= (viewBoxDim.y + viewBoxDim.height)) && (yCoordOfXAxisOrigin >= viewBoxDim.y)) {
-      const xAxisOrigin = {
-        x1: viewBoxDim.x,
-        y1: yCoordOfXAxisOrigin,
-        x2: viewBoxDim.x + viewBoxDim.width,
-        y2: yCoordOfXAxisOrigin
-      }
-      pushDimensionMarker('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
-      if ((data.minY !== 0) && (data.maxY !== 0)) {
-        originAxis.push(xAxisOrigin)
-      }
-    }
+    const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
+    _.map(xRoundedScaleLinear, (val, i) => {
+      if (val === 0) {
+        const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
+        const yAxisOrigin = {
+          x1: xCoordOfYAxisOrigin,
+          y1: viewBoxDim.y,
+          x2: xCoordOfYAxisOrigin,
+          y2: viewBoxDim.y + viewBoxDim.height
+        }
+        pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
+        if ((data.minX !== 0) && (data.maxX !== 0)) {
+          originAxis.push(yAxisOrigin)
+        }
+      } else {
+        let x1 = this._normalizeXCoords(data, val)
+        let y1 = viewBoxDim.y
+        let x2 = this._normalizeXCoords(data, val)
+        let y2 = viewBoxDim.y + viewBoxDim.height
+        dimensionMarkerStack.push({ x1, y1, x2, y2 })
 
-    const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-    if ((xCoordOfYAxisOrigin >= viewBoxDim.x) && (xCoordOfYAxisOrigin <= (viewBoxDim.x + viewBoxDim.width))) {
-      const yAxisOrigin = {
-        x1: xCoordOfYAxisOrigin,
-        y1: viewBoxDim.y,
-        x2: xCoordOfYAxisOrigin,
-        y2: viewBoxDim.y + viewBoxDim.height
-      }
-      pushDimensionMarker('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
-      if ((data.minX !== 0) && (data.maxX !== 0)) {
-        originAxis.push(yAxisOrigin)
-      }
-    }
-
-    // calculate number of dimension markers
-    let colsPositive = 0
-    let colsNegative = 0
-    let rowsPositive = 0
-    let rowsNegative = 0
-    _.map(this._getScaleLinear(data.minX, data.maxX), (n) => {
-      if (n > 0) {
-        colsPositive++
-      } else if (n < 0) {
-        colsNegative++
-      }
-    })
-    _.map(this._getScaleLinear(data.minY, data.maxY), (n) => {
-      if (n > 0) {
-        rowsNegative++
-      } else if (n < 0) {
-        rowsPositive++
+        const isTickLabelPosition = this._getFuncToDetermineTickLabelIndexes(xRoundedScaleLinear)
+        if (isTickLabelPosition(i)) {
+          pushTickLabel('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
+        }
       }
     })
 
-    // Build col markers
-    let i = 0
-    while (i < Math.max(colsPositive, colsNegative)) {
-      let val = null
-      let x1 = null
-      let x2 = null
-      let y1 = null
-      let y2 = null
-
-      if (i < colsPositive) {
-        val = (i + 1) * ticksX
-        if (!this._between(0, data.minX, data.maxX)) {
-          val = this._getStartingVal(data.minX, data.maxX) + (i * ticksX)
+    const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
+    _.map(yRoundedScaleLinear, (val, i) => {
+      if (val === 0) {
+        const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
+        const xAxisOrigin = {
+          x1: viewBoxDim.x,
+          y1: yCoordOfXAxisOrigin,
+          x2: viewBoxDim.x + viewBoxDim.width,
+          y2: yCoordOfXAxisOrigin
         }
-
-        if (this._between(val, data.minX, data.maxX)) {
-          x1 = this._normalizeXCoords(data, val)
-          y1 = viewBoxDim.y
-          x2 = this._normalizeXCoords(data, val)
-          y2 = viewBoxDim.y + viewBoxDim.height
-
-          dimensionMarkerStack.push({ x1, y1, x2, y2 })
-          if (i % 2) {
-            pushDimensionMarker('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
-          }
+        pushTickLabel('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
+        if ((data.minY !== 0) && (data.maxY !== 0)) {
+          originAxis.push(xAxisOrigin)
         }
-      }
+      } else {
+        let x1 = viewBoxDim.x
+        let y1 = this._normalizeYCoords(data, val)
+        let x2 = viewBoxDim.x + viewBoxDim.width
+        let y2 = this._normalizeYCoords(data, val)
+        dimensionMarkerStack.push({x1, y1, x2, y2})
 
-      if (i < colsNegative) {
-        val = -(i + 1) * ticksX
-
-        if (this._between(val, data.minX, data.maxX)) {
-          x1 = this._normalizeXCoords(data, val)
-          y1 = viewBoxDim.y
-          x2 = this._normalizeXCoords(data, val)
-          y2 = viewBoxDim.y + viewBoxDim.height
-          dimensionMarkerStack.push({x1, y1, x2, y2})
-          if (i % 2) {
-            pushDimensionMarker('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
-          }
+        const isTickLabelPosition = this._getFuncToDetermineTickLabelIndexes(yRoundedScaleLinear)
+        if (isTickLabelPosition(i)) {
+          pushTickLabel('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
         }
       }
-      i++
-    }
-
-    // Build row markers
-    i = 0
-    while (i < Math.max(rowsPositive, rowsNegative)) {
-      let val = null
-      let x1 = null
-      let x2 = null
-      let y1 = null
-      let y2 = null
-
-      if (i < rowsPositive) {
-        val = -(i + 1) * ticksY
-
-        if (this._between(val, data.minY, data.maxY)) {
-          x1 = viewBoxDim.x
-          y1 = this._normalizeYCoords(data, val)
-          x2 = viewBoxDim.x + viewBoxDim.width
-          y2 = this._normalizeYCoords(data, val)
-          dimensionMarkerStack.push({x1, y1, x2, y2})
-          if (i % 2) {
-            pushDimensionMarker('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
-          }
-        }
-      }
-
-      if (i < rowsNegative) {
-        val = (i + 1) * ticksY
-        if (!this._between(0, data.minY, data.maxY)) {
-          val = this._getStartingVal(data.minY, data.maxY) + (i * ticksY)
-        }
-
-        if (this._between(val, data.minY, data.maxY)) {
-          x1 = viewBoxDim.x
-          y1 = this._normalizeYCoords(data, val)
-          x2 = viewBoxDim.x + viewBoxDim.width
-          y2 = this._normalizeYCoords(data, val)
-          dimensionMarkerStack.push({x1, y1, x2, y2})
-          if (i % 2) {
-            pushDimensionMarker('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
-          }
-        }
-      }
-      i++
-    }
+    })
 
     return {
       gridOrigin: originAxis,

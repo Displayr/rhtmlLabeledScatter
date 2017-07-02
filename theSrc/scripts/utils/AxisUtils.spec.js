@@ -46,8 +46,8 @@ describe('AxisUtils:', function () {
         it('places a x and y axis down the middle of the grid', function () {
           this.compute()
           expect(this.result.gridOrigin).to.deep.equal([
-            { x1: 0, y1: 50, x2: 100, y2: 50 },
-            { x1: 50, y1: 0, x2: 50, y2: 100 }
+            { x1: 50, y1: 0, x2: 50, y2: 100 },
+            { x1: 0, y1: 50, x2: 100, y2: 50 }
           ])
         })
       })
@@ -56,8 +56,8 @@ describe('AxisUtils:', function () {
         it('places a x and y axis off the cetnre based on the x and y range', function () {
           this.compute({ data: _.merge({}, this.defaultData, { minX: -15, maxX: 5, minY: -15, maxY: 5 }) })
           expect(this.result.gridOrigin).to.deep.equal([
-            { x1: 0, y1: 25, x2: 100, y2: 25 },
-            { x1: 75, y1: 0, x2: 75, y2: 100 }
+            { x1: 75, y1: 0, x2: 75, y2: 100 },
+            { x1: 0, y1: 25, x2: 100, y2: 25 }
           ])
         })
       })
@@ -102,9 +102,9 @@ describe('AxisUtils:', function () {
 
         it('should compute 4 axis markers lines', function () {
           expect(this.result.axisLeaderLabel).to.deep.equal([
-            { x: -5, y: 103.33333333333333, label: '0', anchor: 'end', type: 'row' },
             { x: 0, y: 115, label: '0', anchor: 'middle', type: 'col' },
             { x: 50, y: 115, label: '5', anchor: 'middle', type: 'col' },
+            { x: -5, y: 103.33333333333333, label: '0', anchor: 'end', type: 'row' },
             { x: -5, y: 53.333333333333336, label: '5', anchor: 'end', type: 'row' }
           ])
         })
@@ -127,18 +127,18 @@ describe('AxisUtils:', function () {
         })
 
         it('should compute gridlines', function () {
-          expect(this.result.gridLines[0], 'gridLine[0] is wrong').to.deep.equal({x1: 85, y1: 0, x2: 85, y2: 100}) // 1.5
-          expect(this.result.gridLines[1], 'gridLine[1] is wrong').to.deep.equal({x1: 55.00000000000001, y1: 0, x2: 55.00000000000001, y2: 100}) // -1.5
+          expect(this.result.gridLines[0], 'gridLine[4] is wrong').to.deep.equal({x1: 10, y1: 0, x2: 10, y2: 100}) // -6
+          expect(this.result.gridLines[1], 'gridLine[3] is wrong').to.deep.equal({x1: 25, y1: 0, x2: 25, y2: 100}) // -4.5
           expect(this.result.gridLines[2], 'gridLine[2] is wrong').to.deep.equal({x1: 40, y1: 0, x2: 40, y2: 100}) // -3
-          expect(this.result.gridLines[3], 'gridLine[3] is wrong').to.deep.equal({x1: 25, y1: 0, x2: 25, y2: 100}) // -4.5
-          expect(this.result.gridLines[4], 'gridLine[4] is wrong').to.deep.equal({x1: 10, y1: 0, x2: 10, y2: 100}) // -6
+          expect(this.result.gridLines[3], 'gridLine[1] is wrong').to.deep.equal({x1: 55.00000000000001, y1: 0, x2: 55.00000000000001, y2: 100}) // -1.5
+          expect(this.result.gridLines[4], 'gridLine[0] is wrong').to.deep.equal({x1: 85, y1: 0, x2: 85, y2: 100}) // 1.5
         })
 
         it('should compute 4 axis markers lines', function () {
           expect(this.result.axisLeaderLabel).to.deep.equal([
-            { x: 70, y: 115, label: '0', anchor: 'middle', type: 'col' },
+            { x: 10, y: 115, label: '-6', anchor: 'middle', type: 'col' },
             { x: 40, y: 115, label: '-3', anchor: 'middle', type: 'col' },
-            { x: 10, y: 115, label: '-6', anchor: 'middle', type: 'col' }
+            { x: 70, y: 115, label: '0', anchor: 'middle', type: 'col' }
           ])
         })
       })
