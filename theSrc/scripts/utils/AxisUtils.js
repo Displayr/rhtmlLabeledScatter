@@ -7,12 +7,21 @@ import d3 from 'd3'
  */
 
 class AxisUtils {
-  static _getTickRange (max, min) {
+  static _getScaleLinear (min, max) {
     const range = max - min
     const scaleLinear = d3.scale.linear()
                                 .domain([min, max])
                                 .range(range)
-    const scaleTicks = scaleLinear.ticks(8)
+    return scaleLinear.ticks(8)
+  }
+
+  static _getStartingVal (min, max) {
+    const scaleTicks = this._getScaleLinear(min, max)
+    return scaleTicks[0]
+  }
+
+  static _getTickRange (min, max) {
+    const scaleTicks = this._getScaleLinear(min, max)
     const unroundedTickSize = Math.abs(scaleTicks[0] - scaleTicks[1])
 
     // Round to 2 sig figs
@@ -112,17 +121,17 @@ class AxisUtils {
     if (Utils.isNum(plot.xBoundsUnitsMajor)) {
       ticksX = plot.xBoundsUnitsMajor / 2
     } else {
-      ticksX = this._getTickRange(data.maxX, data.minX)
+      ticksX = this._getTickRange(data.minX, data.maxX)
     }
 
     if (Utils.isNum(plot.yBoundsUnitsMajor)) {
       ticksY = plot.yBoundsUnitsMajor / 2
     } else {
-      ticksY = this._getTickRange(data.maxY, data.minY)
+      ticksY = this._getTickRange(data.minY, data.maxY)
     }
 
-    const ticksXexponent = this.getExponentOfNum(ticksX)
-    const ticksYexponent = this.getExponentOfNum(ticksY)
+    // const ticksXexponent = this.getExponentOfNum(ticksX)
+    // const ticksYexponent = this.getExponentOfNum(ticksY)
 
     // Compute origins if they are within bounds
 
@@ -156,43 +165,24 @@ class AxisUtils {
     }
 
     // calculate number of dimension markers
-
-    const rMinX = _.ceil(_.toNumber(data.minX), -ticksXexponent)
-    const rMaxX = data.maxX
-    const rMinY = _.ceil(_.toNumber(data.minY), -ticksYexponent)
-    const rMaxY = data.maxY
-
     let colsPositive = 0
     let colsNegative = 0
-    if (this._between(0, rMinX, rMaxX)) {
-      colsPositive = (rMaxX / ticksX) - 1
-      colsNegative = Math.abs(data.minX / ticksX) - 1
-    } else {
-      const numColumns = (data.maxX - data.minX) / ticksX
-      if (rMinX < 0) {
-        colsNegative = numColumns
-        colsPositive = 0
-      } else {
-        colsNegative = 0
-        colsPositive = numColumns
-      }
-    }
-
     let rowsPositive = 0
     let rowsNegative = 0
-    if (this._between(0, rMinY, rMaxY)) {
-      rowsPositive = Math.abs(data.minY / ticksY) - 1
-      rowsNegative = (data.maxY / ticksY) - 1
-    } else {
-      const numRows = (data.maxY - data.minY) / ticksY
-      if (rMinY < 0) {
-        rowsNegative = 0
-        rowsPositive = numRows
-      } else {
-        rowsNegative = numRows
-        rowsPositive = 0
+    _.map(this._getScaleLinear(data.minX, data.maxX), (n) => {
+      if (n > 0) {
+        colsPositive++
+      } else if (n < 0) {
+        colsNegative++
       }
-    }
+    })
+    _.map(this._getScaleLinear(data.minY, data.maxY), (n) => {
+      if (n > 0) {
+        rowsNegative++
+      } else if (n < 0) {
+        rowsPositive++
+      }
+    })
 
     // Build col markers
     let i = 0
@@ -205,8 +195,8 @@ class AxisUtils {
 
       if (i < colsPositive) {
         val = (i + 1) * ticksX
-        if (!this._between(0, rMinX, rMaxX)) {
-          val = rMinX + (i * ticksX)
+        if (!this._between(0, data.minX, data.maxX)) {
+          val = this._getStartingVal(data.minX, data.maxX) + (i * ticksX)
         }
 
         if (this._between(val, data.minX, data.maxX)) {
@@ -265,8 +255,8 @@ class AxisUtils {
 
       if (i < rowsNegative) {
         val = (i + 1) * ticksY
-        if (!this._between(0, rMinY, rMaxY)) {
-          val = rMinY + (i * ticksY)
+        if (!this._between(0, data.minY, data.maxY)) {
+          val = this._getStartingVal(data.minY, data.maxY) + (i * ticksY)
         }
 
         if (this._between(val, data.minY, data.maxY)) {
