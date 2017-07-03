@@ -67,15 +67,6 @@ class AxisUtils {
     return exponent
   }
 
-  static _getFuncToDetermineTickLabelIndexes (arr) {
-    const i = _.findIndex(arr, n => n === 0)
-    if (i % 2 === 0) {
-      return (j) => j % 2 === 0
-    } else {
-      return (j) => j % 2 !== 0
-    }
-  }
-
   static _normalizeXCoords (data, Xcoord) {
     const { viewBoxDim } = data
     return (((Xcoord - data.minX) / (data.maxX - data.minX)) * viewBoxDim.width) + viewBoxDim.x
@@ -186,11 +177,7 @@ class AxisUtils {
         let x2 = this._normalizeXCoords(data, val)
         let y2 = viewBoxDim.y + viewBoxDim.height
         dimensionMarkerStack.push({ x1, y1, x2, y2 })
-
-        const isTickLabelPosition = this._getFuncToDetermineTickLabelIndexes(xRoundedScaleLinear)
-        if (isTickLabelPosition(i)) {
-          pushTickLabel('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
-        }
+        pushTickLabel('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
       }
     })
 
@@ -214,11 +201,7 @@ class AxisUtils {
         let x2 = viewBoxDim.x + viewBoxDim.width
         let y2 = this._normalizeYCoords(data, val)
         dimensionMarkerStack.push({x1, y1, x2, y2})
-
-        const isTickLabelPosition = this._getFuncToDetermineTickLabelIndexes(yRoundedScaleLinear)
-        if (isTickLabelPosition(i)) {
-          pushTickLabel('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
-        }
+        pushTickLabel('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
       }
     })
 
