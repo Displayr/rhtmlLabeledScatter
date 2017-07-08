@@ -12,7 +12,7 @@ class AxisUtils {
     const scaleLinear = d3.scale.linear()
                                 .domain([min, max])
                                 .range(range)
-    return scaleLinear.ticks(8)
+    return scaleLinear.ticks(5)
   }
 
   static _getRoundedScaleLinear (min, max, unitMajor) {
