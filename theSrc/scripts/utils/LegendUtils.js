@@ -23,9 +23,8 @@ class LegendUtils {
     return Math.sqrt((viewBoxDim.width * viewBoxDim.height) / 16 / Math.PI) * normZval
   }
 
-  // KZ TODO remove 'data' side effect
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
-  static calcZQuartiles (data, maxZ) {
+  static getZQuartiles (maxZ) {
     const getZLabel = (val, max, precision) => Math.sqrt((max * val).toPrecision(precision) / max / Math.PI)
 
     const getExponential = num => num.toExponential().split('e')[1]
@@ -56,7 +55,7 @@ class LegendUtils {
 
     const topQuartileVal = topQuartileZ / (10 ** exp)
 
-    data.Zquartiles = {
+    const Zquartiles = {
       top: {
         val: topQuartileVal + expShortForm,
         lab: getZLabel(topQ, maxZ, precision)
@@ -70,6 +69,7 @@ class LegendUtils {
         lab: getZLabel(botQ, topQuartileZ, 1)
       }
     }
+    return Zquartiles
   }
 
   // TODO KZ remove side effect, just return the normalized array
@@ -83,12 +83,12 @@ class LegendUtils {
 
   // TODO KZ remove side effect, just return the normalized array
   static setupBubbles (data) {
-    const { viewBoxDim, Zquartiles, legendDim } = data
+    const { viewBoxDim, Zquartiles, legend } = data
 
     const rTop = this.normalizedZtoRadius(viewBoxDim, Zquartiles.top.lab)
     const rMid = this.normalizedZtoRadius(viewBoxDim, Zquartiles.mid.lab)
     const rBot = this.normalizedZtoRadius(viewBoxDim, Zquartiles.bot.lab)
-    const cx = viewBoxDim.x + viewBoxDim.width + (legendDim.width / 2)
+    const cx = viewBoxDim.x + viewBoxDim.width + (legend.getWidth() / 2)
     const viewBoxYBottom = viewBoxDim.y + viewBoxDim.height
     const bubbleTextPadding = 5
 

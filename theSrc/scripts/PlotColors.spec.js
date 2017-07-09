@@ -11,7 +11,7 @@ describe('PlotColors:', function () {
       this.context.config = {
         group: ['G1', 'G2', 'G3', 'G4'],
         colorWheel: ['red', 'blue', 'green'],
-        legendDim: { ptRadius: 1 }
+        legend: { getPtRadius: () => 1 }
       }
       this.context.colors = new PlotColors(this.context.config)
     })
@@ -36,7 +36,7 @@ describe('PlotColors:', function () {
         this.context.config = {
           group: ['G1', 'G2', 'G2', 'G1'],
           colorWheel: ['red', 'blue'],
-          legendDim: { ptRadius: 1 }
+          legend: { getPtRadius: () => 1 }
         }
         this.context.colors = new PlotColors(this.context.config)
       })
@@ -58,7 +58,7 @@ describe('PlotColors:', function () {
         this.context = {}
         this.context.config = {
           colorWheel: ['red', 'blue'],
-          legendDim: { ptRadius: 1 }
+          legend: { getPtRadius: () => 1 }
         }
         this.context.colors = new PlotColors(this.context.config)
       })

@@ -17,7 +17,7 @@ class PlotData {
     label,
     labelAlt,
     viewBoxDim,
-    legendDim,
+    legend,
     colorWheel,
     fixedAspectRatio,
     originAlign,
@@ -34,7 +34,7 @@ class PlotData {
     this.label = label
     this.labelAlt = labelAlt
     this.viewBoxDim = viewBoxDim
-    this.legendDim = legendDim
+    this.legend = legend
     this.colorWheel = colorWheel
     this.fixedAspectRatio = fixedAspectRatio
     this.originAlign = originAlign
@@ -192,28 +192,28 @@ class PlotData {
         let markerTextX = (markerTextY = 0)
         const numDigitsInId = Math.ceil(Math.log(newMarkerId + 1.1) / Math.LN10)
         if (draggedNormX === 1) { // right bound
-          x1 = x2 + this.legendDim.markerLen
+          x1 = x2 + this.legend.getMarkerLen()
           y1 = y2
           markerTextX = x1
-          markerTextY = y1 + (this.legendDim.markerTextSize / 2)
+          markerTextY = y1 + (this.legend.getMarkerTextSize() / 2)
         } else if (draggedNormX === 0) { // left bound
-          x1 = x2 - this.legendDim.markerLen
+          x1 = x2 - this.legend.getMarkerLen()
           y1 = y2
-          markerTextX = x1 - (this.legendDim.markerCharWidth * (numDigitsInId + 1))
-          markerTextY = y1 + (this.legendDim.markerTextSize / 2)
+          markerTextX = x1 - (this.legend.getMarkerCharWidth() * (numDigitsInId + 1))
+          markerTextY = y1 + (this.legend.getMarkerTextSize() / 2)
         } else if (draggedNormY === 1) { // top bound
           x1 = x2
-          y1 = y2 + (-draggedNormY * this.legendDim.markerLen)
-          markerTextX = x1 - (this.legendDim.markerCharWidth * (numDigitsInId))
+          y1 = y2 + (-draggedNormY * this.legend.getMarkerLen())
+          markerTextX = x1 - (this.legend.getMarkerCharWidth() * (numDigitsInId))
           markerTextY = y1
         } else if (draggedNormY === 0) { // bot bound
           x1 = x2
-          y1 = y2 + this.legendDim.markerLen
-          markerTextX = x1 - (this.legendDim.markerCharWidth * (numDigitsInId))
-          markerTextY = y1 + this.legendDim.markerTextSize
+          y1 = y2 + this.legend.getMarkerLen()
+          markerTextX = x1 - (this.legend.getMarkerCharWidth() * (numDigitsInId))
+          markerTextY = y1 + this.legend.getMarkerTextSize()
         }
 
-        // TODO KZ bug? : newMarkerId + 1, but lp.markerId = newMarker ??
+        // New markerLabel starts at index = 1 since it is user facing
         this.outsidePlotMarkers.push({
           markerLabel: newMarkerId + 1,
           ptId: id,
@@ -223,7 +223,7 @@ class PlotData {
           y2,
           markerTextX,
           markerTextY,
-          width: this.legendDim.markerWidth,
+          width: this.legend.getMarkerWidth(),
           color: lp.color
         })
 
@@ -275,7 +275,7 @@ class PlotData {
     const legendUtils = LegendUtils
 
     const maxZ = _.max(this.Z)
-    legendUtils.calcZQuartiles(this, maxZ)
+    this.Zquartiles = legendUtils.getZQuartiles(maxZ)
     return legendUtils.normalizeZValues(this, maxZ)
   }
 
@@ -382,9 +382,9 @@ class PlotData {
     }
 
     const startOfCenteredLegendItems = (((this.viewBoxDim.y + (this.legendHeight / 2)) -
-                                  ((this.legendDim.heightOfRow * (numItems / cols)) / 2)) +
-                                  this.legendDim.ptRadius)
-    const startOfViewBox = this.viewBoxDim.y + this.legendDim.ptRadius
+                                  ((this.legend.getHeightOfRow() * (numItems / cols)) / 2)) +
+                                  this.legend.getPtRadius())
+    const startOfViewBox = this.viewBoxDim.y + this.legend.getPtRadius()
     const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
 
     let colSpacing = 0
@@ -397,26 +397,26 @@ class PlotData {
       while (i < numItems) {
         if (cols > 1) {
           const numElemsInCol = numItems / cols
-          const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legendDim.heightOfRow)) > (this.viewBoxDim.y + this.legendHeight)
+          const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.viewBoxDim.y + this.legendHeight)
           const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
           if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
-            colSpacing = (this.legendDim.colSpace + (this.legendDim.ptRadius * 2) + this.legendDim.ptToTextSpace) * currentCol
+            colSpacing = (this.legend.getColSpace() + (this.legend.getPtRadius() * 2) + this.legend.getPtToTextSpace()) * currentCol
             numItemsInPrevCols = i
             currentCol++
           }
 
-          const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legendDim.heightOfRow)) > (this.viewBoxDim.y + this.legendHeight)
+          const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.viewBoxDim.y + this.legendHeight)
           if (totalItemsSpacingExceedLegendArea) { break }
         }
 
         const li = itemsArray[i]
         if (li.isDraggedPt) {
-          li.x = this.legendDim.x + this.legendDim.leftPadding + colSpacing
-          li.y = legendStartY + ((i - numItemsInPrevCols) * this.legendDim.heightOfRow) + this.legendDim.vertPtPadding
+          li.x = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing
+          li.y = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow()) + this.legend.getVertPtPadding()
         } else {
-          li.cx = this.legendDim.x + this.legendDim.leftPadding + colSpacing + li.r
-          li.cy = legendStartY + ((i - numItemsInPrevCols) * this.legendDim.heightOfRow)
-          li.x = li.cx + this.legendDim.ptToTextSpace
+          li.cx = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing + li.r
+          li.cy = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())
+          li.x = li.cx + this.legend.getPtToTextSpace()
           li.y = li.cy + li.r
         }
         result.push(i++)
@@ -443,11 +443,11 @@ class PlotData {
         i++
       }
 
-      return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legendDim.cols)
+      return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legend.getCols())
     } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
-      return this.setLegendItemsPositions(this.legendPts.length, this.legendPts, this.legendDim.cols)
+      return this.setLegendItemsPositions(this.legendPts.length, this.legendPts, this.legend.getCols())
     } else {
-      return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legendDim.cols)
+      return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legend.getCols())
     }
   }
 
@@ -460,23 +460,23 @@ class PlotData {
 
     const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])
 
-    const spacingAroundMaxTextWidth = this.legendDim.leftPadding +
-                                (this.legendDim.ptRadius * 2) +
-                                this.legendDim.rightPadding +
-                                this.legendDim.ptToTextSpace
+    const spacingAroundMaxTextWidth = this.legend.getPaddingLeft() +
+                                (this.legend.getPtRadius() * 2) +
+                                this.legend.getPaddingRight() +
+                                this.legend.getPtToTextSpace()
 
-    const bubbleLeftRightPadding = this.legendDim.leftPadding + this.legendDim.rightPadding
+    const bubbleLeftRightPadding = this.legend.getPaddingLeft() + this.legend.getPaddingRight()
 
-    this.legendDim.cols = Math.ceil(((totalLegendItems) * this.legendDim.heightOfRow) / this.legendHeight)
-    this.legendDim.width = (maxTextWidth * this.legendDim.cols) + spacingAroundMaxTextWidth + (this.legendDim.centerPadding * (this.legendDim.cols - 1))
+    this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legendHeight))
+    this.legend.setWidth((maxTextWidth * this.legend.getCols()) + spacingAroundMaxTextWidth + (this.legend.getPaddingMid() * (this.legend.getCols() - 1)))
 
     const bubbleTitleWidth = this.legendBubblesTitle != null ? this.legendBubblesTitle[0].width : undefined
-    this.legendDim.width = _.max([this.legendDim.width, bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding])
+    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding]))
 
-    this.legendDim.colSpace = maxTextWidth
+    this.legend.setColSpace(maxTextWidth)
 
-    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legendDim.width - this.viewBoxDim.x - this.axisDimensionText.rowMaxWidth
-    this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width
+    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legend.getWidth() - this.viewBoxDim.x - this.axisDimensionText.rowMaxWidth
+    this.legend.setX(this.viewBoxDim.x + this.viewBoxDim.width)
 
     const isNewWidthSignficantlyDifferent = Math.abs(initWidth - this.viewBoxDim.width) > 0.1
     return isNewWidthSignficantlyDifferent
