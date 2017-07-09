@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import autoBind from 'es6-autobind'
 import PlotColors from './PlotColors'
 import PlotLabel from './PlotLabel'
 import LegendUtils from './utils/LegendUtils'
@@ -23,21 +24,9 @@ class PlotData {
     pointRadius,
     bounds,
     transparency,
-    legendShow,
-    legendBubblesShow,
+    legendSettings,
     axisDimensionText) {
-    this.revertMinMax = this.revertMinMax.bind(this)
-    this.calculateMinMax = this.calculateMinMax.bind(this)
-    this.normalizeData = this.normalizeData.bind(this)
-    this.normalizeZData = this.normalizeZData.bind(this)
-    this.getPtsAndLabs = this.getPtsAndLabs.bind(this)
-    this.setLegendItemsPositions = this.setLegendItemsPositions.bind(this)
-    this.setupLegendGroupsAndPts = this.setupLegendGroupsAndPts.bind(this)
-    this.resizedAfterLegendGroupsDrawn = this.resizedAfterLegendGroupsDrawn.bind(this)
-    this.isOutsideViewBox = this.isOutsideViewBox.bind(this)
-    this.isLegendPtOutsideViewBox = this.isLegendPtOutsideViewBox.bind(this)
-    this.addElemToLegend = this.addElemToLegend.bind(this)
-    this.removeElemFromLegend = this.removeElemFromLegend.bind(this)
+    autoBind(this)
     this.X = X
     this.Y = Y
     this.Z = Z
@@ -52,8 +41,7 @@ class PlotData {
     this.pointRadius = pointRadius
     this.bounds = bounds
     this.transparency = transparency
-    this.legendShow = legendShow
-    this.legendBubblesShow = legendBubblesShow
+    this.legendSettings = legendSettings
     this.axisDimensionText = axisDimensionText
     this.origX = this.X.slice(0)
     this.origY = this.Y.slice(0)
@@ -64,7 +52,6 @@ class PlotData {
     this.legendPts = []
     this.outsidePlotCondensedPts = []
     this.legendBubbles = []
-    this.legendBubblesLab = []
     this.legendRequiresRedraw = false
 
     if (this.X.length === this.Y.length) {
@@ -385,7 +372,7 @@ class PlotData {
   setLegendItemsPositions (numItems, itemsArray, cols) {
     const bubbleLegendTextHeight = 20
     this.legendHeight = this.viewBoxDim.height
-    if ((this.legendBubblesTitle != null) && this.legendBubblesShow) {
+    if ((this.legendBubblesTitle != null) && this.legendSettings.showBubblesInLegend()) {
       this.legendHeight = this.legendBubblesTitle[0].y - bubbleLegendTextHeight - this.viewBoxDim.y
     }
 
@@ -439,7 +426,7 @@ class PlotData {
   }
 
   setupLegendGroupsAndPts () {
-    if ((this.legendPts.length > 0) && (this.legendShow === true)) {
+    if ((this.legendPts.length > 0) && (this.legendSettings.showLegend())) {
       const totalLegendItems = this.legendGroups.length + this.legendPts.length
       const legendItemArray = []
       let i = 0
@@ -457,7 +444,7 @@ class PlotData {
       }
 
       return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legendDim.cols)
-    } else if ((this.legendPts.length > 0) && (this.legendShow === false)) {
+    } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
       return this.setLegendItemsPositions(this.legendPts.length, this.legendPts, this.legendDim.cols)
     } else {
       return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legendDim.cols)
@@ -467,8 +454,8 @@ class PlotData {
   resizedAfterLegendGroupsDrawn () {
     const initWidth = this.viewBoxDim.width
 
-    const totalLegendItems = this.legendShow ? this.legendGroups.length + this.legendPts.length : this.legendPts.length
-    const legendGrpsTextMax = (this.legendGroups.length > 0) && this.legendShow ? (_.maxBy(this.legendGroups, e => e.width)).width : 0
+    const totalLegendItems = this.legendSettings.showLegend() ? this.legendGroups.length + this.legendPts.length : this.legendPts.length
+    const legendGrpsTextMax = (this.legendGroups.length > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legendGroups, e => e.width)).width : 0
     const legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, e => e.width)).width : 0
 
     const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])

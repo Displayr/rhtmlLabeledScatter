@@ -2,6 +2,7 @@
 import _ from 'lodash'
 import d3 from 'd3'
 import md5 from 'md5'
+import autoBind from 'es6-autobind'
 import Links from './Links'
 import PlotData from './PlotData'
 import TrendLine from './TrendLine'
@@ -11,6 +12,7 @@ import SvgUtils from './utils/SvgUtils'
 import Utils from './utils/Utils'
 import TooltipUtils from './utils/TooltipUtils'
 import LabelPlacement from './LabelPlacement'
+import LegendSettings from './LegendSettings'
 
 class RectPlot {
   constructor (state,
@@ -61,7 +63,8 @@ class RectPlot {
     legendFontFamily,
     legendFontSize,
     legendFontColor,
-    showAxis = true,
+    showXAxis = true,
+    showYAxis = true,
     axisFontFamily,
     axisFontColor,
     axisFontSize,
@@ -79,20 +82,7 @@ class RectPlot {
     plotBorderColor = 'black',
     plotBorderWidth = 1
   ) {
-    this.setDim = this.setDim.bind(this)
-    this.draw = this.draw.bind(this)
-    this.drawLabsAndPlot = this.drawLabsAndPlot.bind(this)
-    this.drawTitle = this.drawTitle.bind(this)
-    this.drawRect = this.drawRect.bind(this)
-    this.drawDimensionMarkers = this.drawDimensionMarkers.bind(this)
-    this.drawAxisLabels = this.drawAxisLabels.bind(this)
-    this.drawLegend = this.drawLegend.bind(this)
-    this.drawAnc = this.drawAnc.bind(this)
-    this.drawDraggedMarkers = this.drawDraggedMarkers.bind(this)
-    this.resetPlotAfterDragEvent = this.resetPlotAfterDragEvent.bind(this)
-    this.drawLabs = this.drawLabs.bind(this)
-    this.drawLinks = this.drawLinks.bind(this)
-    this.drawTrendLines = this.drawTrendLines.bind(this)
+    autoBind(this)
     this.state = state
     this.width = width
     this.height = height
@@ -117,11 +107,6 @@ class RectPlot {
     this.xSuffix = xSuffix
     this.ySuffix = ySuffix
     this.zSuffix = zSuffix
-    this.legendShow = legendShow
-    this.legendBubblesShow = legendBubblesShow
-    this.legendFontFamily = legendFontFamily
-    this.legendFontSize = legendFontSize
-    this.legendFontColor = legendFontColor
     this.pointRadius = pointRadius
     this.xBoundsUnitsMajor = xBoundsUnitsMajor
     this.yBoundsUnitsMajor = yBoundsUnitsMajor
@@ -136,7 +121,8 @@ class RectPlot {
       fontFamily: axisFontFamily,
       fontSize: axisFontSize,
       fontColor: axisFontColor,
-      show: showAxis
+      showX: showXAxis,
+      showY: showYAxis
     }
 
     this.labelsFont = {
@@ -154,6 +140,10 @@ class RectPlot {
       fontColor: xTitleFontColor,
       topPadding: 5
     }
+
+    this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
+      legendFontFamily, legendFontSize, legendFontColor)
+
     if (this.xTitle.text === '') { this.xTitle.textHeight = 0 }
 
     this.yTitle = {
@@ -227,12 +217,12 @@ class RectPlot {
     this.title.x = this.width / 2
     this.legendDim = {
       width: 0,  // init value
-      heightOfRow: this.legendFontSize + 9, // init val
-      rightPadding: this.legendFontSize / 1.6,
-      leftPadding: this.legendFontSize / 0.8,
-      centerPadding: this.legendFontSize / 0.53,
-      ptRadius: this.legendFontSize / 2.67,
-      ptToTextSpace: this.legendFontSize,
+      heightOfRow: this.legendSettings.getFontSize() + 9, // init val
+      rightPadding: this.legendSettings.getFontSize() / 1.6,
+      leftPadding: this.legendSettings.getFontSize() / 0.8,
+      centerPadding: this.legendSettings.getFontSize() / 0.53,
+      ptRadius: this.legendSettings.getFontSize() / 2.67,
+      ptToTextSpace: this.legendSettings.getFontSize(),
       vertPtPadding: 5,
       cols: 1,
       markerLen: 5,
@@ -272,8 +262,7 @@ class RectPlot {
                          this.pointRadius,
                          this.bounds,
                          this.transparency,
-                         this.legendShow,
-                         this.legendBubblesShow,
+                         this.legendSettings,
                          this.axisDimensionText)
 
     this.drawFailureCount = 0
@@ -421,9 +410,7 @@ class RectPlot {
 
   drawDimensionMarkers () {
     return new Promise((function (resolve, reject) {
-      // TODO: unnecessary double call ? PlotData.constructor calls PlotData.calculateMinMax ?
-      this.data.calculateMinMax()
-      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.viewBoxDim)
+      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.viewBoxDim, this.axisSettings)
 
       // TODO KZ this sequence can be easily consolidated
       if (this.grid) {
@@ -474,7 +461,7 @@ class RectPlot {
             .attr('stroke', 'black')
       }
 
-      if (this.axisSettings.show) {
+      if (this.axisSettings.showX || this.axisSettings.showY) {
         this.svg.selectAll('.dim-marker-leader').remove()
         this.svg.selectAll('.dim-marker-leader')
         .data(axisArrays.axisLeader)
@@ -587,11 +574,9 @@ class RectPlot {
   }
 
   drawLegend () {
-    return new Promise((function (resolve, reject) {
-      let legendFontSize
+    return new Promise(function (resolve, reject) {
       this.data.setupLegendGroupsAndPts()
-
-      if (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) {
+      if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove()
         this.svg.selectAll('.legend-bubbles')
             .data(this.data.legendBubbles)
@@ -614,14 +599,14 @@ class RectPlot {
             .attr('x', d => d.x)
             .attr('y', d => d.y)
             .attr('text-anchor', 'middle')
-            .attr('font-size', this.legendFontSize)
-            .attr('font-family', this.legendFontFamily)
-            .attr('fill', this.legendFontColor)
+            .attr('font-size', this.legendSettings.getFontSize())
+            .attr('font-family', this.legendSettings.getFontFamily())
+            .attr('fill', this.legendSettings.getFontColor())
             .text(d => d.text)
 
         if (this.zTitle !== '') {
-          ({ legendFontSize } = this)
           this.svg.selectAll('.legend-bubbles-title').remove()
+          let legendFontSize = this.legendSettings.getFontSize()
           const legendBubbleTitleSvg = this.svg.selectAll('.legend-bubbles-title')
               .data(this.data.legendBubblesTitle)
               .enter()
@@ -630,9 +615,9 @@ class RectPlot {
               .attr('x', d => d.x)
               .attr('y', d => d.y - (legendFontSize * 1.5))
               .attr('text-anchor', 'middle')
-              .attr('font-family', this.legendFontFamily)
+              .attr('font-family', this.legendSettings.getFontFamily())
               .attr('font-weight', 'normal')
-              .attr('fill', this.legendFontColor)
+              .attr('fill', this.legendSettings.getFontColor())
               .text(this.zTitle)
 
           SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg)
@@ -649,8 +634,8 @@ class RectPlot {
           .attr('id', d => `legend-${d.id}`)
           .attr('x', d => d.x)
           .attr('y', d => d.y)
-          .attr('font-family', this.legendFontFamily)
-          .attr('font-size', this.legendFontSize)
+          .attr('font-family', this.legendSettings.getFontFamily())
+          .attr('font-size', this.legendSettings.getFontSize())
           .attr('text-anchor', d => d.anchor)
           .attr('fill', d => d.color)
           .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text } else { return d.text } })
@@ -658,7 +643,7 @@ class RectPlot {
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'))
 
-      if (this.legendShow) {
+      if (this.legendSettings.showLegend()) {
         this.svg.selectAll('.legend-groups-text').remove()
         this.svg.selectAll('.legend-groups-text')
             .data(this.data.legendGroups)
@@ -667,9 +652,9 @@ class RectPlot {
             .attr('class', 'legend-groups-text')
             .attr('x', d => d.x)
             .attr('y', d => d.y)
-            .attr('font-family', this.legendFontFamily)
-            .attr('fill', this.legendFontColor)
-            .attr('font-size', this.legendFontSize)
+            .attr('font-family', this.legendSettings.getFontFamily())
+            .attr('fill', this.legendSettings.getFontColor())
+            .attr('font-size', this.legendSettings.getFontSize())
             .text(d => d.text)
             .attr('text-anchor', d => d.anchor)
 
@@ -691,8 +676,8 @@ class RectPlot {
         SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'))
       }
 
-      if (this.legendShow || (this.legendBubblesShow && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
-        if (this.data.resizedAfterLegendGroupsDrawn(this.legendShow)) {
+      if (this.legendSettings.showLegend() || (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
+        if (this.data.resizedAfterLegendGroupsDrawn(this.legendSettings.showLegend())) {
           this.data.revertMinMax()
           const error = new Error('drawLegend Failed')
           error.retry = true
@@ -700,7 +685,7 @@ class RectPlot {
         }
       }
       return resolve()
-    }.bind(this)))
+    }.bind(this))
   }
 
   drawAnc () {

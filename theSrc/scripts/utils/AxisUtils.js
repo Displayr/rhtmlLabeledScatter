@@ -78,15 +78,16 @@ class AxisUtils {
   }
 
   // TODO KZ calculation of x axis and y axis are independent ? If so, then split into a reusable function
-  static getAxisDataArrays (plot, data, viewBoxDim) {
+  static getAxisDataArrays (plot, data, viewBoxDim, axisSettings) {
     // exit if all points have been dragged off plot
     if (!(data.len > 0)) {
       return {}
     }
 
-    const dimensionMarkerStack = []
-    const dimensionMarkerLeaderStack = []
-    const dimensionMarkerLabelStack = []
+    const gridLineStack = []
+    const axisLeaderStack = []
+    const axisLeaderLabelStack = []
+    const originAxis = []
 
     const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement) => {
       const leaderLineLen = plot.axisLeaderLineLength
@@ -105,13 +106,13 @@ class AxisUtils {
 
       if (type === 'col') {
         const numDecimals = computeNumDecimals(tickIncrement, xDecimals)
-        dimensionMarkerLeaderStack.push({
+        axisLeaderStack.push({
           x1,
           y1: y2,
           x2: x1,
           y2: y2 + leaderLineLen
         })
-        dimensionMarkerLabelStack.push({
+        axisLeaderLabelStack.push({
           x: x1,
           y: y2 + leaderLineLen + labelHeight,
           label: Utils.getFormattedNum(label, numDecimals, xPrefix, xSuffix),
@@ -122,13 +123,13 @@ class AxisUtils {
 
       if (type === 'row') {
         const numDecimals = computeNumDecimals(tickIncrement, yDecimals)
-        dimensionMarkerLeaderStack.push({
+        axisLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,
           x2: x1,
           y2
         })
-        dimensionMarkerLabelStack.push({
+        axisLeaderLabelStack.push({
           x: x1 - leaderLineLen,
           y: y2 + (labelHeight / 3),
           label: Utils.getFormattedNum(label, numDecimals, yPrefix, ySuffix),
@@ -138,25 +139,20 @@ class AxisUtils {
       }
     }
 
+    const getTicks = (userTickInterval, min, max) => {
+      let ticks = null
+      if (Utils.isNum(userTickInterval)) {
+        ticks = userTickInterval / 2
+      } else {
+        ticks = this._getTickInterval(min, max)
+      }
+      return ticks
+    }
+
     // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax()
 
-    let ticksX = null
-    let ticksY = null
-
-    if (Utils.isNum(plot.xBoundsUnitsMajor)) {
-      ticksX = plot.xBoundsUnitsMajor / 2
-    } else {
-      ticksX = this._getTickInterval(data.minX, data.maxX)
-    }
-
-    if (Utils.isNum(plot.yBoundsUnitsMajor)) {
-      ticksY = plot.yBoundsUnitsMajor / 2
-    } else {
-      ticksY = this._getTickInterval(data.minY, data.maxY)
-    }
-
-    const originAxis = []
+    let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
     const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
     _.map(xRoundedScaleLinear, (val, i) => {
       if (val === 0) {
@@ -167,7 +163,9 @@ class AxisUtils {
           x2: xCoordOfYAxisOrigin,
           y2: viewBoxDim.y + viewBoxDim.height
         }
-        pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
+        if (axisSettings.showX) {
+          pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
+        }
         if ((data.minX !== 0) && (data.maxX !== 0)) {
           originAxis.push(yAxisOrigin)
         }
@@ -176,11 +174,14 @@ class AxisUtils {
         let y1 = viewBoxDim.y
         let x2 = this._normalizeXCoords(data, val)
         let y2 = viewBoxDim.y + viewBoxDim.height
-        dimensionMarkerStack.push({ x1, y1, x2, y2 })
-        pushTickLabel('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
+        gridLineStack.push({ x1, y1, x2, y2 })
+        if (axisSettings.showX) {
+          pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
+        }
       }
     })
 
+    let ticksY = getTicks(plot.yBoundsUnitsMajor, data.minY, data.maxY)
     const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
     _.map(yRoundedScaleLinear, (val, i) => {
       if (val === 0) {
@@ -191,7 +192,9 @@ class AxisUtils {
           x2: viewBoxDim.x + viewBoxDim.width,
           y2: yCoordOfXAxisOrigin
         }
-        pushTickLabel('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
+        if (axisSettings.showY) {
+          pushTickLabel('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
+        }
         if ((data.minY !== 0) && (data.maxY !== 0)) {
           originAxis.push(xAxisOrigin)
         }
@@ -200,16 +203,18 @@ class AxisUtils {
         let y1 = this._normalizeYCoords(data, val)
         let x2 = viewBoxDim.x + viewBoxDim.width
         let y2 = this._normalizeYCoords(data, val)
-        dimensionMarkerStack.push({x1, y1, x2, y2})
-        pushTickLabel('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
+        gridLineStack.push({x1, y1, x2, y2})
+        if (axisSettings.showY) {
+          pushTickLabel('row', x1, y1, x2, y2, val, ticksY)
+        }
       }
     })
 
     return {
       gridOrigin: originAxis,
-      gridLines: dimensionMarkerStack,
-      axisLeader: dimensionMarkerLeaderStack,
-      axisLeaderLabel: dimensionMarkerLabelStack
+      gridLines: gridLineStack,
+      axisLeader: axisLeaderStack,
+      axisLeaderLabel: axisLeaderLabelStack
     }
   }
 }

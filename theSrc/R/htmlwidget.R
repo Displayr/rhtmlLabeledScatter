@@ -37,7 +37,8 @@
 #' @param x.title.font.color is the font color of the x axis title
 #' @param x.title.font.size is the font size of the x axis title
 #' @param x.title.font.family is the font family of the x axis title
-#' @param axis.show Boolean toggle to show the axis tick markers (Default is TRUE).
+#' @param x.axis.show Boolean toggle to show the x axis tick markers (Default is TRUE).
+#' @param y.axis.show Boolean toggle to show the y axis tick markers (Default is TRUE).
 #' @param axis.font.family Font Family of the axis labels
 #' @param axis.font.size Font size of the axis labels
 #' @param axis.font.color Font color of the axis labels
@@ -120,7 +121,8 @@ LabeledScatter <- function(
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   y.title.font.family = "Arial",
   y.title.font.size = 12,
-  axis.show = TRUE,
+  x.axis.show = TRUE,
+  y.axis.show = TRUE,
   axis.font.family = 'Arial',
   axis.font.color = 'Black',
   axis.font.size = 12,
@@ -192,7 +194,8 @@ LabeledScatter <- function(
     xTitleFontColor = x.title.font.color,
     xTitleFontFamily = x.title.font.family,
     xTitleFontSize = x.title.font.size,
-    showAxis = axis.show,
+    showXAxis = x.axis.show,
+    showYAxis = y.axis.show,
     axisFontFamily = axis.font.family,
     axisFontColor = axis.font.color,
     axisFontSize = axis.font.size,

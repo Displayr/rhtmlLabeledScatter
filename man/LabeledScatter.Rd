@@ -23,10 +23,11 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
   maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 12,
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12, axis.show = TRUE,
-  axis.font.family = "Arial", axis.font.color = "Black",
-  axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
-  255), x.title.font.family = "Arial", x.title.font.size = 12,
+  y.title.font.family = "Arial", y.title.font.size = 12,
+  x.axis.show = TRUE, y.axis.show = TRUE, axis.font.family = "Arial",
+  axis.font.color = "Black", axis.font.size = 12,
+  x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  x.title.font.family = "Arial", x.title.font.size = 12,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   x.bounds.units.major = NULL, y.bounds.units.major = NULL,
@@ -116,7 +117,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{y.title.font.size}{is the font size of the y axis title}
 
-\item{axis.show}{Boolean toggle to show the axis tick markers (Default is TRUE).}
+\item{x.axis.show}{Boolean toggle to show the x axis tick markers (Default is TRUE).}
+
+\item{y.axis.show}{Boolean toggle to show the y axis tick markers (Default is TRUE).}
 
 \item{axis.font.family}{Font Family of the axis labels}
 
