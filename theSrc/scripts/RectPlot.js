@@ -13,6 +13,7 @@ import Utils from './utils/Utils'
 import TooltipUtils from './utils/TooltipUtils'
 import LabelPlacement from './LabelPlacement'
 import LegendSettings from './LegendSettings'
+import Legend from './Legend'
 
 class RectPlot {
   constructor (state,
@@ -215,26 +216,12 @@ class RectPlot {
     this.width = width
     this.height = height
     this.title.x = this.width / 2
-    this.legendDim = {
-      width: 0,  // init value
-      heightOfRow: this.legendSettings.getFontSize() + 9, // init val
-      rightPadding: this.legendSettings.getFontSize() / 1.6,
-      leftPadding: this.legendSettings.getFontSize() / 0.8,
-      centerPadding: this.legendSettings.getFontSize() / 0.53,
-      ptRadius: this.legendSettings.getFontSize() / 2.67,
-      ptToTextSpace: this.legendSettings.getFontSize(),
-      vertPtPadding: 5,
-      cols: 1,
-      markerLen: 5,
-      markerWidth: 1,
-      markerTextSize: 10,
-      markerCharWidth: 4
-    }
+    this.legend = new Legend(this.legendSettings)
 
     this.viewBoxDim = {
       svgWidth: width,
       svgHeight: height,
-      width: width - this.legendDim.width - (this.horizontalPadding * 3) - this.axisLeaderLineLength - this.axisDimensionText.rowMaxWidth - this.yTitle.textHeight - this.axisDimensionText.rightPadding,
+      width: width - this.legend.getWidth() - (this.horizontalPadding * 3) - this.axisLeaderLineLength - this.axisDimensionText.rowMaxWidth - this.yTitle.textHeight - this.axisDimensionText.rightPadding,
       height: height - (this.verticalPadding * 2) - this.title.textHeight - this.title.paddingBot - this.axisDimensionText.colMaxHeight - this.xTitle.textHeight - this.axisLeaderLineLength - this.xTitle.topPadding,
       x: (this.horizontalPadding * 2) + this.axisDimensionText.rowMaxWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
       y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
@@ -245,7 +232,7 @@ class RectPlot {
       labelLogoScale: this.labelsFont.logoScale
     }
 
-    this.legendDim.x = this.viewBoxDim.x + this.viewBoxDim.width
+    this.legend.setX(this.viewBoxDim.x + this.viewBoxDim.width)
     this.title.x = this.viewBoxDim.x + (this.viewBoxDim.width / 2)
 
     this.data = new PlotData(this.X,
@@ -255,7 +242,7 @@ class RectPlot {
                          this.label,
                          this.labelAlt,
                          this.viewBoxDim,
-                         this.legendDim,
+                         this.legend,
                          this.colors,
                          this.fixedRatio,
                          this.originAlign,
@@ -579,7 +566,7 @@ class RectPlot {
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove()
         this.svg.selectAll('.legend-bubbles')
-            .data(this.data.legendBubbles)
+            .data(this.legend.getBubbles())
             .enter()
             .append('circle')
             .attr('class', 'legend-bubbles')
@@ -592,7 +579,7 @@ class RectPlot {
 
         this.svg.selectAll('.legend-bubbles-labels').remove()
         this.svg.selectAll('.legend-bubbles-labels')
-            .data(this.data.legendBubbles)
+            .data(this.legend.getBubbles())
             .enter()
             .append('text')
             .attr('class', 'legend-bubbles-labels')
@@ -608,7 +595,7 @@ class RectPlot {
           this.svg.selectAll('.legend-bubbles-title').remove()
           let legendFontSize = this.legendSettings.getFontSize()
           const legendBubbleTitleSvg = this.svg.selectAll('.legend-bubbles-title')
-              .data(this.data.legendBubblesTitle)
+              .data(this.legend.getBubblesTitle())
               .enter()
               .append('text')
               .attr('class', 'legend-bubbles-title')
@@ -620,7 +607,7 @@ class RectPlot {
               .attr('fill', this.legendSettings.getFontColor())
               .text(this.zTitle)
 
-          SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendBubblesTitle, legendBubbleTitleSvg)
+          SvgUtils.setSvgBBoxWidthAndHeight(this.legend.getBubblesTitle(), legendBubbleTitleSvg)
         }
       }
 
@@ -740,7 +727,7 @@ class RectPlot {
         .attr('y', d => d.markerTextY)
         .attr('font-family', 'Arial')
         .attr('text-anchor', 'start')
-        .attr('font-size', this.data.legendDim.markerTextSize)
+        .attr('font-size', this.legend.getMarkerTextSize())
         .attr('fill', d => d.color)
         .text(d => d.markerLabel)
   }

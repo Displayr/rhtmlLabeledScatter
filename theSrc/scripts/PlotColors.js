@@ -22,7 +22,7 @@ class PlotColors {
       this.plotData.legendGroups.push({
         text: groupName,
         color: newColor,
-        r: this.plotData.legendDim.ptRadius,
+        r: this.plotData.legend.getPtRadius(),
         anchor: 'start',
         fillOpacity: this.getFillOpacity(this.plotData.transparency)
       })
