@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 class LegendUtils {
   static get exponentialShortForms () {
     return {
@@ -72,29 +74,23 @@ class LegendUtils {
     return Zquartiles
   }
 
-  // TODO KZ remove side effect, just return the normalized array
   // Normalizes Z values so that the radius size reflects the actual pixel size in the rect plot
-  static normalizeZValues (data, maxZ) {
-    data.normZ = data.Z.map((z) => {
+  static normalizeZValues (Z, maxZ) {
+    return _.map(Z, (z) => {
       const normalizedArea = z / maxZ
       return Math.sqrt(normalizedArea / Math.PI)
     })
   }
 
-  // TODO KZ remove side effect, just return the normalized array
-  static setupBubbles (data) {
-    const { viewBoxDim, Zquartiles, legend } = data
-
+  static setupBubbles (viewBoxDim, Zquartiles, legend) {
     const rTop = this.normalizedZtoRadius(viewBoxDim, Zquartiles.top.lab)
     const rMid = this.normalizedZtoRadius(viewBoxDim, Zquartiles.mid.lab)
     const rBot = this.normalizedZtoRadius(viewBoxDim, Zquartiles.bot.lab)
     const cx = viewBoxDim.x + viewBoxDim.width + (legend.getWidth() / 2)
     const viewBoxYBottom = viewBoxDim.y + viewBoxDim.height
     const bubbleTextPadding = 5
-
-    data.legendBubblesMaxWidth = rTop * 2
-
-    data.legendBubbles = [
+    legend.setBubblesMaxWidth(rTop * 2)
+    legend.setBubbles([
       {
         cx,
         cy: viewBoxYBottom - rTop,
@@ -119,14 +115,13 @@ class LegendUtils {
         y: viewBoxYBottom - (2 * rBot) - bubbleTextPadding,
         text: Zquartiles.bot.val
       }
-    ]
-
-    data.legendBubblesTitle = [
+    ])
+    legend.setBubblesTitle([
       {
         x: cx,
         y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding
       }
-    ]
+    ])
   }
 }
 

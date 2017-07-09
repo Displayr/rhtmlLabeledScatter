@@ -51,7 +51,6 @@ class PlotData {
     this.outsidePlotPtsId = []
     this.legendPts = []
     this.outsidePlotCondensedPts = []
-    this.legendBubbles = []
     this.legendRequiresRedraw = false
 
     if (this.X.length === this.Y.length) {
@@ -276,7 +275,7 @@ class PlotData {
 
     const maxZ = _.max(this.Z)
     this.Zquartiles = legendUtils.getZQuartiles(maxZ)
-    return legendUtils.normalizeZValues(this, maxZ)
+    this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
   }
 
   getPtsAndLabs (calleeName) {
@@ -303,7 +302,7 @@ class PlotData {
           const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
 
           let { label } = resolvedLabels[i]
-          const labelAlt = ((this.labelAlt != null ? this.labelAlt[i] : undefined) != null) ? this.labelAlt[i] : ''
+          const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
           let { width } = resolvedLabels[i]
           let { height } = resolvedLabels[i]
           let { url } = resolvedLabels[i]
@@ -372,13 +371,13 @@ class PlotData {
   setLegendItemsPositions (numItems, itemsArray, cols) {
     const bubbleLegendTextHeight = 20
     this.legendHeight = this.viewBoxDim.height
-    if ((this.legendBubblesTitle != null) && this.legendSettings.showBubblesInLegend()) {
-      this.legendHeight = this.legendBubblesTitle[0].y - bubbleLegendTextHeight - this.viewBoxDim.y
+    if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
+      this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.viewBoxDim.y
     }
 
     if (this.Zquartiles != null) {
       const legendUtils = LegendUtils
-      legendUtils.setupBubbles(this)
+      legendUtils.setupBubbles(this.viewBoxDim, this.Zquartiles, this.legend)
     }
 
     const startOfCenteredLegendItems = (((this.viewBoxDim.y + (this.legendHeight / 2)) -
@@ -470,8 +469,8 @@ class PlotData {
     this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legendHeight))
     this.legend.setWidth((maxTextWidth * this.legend.getCols()) + spacingAroundMaxTextWidth + (this.legend.getPaddingMid() * (this.legend.getCols() - 1)))
 
-    const bubbleTitleWidth = this.legendBubblesTitle != null ? this.legendBubblesTitle[0].width : undefined
-    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding, this.legendBubblesMaxWidth + bubbleLeftRightPadding]))
+    const bubbleTitleWidth = (this.legend.getBubblesTitle() !== null) ? this.legend.getBubblesTitle()[0].width : undefined
+    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding, this.legend.getBubblesMaxWidth() + bubbleLeftRightPadding]))
 
     this.legend.setColSpace(maxTextWidth)
 

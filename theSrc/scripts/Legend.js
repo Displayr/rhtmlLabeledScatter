@@ -1,4 +1,5 @@
 import autoBind from 'es6-autobind'
+import _ from 'lodash'
 
 class Legend {
   constructor (legendSettings) {
@@ -40,10 +41,16 @@ class Legend {
   getVertPtPadding () { return this.vertPtPadding }
   getCols () { return this.cols }
   getX () { return this.x }
+  getBubblesMaxWidth () { return this.bubblesMaxWidth }
+  getBubbles () { return this.bubbles }
+  getBubblesTitle () { return _.isEmpty(this.bubblesTitle) ? null : this.bubblesTitle }
   setX (x) { this.x = x }
   setColSpace (cs) { this.colSpace = cs }
   setWidth (w) { this.width = w }
   setCols (c) { this.cols = c }
+  setBubblesMaxWidth (bubblesMaxWidth) { this.bubblesMaxWidth = bubblesMaxWidth }
+  setBubbles (bubbles) { this.bubbles = bubbles }
+  setBubblesTitle (title) { this.bubblesTitle = title }
 }
 
 module.exports = Legend
