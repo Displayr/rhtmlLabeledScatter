@@ -410,7 +410,7 @@ class RectPlot {
 
   drawDimensionMarkers () {
     return new Promise((function (resolve, reject) {
-      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.viewBoxDim)
+      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.viewBoxDim, this.axisSettings)
 
       // TODO KZ this sequence can be easily consolidated
       if (this.grid) {
@@ -461,7 +461,7 @@ class RectPlot {
             .attr('stroke', 'black')
       }
 
-      if (this.axisSettings.show) {
+      if (this.axisSettings.showX || this.axisSettings.showY) {
         this.svg.selectAll('.dim-marker-leader').remove()
         this.svg.selectAll('.dim-marker-leader')
         .data(axisArrays.axisLeader)
@@ -643,7 +643,7 @@ class RectPlot {
 
       SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'))
 
-      if (this.legendSettings.showLegend) {
+      if (this.legendSettings.showLegend()) {
         this.svg.selectAll('.legend-groups-text').remove()
         this.svg.selectAll('.legend-groups-text')
             .data(this.data.legendGroups)

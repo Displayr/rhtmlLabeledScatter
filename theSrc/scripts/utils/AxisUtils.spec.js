@@ -34,10 +34,15 @@ describe('AxisUtils:', function () {
         maxY: 5
       }
 
-      this.compute = ({ plot = this.defaultPlot, data = this.defaultData, viewBox = this.defaultViewBox } = {}) => {
+      this.defaultAxisSettings = {
+        showX: true,
+        showY: true
+      }
+
+      this.compute = ({ plot = this.defaultPlot, data = this.defaultData, viewBox = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
         // TODO KZ remove this duplicate dependency bug (see normalizeXCoords and normalizeYCoords)
         data.viewBoxDim = viewBox
-        this.result = AxisUtils.getAxisDataArrays(plot, data, viewBox)
+        this.result = AxisUtils.getAxisDataArrays(plot, data, viewBox, axisSettings)
       }
     })
 
