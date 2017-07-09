@@ -84,9 +84,9 @@ class AxisUtils {
       return {}
     }
 
-    const dimensionMarkerStack = []
-    const dimensionMarkerLeaderStack = []
-    const dimensionMarkerLabelStack = []
+    const gridLineStack = []
+    const axisLeaderStack = []
+    const axisLeaderLabelStack = []
 
     const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement) => {
       const leaderLineLen = plot.axisLeaderLineLength
@@ -105,13 +105,13 @@ class AxisUtils {
 
       if (type === 'col') {
         const numDecimals = computeNumDecimals(tickIncrement, xDecimals)
-        dimensionMarkerLeaderStack.push({
+        axisLeaderStack.push({
           x1,
           y1: y2,
           x2: x1,
           y2: y2 + leaderLineLen
         })
-        dimensionMarkerLabelStack.push({
+        axisLeaderLabelStack.push({
           x: x1,
           y: y2 + leaderLineLen + labelHeight,
           label: Utils.getFormattedNum(label, numDecimals, xPrefix, xSuffix),
@@ -122,13 +122,13 @@ class AxisUtils {
 
       if (type === 'row') {
         const numDecimals = computeNumDecimals(tickIncrement, yDecimals)
-        dimensionMarkerLeaderStack.push({
+        axisLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,
           x2: x1,
           y2
         })
-        dimensionMarkerLabelStack.push({
+        axisLeaderLabelStack.push({
           x: x1 - leaderLineLen,
           y: y2 + (labelHeight / 3),
           label: Utils.getFormattedNum(label, numDecimals, yPrefix, ySuffix),
@@ -176,7 +176,7 @@ class AxisUtils {
         let y1 = viewBoxDim.y
         let x2 = this._normalizeXCoords(data, val)
         let y2 = viewBoxDim.y + viewBoxDim.height
-        dimensionMarkerStack.push({ x1, y1, x2, y2 })
+        gridLineStack.push({ x1, y1, x2, y2 })
         pushTickLabel('col', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksX)
       }
     })
@@ -200,16 +200,16 @@ class AxisUtils {
         let y1 = this._normalizeYCoords(data, val)
         let x2 = viewBoxDim.x + viewBoxDim.width
         let y2 = this._normalizeYCoords(data, val)
-        dimensionMarkerStack.push({x1, y1, x2, y2})
+        gridLineStack.push({x1, y1, x2, y2})
         pushTickLabel('row', x1, y1, x2, y2, _.toNumber(val).toPrecision(14), ticksY)
       }
     })
 
     return {
       gridOrigin: originAxis,
-      gridLines: dimensionMarkerStack,
-      axisLeader: dimensionMarkerLeaderStack,
-      axisLeaderLabel: dimensionMarkerLabelStack
+      gridLines: gridLineStack,
+      axisLeader: axisLeaderStack,
+      axisLeaderLabel: axisLeaderLabelStack
     }
   }
 }

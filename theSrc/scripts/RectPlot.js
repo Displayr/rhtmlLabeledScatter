@@ -576,9 +576,6 @@ class RectPlot {
   drawLegend () {
     return new Promise(function (resolve, reject) {
       this.data.setupLegendGroupsAndPts()
-      console.log('0--------------------------------------------------------------')
-      console.log(this.legendSettings)
-
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove()
         this.svg.selectAll('.legend-bubbles')
