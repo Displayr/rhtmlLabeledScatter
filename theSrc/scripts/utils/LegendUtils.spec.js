@@ -14,8 +14,8 @@ describe('LegendUtils:', function () {
 
       expect(zQuartiles, errorMessage).to.deep.equal({
         top: { lab: '9.0k', val: 0.5352372348458313 },
-        mid: { lab: '3.6k', val: 0.3568248232305542 },
-        bot: { lab: '0.9k', val: 0.1784124116152771 }
+        mid: { lab: '4.0k', val: 0.3568248232305542 },
+        bot: { lab: '1.0k', val: 0.1784124116152771 }
       })
     })
 
@@ -29,8 +29,8 @@ describe('LegendUtils:', function () {
 
       expect(zQuartiles, errorMessage).to.deep.equal({
         top: { lab: '900k', val: 0.5352372348458313 },
-        mid: { lab: '360k', val: 0.3568248232305542 },
-        bot: { lab: '90k', val: 0.1784124116152771 }
+        mid: { lab: '400k', val: 0.3568248232305542 },
+        bot: { lab: '100k', val: 0.1784124116152771 }
       })
     })
   })
