@@ -27,22 +27,21 @@ class LegendUtils {
 
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
   static getZQuartiles (maxZ) {
-    const getZLabel = (val, max, precision) => Math.sqrt((max * val).toPrecision(precision) / max / Math.PI)
+    const getZLabel = (val, max) => Math.sqrt((max * val) / max / Math.PI)
 
-    const getExponential = num => num.toExponential().split('e')[1]
+    const getExponential = num => Number(num.toExponential().split('e')[1]) - 1
 
     // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
     const topQ = 0.9
     const midQ = 0.4
     const botQ = 0.1
 
+    // Round to 2 sig figs in top and precision consistent across mid and bot
+    // See VIS-262, VIS-319
     let topQuartileZ = (maxZ * topQ)
-
-    // VIS-262: Compensate for inconsistent sig figs in legend
-    const differenceInExponentials = Math.abs(getExponential(topQuartileZ) - getExponential(midQ * topQuartileZ))
-    const isTopQuartileExponentialOne = (getExponential(topQuartileZ) === 1)
-    const precision = (differenceInExponentials < 1 && isTopQuartileExponentialOne) ? 1 : 2
-    topQuartileZ = topQuartileZ.toPrecision(precision)
+    topQuartileZ = Number(topQuartileZ.toPrecision(2)) // only use max 2 sig figs
+    let topQexp = getExponential(topQuartileZ)
+    let precision = topQexp * -1
 
     // Calculations necessary to figure out which short form to apply
     let exp = Math.log(topQuartileZ)
@@ -55,20 +54,27 @@ class LegendUtils {
     exp -= digitsBtwnShortForms
     const expShortForm = this.getExponentialShortForm(exp) || ''
 
-    const topQuartileVal = topQuartileZ / (10 ** exp)
+    let topQuartileLabel = topQuartileZ / (10 ** exp)
+    let midQuartileLabel = Number(_.round((maxZ * midQ), precision).toPrecision(1)) / (10 ** exp)
+    let botQuartileLabel = Number(_.round((maxZ * botQ), precision).toPrecision(1)) / (10 ** exp)
+    if (precision + exp >= 0) {
+      topQuartileLabel = topQuartileLabel.toFixed(precision + exp)
+      midQuartileLabel = midQuartileLabel.toFixed(precision + exp)
+      botQuartileLabel = botQuartileLabel.toFixed(precision + exp)
+    }
 
     const Zquartiles = {
       top: {
-        val: topQuartileVal + expShortForm,
-        lab: getZLabel(topQ, maxZ, precision)
+        lab: topQuartileLabel + expShortForm,
+        val: getZLabel(topQ, maxZ, precision)
       },
       mid: {
-        val: ((topQuartileZ * midQ).toPrecision(1) / (10 ** exp)) + expShortForm,
-        lab: getZLabel(midQ, topQuartileZ, 1)
+        lab: midQuartileLabel + expShortForm,
+        val: getZLabel(midQ, maxZ, 1)
       },
       bot: {
-        val: ((topQuartileZ * botQ).toPrecision(1) / (10 ** exp)) + expShortForm,
-        lab: getZLabel(botQ, topQuartileZ, 1)
+        lab: botQuartileLabel + expShortForm,
+        val: getZLabel(botQ, maxZ, 1)
       }
     }
     return Zquartiles
@@ -83,9 +89,9 @@ class LegendUtils {
   }
 
   static setupBubbles (viewBoxDim, Zquartiles, legend) {
-    const rTop = this.normalizedZtoRadius(viewBoxDim, Zquartiles.top.lab)
-    const rMid = this.normalizedZtoRadius(viewBoxDim, Zquartiles.mid.lab)
-    const rBot = this.normalizedZtoRadius(viewBoxDim, Zquartiles.bot.lab)
+    const rTop = this.normalizedZtoRadius(viewBoxDim, Zquartiles.top.val)
+    const rMid = this.normalizedZtoRadius(viewBoxDim, Zquartiles.mid.val)
+    const rBot = this.normalizedZtoRadius(viewBoxDim, Zquartiles.bot.val)
     const cx = viewBoxDim.x + viewBoxDim.width + (legend.getWidth() / 2)
     const viewBoxYBottom = viewBoxDim.y + viewBoxDim.height
     const bubbleTextPadding = 5
@@ -97,7 +103,7 @@ class LegendUtils {
         r: rTop,
         x: cx,
         y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding,
-        text: Zquartiles.top.val
+        text: Zquartiles.top.lab
       },
       {
         cx,
@@ -105,7 +111,7 @@ class LegendUtils {
         r: rMid,
         x: cx,
         y: viewBoxYBottom - (2 * rMid) - bubbleTextPadding,
-        text: Zquartiles.mid.val
+        text: Zquartiles.mid.lab
       },
       {
         cx,
@@ -113,7 +119,7 @@ class LegendUtils {
         r: rBot,
         x: cx,
         y: viewBoxYBottom - (2 * rBot) - bubbleTextPadding,
-        text: Zquartiles.bot.val
+        text: Zquartiles.bot.lab
       }
     ])
     legend.setBubblesTitle([

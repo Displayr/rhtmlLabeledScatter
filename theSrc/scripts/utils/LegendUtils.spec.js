@@ -1,7 +1,6 @@
 const LegendUtils = require('./LegendUtils.js')
 
 describe('LegendUtils:', function () {
-  // KZ TODO conceptually the val and lab seem reversed - non intuitive
   // KZ TODO assuming lab are constant this test is more useful if it is just
   //   in/out with zMax => [topLabel, midLabel, botLabel
   describe('getZQuartiles():', function () {
@@ -14,9 +13,9 @@ describe('LegendUtils:', function () {
       `
 
       expect(zQuartiles, errorMessage).to.deep.equal({
-        top: { val: '9k', lab: 0.5352372348458313 },
-        mid: { val: '4k', lab: 0.37612638903183754 },
-        bot: { val: '0.9k', lab: 0.1784124116152771 }
+        top: { lab: '9.0k', val: 0.5352372348458313 },
+        mid: { lab: '4.0k', val: 0.3568248232305542 },
+        bot: { lab: '1.0k', val: 0.1784124116152771 }
       })
     })
 
@@ -29,9 +28,9 @@ describe('LegendUtils:', function () {
       `
 
       expect(zQuartiles, errorMessage).to.deep.equal({
-        top: { val: '900k', lab: 0.5352372348458313 },
-        mid: { val: '400k', lab: 0.37612638903183754 },
-        bot: { val: '90k', lab: 0.1784124116152771 }
+        top: { lab: '900k', val: 0.5352372348458313 },
+        mid: { lab: '400k', val: 0.3568248232305542 },
+        bot: { lab: '100k', val: 0.1784124116152771 }
       })
     })
   })
