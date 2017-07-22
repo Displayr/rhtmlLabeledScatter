@@ -40,6 +40,8 @@ class DragUtils {
         // For logo labels, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
+        console.log('rhtmlLabeledScatter: drag end')
+        console.log(plot.viewBoxDim)
         plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
         if (!showTrendLine) {
