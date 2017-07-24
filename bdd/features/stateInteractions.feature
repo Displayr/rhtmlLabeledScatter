@@ -8,7 +8,7 @@ Feature: State Interactions
     When I drag label 0 by 50 x 50
     Then label 0 should stay in the new location
     And the "scatterplot_three_point_brand_after_label_drag" snapshot matches the baseline
-    And the final state callback should match "porche_label_moved_50x50" within 0.02
+    And the final state callback should match "porche_label_moved_50x50" within 3
 
   @applitools @state
   Scenario: User can load a scatterplot label with saved state (user drag label on canvas) and see their modified scatterplot
@@ -109,4 +109,4 @@ Feature: State Interactions
     When I drag legend label 2 to the canvas
     Then label 2 should be near the circle anchor 2
     And the "simple_bubbleplot_initial_load" snapshot matches the baseline
-    And the final state callback should match "back_to_original" within 0
+    And the final state callback should match "back_to_original" within 0.2
