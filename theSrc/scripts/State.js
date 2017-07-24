@@ -85,6 +85,11 @@ class State {
     return (this.legendPts.length === 0) || (this.legendPts.length === currLegendPts.length)
   }
 
+  updateViewBoxAndSave (vb) {
+    this.updateViewBox(vb)
+    this.saveToState({'viewBoxDim': this.viewBoxDim})
+  }
+
   updateViewBox (vb) {
     this.viewBoxDim = {
       width: vb.width,
@@ -92,7 +97,6 @@ class State {
       x: vb.x,
       y: vb.y
     }
-    this.saveToState({'viewBoxDim': this.viewBoxDim})
   }
 
   pushUserPositionedLabel (id, labx, laby, viewBoxDim) {
@@ -104,8 +108,8 @@ class State {
       x: (labx - viewBoxDim.x) / viewBoxDim.width,
       y: (laby - viewBoxDim.y) / viewBoxDim.height
     })
-    this.saveToState({'userPositionedLabs': this.userPositionedLabs})
     this.updateViewBox(viewBoxDim)
+    this.saveToState({'viewBoxDim': this.viewBoxDim, 'userPositionedLabs': this.userPositionedLabs})
   }
 
   updateLabelsWithPositionedData (labels, viewBoxDim) {
@@ -142,7 +146,7 @@ class State {
           currentViewboxdim.y === this.viewBoxDim.y) {
         return this.getAllPositionedLabsIds()
       } else {
-        this.updateViewBox(currentViewboxdim)
+        this.updateViewBoxAndSave(currentViewboxdim)
         return this.getUserPositionedLabIds()
       }
     }
