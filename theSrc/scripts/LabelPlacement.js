@@ -22,7 +22,9 @@ class LabelPlacement {
     labelsSvg.attr('x', d => d.x)
               .attr('y', d => d.y)
 
-    state.saveAlgoPositionedLabs(labels, viewBoxDim)
+    if (pinnedLabels.length < labels.length) {
+      state.saveAlgoPositionedLabs(labels, viewBoxDim)
+    }
   }
 
   static placeTrendLabels (svg, viewBoxDim, anchors, labels, state) {

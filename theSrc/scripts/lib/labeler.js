@@ -347,6 +347,14 @@ const labeler = function () {
   }
 
   labeler.start = function (nsweeps) {
+    for (let i = 0; i < lab.length; i++) {
+      if (!_.includes(pinned, lab[i].id)) {
+        lab[i].y -= 5
+        // determine min labs width for mcrotate
+        if (lab[i].width < minLabWidth) minLabWidth = lab[i].width
+      }
+    }
+    
     for (var i = 0; i < lab.length; i++) {
       initLabBoundaries(lab, anc, i)
     }
@@ -395,20 +403,6 @@ const labeler = function () {
         // users insert label positions
     if (!arguments.length) return lab
     lab = x
-    for (let i = 0; i < lab.length; i++) {
-      lab[i].y -= 5
-
-            // determine min labs width for mcrotate
-      if (lab[i].width < minLabWidth) minLabWidth = lab[i].width
-            // svg.append('rect')
-            //    .attr('x', lab[i].x - lab[i].width/2)
-            //    .attr('y', lab[i].y - lab[i].height)
-            //    .attr('width', lab[i].width)
-            //    .attr('height', lab[i].height)
-            //    .attr('fill', 'yellow')
-            //    .attr('stroke', 'blue')
-            //    .attr('opacity', 0.1);
-    }
     return labeler
   }
 

@@ -756,7 +756,7 @@ class RectPlot {
     let drag
     if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.getLabelDragAndDrop(this)
-      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim)
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
 
       this.svg.selectAll('.lab-img').remove()
       this.svg.selectAll('.lab-img')
@@ -790,7 +790,7 @@ class RectPlot {
 
       LabelPlacement.placeLabels(
         this.svg,
-        this.viewBoxDim,
+        this.data.viewBoxDim,
         this.data.pts,
         this.data.lab,
         this.state
@@ -799,7 +799,7 @@ class RectPlot {
       this.drawLinks()
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
-      this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim)
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
 
       drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
 
@@ -835,7 +835,7 @@ class RectPlot {
 
       LabelPlacement.placeTrendLabels(
         this.svg,
-        this.viewBoxDim,
+        this.data.viewBoxDim,
         this.tl.arrowheadPts,
         this.tl.arrowheadLabels,
         this.state
@@ -861,7 +861,7 @@ class RectPlot {
   }
 
   drawTrendLines () {
-    this.state.updateLabelsWithUserPositionedData(this.data.lab, this.data.viewBoxDim)
+    this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
     if ((this.tl === undefined) || (this.tl === null)) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
     }
