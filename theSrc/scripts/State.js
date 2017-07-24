@@ -54,12 +54,16 @@ class State {
   pushLegendPt (id) {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
-    this.saveToState({'legendPts': this.legendPts, 'userPositionedLabs': this.userPositionedLabs})
+    this.algoPositionedLabs = []
+    this.saveToState({'legendPts': this.legendPts,
+      'userPositionedLabs': this.userPositionedLabs,
+      'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   pullLegendPt (id) {
     _.pull(this.legendPts, id)
-    this.saveToState({'legendPts': this.legendPts})
+    this.algoPositionedLabs = []
+    this.saveToState({'legendPts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   resetStateLegendPtsAndPositionedLabs () {
