@@ -82,7 +82,7 @@ Feature: State Interactions
     When I drag label 2 by 100 x 100
     Then label 2 should stay in the new location
     And the "simple_bubbleplot_label_moved_100x100" snapshot matches the baseline
-    And the final state callback should match "label_moved_100x100" within 0.02
+    And the final state callback should match "label_moved_100x100" within 2
 
   @applitools @state @bubbleplot
   Scenario: User can load a bubbleplot with saved state (label drag on canvas) and see their modified bubbleplot
@@ -109,4 +109,4 @@ Feature: State Interactions
     When I drag legend label 2 to the canvas
     Then label 2 should be near the circle anchor 2
     And the "simple_bubbleplot_initial_load" snapshot matches the baseline
-    And the final state callback should match "back_to_original" within 0.2
+    And the final state callback should match "back_to_original" within 0.
