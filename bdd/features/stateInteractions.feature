@@ -109,4 +109,4 @@ Feature: State Interactions
     When I drag legend label 2 to the canvas
     Then label 2 should be near the circle anchor 2
     And the "simple_bubbleplot_initial_load" snapshot matches the baseline
-    And the final state callback should match "back_to_original" within 0.
+    And the final state callback should match "back_to_original" within 0.02
