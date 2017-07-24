@@ -20,8 +20,6 @@ class State {
            !_.isEqual(storedLabel, label)) {
       this.stateObj = {}
       this.saveToState({'X': X, 'Y': Y, 'label': label})
-      // this.saveToState('Y', Y)
-      // this.saveToState('label', label)
     }
 
     this.legendPts = this.isStoredInState('legendPts') ? _.uniq(this.getStored('legendPts')) : []
@@ -57,8 +55,6 @@ class State {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
     this.saveToState({'legendPts': this.legendPts, 'userPositionedLabs': this.userPositionedLabs})
-    // this.saveToState('legendPts', this.legendPts)
-    // this.saveToState('userPositionedLabs', this.userPositionedLabs)
   }
 
   pullLegendPt (id) {
@@ -71,10 +67,6 @@ class State {
     this.userPositionedLabs = []
     this.algoPositionedLabs = []
     this.viewBoxDim = {}
-    // this.saveToState('legendPts', [])
-    // this.saveToState('userPositionedLabs', [])
-    // this.saveToState('algoPositionedLabs', [])
-    // this.saveToState('viewBoxDim', {})
     this.resetState()
   }
 
@@ -139,13 +131,8 @@ class State {
   }
 
   getPositionedLabIds (currentViewboxdim) {
-    console.log('rhtmlLabeledScatter: getPositionedLabIds')
-    console.log(this.viewBoxDim)
-    console.log(currentViewboxdim)
     if (_.isEmpty(this.viewBoxDim)) {
       // Since viewBoxDim is null, that means it is the first run of the algorithm
-      console.log('viewBoxDim is null')
-      console.log(currentViewboxdim)
       return this.getUserPositionedLabIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
@@ -153,14 +140,8 @@ class State {
           currentViewboxdim.width === this.viewBoxDim.width &&
           currentViewboxdim.x === this.viewBoxDim.x &&
           currentViewboxdim.y === this.viewBoxDim.y) {
-        console.log('rhtmlLabeledScatter: getAllPositionedLabsIds')
-        console.log(this.algoPositionedLabs)
-        console.log(this.userPositionedLabs)
         return this.getAllPositionedLabsIds()
       } else {
-        console.log('rhtmlLabeledScatter: getUser')
-        console.log(this.algoPositionedLabs)
-        console.log(this.userPositionedLabs)
         this.updateViewBox(currentViewboxdim)
         return this.getUserPositionedLabIds()
       }
@@ -168,30 +149,13 @@ class State {
   }
 
   saveAlgoPositionedLabs (labels, viewBoxDim) {
-    // this.viewBoxDim = this.isStoredInState('viewBoxDim') ? this.getStored('viewBoxDim') : {}
-    // const viewBoxEmpty = _.isEmpty(this.viewBoxDim)
-    // const viewBoxNotEmptyButResized = (!_.isEmpty(this.viewBoxDim) && (viewBoxDim.height !== this.viewBoxDim.height &&
-    //                                     viewBoxDim.width !== this.viewBoxDim.width &&
-    //                                     viewBoxDim.x !== this.viewBoxDim.x &&
-    //                                     viewBoxDim.y !== this.viewBoxDim.y))
-    // console.log('rhtmlLabeledScatter: saveAlgoPositionedLabs')
-    // console.log(viewBoxEmpty)
-    // console.log(viewBoxNotEmptyButResized)
-    // console.log(this.viewBoxDim)
-    // console.log(viewBoxDim)
-    // if (viewBoxEmpty || viewBoxNotEmptyButResized) {
     _.map(labels, lab => {
       if (_.every(this.userPositionedLabs, userlab => userlab.id !== lab.id)) {
         this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, viewBoxDim)
       }
     })
-    console.log(this.algoPositionedLabs)
     this.updateViewBox(viewBoxDim)
-    console.log('===============')
     this.saveToState({'viewBoxDim': this.viewBoxDim, 'algoPositionedLabs': this.algoPositionedLabs})
-    // this.saveToState({'viewBoxDim': this.viewBoxDim, })
-    // this.saveToState('algoPositionedLabs', this.algoPositionedLabs)
-    // }
   }
 
   pushAlgoPositionedLabel (id, labx, laby, viewBoxDim) {
