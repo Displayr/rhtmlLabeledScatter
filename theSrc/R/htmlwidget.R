@@ -28,9 +28,15 @@
 #' @param labels.logo.scale is a vector of scaling factors for label logos
 #' @param legend.show is the toggle to show the legend. Defaults to TRUE
 #' @param legend.bubbles.show toggle to show the bubble sizes in the legend. Defaults to TRUE
-#' @param legend.font.color is the font color of the legend. NOTE: Setting this overrides the color array given
+#' @param legend.font.color is the font color of the legend.
 #' @param legend.font.size is the font size of the legend
 #' @param legend.font.family is the font family of the legend
+#' @param legend.bubble.font.color is the font color of the legend bubble values.
+#' @param legend.bubble.font.size is the font size of the legend bubble values
+#' @param legend.bubble.font.family is the font family of the legend bubble values
+#' @param legend.bubble.title.font.color is the font color of the legend bubble title.
+#' @param legend.bubble.title.font.size is the font size of the legend bubble title
+#' @param legend.bubble.title.font.family is the font family of the legend bubble title
 #' @param y.title.font.color is the font color of the y axis title
 #' @param y.title.font.size is the font size of the y axis title
 #' @param y.title.font.family is the font family of the y axis title
@@ -118,6 +124,12 @@ LabeledScatter <- function(
   legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.font.family = "Arial",
   legend.font.size = 12,
+  legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.bubble.font.family = "Arial",
+  legend.bubble.font.size = 10,
+  legend.bubble.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.bubble.title.font.family = "Arial",
+  legend.bubble.title.font.size = 12,
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   y.title.font.family = "Arial",
   y.title.font.size = 12,
@@ -188,6 +200,12 @@ LabeledScatter <- function(
     legendFontColor = legend.font.color,
     legendFontFamily = legend.font.family,
     legendFontSize = legend.font.size,
+    legendBubbleFontColor = legend.bubble.font.color,
+    legendBubbleFontFamily = legend.bubble.font.family,
+    legendBubbleFontSize = legend.bubble.font.size,
+    legendBubbleTitleFontColor = legend.bubble.title.font.color,
+    legendBubbleTitleFontFamily = legend.bubble.title.font.family,
+    legendBubbleTitleFontSize = legend.bubble.title.font.size,
     yTitleFontColor = y.title.font.color,
     yTitleFontFamily = y.title.font.family,
     yTitleFontSize = y.title.font.size,

@@ -27,19 +27,29 @@ class LegendUtils {
 
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
   static getZQuartiles (maxZ) {
-    const getZLabel = (val, max) => Math.sqrt((max * val) / max / Math.PI)
+    const maxSigFigsInTopQuartile = 3
+    const getZVal = (val, max) => Math.sqrt((max * val) / max / Math.PI)
 
-    const getExponential = num => Number(num.toExponential().split('e')[1]) - 1
+    const getExponential = num => Number(num.toExponential().split('e')[1]) - (maxSigFigsInTopQuartile - 1)
+
+    // Check if mid and bot are < 1, remove 0 before decimal
+    const removePrecedingZero = label => {
+      if (_.isString(label) && label.charAt(0) === '0') {
+        return label.substring(1, label.length)
+      } else {
+        return label
+      }
+    }
 
     // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
     const topQ = 0.9
     const midQ = 0.4
     const botQ = 0.1
 
-    // Round to 2 sig figs in top and precision consistent across mid and bot
+    // Round to 3 sig figs in top and precision consistent across mid and bot
     // See VIS-262, VIS-319
     let topQuartileZ = (maxZ * topQ)
-    topQuartileZ = Number(topQuartileZ.toPrecision(2)) // only use max 2 sig figs
+    topQuartileZ = Number(topQuartileZ.toPrecision(maxSigFigsInTopQuartile))
     let topQexp = getExponential(topQuartileZ)
     let precision = topQexp * -1
 
@@ -55,8 +65,8 @@ class LegendUtils {
     const expShortForm = this.getExponentialShortForm(exp) || ''
 
     let topQuartileLabel = topQuartileZ / (10 ** exp)
-    let midQuartileLabel = Number(_.round((maxZ * midQ), precision).toPrecision(1)) / (10 ** exp)
-    let botQuartileLabel = Number(_.round((maxZ * botQ), precision).toPrecision(1)) / (10 ** exp)
+    let midQuartileLabel = Number(_.round((maxZ * midQ), precision)) / (10 ** exp)
+    let botQuartileLabel = Number(_.round((maxZ * botQ), precision)) / (10 ** exp)
     if (precision + exp >= 0) {
       topQuartileLabel = topQuartileLabel.toFixed(precision + exp)
       midQuartileLabel = midQuartileLabel.toFixed(precision + exp)
@@ -66,15 +76,15 @@ class LegendUtils {
     const Zquartiles = {
       top: {
         lab: topQuartileLabel + expShortForm,
-        val: getZLabel(topQ, maxZ, precision)
+        val: getZVal(topQ, maxZ, precision)
       },
       mid: {
-        lab: midQuartileLabel + expShortForm,
-        val: getZLabel(midQ, maxZ, 1)
+        lab: removePrecedingZero(midQuartileLabel) + expShortForm,
+        val: getZVal(midQ, maxZ)
       },
       bot: {
-        lab: botQuartileLabel + expShortForm,
-        val: getZLabel(botQ, maxZ, 1)
+        lab: removePrecedingZero(botQuartileLabel) + expShortForm,
+        val: getZVal(botQ, maxZ)
       }
     }
     return Zquartiles
