@@ -64,6 +64,12 @@ class RectPlot {
     legendFontFamily,
     legendFontSize,
     legendFontColor,
+    legendBubbleFontFamily,
+    legendBubbleFontSize,
+    legendBubbleFontColor,
+    legendBubbleTitleFontFamily,
+    legendBubbleTitleFontSize,
+    legendBubbleTitleFontColor,
     showXAxis = true,
     showYAxis = true,
     axisFontFamily,
@@ -143,7 +149,9 @@ class RectPlot {
     }
 
     this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
-      legendFontFamily, legendFontSize, legendFontColor)
+      legendFontFamily, legendFontSize, legendFontColor,
+      legendBubbleFontFamily, legendBubbleFontSize, legendBubbleFontColor,
+      legendBubbleTitleFontFamily, legendBubbleTitleFontSize, legendBubbleTitleFontColor)
 
     if (this.xTitle.text === '') { this.xTitle.textHeight = 0 }
 
@@ -586,25 +594,26 @@ class RectPlot {
             .attr('x', d => d.x)
             .attr('y', d => d.y)
             .attr('text-anchor', 'middle')
-            .attr('font-size', this.legendSettings.getFontSize())
-            .attr('font-family', this.legendSettings.getFontFamily())
-            .attr('fill', this.legendSettings.getFontColor())
+            .attr('font-size', this.legendSettings.getBubbleFontSize())
+            .attr('font-family', this.legendSettings.getBubbleFontFamily())
+            .attr('fill', this.legendSettings.getBubbleFontColor())
             .text(d => d.text)
 
         if (this.zTitle !== '') {
           this.svg.selectAll('.legend-bubbles-title').remove()
-          let legendFontSize = this.legendSettings.getFontSize()
+          let legendBubbleTitleFontSize = this.legendSettings.getBubbleTitleFontSize()
           const legendBubbleTitleSvg = this.svg.selectAll('.legend-bubbles-title')
               .data(this.legend.getBubblesTitle())
               .enter()
               .append('text')
               .attr('class', 'legend-bubbles-title')
               .attr('x', d => d.x)
-              .attr('y', d => d.y - (legendFontSize * 1.5))
+              .attr('y', d => d.y - (legendBubbleTitleFontSize * 1.5))
               .attr('text-anchor', 'middle')
-              .attr('font-family', this.legendSettings.getFontFamily())
               .attr('font-weight', 'normal')
-              .attr('fill', this.legendSettings.getFontColor())
+              .attr('font-size', this.legendSettings.getBubbleTitleFontSize())
+              .attr('font-family', this.legendSettings.getBubbleTitleFontFamily())
+              .attr('fill', this.legendSettings.getBubbleTitleFontColor())
               .text(this.zTitle)
 
           SvgUtils.setSvgBBoxWidthAndHeight(this.legend.getBubblesTitle(), legendBubbleTitleSvg)

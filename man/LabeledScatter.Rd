@@ -22,12 +22,16 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   labels.logo.scale = NULL, legend.show = TRUE,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
   maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 12,
-  y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12,
-  x.axis.show = TRUE, y.axis.show = TRUE, axis.font.family = "Arial",
-  axis.font.color = "Black", axis.font.size = 12,
-  x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.title.font.family = "Arial", x.title.font.size = 12,
+  legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.bubble.font.family = "Arial", legend.bubble.font.size = 10,
+  legend.bubble.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.bubble.title.font.family = "Arial",
+  legend.bubble.title.font.size = 12, y.title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), y.title.font.family = "Arial",
+  y.title.font.size = 12, x.axis.show = TRUE, y.axis.show = TRUE,
+  axis.font.family = "Arial", axis.font.color = "Black",
+  axis.font.size = 12, x.title.font.color = rgb(44, 44, 44, maxColorValue =
+  255), x.title.font.family = "Arial", x.title.font.size = 12,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   x.bounds.units.major = NULL, y.bounds.units.major = NULL,
@@ -105,11 +109,23 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{legend.bubbles.show}{toggle to show the bubble sizes in the legend. Defaults to TRUE}
 
-\item{legend.font.color}{is the font color of the legend. NOTE: Setting this overrides the color array given}
+\item{legend.font.color}{is the font color of the legend.}
 
 \item{legend.font.family}{is the font family of the legend}
 
 \item{legend.font.size}{is the font size of the legend}
+
+\item{legend.bubble.font.color}{is the font color of the legend bubble values.}
+
+\item{legend.bubble.font.family}{is the font family of the legend bubble values}
+
+\item{legend.bubble.font.size}{is the font size of the legend bubble values}
+
+\item{legend.bubble.title.font.color}{is the font color of the legend bubble title.}
+
+\item{legend.bubble.title.font.family}{is the font family of the legend bubble title}
+
+\item{legend.bubble.title.font.size}{is the font size of the legend bubble title}
 
 \item{y.title.font.color}{is the font color of the y axis title}
 
