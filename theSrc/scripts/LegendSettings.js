@@ -6,6 +6,7 @@ class LegendSettings {
                fontFamily, fontSize, fontColor,
                bubbleFontFamily, bubbleFontSize, bubbleFontColor,
                bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor) {
+    autoBind(this)
     this.show = show
     this.showBubbles = showBubbles
     this.font = {
@@ -15,17 +16,16 @@ class LegendSettings {
     }
     this.bubble = {
       font: {
-        family: _.isEmpty(bubbleFontFamily) ? fontFamily : bubbleFontFamily,
-        size: _.isEmpty(bubbleFontSize) ? fontFamily : bubbleFontSize,
-        color: _.isEmpty(bubbleFontColor) ? fontColor : bubbleFontColor
+        family: _.isString(bubbleFontFamily) ? bubbleFontFamily : fontFamily,
+        size: _.isNumber(bubbleFontSize) ? bubbleFontSize : fontSize,
+        color: _.isString(bubbleFontColor) ? bubbleFontColor : fontColor
       },
       titleFont: {
-        family: _.isEmpty(bubbleTitleFontFamily) ? fontFamily : bubbleTitleFontFamily,
-        size: _.isEmpty(bubbleTitleFontSize) ? fontSize : bubbleTitleFontSize,
-        color: _.isEmpty(bubbleTitleFontColor) ? fontColor : bubbleTitleFontColor
+        family: _.isString(bubbleTitleFontFamily) ? bubbleTitleFontFamily : fontFamily,
+        size: _.isNumber(bubbleTitleFontSize) ? bubbleTitleFontSize : fontSize,
+        color: _.isString(bubbleTitleFontColor) ? bubbleTitleFontColor : fontColor
       }
     }
-    autoBind(this)
   }
 
   showLegend () { return this.show }
