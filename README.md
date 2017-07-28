@@ -276,3 +276,10 @@ LabeledScatter(X = as.numeric(trendplot.df[,1]),
                trend.lines.line.thickness = 1,
                trend.lines.point.size = 0)
 ```
+
+Bubble plot example:
+
+```
+library(rhtmlLabeledScatter)
+LabeledScatter(X=1:10, Y=1:10, Z=1:10, label=letters[1:10], group=rep(c('a','b'),each=5), legend.font.family="Courier", legend.font.color="red", legend.font.size=8, legend.bubble.font.family="Courier", legend.bubble.font.color="blue", legend.bubble.font.size=5, z.title="Bubble", legend.bubble.title.font.color = "green", legend.bubble.title.font.family="Courier", legend.bubble.title.font.size = 30)
+```
