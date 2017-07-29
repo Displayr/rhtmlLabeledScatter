@@ -14,6 +14,7 @@ import TooltipUtils from './utils/TooltipUtils'
 import LabelPlacement from './LabelPlacement'
 import LegendSettings from './LegendSettings'
 import Legend from './Legend'
+import DebugMessage from './DebugMessage'
 
 class RectPlot {
   constructor (state,
@@ -87,7 +88,8 @@ class RectPlot {
     trendLinesPointSize = 2,
     plotBorderShow = true,
     plotBorderColor = 'black',
-    plotBorderWidth = 1
+    plotBorderWidth = 1,
+    debugMode = false
   ) {
     autoBind(this)
     this.state = state
@@ -216,6 +218,8 @@ class RectPlot {
       this.showLabels = false
     }
 
+    this.debugMode = debugMode
+
     this.setDim(this.svg, this.width, this.height)
   }
 
@@ -274,6 +278,8 @@ class RectPlot {
         }
       })
       .then(() => {
+        const debugMsg = new DebugMessage(this.svg, this.viewBoxDim, this.debugMode)
+        debugMsg.draw()
         console.log(`draw succeeded after ${this.drawFailureCount} failures`)
         this.drawFailureCount = 0
       })
