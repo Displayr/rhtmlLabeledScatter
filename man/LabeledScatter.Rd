@@ -40,7 +40,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   point.radius = 2, trend.lines.show = FALSE,
   trend.lines.line.thickness = 1, trend.lines.point.size = 2,
   plot.border.show = TRUE, plot.border.color = "Black",
-  plot.border.width = 1, width = NULL, height = NULL)
+  plot.border.width = 1, debug.mode = FALSE, width = NULL,
+  height = NULL)
 }
 \arguments{
 \item{X}{is array of x coordinates of data set}
@@ -174,6 +175,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{plot.border.color}{Color of border around plot area (Default is black).}
 
 \item{plot.border.width}{Width of border around plot area in px (Default is 1).}
+
+\item{debug.mode}{Boolean toggle to display widget internals for debugging (Default is FALSE)}
 
 \item{width}{is the width of the plot. Defaults to max of window}
 

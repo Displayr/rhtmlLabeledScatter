@@ -75,6 +75,7 @@
 #' @param plot.border.show Boolean toggle to show border around plot area (Default is TRUE).
 #' @param plot.border.color Color of border around plot area (Default is black).
 #' @param plot.border.width Width of border around plot area in px (Default is 1).
+#' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
 #'
@@ -157,6 +158,7 @@ LabeledScatter <- function(
   plot.border.show = TRUE,
   plot.border.color = 'Black',
   plot.border.width = 1,
+  debug.mode = FALSE,
   width = NULL,
   height = NULL
   ) {
@@ -231,6 +233,7 @@ LabeledScatter <- function(
     trendLinesLineThickness = trend.lines.line.thickness,
     trendLinesPointSize = trend.lines.point.size,
     plotBorderShow = plot.border.show,
+    debugMode = debug.mode,
     plotBorderColor = plot.border.color,
     plotBorderWidth = plot.border.width
   )
