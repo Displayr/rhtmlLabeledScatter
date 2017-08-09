@@ -15,7 +15,9 @@ class DebugMessage {
         'W: ' + String(this.viewBox.width),
         'H: ' + String(this.viewBox.height),
         'X: ' + String(this.viewBox.x),
-        'Y: ' + String(this.viewBox.y)
+        'Y: ' + String(this.viewBox.y),
+        'wH: ' + String(this.svg.style('width')),
+        'wW: ' + String(this.svg.style('height'))
       ]
       this.svg.selectAll('.debug-text')
               .data(debugText)
