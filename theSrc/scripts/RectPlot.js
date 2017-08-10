@@ -74,7 +74,7 @@ class RectPlot {
     showXAxis = true,
     showYAxis = true,
     axisFontFamily,
-    axisFontColor,
+    axisFontColor = 'black',
     axisFontSize,
     pointRadius = 2,
     xBoundsMinimum = null,
@@ -426,12 +426,12 @@ class RectPlot {
             .attr('x2', d => d.x2)
             .attr('y2', d => d.y2)
             .attr('stroke-width', 0.2)
-            .attr('stroke', 'grey')
+            .attr('stroke', this.axisSettings.fontColor)
         if (this.origin) {
           this.svg.selectAll('.origin')
               .style('stroke-dasharray', ('4, 6'))
               .attr('stroke-width', 1)
-              .attr('stroke', 'black')
+              .attr('stroke', this.axisSettings.fontColor)
         }
 
         this.svg.selectAll('.dim-marker').remove()
@@ -445,7 +445,7 @@ class RectPlot {
                  .attr('x2', d => d.x2)
                  .attr('y2', d => d.y2)
                  .attr('stroke-width', 0.2)
-                 .attr('stroke', 'grey')
+                 .attr('stroke', this.axisSettings.fontColor)
       } else if (!this.grid && this.origin) {
         this.svg.selectAll('.origin').remove()
         this.svg.selectAll('.origin')
@@ -459,7 +459,7 @@ class RectPlot {
             .attr('y2', d => d.y2)
             .style('stroke-dasharray', ('4, 6'))
             .attr('stroke-width', 1)
-            .attr('stroke', 'black')
+            .attr('stroke', this.axisSettings.fontColor)
       }
 
       if (this.axisSettings.showX || this.axisSettings.showY) {
@@ -473,8 +473,8 @@ class RectPlot {
         .attr('y1', d => d.y1)
         .attr('x2', d => d.x2)
         .attr('y2', d => d.y2)
-        .attr('stroke-width', 1)
-        .attr('stroke', 'black')
+        .attr('stroke-width', 0.2)
+        .attr('stroke', this.axisSettings.fontColor)
 
         this.svg.selectAll('.dim-marker-label').remove()
         const markerLabels = this.svg.selectAll('.dim-marker-label')
@@ -588,7 +588,7 @@ class RectPlot {
             .attr('cy', d => d.cy)
             .attr('r', d => d.r)
             .attr('fill', 'none')
-            .attr('stroke', 'black')
+            .attr('stroke', this.axisSettings.fontColor)
             .attr('stroke-opacity', 0.5)
 
         this.svg.selectAll('.legend-bubbles-labels').remove()
