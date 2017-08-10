@@ -2,6 +2,7 @@
 import d3 from 'd3'
 import $ from 'jquery'
 import _ from 'lodash'
+import Utils from './Utils'
 
 class DragUtils {
   // address "extreme" coupling to plot
@@ -31,13 +32,17 @@ class DragUtils {
       const lab = _.find(plot.data.lab, l => l.id === id)
       const anc = _.find(plot.data.pts, a => a.id === id)
 
+      const notBubblePlot = !Utils.isArrOfNums(this.Z)
+      const labIsNotLogo = lab.url !== ''
+      const labOnTopOfPoint = (lab.x - (lab.width / 2) < anc.x && anc.x < lab.x + (lab.width / 2)) && (lab.y > anc.y && anc.y > lab.y - lab.height)
+
       if (plot.data.isOutsideViewBox(lab) && !showTrendLine) {
         // Element dragged off plot
         plot.data.addElemToLegend(id)
         plot.state.pushLegendPt(id)
         plot.resetPlotAfterDragEvent()
-      } else if ((lab.x - (lab.width / 2) < anc.x && anc.x < lab.x + (lab.width / 2)) && (lab.y > anc.y && anc.y > lab.y - lab.height)) {
-        // For logo labels, if the logo is directly on top of the point, do not draw point
+      } else if (labIsNotLogo && notBubblePlot && labOnTopOfPoint) {
+        // For logo labels and not bubbles, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
         plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
