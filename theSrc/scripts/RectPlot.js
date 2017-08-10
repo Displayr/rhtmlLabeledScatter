@@ -425,12 +425,14 @@ class RectPlot {
             .attr('y1', d => d.y1)
             .attr('x2', d => d.x2)
             .attr('y2', d => d.y2)
-            .attr('stroke-width', 0.2)
+            .attr('stroke-width', 0.8)
+            .attr('opacity', 0.2)
             .attr('stroke', this.axisSettings.fontColor)
         if (this.origin) {
           this.svg.selectAll('.origin')
               .style('stroke-dasharray', ('4, 6'))
               .attr('stroke-width', 1)
+              .attr('opacity', 0.2)
               .attr('stroke', this.axisSettings.fontColor)
         }
 
@@ -444,7 +446,8 @@ class RectPlot {
                  .attr('y1', d => d.y1)
                  .attr('x2', d => d.x2)
                  .attr('y2', d => d.y2)
-                 .attr('stroke-width', 0.2)
+                 .attr('stroke-width', 0.8)
+                 .attr('opacity', 0.2)
                  .attr('stroke', this.axisSettings.fontColor)
       } else if (!this.grid && this.origin) {
         this.svg.selectAll('.origin').remove()
@@ -459,6 +462,7 @@ class RectPlot {
             .attr('y2', d => d.y2)
             .style('stroke-dasharray', ('4, 6'))
             .attr('stroke-width', 1)
+            .attr('opacity', 0.2)
             .attr('stroke', this.axisSettings.fontColor)
       }
 
@@ -473,7 +477,8 @@ class RectPlot {
         .attr('y1', d => d.y1)
         .attr('x2', d => d.x2)
         .attr('y2', d => d.y2)
-        .attr('stroke-width', 0.2)
+        .attr('stroke-width', 0.8)
+        .attr('opacity', 0.2)
         .attr('stroke', this.axisSettings.fontColor)
 
         this.svg.selectAll('.dim-marker-label').remove()
