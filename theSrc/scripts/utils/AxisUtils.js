@@ -110,7 +110,8 @@ class AxisUtils {
           x1,
           y1: y2,
           x2: x1,
-          y2: y2 + leaderLineLen
+          y2: y2 + leaderLineLen,
+          num: label
         })
         axisLeaderLabelStack.push({
           x: x1,
