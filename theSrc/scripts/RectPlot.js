@@ -467,6 +467,7 @@ class RectPlot {
       }
 
       if (this.axisSettings.showX || this.axisSettings.showY) {
+        let showOrigin = this.origin
         this.svg.selectAll('.dim-marker-leader').remove()
         this.svg.selectAll('.dim-marker-leader')
         .data(axisArrays.axisLeader)
@@ -479,7 +480,7 @@ class RectPlot {
         .attr('y2', d => d.y2)
         .attr('stroke-width', 0.8)
         .attr('opacity', d => {
-          if (d.num === 0) { return 1 } else { return 0.2 }
+          if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
         })
         .attr('stroke', this.axisSettings.fontColor)
 
