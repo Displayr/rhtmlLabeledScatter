@@ -475,13 +475,10 @@ class PlotData {
     const top = lab.y - lab.height
     const bot = lab.y
 
-    if ((left < this.viewBoxDim.x) ||
+    return ((left < this.viewBoxDim.x) ||
         (right > (this.viewBoxDim.x + this.viewBoxDim.width)) ||
         (top < this.viewBoxDim.y) ||
-        (bot > (this.viewBoxDim.y + this.viewBoxDim.height))) {
-      return true
-    }
-    return false
+        (bot > (this.viewBoxDim.y + this.viewBoxDim.height)))
   }
 
   isLegendPtOutsideViewBox (lab) {
@@ -490,13 +487,10 @@ class PlotData {
     const top = lab.y - lab.height
     const bot = lab.y
 
-    if ((left < this.viewBoxDim.x) ||
+    return ((left < this.viewBoxDim.x) ||
         (right > (this.viewBoxDim.x + this.viewBoxDim.width)) ||
         (top < this.viewBoxDim.y) ||
-        (bot > (this.viewBoxDim.y + this.viewBoxDim.height))) {
-      return true
-    }
-    return false
+        (bot > (this.viewBoxDim.y + this.viewBoxDim.height)))
   }
 
   addElemToLegend (id) {
