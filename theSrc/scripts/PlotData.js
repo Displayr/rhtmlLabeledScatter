@@ -367,9 +367,9 @@ class PlotData {
   }
 
   // TODO KZ rename to numColumns once meaning is confirmed
-  // TODO KZ If I have an array, I dont need to be told its length
-  setLegendItemsPositions (numItems, itemsArray, cols) {
+  setLegendItemsPositions (itemsArray, cols) {
     const bubbleLegendTextHeight = 20
+    const numItems = itemsArray.length
     this.legendHeight = this.viewBoxDim.height
     if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
       this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.viewBoxDim.y
@@ -426,27 +426,16 @@ class PlotData {
 
   setupLegendGroupsAndPts () {
     if ((this.legendPts.length > 0) && (this.legendSettings.showLegend())) {
-      const totalLegendItems = this.legendGroups.length + this.legendPts.length
       const legendItemArray = []
-      let i = 0
-      let j = 0
 
-      // KZ TODO possibly the worst array concat ive ever seen
-      while (i < totalLegendItems) {
-        if (i < this.legendGroups.length) {
-          legendItemArray.push(this.legendGroups[i])
-        } else {
-          j = i - this.legendGroups.length
-          legendItemArray.push(this.legendPts[j])
-        }
-        i++
-      }
+      _.map(this.legendGroups, g => legendItemArray.push(g))
+      _.map(this.legendPts, p => legendItemArray.push(p))
 
-      return this.setLegendItemsPositions(totalLegendItems, legendItemArray, this.legend.getCols())
+      return this.setLegendItemsPositions(legendItemArray, this.legend.getCols())
     } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
-      return this.setLegendItemsPositions(this.legendPts.length, this.legendPts, this.legend.getCols())
+      return this.setLegendItemsPositions(this.legendPts, this.legend.getCols())
     } else {
-      return this.setLegendItemsPositions(this.legendGroups.length, this.legendGroups, this.legend.getCols())
+      return this.setLegendItemsPositions(this.legendGroups, this.legend.getCols())
     }
   }
 
