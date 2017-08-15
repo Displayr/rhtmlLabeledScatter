@@ -366,8 +366,7 @@ class PlotData {
     }).catch(err => console.log(err))
   }
 
-  // TODO KZ rename to numColumns once meaning is confirmed
-  setLegendItemsPositions (itemsArray, cols) {
+  setLegendItemsPositions (itemsArray, numCols) {
     const bubbleLegendTextHeight = 20
     const numItems = itemsArray.length
     this.legendHeight = this.viewBoxDim.height
@@ -381,7 +380,7 @@ class PlotData {
     }
 
     const startOfCenteredLegendItems = (((this.viewBoxDim.y + (this.legendHeight / 2)) -
-                                  ((this.legend.getHeightOfRow() * (numItems / cols)) / 2)) +
+                                  ((this.legend.getHeightOfRow() * (numItems / numCols)) / 2)) +
                                   this.legend.getPtRadius())
     const startOfViewBox = this.viewBoxDim.y + this.legend.getPtRadius()
     const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
@@ -394,8 +393,8 @@ class PlotData {
     return (() => {
       const result = []
       while (i < numItems) {
-        if (cols > 1) {
-          const numElemsInCol = numItems / cols
+        if (numCols > 1) {
+          const numElemsInCol = numItems / numCols
           const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.viewBoxDim.y + this.legendHeight)
           const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
           if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
