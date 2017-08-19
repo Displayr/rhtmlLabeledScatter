@@ -45,7 +45,7 @@ class DragUtils {
         // For logo labels and not bubbles, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
-        plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
+        plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.vb)
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
         if (!showTrendLine) {
           plot.drawLinks()

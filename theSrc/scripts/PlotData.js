@@ -16,7 +16,7 @@ class PlotData {
     group,
     label,
     labelAlt,
-    viewBoxDim,
+    vb,
     legend,
     colorWheel,
     fixedAspectRatio,
@@ -33,7 +33,7 @@ class PlotData {
     this.group = group
     this.label = label
     this.labelAlt = labelAlt
-    this.viewBoxDim = viewBoxDim
+    this.vb = vb
     this.legend = legend
     this.colorWheel = colorWheel
     this.fixedAspectRatio = fixedAspectRatio
@@ -58,7 +58,7 @@ class PlotData {
       this.normalizeData()
       if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
       this.plotColors = new PlotColors(this)
-      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.viewBoxDim.labelLogoScale)
+      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale)
     } else {
       throw new Error('Inputs X and Y lengths do not match!')
     }
@@ -121,7 +121,7 @@ class PlotData {
       rangeX = this.maxX - this.minX
       rangeY = this.maxY - this.minY
       const rangeAR = Math.abs(rangeX / rangeY)
-      const widgetAR = (this.viewBoxDim.width / this.viewBoxDim.height)
+      const widgetAR = (this.vb.width / this.vb.height)
       const rangeToWidgetARRatio = widgetAR / rangeAR
 
       if (widgetAR >= 1) {
@@ -185,8 +185,8 @@ class PlotData {
         draggedNormX = draggedNormX < 0 ? 0 : draggedNormX
         draggedNormY = draggedNormY > 1 ? 1 : draggedNormY
         draggedNormY = draggedNormY < 0 ? 0 : draggedNormY
-        const x2 = (draggedNormX * this.viewBoxDim.width) + this.viewBoxDim.x
-        const y2 = ((1 - draggedNormY) * this.viewBoxDim.height) + this.viewBoxDim.y
+        const x2 = (draggedNormX * this.vb.width) + this.vb.x
+        const y2 = ((1 - draggedNormY) * this.vb.height) + this.vb.y
 
         let markerTextX = (markerTextY = 0)
         const numDigitsInId = Math.ceil(Math.log(newMarkerId + 1.1) / Math.LN10)
@@ -292,12 +292,12 @@ class PlotData {
         if ((!_.includes(this.outsidePlotPtsId, i)) ||
            _.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
           var ptColor
-          const x = (this.normX[i] * this.viewBoxDim.width) + this.viewBoxDim.x
-          const y = ((1 - this.normY[i]) * this.viewBoxDim.height) + this.viewBoxDim.y
+          const x = (this.normX[i] * this.vb.width) + this.vb.x
+          const y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
           let r = this.pointRadius
           if (Utils.isArrOfNums(this.Z)) {
             const legendUtils = LegendUtils
-            r = legendUtils.normalizedZtoRadius(this.viewBoxDim, this.normZ[i])
+            r = legendUtils.normalizedZtoRadius(this.vb, this.normZ[i])
           }
           const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
 
@@ -308,20 +308,20 @@ class PlotData {
           let { url } = resolvedLabels[i]
 
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
-          let fontSize = this.viewBoxDim.labelFontSize
+          let fontSize = this.vb.labelFontSize
 
           // If pt hsa been already condensed
           if (_.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
             const pt = _.find(this.outsidePlotCondensedPts, e => e.dataId === i)
             label = pt.markerId + 1
-            fontSize = this.viewBoxDim.labelSmallFontSize
+            fontSize = this.vb.labelSmallFontSize
             url = ''
             width = null
             height = null
           }
 
           let fontColor = (ptColor = this.plotColors.getColor(i))
-          if ((this.viewBoxDim.labelFontColor != null) && !(this.viewBoxDim.labelFontColor === '')) { fontColor = this.viewBoxDim.labelFontColor }
+          if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
           const group = (this.group != null) ? this.group[i] : ''
           this.pts.push({
             x,
@@ -343,7 +343,7 @@ class PlotData {
             color: fontColor,
             id: i,
             fontSize,
-            fontFamily: this.viewBoxDim.labelFontFamily,
+            fontFamily: this.vb.labelFontFamily,
             text: label,
             width,
             height,
@@ -369,20 +369,20 @@ class PlotData {
   setLegendItemsPositions (itemsArray, numCols) {
     const bubbleLegendTextHeight = 20
     const numItems = itemsArray.length
-    this.legendHeight = this.viewBoxDim.height
+    this.legendHeight = this.vb.height
     if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
-      this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.viewBoxDim.y
+      this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.vb.y
     }
 
     if (this.Zquartiles != null) {
       const legendUtils = LegendUtils
-      legendUtils.setupBubbles(this.viewBoxDim, this.Zquartiles, this.legend)
+      legendUtils.setupBubbles(this.vb, this.Zquartiles, this.legend)
     }
 
-    const startOfCenteredLegendItems = (((this.viewBoxDim.y + (this.legendHeight / 2)) -
+    const startOfCenteredLegendItems = (((this.vb.y + (this.legendHeight / 2)) -
                                   ((this.legend.getHeightOfRow() * (numItems / numCols)) / 2)) +
                                   this.legend.getPtRadius())
-    const startOfViewBox = this.viewBoxDim.y + this.legend.getPtRadius()
+    const startOfViewBox = this.vb.y + this.legend.getPtRadius()
     const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
 
     let colSpacing = 0
@@ -395,7 +395,7 @@ class PlotData {
       while (i < numItems) {
         if (numCols > 1) {
           const numElemsInCol = numItems / numCols
-          const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.viewBoxDim.y + this.legendHeight)
+          const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
           const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
           if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
             colSpacing = (this.legend.getColSpace() + (this.legend.getPtRadius() * 2) + this.legend.getPtToTextSpace()) * currentCol
@@ -403,7 +403,7 @@ class PlotData {
             currentCol++
           }
 
-          const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.viewBoxDim.y + this.legendHeight)
+          const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
           if (totalItemsSpacingExceedLegendArea) { break }
         }
 
@@ -439,7 +439,7 @@ class PlotData {
   }
 
   resizedAfterLegendGroupsDrawn () {
-    const initWidth = this.viewBoxDim.width
+    const initWidth = this.vb.width
 
     const totalLegendItems = this.legendSettings.showLegend() ? this.legendGroups.length + this.legendPts.length : this.legendPts.length
     const legendGrpsTextMax = (this.legendGroups.length > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legendGroups, e => e.width)).width : 0
@@ -462,10 +462,10 @@ class PlotData {
 
     this.legend.setColSpace(maxTextWidth)
 
-    this.viewBoxDim.width = this.viewBoxDim.svgWidth - this.legend.getWidth() - this.viewBoxDim.x - this.axisDimensionText.rowMaxWidth
-    this.legend.setX(this.viewBoxDim.x + this.viewBoxDim.width)
+    this.vb.width = this.vb.svgWidth - this.legend.getWidth() - this.vb.x - this.axisDimensionText.rowMaxWidth
+    this.legend.setX(this.vb.x + this.vb.width)
 
-    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - this.viewBoxDim.width) > 0.1
+    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - this.vb.width) > 0.1
     return isNewWidthSignficantlyDifferent
   }
 
@@ -475,10 +475,10 @@ class PlotData {
     const top = lab.y - lab.height
     const bot = lab.y
 
-    return ((left < this.viewBoxDim.x) ||
-        (right > (this.viewBoxDim.x + this.viewBoxDim.width)) ||
-        (top < this.viewBoxDim.y) ||
-        (bot > (this.viewBoxDim.y + this.viewBoxDim.height)))
+    return ((left < this.vb.x) ||
+        (right > (this.vb.x + this.vb.width)) ||
+        (top < this.vb.y) ||
+        (bot > (this.vb.y + this.vb.height)))
   }
 
   isLegendPtOutsideViewBox (lab) {
@@ -487,10 +487,10 @@ class PlotData {
     const top = lab.y - lab.height
     const bot = lab.y
 
-    return ((left < this.viewBoxDim.x) ||
-        (right > (this.viewBoxDim.x + this.viewBoxDim.width)) ||
-        (top < this.viewBoxDim.y) ||
-        (bot > (this.viewBoxDim.y + this.viewBoxDim.height)))
+    return ((left < this.vb.x) ||
+        (right > (this.vb.x + this.vb.width)) ||
+        (top < this.vb.y) ||
+        (bot > (this.vb.y + this.vb.height)))
   }
 
   addElemToLegend (id) {

@@ -10,13 +10,13 @@ class SvgUtils {
     })
   }
   // If user defined boundary is less than a bubble, then clip the bubble when it reaches the border
-  static clipBubbleIfOutsidePlotArea (svg, pts, viewBoxDim) {
+  static clipBubbleIfOutsidePlotArea (svg, pts, vb) {
     // Defines boundaries
     const bound = {
-      left: viewBoxDim.x,
-      right: viewBoxDim.x + viewBoxDim.width,
-      top: viewBoxDim.y,
-      bot: viewBoxDim.y + viewBoxDim.height
+      left: vb.x,
+      right: vb.x + vb.width,
+      top: vb.y,
+      bot: vb.y + vb.height
     }
     _.map(pts, (pt, i) => {
       const bubble = {

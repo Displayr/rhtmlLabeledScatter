@@ -2,7 +2,7 @@ import autoBind from 'es6-autobind'
 import _ from 'lodash'
 
 class Legend {
-  constructor (legendSettings) {
+  constructor (legendSettings, maxWidth) {
     autoBind(this)
     this.legendSettings = legendSettings
     this.width = 0
@@ -24,6 +24,7 @@ class Legend {
     }
 
     this.x = 0
+    this.maxWidth = maxWidth
   }
 
   getWidth () { return this.width }

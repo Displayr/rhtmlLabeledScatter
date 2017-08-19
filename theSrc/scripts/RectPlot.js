@@ -15,6 +15,7 @@ import LabelPlacement from './LabelPlacement'
 import LegendSettings from './LegendSettings'
 import Legend from './Legend'
 import DebugMessage from './DebugMessage'
+import ViewBox from './ViewBox'
 
 class RectPlot {
   constructor (state,
@@ -180,8 +181,11 @@ class RectPlot {
       colMaxHeight: 0,
       rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
     }
-    this.verticalPadding = 5
-    this.horizontalPadding = 10
+
+    this.padding = {
+      vertical: 5,
+      horizontal: 10
+    }
 
     this.bounds = {
       xmin: xBoundsMinimum,
@@ -207,7 +211,7 @@ class RectPlot {
       this.title.paddingBot = 20
     }
 
-    this.title.y = this.verticalPadding + this.title.textHeight
+    this.title.y = this.padding.vertical + this.title.textHeight
 
     this.grid = !(_.isNull(grid)) ? grid : true
     this.origin = !(_.isNull(origin)) ? origin : true
@@ -230,22 +234,11 @@ class RectPlot {
     this.title.x = this.width / 2
     this.legend = new Legend(this.legendSettings)
 
-    this.viewBoxDim = {
-      svgWidth: width,
-      svgHeight: height,
-      width: width - this.legend.getWidth() - (this.horizontalPadding * 3) - this.axisLeaderLineLength - this.axisDimensionText.rowMaxWidth - this.yTitle.textHeight - this.axisDimensionText.rightPadding,
-      height: height - (this.verticalPadding * 2) - this.title.textHeight - this.title.paddingBot - this.axisDimensionText.colMaxHeight - this.xTitle.textHeight - this.axisLeaderLineLength - this.xTitle.topPadding,
-      x: (this.horizontalPadding * 2) + this.axisDimensionText.rowMaxWidth + this.axisLeaderLineLength + this.yTitle.textHeight,
-      y: this.verticalPadding + this.title.textHeight + this.title.paddingBot,
-      labelFontSize: this.labelsFont.size,
-      labelSmallFontSize: this.labelsFont.size * 0.75,
-      labelFontColor: this.labelsFont.color,
-      labelFontFamily: this.labelsFont.family,
-      labelLogoScale: this.labelsFont.logoScale
-    }
+    this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
+      this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 
-    this.legend.setX(this.viewBoxDim.x + this.viewBoxDim.width)
-    this.title.x = this.viewBoxDim.x + (this.viewBoxDim.width / 2)
+    this.legend.setX(this.vb.x + this.vb.width)
+    this.title.x = this.vb.x + (this.vb.width / 2)
 
     this.data = new PlotData(this.X,
                          this.Y,
@@ -253,7 +246,7 @@ class RectPlot {
                          this.group,
                          this.label,
                          this.labelAlt,
-                         this.viewBoxDim,
+                         this.vb,
                          this.legend,
                          this.colors,
                          this.fixedRatio,
@@ -278,7 +271,7 @@ class RectPlot {
         }
       })
       .then(() => {
-        const debugMsg = new DebugMessage(this.svg, this.viewBoxDim, this.debugMode)
+        const debugMsg = new DebugMessage(this.svg, this.vb, this.debugMode)
         debugMsg.draw()
         console.log(`draw succeeded after ${this.drawFailureCount} failures`)
         this.drawFailureCount = 0
@@ -320,7 +313,7 @@ class RectPlot {
     this.data.normalizeData()
 
     return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
-      this.title.x = this.viewBoxDim.x + (this.viewBoxDim.width / 2)
+      this.title.x = this.vb.x + (this.vb.width / 2)
 
       if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
         for (var pt of Array.from(this.state.getLegendPts())) {
@@ -400,10 +393,10 @@ class RectPlot {
     this.svg.selectAll('.plot-viewbox').remove()
     this.svg.append('rect')
         .attr('class', 'plot-viewbox')
-        .attr('x', this.viewBoxDim.x)
-        .attr('y', this.viewBoxDim.y)
-        .attr('width', this.viewBoxDim.width)
-        .attr('height', this.viewBoxDim.height)
+        .attr('x', this.vb.x)
+        .attr('y', this.vb.y)
+        .attr('width', this.vb.width)
+        .attr('height', this.vb.height)
         .attr('fill', 'none')
         .attr('stroke', this.plotBorder.color)
         .attr('stroke-width', this.plotBorder.width)
@@ -411,7 +404,7 @@ class RectPlot {
 
   drawDimensionMarkers () {
     return new Promise((function (resolve, reject) {
-      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.viewBoxDim, this.axisSettings)
+      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.vb, this.axisSettings)
 
       // TODO KZ this sequence can be easily consolidated
       if (this.grid) {
@@ -537,8 +530,8 @@ class RectPlot {
   drawAxisLabels () {
     const axisLabels = [
       { // x axis label
-        x: this.viewBoxDim.x + (this.viewBoxDim.width / 2),
-        y: this.viewBoxDim.y + this.viewBoxDim.height +
+        x: this.vb.x + (this.vb.width / 2),
+        y: this.vb.y + this.vb.height +
            this.axisLeaderLineLength +
            this.axisDimensionText.colMaxHeight +
            this.xTitle.topPadding +
@@ -552,11 +545,11 @@ class RectPlot {
         fontColor: this.xTitle.fontColor
       },
       { // y axis label
-        x: this.horizontalPadding + this.yTitle.textHeight,
-        y: this.viewBoxDim.y + (this.viewBoxDim.height / 2),
+        x: this.padding.horizontal + this.yTitle.textHeight,
+        y: this.vb.y + (this.vb.height / 2),
         text: this.yTitle.text,
         anchor: 'middle',
-        transform: `rotate(270,${this.horizontalPadding + this.yTitle.textHeight}, ${this.viewBoxDim.y + (this.viewBoxDim.height / 2)})`,
+        transform: `rotate(270,${this.padding.horizontal + this.yTitle.textHeight}, ${this.vb.y + (this.vb.height / 2)})`,
         display: this.yTitle === '' ? 'none' : '',
         fontFamily: this.yTitle.fontFamily,
         fontSize: this.yTitle.fontSize,
@@ -722,7 +715,7 @@ class RectPlot {
     // Clip paths used to crop bubbles if they expand beyond the plot's borders
     if (Utils.isArrOfNums(this.Z)) {
       this.svg.selectAll('clipPath').remove()
-      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.viewBoxDim)
+      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb)
     }
   }
 
@@ -779,7 +772,7 @@ class RectPlot {
     let drag
     if (this.showLabels && !this.trendLines.show) {
       drag = DragUtils.getLabelDragAndDrop(this)
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
       this.svg.selectAll('.lab-img').remove()
       this.svg.selectAll('.lab-img')
@@ -813,7 +806,7 @@ class RectPlot {
 
       LabelPlacement.placeLabels(
         this.svg,
-        this.data.viewBoxDim,
+        this.data.vb,
         this.data.pts,
         this.data.lab,
         this.state
@@ -822,7 +815,7 @@ class RectPlot {
       this.drawLinks()
     } else if (this.showLabels && this.trendLines.show) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
       drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
 
@@ -858,7 +851,7 @@ class RectPlot {
 
       LabelPlacement.placeTrendLabels(
         this.svg,
-        this.data.viewBoxDim,
+        this.data.vb,
         this.tl.arrowheadPts,
         this.tl.arrowheadLabels,
         this.state
@@ -884,7 +877,7 @@ class RectPlot {
   }
 
   drawTrendLines () {
-    this.state.updateLabelsWithPositionedData(this.data.lab, this.data.viewBoxDim)
+    this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
     if ((this.tl === undefined) || (this.tl === null)) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
     }
