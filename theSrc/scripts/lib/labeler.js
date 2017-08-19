@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Random from 'random-js'
+import _ from 'lodash'
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator

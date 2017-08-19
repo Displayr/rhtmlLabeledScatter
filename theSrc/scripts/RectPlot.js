@@ -577,7 +577,8 @@ class RectPlot {
 
   drawLegend () {
     return new Promise(function (resolve, reject) {
-      this.data.setupLegendGroupsAndPts()
+      // this.data.setupLegendGroupsAndPts()
+      this.legend.setLegendGroupsAndPts(this.data.legendGroups, this.data.legendPts, this.data.vb, this.data.Zquartiles)
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove()
         this.svg.selectAll('.legend-bubbles')
@@ -630,7 +631,7 @@ class RectPlot {
       const drag = DragUtils.getLegendLabelDragAndDrop(this, this.data)
       this.svg.selectAll('.legend-dragged-pts-text').remove()
       this.svg.selectAll('.legend-dragged-pts-text')
-          .data(this.data.legendPts)
+          .data(this.legend.pts)
           .enter()
           .append('text')
           .attr('class', 'legend-dragged-pts-text')
@@ -649,7 +650,7 @@ class RectPlot {
       if (this.legendSettings.showLegend()) {
         this.svg.selectAll('.legend-groups-text').remove()
         this.svg.selectAll('.legend-groups-text')
-            .data(this.data.legendGroups)
+            .data(this.legend.groups)
             .enter()
             .append('text')
             .attr('class', 'legend-groups-text')
@@ -663,24 +664,24 @@ class RectPlot {
 
         this.svg.selectAll('.legend-groups-pts').remove()
         this.svg.selectAll('.legend-groups-pts')
-                 .data(this.data.legendGroups)
-                 .enter()
-                 .append('circle')
-                 .attr('class', 'legend-groups-pts')
-                 .attr('cx', d => d.cx)
-                 .attr('cy', d => d.cy)
-                 .attr('r', d => d.r)
-                 .attr('fill', d => d.color)
-                 .attr('stroke', d => d.stroke)
-                 .attr('stroke-opacity', d => d['stroke-opacity'])
-                 .attr('fill-opacity', d => d.fillOpacity)
+                .data(this.legend.groups)
+                .enter()
+                .append('circle')
+                .attr('class', 'legend-groups-pts')
+                .attr('cx', d => d.cx)
+                .attr('cy', d => d.cy)
+                .attr('r', d => d.r)
+                .attr('fill', d => d.color)
+                .attr('stroke', d => d.stroke)
+                .attr('stroke-opacity', d => d['stroke-opacity'])
+                .attr('fill-opacity', d => d.fillOpacity)
 
         // Height and width are not provided
         SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'))
       }
 
       if (this.legendSettings.showLegend() || (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
-        if (this.data.resizedAfterLegendGroupsDrawn(this.legendSettings.showLegend())) {
+        if (this.data.resizedAfterLegendGroupsDrawn(this.data.vb)) {
           this.data.revertMinMax()
           const error = new Error('drawLegend Failed')
           error.retry = true

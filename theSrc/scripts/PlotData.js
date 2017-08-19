@@ -49,7 +49,7 @@ class PlotData {
     this.normY = this.Y.slice(0)
     if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice() }
     this.outsidePlotPtsId = []
-    this.legendPts = []
+    // this.legendPts = []
     this.outsidePlotCondensedPts = []
     this.legendRequiresRedraw = false
 
@@ -168,8 +168,8 @@ class PlotData {
     this.outsidePlotMarkers = []
     this.outsidePlotMarkersIter = 0
 
-    for (const lp of Array.from(this.legendPts)) {
-      var { id } = lp.pt
+    for (const lp of Array.from(this.legend.pts)) {
+      const id = lp.id
       let draggedNormX = (this.X[id] - this.minX) / (this.maxX - this.minX)
       let draggedNormY = (this.Y[id] - this.minY) / (this.maxY - this.minY)
       // TODO KZ the ++ should be immed. after the use of the iter !
@@ -366,106 +366,106 @@ class PlotData {
     }).catch(err => console.log(err))
   }
 
-  setLegendItemsPositions (itemsArray, numCols) {
-    const bubbleLegendTextHeight = 20
-    const numItems = itemsArray.length
-    this.legendHeight = this.vb.height
-    if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
-      this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.vb.y
-    }
+  // setLegendItemsPositions (itemsArray, numCols) {
+  //   const bubbleLegendTextHeight = 20
+  //   const numItems = itemsArray.length
+  //   this.legendHeight = this.vb.height
+  //   if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
+  //     this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.vb.y
+  //   }
+  //
+  //   // if (this.Zquartiles != null) {
+  //   //   const legendUtils = LegendUtils
+  //   //   legendUtils.setupBubbles(this.vb, this.Zquartiles, this.legend)
+  //   // }
+  //
+  //   const startOfCenteredLegendItems = (((this.vb.y + (this.legendHeight / 2)) -
+  //                                 ((this.legend.getHeightOfRow() * (numItems / numCols)) / 2)) +
+  //                                 this.legend.getPtRadius())
+  //   const startOfViewBox = this.vb.y + this.legend.getPtRadius()
+  //   const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
+  //
+  //   let colSpacing = 0
+  //   let numItemsInPrevCols = 0
+  //
+  //   let i = 0
+  //   let currentCol = 1
+  //   return (() => {
+  //     const result = []
+  //     while (i < numItems) {
+  //       if (numCols > 1) {
+  //         const numElemsInCol = numItems / numCols
+  //         const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
+  //         const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
+  //         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
+  //           colSpacing = (this.legend.getColSpace() + (this.legend.getPtRadius() * 2) + this.legend.getPtToTextSpace()) * currentCol
+  //           numItemsInPrevCols = i
+  //           currentCol++
+  //         }
+  //
+  //         const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
+  //         if (totalItemsSpacingExceedLegendArea) { break }
+  //       }
+  //
+  //       const li = itemsArray[i]
+  //       if (li.isDraggedPt) {
+  //         li.x = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing
+  //         li.y = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow()) + this.legend.getVertPtPadding()
+  //       } else {
+  //         li.cx = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing + li.r
+  //         li.cy = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())
+  //         li.x = li.cx + this.legend.getPtToTextSpace()
+  //         li.y = li.cy + li.r
+  //       }
+  //       result.push(i++)
+  //     }
+  //     return result
+  //   })()
+  // }
 
-    if (this.Zquartiles != null) {
-      const legendUtils = LegendUtils
-      legendUtils.setupBubbles(this.vb, this.Zquartiles, this.legend)
-    }
+  // setupLegendGroupsAndPts () {
+  //   if ((this.legendPts.length > 0) && (this.legendSettings.showLegend())) {
+  //     const legendItemArray = []
+  //
+  //     _.map(this.legendGroups, g => legendItemArray.push(g))
+  //     _.map(this.legendPts, p => legendItemArray.push(p))
+  //
+  //     return this.setLegendItemsPositions(legendItemArray, this.legend.getCols())
+  //   } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
+  //     return this.setLegendItemsPositions(this.legendPts, this.legend.getCols())
+  //   } else {
+  //     return this.setLegendItemsPositions(this.legendGroups, this.legend.getCols())
+  //   }
+  // }
 
-    const startOfCenteredLegendItems = (((this.vb.y + (this.legendHeight / 2)) -
-                                  ((this.legend.getHeightOfRow() * (numItems / numCols)) / 2)) +
-                                  this.legend.getPtRadius())
-    const startOfViewBox = this.vb.y + this.legend.getPtRadius()
-    const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
+  resizedAfterLegendGroupsDrawn (vb) {
+    this.vb = vb
+    const initWidth = vb.width
 
-    let colSpacing = 0
-    let numItemsInPrevCols = 0
-
-    let i = 0
-    let currentCol = 1
-    return (() => {
-      const result = []
-      while (i < numItems) {
-        if (numCols > 1) {
-          const numElemsInCol = numItems / numCols
-          const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
-          const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
-          if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
-            colSpacing = (this.legend.getColSpace() + (this.legend.getPtRadius() * 2) + this.legend.getPtToTextSpace()) * currentCol
-            numItemsInPrevCols = i
-            currentCol++
-          }
-
-          const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
-          if (totalItemsSpacingExceedLegendArea) { break }
-        }
-
-        const li = itemsArray[i]
-        if (li.isDraggedPt) {
-          li.x = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing
-          li.y = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow()) + this.legend.getVertPtPadding()
-        } else {
-          li.cx = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing + li.r
-          li.cy = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())
-          li.x = li.cx + this.legend.getPtToTextSpace()
-          li.y = li.cy + li.r
-        }
-        result.push(i++)
-      }
-      return result
-    })()
-  }
-
-  setupLegendGroupsAndPts () {
-    if ((this.legendPts.length > 0) && (this.legendSettings.showLegend())) {
-      const legendItemArray = []
-
-      _.map(this.legendGroups, g => legendItemArray.push(g))
-      _.map(this.legendPts, p => legendItemArray.push(p))
-
-      return this.setLegendItemsPositions(legendItemArray, this.legend.getCols())
-    } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
-      return this.setLegendItemsPositions(this.legendPts, this.legend.getCols())
-    } else {
-      return this.setLegendItemsPositions(this.legendGroups, this.legend.getCols())
-    }
-  }
-
-  resizedAfterLegendGroupsDrawn () {
-    const initWidth = this.vb.width
-
+    this.legendGroups = this.legend.groups
+    this.legendPts = this.legend.pts
     const totalLegendItems = this.legendSettings.showLegend() ? this.legendGroups.length + this.legendPts.length : this.legendPts.length
     const legendGrpsTextMax = (this.legendGroups.length > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legendGroups, e => e.width)).width : 0
     const legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, e => e.width)).width : 0
 
     const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])
 
-    const spacingAroundMaxTextWidth = this.legend.getPaddingLeft() +
-                                (this.legend.getPtRadius() * 2) +
-                                this.legend.getPaddingRight() +
-                                this.legend.getPtToTextSpace()
-
-    const bubbleLeftRightPadding = this.legend.getPaddingLeft() + this.legend.getPaddingRight()
+    const spacingAroundMaxTextWidth = this.legend.getSpacingAroundMaxTextWidth()
+    const bubbleLeftRightPadding = this.legend.getBubbleLeftRightPadding()
 
     this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legendHeight))
     this.legend.setWidth((maxTextWidth * this.legend.getCols()) + spacingAroundMaxTextWidth + (this.legend.getPaddingMid() * (this.legend.getCols() - 1)))
 
-    const bubbleTitleWidth = (this.legend.getBubblesTitle() !== null) ? this.legend.getBubblesTitle()[0].width : undefined
-    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding, this.legend.getBubblesMaxWidth() + bubbleLeftRightPadding]))
+    const bubbleTitleWidth = this.legend.getBubbleTitleWidth()
+    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding,
+      this.legend.getBubblesMaxWidth() + bubbleLeftRightPadding]))
 
     this.legend.setColSpace(maxTextWidth)
 
-    this.vb.width = this.vb.svgWidth - this.legend.getWidth() - this.vb.x - this.axisDimensionText.rowMaxWidth
-    this.legend.setX(this.vb.x + this.vb.width)
+    vb.width = vb.svgWidth - this.legend.getWidth() - vb.x - this.axisDimensionText.rowMaxWidth
+    this.legend.setX(vb.x + vb.width)
 
-    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - this.vb.width) > 0.1
+    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - vb.width) > 0.1
     return isNewWidthSignficantlyDifferent
   }
 
@@ -497,7 +497,7 @@ class PlotData {
     const checkId = e => e.id === id
     const movedPt = _.remove(this.pts, checkId)
     const movedLab = _.remove(this.lab, checkId)
-    this.legendPts.push({
+    this.legend.pts.push({
       id: id,
       pt: movedPt[0],
       lab: movedLab[0],
@@ -511,13 +511,13 @@ class PlotData {
     this.outsidePlotPtsId.push(id)
     this.normalizeData()
     this.getPtsAndLabs('PlotData.addElemToLegend')
-    this.setupLegendGroupsAndPts()
+    this.legend.setLegendGroupsAndPts(this.legend.groups, this.legend.pts, this.vb, this.Zquartiles)
     this.legendRequiresRedraw = true
   }
 
   removeElemFromLegend (id) {
     const checkId = e => e.id === id
-    const legendPt = _.remove(this.legendPts, checkId)
+    const legendPt = _.remove(this.legend.pts, checkId)
     this.pts.push(legendPt.pt)
     this.lab.push(legendPt.lab)
 
@@ -526,11 +526,11 @@ class PlotData {
 
     this.normalizeData()
     this.getPtsAndLabs('PlotData.removeElemFromLegend')
-    this.setupLegendGroupsAndPts()
+    this.legend.setLegendGroupsAndPts(this.legend.groups, this.legend.pts, this.vb, this.Zquartiles)
   }
 
   resetLegendPts () {
-    _.forEachRight(this.legendPts, lp => {
+    _.forEachRight(this.legend.pts, lp => {
       if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id)
     })
   }
