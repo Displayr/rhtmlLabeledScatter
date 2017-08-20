@@ -373,11 +373,9 @@ class PlotData {
     this.vb = vb
     const initWidth = vb.width
 
-    this.legendGroups = this.legend.groups
-    this.legendPts = this.legend.pts
-    const totalLegendItems = this.legendSettings.showLegend() ? this.legendGroups.length + this.legendPts.length : this.legendPts.length
-    const legendGrpsTextMax = (this.legendGroups.length > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legendGroups, e => e.width)).width : 0
-    const legendPtsTextMax = this.legendPts.length > 0 ? (_.maxBy(this.legendPts, e => e.width)).width : 0
+    const totalLegendItems = this.legendSettings.showLegend() ? this.legend.getNumGroups() + this.legend.getNumPts() : this.legend.getNumPts()
+    const legendGrpsTextMax = (this.legend.getNumGroups() > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legend.groups, e => e.width)).width : 0
+    const legendPtsTextMax = this.legend.getNumPts() > 0 ? (_.maxBy(this.legend.pts, e => e.width)).width : 0
 
     const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])
 

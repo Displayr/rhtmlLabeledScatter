@@ -186,6 +186,8 @@ class Legend {
   getBubblesMaxWidth () { return this.bubblesMaxWidth }
   getBubbles () { return this.bubbles }
   getBubblesTitle () { return _.isEmpty(this.bubblesTitle) ? null : this.bubblesTitle }
+  getNumGroups () { return this.groups.length }
+  getNumPts () { return this.pts.length }
   setX (x) { this.x = x }
   setColSpace (cs) { this.colSpace = cs }
   setBubblesMaxWidth (bubblesMaxWidth) { this.bubblesMaxWidth = bubblesMaxWidth }
