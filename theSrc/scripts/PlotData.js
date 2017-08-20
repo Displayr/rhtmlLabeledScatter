@@ -384,7 +384,7 @@ class PlotData {
     const spacingAroundMaxTextWidth = this.legend.getSpacingAroundMaxTextWidth()
     const bubbleLeftRightPadding = this.legend.getBubbleLeftRightPadding()
 
-    this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legendHeight))
+    this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legend.height))
     this.legend.setWidth((maxTextWidth * this.legend.getCols()) + spacingAroundMaxTextWidth + (this.legend.getPaddingMid() * (this.legend.getCols() - 1)))
 
     const bubbleTitleWidth = this.legend.getBubbleTitleWidth()

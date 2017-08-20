@@ -89,10 +89,10 @@ class Legend {
   getLegendItemsPositions (vb, Zquartiles, itemsArray) {
     const bubbleLegendTextHeight = 20
     const numItems = itemsArray.length
-    this.legendHeight = vb.height
+    this.setHeight(vb.height)
 
     if ((this.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
-      this.legendHeight = this.getBubblesTitle()[0].y - bubbleLegendTextHeight - vb.y
+      this.height = this.getBubblesTitle()[0].y - bubbleLegendTextHeight - vb.y
     }
 
     if (Zquartiles != null) {
@@ -100,7 +100,7 @@ class Legend {
       legendUtils.setupBubbles(vb, Zquartiles, this)
     }
 
-    const startOfCenteredLegendItems = (((vb.y + (this.legendHeight / 2)) -
+    const startOfCenteredLegendItems = (((vb.y + (this.height / 2)) -
       ((this.getHeightOfRow() * (numItems / this.getCols())) / 2)) +
       this.getPtRadius())
     const startOfViewBox = vb.y + this.getPtRadius()
@@ -114,7 +114,7 @@ class Legend {
     while (i < numItems) {
       if (this.getCols() > 1) {
         const numElemsInCol = numItems / this.getCols()
-        const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.getHeightOfRow())) > (vb.y + this.legendHeight)
+        const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.getHeightOfRow())) > (vb.y + this.height)
         const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
           colSpacing = (this.getColSpace() + (this.getPtRadius() * 2) + this.getPtToTextSpace()) * currentCol
@@ -122,7 +122,7 @@ class Legend {
           currentCol++
         }
 
-        const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.getHeightOfRow())) > (vb.y + this.legendHeight)
+        const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.getHeightOfRow())) > (vb.y + this.height)
         if (totalItemsSpacingExceedLegendArea) { break }
       }
 
