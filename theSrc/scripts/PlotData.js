@@ -178,7 +178,7 @@ class PlotData {
 
       if ((Math.abs(draggedNormX) > 1) || (Math.abs(draggedNormY) > 1) ||
          (draggedNormX < 0) || (draggedNormY < 0)) {
-        var markerTextY,
+        let markerTextY,
           x1,
           y1
         draggedNormX = draggedNormX > 1 ? 1 : draggedNormX
@@ -355,13 +355,12 @@ class PlotData {
 
       // Remove pts outside plot because user bounds set
       return (() => {
-        const result = []
         for (const p of Array.from(this.outsideBoundsPtsId)) {
-          let item
-          if (!_.includes(this.outsidePlotPtsId, p)) { item = this.addElemToLegend(p) }
-          result.push(item)
+          if (!_.includes(this.outsidePlotPtsId, p)) {
+            this.addElemToLegend(p)
+          }
         }
-        return result
+        this.setLegend()
       })()
     }).catch(err => console.log(err))
   }
@@ -438,6 +437,15 @@ class PlotData {
   //   }
   // }
 
+  setLegend () {
+    console.log('set legend')
+    console.log(this.legendPts)
+    console.log(this.legendGroups)
+    console.log(this.legend.pts)
+    console.log(this.legend.groups)
+    this.legend.setLegendGroupsAndPts(this.legendPts, this.legendGroups, this.vb, this.Zquartiles)
+  }
+
   resizedAfterLegendGroupsDrawn (vb) {
     this.vb = vb
     const initWidth = vb.width
@@ -497,27 +505,16 @@ class PlotData {
     const checkId = e => e.id === id
     const movedPt = _.remove(this.pts, checkId)
     const movedLab = _.remove(this.lab, checkId)
-    this.legend.pts.push({
-      id: id,
-      pt: movedPt[0],
-      lab: movedLab[0],
-      anchor: 'start',
-      text: `${movedLab[0].text} (${movedPt[0].labelX}, ${movedPt[0].labelY})`,
-      color: movedPt[0].color,
-      isDraggedPt: true
-    })
-    // console.log("pushed legendPt : #{JSON.stringify(@legendPts[@legendPts.length-1])}")
+    this.legend.addPt(id, movedPt, movedLab)
 
     this.outsidePlotPtsId.push(id)
     this.normalizeData()
     this.getPtsAndLabs('PlotData.addElemToLegend')
-    this.legend.setLegendGroupsAndPts(this.legend.groups, this.legend.pts, this.vb, this.Zquartiles)
     this.legendRequiresRedraw = true
   }
 
   removeElemFromLegend (id) {
-    const checkId = e => e.id === id
-    const legendPt = _.remove(this.legend.pts, checkId)
+    const legendPt = this.legend.removePt(id)
     this.pts.push(legendPt.pt)
     this.lab.push(legendPt.lab)
 
@@ -526,7 +523,7 @@ class PlotData {
 
     this.normalizeData()
     this.getPtsAndLabs('PlotData.removeElemFromLegend')
-    this.legend.setLegendGroupsAndPts(this.legend.groups, this.legend.pts, this.vb, this.Zquartiles)
+    this.setLegend()
   }
 
   resetLegendPts () {

@@ -577,8 +577,7 @@ class RectPlot {
 
   drawLegend () {
     return new Promise(function (resolve, reject) {
-      // this.data.setupLegendGroupsAndPts()
-      this.legend.setLegendGroupsAndPts(this.data.legendGroups, this.data.legendPts, this.data.vb, this.data.Zquartiles)
+      this.data.setLegend()
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.svg.selectAll('.legend-bubbles').remove()
         this.svg.selectAll('.legend-bubbles')
@@ -645,7 +644,7 @@ class RectPlot {
           .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text } else { return d.text } })
           .call(drag)
 
-      SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendPts, this.svg.selectAll('.legend-dragged-pts-text'))
+      SvgUtils.setSvgBBoxWidthAndHeight(this.legend.pts, this.svg.selectAll('.legend-dragged-pts-text'))
 
       if (this.legendSettings.showLegend()) {
         this.svg.selectAll('.legend-groups-text').remove()
@@ -677,7 +676,7 @@ class RectPlot {
                 .attr('fill-opacity', d => d.fillOpacity)
 
         // Height and width are not provided
-        SvgUtils.setSvgBBoxWidthAndHeight(this.data.legendGroups, this.svg.selectAll('.legend-groups-text'))
+        SvgUtils.setSvgBBoxWidthAndHeight(this.legend.groups, this.svg.selectAll('.legend-groups-text'))
       }
 
       if (this.legendSettings.showLegend() || (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
