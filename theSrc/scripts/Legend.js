@@ -61,8 +61,11 @@ class Legend {
     return (this.getBubblesTitle() !== null) ? this.getBubblesTitle()[0].width : undefined
   }
 
-  setLegendGroupsAndPts (pts = [], groups, vb, Zquartiles) {
-    if ((pts.length > 0) && (this.legendSettings.showLegend())) {
+  setLegendGroupsAndPts (vb, Zquartiles) {
+    const showGroups = this.legendSettings.showLegend()
+    const pts = this.pts
+    const groups = this.groups
+    if ((this.pts.length > 0) && showGroups) {
       const legendItemArray = []
 
       this.pts = []
@@ -72,16 +75,15 @@ class Legend {
       _.map(pts, p => legendItemArray.push(p))
 
       const itemPositions = this.getLegendItemsPositions(vb, Zquartiles, legendItemArray)
+
       _.forEach(itemPositions, (item) => {
         (item.cx === undefined) ? this.pts.push(item) : this.groups.push(item)
       })
-    } else if ((pts.length > 0) && (!this.legendSettings.showLegend())) {
+    } else if ((pts.length > 0) && !showGroups) {
       this.pts = this.getLegendItemsPositions(vb, Zquartiles, pts)
     } else {
       this.groups = this.getLegendItemsPositions(vb, Zquartiles, groups)
     }
-    groups = this.groups
-    pts = this.pts
   }
 
   getLegendItemsPositions (vb, Zquartiles, itemsArray) {
@@ -154,6 +156,16 @@ class Legend {
   removePt (id) {
     const checkId = e => e.id === id
     return _.remove(this.pts, checkId)
+  }
+
+  addGroup (text, color, fillOpacity) {
+    this.groups.push({
+      text: text,
+      color: color,
+      r: this.getPtRadius(),
+      anchor: 'start',
+      fillOpacity: fillOpacity
+    })
   }
 
   getWidth () { return this.width }

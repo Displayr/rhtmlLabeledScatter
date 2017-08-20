@@ -365,85 +365,8 @@ class PlotData {
     }).catch(err => console.log(err))
   }
 
-  // setLegendItemsPositions (itemsArray, numCols) {
-  //   const bubbleLegendTextHeight = 20
-  //   const numItems = itemsArray.length
-  //   this.legendHeight = this.vb.height
-  //   if ((this.legend.getBubblesTitle() !== null) && this.legendSettings.showBubblesInLegend()) {
-  //     this.legendHeight = this.legend.getBubblesTitle()[0].y - bubbleLegendTextHeight - this.vb.y
-  //   }
-  //
-  //   // if (this.Zquartiles != null) {
-  //   //   const legendUtils = LegendUtils
-  //   //   legendUtils.setupBubbles(this.vb, this.Zquartiles, this.legend)
-  //   // }
-  //
-  //   const startOfCenteredLegendItems = (((this.vb.y + (this.legendHeight / 2)) -
-  //                                 ((this.legend.getHeightOfRow() * (numItems / numCols)) / 2)) +
-  //                                 this.legend.getPtRadius())
-  //   const startOfViewBox = this.vb.y + this.legend.getPtRadius()
-  //   const legendStartY = Math.max(startOfCenteredLegendItems, startOfViewBox)
-  //
-  //   let colSpacing = 0
-  //   let numItemsInPrevCols = 0
-  //
-  //   let i = 0
-  //   let currentCol = 1
-  //   return (() => {
-  //     const result = []
-  //     while (i < numItems) {
-  //       if (numCols > 1) {
-  //         const numElemsInCol = numItems / numCols
-  //         const exceededCurrentCol = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
-  //         const plottedEvenBalanceOfItemsBtwnCols = i >= (numElemsInCol * currentCol)
-  //         if (exceededCurrentCol || plottedEvenBalanceOfItemsBtwnCols) {
-  //           colSpacing = (this.legend.getColSpace() + (this.legend.getPtRadius() * 2) + this.legend.getPtToTextSpace()) * currentCol
-  //           numItemsInPrevCols = i
-  //           currentCol++
-  //         }
-  //
-  //         const totalItemsSpacingExceedLegendArea = (legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())) > (this.vb.y + this.legendHeight)
-  //         if (totalItemsSpacingExceedLegendArea) { break }
-  //       }
-  //
-  //       const li = itemsArray[i]
-  //       if (li.isDraggedPt) {
-  //         li.x = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing
-  //         li.y = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow()) + this.legend.getVertPtPadding()
-  //       } else {
-  //         li.cx = this.legend.getX() + this.legend.getPaddingLeft() + colSpacing + li.r
-  //         li.cy = legendStartY + ((i - numItemsInPrevCols) * this.legend.getHeightOfRow())
-  //         li.x = li.cx + this.legend.getPtToTextSpace()
-  //         li.y = li.cy + li.r
-  //       }
-  //       result.push(i++)
-  //     }
-  //     return result
-  //   })()
-  // }
-
-  // setupLegendGroupsAndPts () {
-  //   if ((this.legendPts.length > 0) && (this.legendSettings.showLegend())) {
-  //     const legendItemArray = []
-  //
-  //     _.map(this.legendGroups, g => legendItemArray.push(g))
-  //     _.map(this.legendPts, p => legendItemArray.push(p))
-  //
-  //     return this.setLegendItemsPositions(legendItemArray, this.legend.getCols())
-  //   } else if ((this.legendPts.length > 0) && (!this.legendSettings.showLegend())) {
-  //     return this.setLegendItemsPositions(this.legendPts, this.legend.getCols())
-  //   } else {
-  //     return this.setLegendItemsPositions(this.legendGroups, this.legend.getCols())
-  //   }
-  // }
-
   setLegend () {
-    console.log('set legend')
-    console.log(this.legendPts)
-    console.log(this.legendGroups)
-    console.log(this.legend.pts)
-    console.log(this.legend.groups)
-    this.legend.setLegendGroupsAndPts(this.legendPts, this.legendGroups, this.vb, this.Zquartiles)
+    this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles)
   }
 
   resizedAfterLegendGroupsDrawn (vb) {
