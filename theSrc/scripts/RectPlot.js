@@ -317,17 +317,17 @@ class RectPlot {
       this.title.x = this.vb.x + (this.vb.width / 2)
 
       if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
-        for (var pt of Array.from(this.state.getLegendPts())) {
+        _.map(this.state.getLegendPts(), pt => {
           if (!_.includes(this.data.outsidePlotPtsId, pt)) {
             this.data.addElemToLegend(pt)
           }
-        }
+        })
 
-        for (pt of Array.from(this.data.outsidePlotPtsId)) {
+        _.map(this.data.outsidePlotPtsId, pt => {
           if (!_.includes(this.state.getLegendPts(), pt)) {
             this.state.pushLegendPt(pt)
           }
-        }
+        })
         const error = new Error('drawLabsAndPlot failed : state.isLegendPtsSynced = false')
         error.retry = true
         throw error

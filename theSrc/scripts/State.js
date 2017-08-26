@@ -22,7 +22,7 @@ class State {
       this.saveToState({'X': X, 'Y': Y, 'label': label})
     }
 
-    this.legendPts = this.isStoredInState('legendPts') ? _.uniq(this.getStored('legendPts')) : []
+    this.legendPts = this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : []
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
@@ -55,7 +55,7 @@ class State {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
     this.algoPositionedLabs = []
-    this.saveToState({'legendPts': this.legendPts,
+    this.saveToState({'legend.pts': this.legendPts,
       'userPositionedLabs': this.userPositionedLabs,
       'algoPositionedLabs': this.algoPositionedLabs})
   }
@@ -63,7 +63,7 @@ class State {
   pullLegendPt (id) {
     _.pull(this.legendPts, id)
     this.algoPositionedLabs = []
-    this.saveToState({'legendPts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
+    this.saveToState({'legend.pts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   resetStateLegendPtsAndPositionedLabs () {
