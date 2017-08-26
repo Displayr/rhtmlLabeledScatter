@@ -206,7 +206,7 @@ class RectPlot {
 
     if (this.title.text === '' || !_.isString(this.title.text)) {
       this.title.textHeight = 0
-      this.title.paddingBot = 20
+      this.title.paddingBot = 0
     } else {
       this.title.textHeight = titleFontSize
       this.title.paddingBot = 20
