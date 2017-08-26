@@ -235,7 +235,6 @@ class RectPlot {
     this.title.x = this.width / 2
     this.legend = new Legend(this.legendSettings)
 
-    console.log(this.title)
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
       this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 
