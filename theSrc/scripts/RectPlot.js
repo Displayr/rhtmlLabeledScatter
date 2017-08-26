@@ -93,6 +93,7 @@ class RectPlot {
     debugMode = false
   ) {
     autoBind(this)
+    this.pltUniqueId = md5((new Date()).getTime())
     this.state = state
     this.width = width
     this.height = height
@@ -715,7 +716,7 @@ class RectPlot {
     // Clip paths used to crop bubbles if they expand beyond the plot's borders
     if (Utils.isArrOfNums(this.Z)) {
       this.svg.selectAll('clipPath').remove()
-      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb)
+      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb, this.pltUniqueId)
     }
   }
 

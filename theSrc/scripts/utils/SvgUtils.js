@@ -10,7 +10,7 @@ class SvgUtils {
     })
   }
   // If user defined boundary is less than a bubble, then clip the bubble when it reaches the border
-  static clipBubbleIfOutsidePlotArea (svg, pts, vb) {
+  static clipBubbleIfOutsidePlotArea (svg, pts, vb, pltUniqueId) {
     // Defines boundaries
     const bound = {
       left: vb.x,
@@ -49,7 +49,7 @@ class SvgUtils {
         }
         // Append clip-path to svg for this pt
         svg.append('clipPath')
-           .attr('id', `cp-${pt.id}`)
+           .attr('id', `plt-${pltUniqueId}-cp-${pt.id}`)
            .append('rect')
            .attr('x', cp.x)
            .attr('y', cp.y)
@@ -57,7 +57,7 @@ class SvgUtils {
            .attr('height', cp.height)
 
         svg.select(`circle#anc-${pt.id}`)
-           .attr('clip-path', d => `url(#cp-${d.id})`)
+           .attr('clip-path', d => `url(#plt-${pltUniqueId}-cp-${d.id})`)
       }
     })
   }
