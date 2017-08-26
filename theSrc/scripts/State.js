@@ -22,10 +22,20 @@ class State {
       this.saveToState({'X': X, 'Y': Y, 'label': label})
     }
 
-    this.legendPts = this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : []
+    this.legendPts = this.retrieveLegendPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
+  }
+
+  retrieveLegendPts () {
+    // Older version of state key was 'legendPts', newer renamed to 'legend.pts'
+    // Note: older state name will automatically be updated upon reset
+    if (this.isStoredInState('legendPts')) {
+      return _.uniq(this.getStored('legendPts'))
+    } else {
+      return (this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : [])
+    }
   }
 
   isStoredInState (key) {
