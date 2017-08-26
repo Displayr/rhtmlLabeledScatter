@@ -39,7 +39,7 @@ class RectPlot {
     origin,
     originAlign,
     titleFontFamily,
-    titleFontSize,
+    titleFontSize = 16,
     titleFontColor,
     xTitleFontFamily,
     xTitleFontSize,
@@ -204,7 +204,7 @@ class RectPlot {
       fontFamily: titleFontFamily
     }
 
-    if (this.title.text === '') {
+    if (this.title.text === '' || !_.isString(this.title.text)) {
       this.title.textHeight = 0
       this.title.paddingBot = 0
     } else {
@@ -235,6 +235,7 @@ class RectPlot {
     this.title.x = this.width / 2
     this.legend = new Legend(this.legendSettings)
 
+    console.log(this.title)
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
       this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 

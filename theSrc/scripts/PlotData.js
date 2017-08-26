@@ -391,7 +391,7 @@ class PlotData {
 
     this.legend.setColSpace(maxTextWidth)
 
-    vb.width = vb.svgWidth - this.legend.getWidth() - vb.x - this.axisDimensionText.rowMaxWidth
+    vb.setWidth(vb.svgWidth - this.legend.getWidth() - vb.x - this.axisDimensionText.rowMaxWidth)
     this.legend.setX(vb.x + vb.width)
 
     const isNewWidthSignficantlyDifferent = Math.abs(initWidth - vb.width) > 0.1
