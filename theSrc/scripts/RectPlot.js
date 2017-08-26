@@ -32,7 +32,7 @@ class RectPlot {
     xTitle,
     yTitle,
     zTitle = '',
-    title,
+    title = '',
     colors,
     transparency,
     grid,
