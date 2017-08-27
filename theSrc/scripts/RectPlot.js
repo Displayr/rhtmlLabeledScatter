@@ -76,7 +76,7 @@ class RectPlot {
     showYAxis = true,
     axisFontFamily,
     axisFontColor = 'black',
-    axisFontSize,
+    axisFontSize = 12,
     pointRadius = 2,
     xBoundsMinimum = null,
     xBoundsMaximum = null,
@@ -205,7 +205,8 @@ class RectPlot {
     }
 
     if (this.title.text === '' || !_.isString(this.title.text)) {
-      this.title.textHeight = 0
+      // If empty title height, vertical axis numbers may need excess padding
+      this.title.textHeight = _.isNumber(this.axisSettings.fontSize) ? this.axisSettings.fontSize / 2 : 0
       this.title.paddingBot = 0
     } else {
       this.title.textHeight = titleFontSize
