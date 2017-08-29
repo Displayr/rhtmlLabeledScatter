@@ -45,7 +45,7 @@ class DragUtils {
         // For logo labels and not bubbles, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
-        plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.viewBoxDim)
+        plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.vb)
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
         if (!showTrendLine) {
           plot.drawLinks()
@@ -75,14 +75,14 @@ class DragUtils {
 
       // Save the new location of text so links can be redrawn
       const id = d3.select(this).attr('id').split('legend-')[1]
-      const legendPt = _.find(data.legendPts, l => l.id === Number(id))
+      const legendPt = _.find(data.legend.pts, l => l.id === Number(id))
       legendPt.lab.x = d3.event.x
       legendPt.lab.y = d3.event.y
     }
 
     const dragEnd = function () {
       const id = Number(d3.select(this).attr('id').split('legend-')[1])
-      const legendPt = _.find(data.legendPts, l => l.id === Number(id))
+      const legendPt = _.find(data.legend.pts, l => l.id === Number(id))
       if (plot.data.isLegendPtOutsideViewBox(legendPt.lab)) {
         d3.select(this)
           .attr('x', (d3.select(this).x = legendPt.x))

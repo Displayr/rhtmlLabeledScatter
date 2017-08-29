@@ -12,20 +12,14 @@ import Utils from './utils/Utils'
 class PlotColors {
   constructor (plotData) {
     this.plotData = plotData
-    this.plotData.legendGroups = []
+    this.legend = plotData.legend
 
     this.groupToColorMap = {}
 
     const uniqueGroups = _.uniq(this.plotData.group || [])
-    _(uniqueGroups).each((groupName, index) => {
-      const newColor = this.getNewColor(index)
-      this.plotData.legendGroups.push({
-        text: groupName,
-        color: newColor,
-        r: this.plotData.legend.getPtRadius(),
-        anchor: 'start',
-        fillOpacity: this.getFillOpacity(this.plotData.transparency)
-      })
+    _.forEach(uniqueGroups, (groupName, i) => {
+      const newColor = this.getNewColor(i)
+      this.legend.addGroup(groupName, newColor, this.getFillOpacity(this.plotData.transparency))
       this.groupToColorMap[groupName] = newColor
     })
   }

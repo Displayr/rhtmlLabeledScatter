@@ -22,10 +22,20 @@ class State {
       this.saveToState({'X': X, 'Y': Y, 'label': label})
     }
 
-    this.legendPts = this.isStoredInState('legendPts') ? _.uniq(this.getStored('legendPts')) : []
+    this.legendPts = this.retrieveLegendPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
-    this.viewBoxDim = this.isStoredInState('viewBoxDim') ? this.getStored('viewBoxDim') : {}
+    this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
+  }
+
+  retrieveLegendPts () {
+    // Older version of state key was 'legendPts', newer renamed to 'legend.pts'
+    // Note: older state name will automatically be updated upon reset
+    if (this.isStoredInState('legendPts')) {
+      return _.uniq(this.getStored('legendPts'))
+    } else {
+      return (this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : [])
+    }
   }
 
   isStoredInState (key) {
@@ -55,7 +65,7 @@ class State {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
     this.algoPositionedLabs = []
-    this.saveToState({'legendPts': this.legendPts,
+    this.saveToState({'legend.pts': this.legendPts,
       'userPositionedLabs': this.userPositionedLabs,
       'algoPositionedLabs': this.algoPositionedLabs})
   }
@@ -63,14 +73,14 @@ class State {
   pullLegendPt (id) {
     _.pull(this.legendPts, id)
     this.algoPositionedLabs = []
-    this.saveToState({'legendPts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
+    this.saveToState({'legend.pts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
     this.algoPositionedLabs = []
-    this.viewBoxDim = {}
+    this.vb = {}
     this.resetState()
   }
 
@@ -91,11 +101,11 @@ class State {
 
   updateViewBoxAndSave (vb) {
     this.updateViewBox(vb)
-    this.saveToState({'viewBoxDim': this.viewBoxDim})
+    this.saveToState({'vb': this.vb})
   }
 
   updateViewBox (vb) {
-    this.viewBoxDim = {
+    this.vb = {
       width: vb.width,
       height: vb.height,
       x: vb.x,
@@ -103,27 +113,27 @@ class State {
     }
   }
 
-  pushUserPositionedLabel (id, labx, laby, viewBoxDim) {
+  pushUserPositionedLabel (id, labx, laby, vb) {
     _.remove(this.algoPositionedLabs, e => e.id === id)
     _.remove(this.userPositionedLabs, e => e.id === id)
 
     this.userPositionedLabs.push({
       id,
-      x: (labx - viewBoxDim.x) / viewBoxDim.width,
-      y: (laby - viewBoxDim.y) / viewBoxDim.height
+      x: (labx - vb.x) / vb.width,
+      y: (laby - vb.y) / vb.height
     })
-    this.updateViewBox(viewBoxDim)
-    this.saveToState({'viewBoxDim': this.viewBoxDim, 'userPositionedLabs': this.userPositionedLabs})
+    this.updateViewBox(vb)
+    this.saveToState({'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs})
   }
 
-  updateLabelsWithPositionedData (labels, viewBoxDim) {
+  updateLabelsWithPositionedData (labels, vb) {
     const combinedLabs = this.userPositionedLabs.concat(this.algoPositionedLabs)
     if (!_.isEmpty(combinedLabs)) {
       _(labels).each((label) => {
         const matchingLabel = _.find(combinedLabs, e => e.id === label.id)
         if (matchingLabel != null) {
-          label.x = (matchingLabel.x * viewBoxDim.width) + viewBoxDim.x
-          label.y = (matchingLabel.y * viewBoxDim.height) + viewBoxDim.y
+          label.x = (matchingLabel.x * vb.width) + vb.x
+          label.y = (matchingLabel.y * vb.height) + vb.y
         }
       })
     }
@@ -138,41 +148,41 @@ class State {
     return _.map(combinedLabs, e => e.id)
   }
 
-  getPositionedLabIds (currentViewboxdim) {
-    if (_.isEmpty(this.viewBoxDim)) {
-      // Since viewBoxDim is null, that means it is the first run of the algorithm
+  getPositionedLabIds (currentvb) {
+    if (_.isEmpty(this.vb)) {
+      // Since vb is null, that means it is the first run of the algorithm
       return this.getUserPositionedLabIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
-      if (currentViewboxdim.height === this.viewBoxDim.height &&
-          currentViewboxdim.width === this.viewBoxDim.width &&
-          currentViewboxdim.x === this.viewBoxDim.x &&
-          currentViewboxdim.y === this.viewBoxDim.y) {
+      if (currentvb.height === this.vb.height &&
+          currentvb.width === this.vb.width &&
+          currentvb.x === this.vb.x &&
+          currentvb.y === this.vb.y) {
         return this.getAllPositionedLabsIds()
       } else {
-        this.updateViewBoxAndSave(currentViewboxdim)
+        this.updateViewBoxAndSave(currentvb)
         return this.getUserPositionedLabIds()
       }
     }
   }
 
-  saveAlgoPositionedLabs (labels, viewBoxDim) {
+  saveAlgoPositionedLabs (labels, vb) {
     _.map(labels, lab => {
       if (_.every(this.userPositionedLabs, userlab => userlab.id !== lab.id)) {
-        this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, viewBoxDim)
+        this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, vb)
       }
     })
-    this.updateViewBox(viewBoxDim)
-    this.saveToState({'viewBoxDim': this.viewBoxDim, 'algoPositionedLabs': this.algoPositionedLabs})
+    this.updateViewBox(vb)
+    this.saveToState({'vb': this.vb, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
-  pushAlgoPositionedLabel (id, labx, laby, viewBoxDim) {
+  pushAlgoPositionedLabel (id, labx, laby, vb) {
     _.remove(this.algoPositionedLabs, e => e.id === id)
 
     this.algoPositionedLabs.push({
       id,
-      x: (labx - viewBoxDim.x) / viewBoxDim.width,
-      y: (laby - viewBoxDim.y) / viewBoxDim.height
+      x: (labx - vb.x) / vb.width,
+      y: (laby - vb.y) / vb.height
     })
   }
 }

@@ -21,8 +21,8 @@ class LegendUtils {
     return this.exponentialShortForms[val]
   }
 
-  static normalizedZtoRadius (viewBoxDim, normZval) {
-    return Math.sqrt((viewBoxDim.width * viewBoxDim.height) / 16 / Math.PI) * normZval
+  static normalizedZtoRadius (vb, normZval) {
+    return Math.sqrt((vb.width * vb.height) / 16 / Math.PI) * normZval
   }
 
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
@@ -98,12 +98,12 @@ class LegendUtils {
     })
   }
 
-  static setupBubbles (viewBoxDim, Zquartiles, legend) {
-    const rTop = this.normalizedZtoRadius(viewBoxDim, Zquartiles.top.val)
-    const rMid = this.normalizedZtoRadius(viewBoxDim, Zquartiles.mid.val)
-    const rBot = this.normalizedZtoRadius(viewBoxDim, Zquartiles.bot.val)
-    const cx = viewBoxDim.x + viewBoxDim.width + (legend.getWidth() / 2)
-    const viewBoxYBottom = viewBoxDim.y + viewBoxDim.height
+  static setupBubbles (vb, Zquartiles, legend) {
+    const rTop = this.normalizedZtoRadius(vb, Zquartiles.top.val)
+    const rMid = this.normalizedZtoRadius(vb, Zquartiles.mid.val)
+    const rBot = this.normalizedZtoRadius(vb, Zquartiles.bot.val)
+    const cx = vb.x + vb.width + (legend.getWidth() / 2)
+    const viewBoxYBottom = vb.y + vb.height
     const bubbleTextPadding = 5
     legend.setBubblesMaxWidth(rTop * 2)
     legend.setBubbles([

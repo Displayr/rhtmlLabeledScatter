@@ -23,11 +23,11 @@
     "4,4",
     "1.2,1.2"
   ],
-  "viewBoxDim": {
-    "width": 426,
-    "height": 481,
-    "x": 57,
-    "y": 65
+  "vb": {
+    "width": 432.073646946252,
+    "height": 541,
+    "x": 53.8125,
+    "y": 11
   },
   "algoPositionedLabs": [
     {

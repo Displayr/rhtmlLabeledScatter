@@ -96,7 +96,7 @@ Feature: State Interactions
     When I drag label 2 to the legend
     Then label 2 should be in the legend
     And the "simple_bubbleplot_after_label_moved_to_legend" snapshot matches the baseline
-    And the final state callback should match "label_moved_to_legend" within 0.02
+    And the final state callback should match "label_moved_to_legend" within 2
 
   @applitools @state @bubbleplot
   Scenario: User can load a bubbleplot label with saved state (label moved to legend) and see their modified scatterplot

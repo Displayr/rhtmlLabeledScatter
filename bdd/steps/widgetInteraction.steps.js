@@ -132,7 +132,7 @@ ${JSON.stringify(actualState[constantKey], {}, 2)}
         const variableSections = _.union(_.keys(actualState), _.keys(expectedState))
         _(variableSections).each((variableSection) => {
           if (!_.isArray(actualState[variableSection]) || !_.isArray(expectedState[variableSection])) {
-            if (variableSection !== 'viewBoxDim') throw new Error(`Test Error: Expected ${variableSection} to be an array`)
+            if (variableSection !== 'vb') throw new Error(`Test Error: Expected ${variableSection} to be an array`)
           }
 
           this.expect(actualState[variableSection].length, `${variableSection} incorrect length`).to.equal(expectedState[variableSection].length)

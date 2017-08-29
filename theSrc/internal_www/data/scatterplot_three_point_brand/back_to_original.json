@@ -14,9 +14,9 @@
     "Nike athletic shoes",
     "/images/apple.jpg"
   ],
-  "legendPts": [],
+  "legend.pts": [],
   "userPositionedLabs": [],
-  "viewBoxDim": {
+  "vb": {
     "width": 751.0774812734082,
     "height": 509,
     "x": 40.828125,

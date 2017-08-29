@@ -39,10 +39,10 @@ describe('AxisUtils:', function () {
         showY: true
       }
 
-      this.compute = ({ plot = this.defaultPlot, data = this.defaultData, viewBox = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
+      this.compute = ({ plot = this.defaultPlot, data = this.defaultData, vb = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
         // TODO KZ remove this duplicate dependency bug (see normalizeXCoords and normalizeYCoords)
-        data.viewBoxDim = viewBox
-        this.result = AxisUtils.getAxisDataArrays(plot, data, viewBox, axisSettings)
+        data.vb = vb
+        this.result = AxisUtils.getAxisDataArrays(plot, data, vb, axisSettings)
       }
     })
 

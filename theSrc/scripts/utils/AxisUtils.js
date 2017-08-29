@@ -68,17 +68,17 @@ class AxisUtils {
   }
 
   static _normalizeXCoords (data, Xcoord) {
-    const { viewBoxDim } = data
-    return (((Xcoord - data.minX) / (data.maxX - data.minX)) * viewBoxDim.width) + viewBoxDim.x
+    const { vb } = data
+    return (((Xcoord - data.minX) / (data.maxX - data.minX)) * vb.width) + vb.x
   }
 
   static _normalizeYCoords (data, Ycoord) {
-    const { viewBoxDim } = data
-    return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * viewBoxDim.height) + viewBoxDim.y + viewBoxDim.height
+    const { vb } = data
+    return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * vb.height) + vb.y + vb.height
   }
 
   // TODO KZ calculation of x axis and y axis are independent ? If so, then split into a reusable function
-  static getAxisDataArrays (plot, data, viewBoxDim, axisSettings) {
+  static getAxisDataArrays (plot, data, vb, axisSettings) {
     // exit if all points have been dragged off plot
     if (!(data.len > 0)) {
       return {}
@@ -161,9 +161,9 @@ class AxisUtils {
         const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
         const yAxisOrigin = {
           x1: xCoordOfYAxisOrigin,
-          y1: viewBoxDim.y,
+          y1: vb.y,
           x2: xCoordOfYAxisOrigin,
-          y2: viewBoxDim.y + viewBoxDim.height
+          y2: vb.y + vb.height
         }
         if (axisSettings.showX) {
           pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
@@ -173,9 +173,9 @@ class AxisUtils {
         }
       } else {
         let x1 = this._normalizeXCoords(data, val)
-        let y1 = viewBoxDim.y
+        let y1 = vb.y
         let x2 = this._normalizeXCoords(data, val)
-        let y2 = viewBoxDim.y + viewBoxDim.height
+        let y2 = vb.y + vb.height
         gridLineStack.push({ x1, y1, x2, y2 })
         if (axisSettings.showX) {
           pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
@@ -189,9 +189,9 @@ class AxisUtils {
       if (val === 0) {
         const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
         const xAxisOrigin = {
-          x1: viewBoxDim.x,
+          x1: vb.x,
           y1: yCoordOfXAxisOrigin,
-          x2: viewBoxDim.x + viewBoxDim.width,
+          x2: vb.x + vb.width,
           y2: yCoordOfXAxisOrigin
         }
         if (axisSettings.showY) {
@@ -201,9 +201,9 @@ class AxisUtils {
           originAxis.push(xAxisOrigin)
         }
       } else {
-        let x1 = viewBoxDim.x
+        let x1 = vb.x
         let y1 = this._normalizeYCoords(data, val)
-        let x2 = viewBoxDim.x + viewBoxDim.width
+        let x2 = vb.x + vb.width
         let y2 = this._normalizeYCoords(data, val)
         gridLineStack.push({x1, y1, x2, y2})
         if (axisSettings.showY) {
