@@ -36,9 +36,9 @@ class RectPlot {
     titleFontSize = 16,
     titleFontColor,
     subtitle = '',
-    subtitleFontFamily,
-    subtitleFontSize,
-    subtitleFontColor,
+    subtitleFontFamily = 'Arial',
+    subtitleFontSize = 12,
+    subtitleFontColor = 'black',
     footer = '',
     footerFontFamily,
     footerFontSize,
@@ -205,8 +205,9 @@ class RectPlot {
       ymax: yBoundsMaximum
     }
 
-    this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize)
-    this.title.setY(this.padding.vertical + this.title.getHeight())
+    this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
+    this.subtitle = new Subtitle(subtitle, subtitleFontColor, subtitleFontSize, subtitleFontFamily)
+    this.subtitle.setY(this.title.getHeightAndPadding())
 
     this.grid = !(_.isNull(grid)) ? grid : true
     this.origin = !(_.isNull(origin)) ? origin : true
@@ -216,12 +217,6 @@ class RectPlot {
       this.label = _.map(X, () => { return '' })
       this.showLabels = false
     }
-
-    this.subtitle = new Subtitle(subtitle, {
-      color: subtitleFontColor,
-      size: subtitleFontSize,
-      family: subtitleFontFamily
-    })
 
     this.debugMode = debugMode
 
@@ -233,13 +228,15 @@ class RectPlot {
     this.width = width
     this.height = height
     this.title.setX(this.width / 2)
+    this.subtitle.setX(this.width / 2)
     this.legend = new Legend(this.legendSettings)
 
-    this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
+    this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.labelsFont,
       this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 
-    this.legend.setX(this.vb.x + this.vb.width)
-    this.title.x = this.vb.x + (this.vb.width / 2)
+    this.legend.setX(this.vb.getLegendX())
+    this.title.setX(this.vb.getTitleX())
+    this.subtitle.setX(this.vb.getTitleX())
 
     this.data = new PlotData(this.X,
                          this.Y,
@@ -314,7 +311,9 @@ class RectPlot {
     this.data.normalizeData()
 
     return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
-      this.title.x = this.vb.x + (this.vb.width / 2)
+      const titlesX = this.vb.x + (this.vb.width / 2)
+      this.title.setX(titlesX)
+      this.subtitle.setX(titlesX)
 
       if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
         _.map(this.state.getLegendPts(), pt => {
@@ -335,6 +334,7 @@ class RectPlot {
     }).then(() => {
       try {
         this.title.drawWith(this.pltUniqueId, this.svg)
+        this.subtitle.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
         this.drawAnc()
         this.drawLabs()

@@ -12,6 +12,7 @@
   "origin": true,
   "originAlign": false,
   "title": "Life expectancy plot",
+  "subtitle": "LifeSubtitle<br>Blah<br>Blah<br>Blah<br>Blah<br>Blah",
   "titleFontFamily": "Arial",
   "yTitleFontFamily": "Verdana",
   "xTitleFontFamily": "Arial",

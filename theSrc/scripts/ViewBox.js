@@ -4,6 +4,7 @@ class ViewBox {
                padding,
                legend,
                title,
+               subtitle,
                labelsFont,
                axisLeaderLineLength,
                axisDimensionText,
@@ -12,11 +13,13 @@ class ViewBox {
     this.svgWidth = width
     this.svgHeight = height
 
+    const titlesAndPaddingHeight = title.getHeight() + title.paddingBot + subtitle.getHeight()
+
     this.setWidth(width - legend.getWidth() - (padding.horizontal * 3) - axisLeaderLineLength - axisDimensionText.rowMaxWidth - yTitle.textHeight - axisDimensionText.rightPadding)
-    this.setHeight(height - (padding.vertical * 2) - title.getHeight() - title.paddingBot - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
+    this.setHeight(height - (padding.vertical * 2) - titlesAndPaddingHeight - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
 
     this.x = (padding.horizontal * 2) + axisDimensionText.rowMaxWidth + axisLeaderLineLength + yTitle.textHeight
-    this.y = padding.vertical + title.getHeight() + title.paddingBot
+    this.y = padding.vertical + titlesAndPaddingHeight
 
     this.labelFontSize = labelsFont.size
     this.labelSmallFontSize = labelsFont.size * 0.75
@@ -45,6 +48,14 @@ class ViewBox {
       console.log(this.svgHeight)
       throw new Error(`ViewBox height cannot be < 0! ! ${h}, ${this.svgWidth}, ${this.svgHeight}`)
     }
+  }
+
+  getLegendX () {
+    return this.x + this.width
+  }
+
+  getTitleX () {
+    return this.x + (this.width / 2)
   }
 }
 

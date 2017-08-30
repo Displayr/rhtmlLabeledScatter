@@ -5,17 +5,14 @@ class Title {
                titleFontColor,
                titleFontSize,
                titleFontFamily,
-               axisFontSize) {
+               axisFontSize,
+               plotPaddingVertical) {
     this.text = titleText
     this.font = {
       color: titleFontColor,
       size: titleFontSize,
       family: titleFontFamily
     }
-
-    // Positional param initialisation
-    this.x = 0
-    this.y = 0
 
     if (this.text === '' || !_.isString(this.text)) {
       // If empty title height, vertical axis numbers may need excess padding
@@ -25,6 +22,10 @@ class Title {
       this.height = this.font.size
       this.paddingBot = 20
     }
+
+    // Positional param initialisation
+    this.x = 0
+    this.y = plotPaddingVertical + this.height
   }
 
   setX (x) {
@@ -39,9 +40,12 @@ class Title {
     return this.height
   }
 
+  getHeightAndPadding () {
+    return this.height + this.paddingBot
+  }
+
   drawWith (plotId, svg) {
     if (this.text !== '') {
-      console.log('TitleDraw!!!')
       svg.selectAll(`.plt-${plotId}-title`).remove()
       return svg.append('text')
                 .attr('class', `plt-${plotId}-title`)
