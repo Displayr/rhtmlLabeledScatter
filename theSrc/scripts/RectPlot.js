@@ -208,7 +208,7 @@ class RectPlot {
 
     this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
     this.subtitle = new Subtitle(subtitle, subtitleFontColor, subtitleFontSize, subtitleFontFamily)
-    this.subtitle.setY(this.title.getHeightAndPadding())
+    this.subtitle.setY(this.title.getSubtitleY())
     this.footer = new Footer(footer, footerFontColor, footerFontSize, footerFontFamily, this.height)
 
     this.grid = !(_.isNull(grid)) ? grid : true

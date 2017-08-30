@@ -13,14 +13,15 @@ class Title {
       size: titleFontSize,
       family: titleFontFamily
     }
+    this.padding = {
+      bot: 10
+    }
 
     if (this.text === '' || !_.isString(this.text)) {
       // If empty title height, vertical axis numbers may need excess padding
       this.height = _.isNumber(axisFontSize) ? axisFontSize / 2 : 0
-      this.paddingBot = 0
     } else {
       this.height = this.font.size
-      this.paddingBot = 20
     }
 
     // Positional param initialisation
@@ -40,8 +41,8 @@ class Title {
     return this.height
   }
 
-  getHeightAndPadding () {
-    return this.height + this.paddingBot
+  getSubtitleY () {
+    return this.y + this.padding.bot
   }
 
   drawWith (plotId, svg) {

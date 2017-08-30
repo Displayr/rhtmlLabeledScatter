@@ -14,8 +14,8 @@ class Subtitle {
     this.y = 0
     this.padding = {
       inner: 2,
-      top: 5,
-      bot: 10
+      top: 10,
+      bot: 20
     }
 
     if (this.text !== '' && _.isString(this.text)) {
