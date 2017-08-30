@@ -13,8 +13,9 @@ class Subtitle {
     this.x = 0
     this.y = 0
     this.padding = {
-      inner: 5,
-      outer: 5
+      inner: 2,
+      top: 5,
+      bot: 10
     }
 
     if (this.text !== '' && _.isString(this.text)) {
@@ -23,10 +24,10 @@ class Subtitle {
       const numPaddingBtwnLines = linesOfText > 0 ? linesOfText - 1 : 0
       this.height = (this.font.size * linesOfText) +
         (this.padding.inner * numPaddingBtwnLines) +
-        (this.padding.outer * 2)
+        (this.padding.top + this.padding.bot)
     } else {
       this.text = []
-      this.height = 0
+      this.height = this.padding.bot
     }
   }
 
@@ -54,7 +55,7 @@ class Subtitle {
               .append('text')
               .attr('class', `plt-${plotId}-subtitle`)
               .attr('x', this.x)
-              .attr('y', (d, i) => this.padding.outer + this.y + (i * (this.font.size + this.padding.inner)))
+              .attr('y', (d, i) => this.padding.top + this.y + (i * (this.font.size + this.padding.inner)))
               .attr('fill', this.font.color)
               .attr('font-family', this.font.family)
               .attr('font-size', this.font.size)
