@@ -17,7 +17,11 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   x.prefix = "", y.prefix = "", z.prefix = "", x.suffix = "",
   y.suffix = "", z.suffix = "", title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  title.font.size = 16, labels.show = TRUE, labels.font.family = "Arial",
+  title.font.size = 16, subtitle = "", subtitle.font.family = "Arial",
+  subtitle.font.size = 12, subtitle.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), footer = "", footer.font.family = "Arial",
+  footer.font.size = 8, footer.font.color = rgb(44, 44, 44, maxColorValue =
+  255), labels.show = TRUE, labels.font.family = "Arial",
   labels.font.color = NULL, labels.font.size = 10,
   labels.logo.scale = NULL, legend.show = TRUE,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
@@ -74,6 +78,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{z.title}{is the title text given to the bubble size}
 
+\item{title}{is the title text given to the plot}
+
 \item{x.decimals}{the number of decimals in the x axis}
 
 \item{y.decimals}{the number of decimals in the y axis}
@@ -95,6 +101,22 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{title.font.family}{is the font family of the plot title}
 
 \item{title.font.color}{is the font color of the plot title}
+
+\item{subtitle}{is the subtitle text given to the plot}
+
+\item{subtitle.font.family}{is the font of the subtitle text}
+
+\item{subtitle.font.size}{is the font size of the subtitle text}
+
+\item{subtitle.font.color}{is the font color of the subtitle text}
+
+\item{footer}{is the footer text given at the bottom at the plot}
+
+\item{footer.font.family}{is the font of the footer text}
+
+\item{footer.font.size}{is the font size of the footer text}
+
+\item{footer.font.color}{is the font color of the footer text}
 
 \item{labels.show}{Toggle for showing labels. Defaults to true if labels array given}
 
