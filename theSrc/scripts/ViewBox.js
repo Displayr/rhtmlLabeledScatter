@@ -13,10 +13,10 @@ class ViewBox {
     this.svgHeight = height
 
     this.setWidth(width - legend.getWidth() - (padding.horizontal * 3) - axisLeaderLineLength - axisDimensionText.rowMaxWidth - yTitle.textHeight - axisDimensionText.rightPadding)
-    this.setHeight(height - (padding.vertical * 2) - title.textHeight - title.paddingBot - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
+    this.setHeight(height - (padding.vertical * 2) - title.getHeight() - title.paddingBot - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
 
     this.x = (padding.horizontal * 2) + axisDimensionText.rowMaxWidth + axisLeaderLineLength + yTitle.textHeight
-    this.y = padding.vertical + title.textHeight + title.paddingBot
+    this.y = padding.vertical + title.getHeight() + title.paddingBot
 
     this.labelFontSize = labelsFont.size
     this.labelSmallFontSize = labelsFont.size * 0.75

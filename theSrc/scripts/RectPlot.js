@@ -16,6 +16,8 @@ import LegendSettings from './LegendSettings'
 import Legend from './Legend'
 import DebugMessage from './DebugMessage'
 import ViewBox from './ViewBox'
+import Title from './Title'
+import Subtitle from './Subtitle'
 
 class RectPlot {
   constructor (state,
@@ -29,24 +31,32 @@ class RectPlot {
     labelAlt = [],
     svg,
     fixedRatio,
-    xTitle,
-    yTitle,
-    zTitle = '',
     title = '',
+    titleFontFamily,
+    titleFontSize = 16,
+    titleFontColor,
+    subtitle = '',
+    subtitleFontFamily,
+    subtitleFontSize,
+    subtitleFontColor,
+    footer = '',
+    footerFontFamily,
+    footerFontSize,
+    footerFontColor,
+    xTitle,
+    xTitleFontFamily,
+    xTitleFontSize,
+    xTitleFontColor,
+    yTitle,
+    yTitleFontFamily,
+    yTitleFontSize,
+    yTitleFontColor,
+    zTitle = '',
     colors,
     transparency,
     grid,
     origin,
     originAlign,
-    titleFontFamily,
-    titleFontSize = 16,
-    titleFontColor,
-    xTitleFontFamily,
-    xTitleFontSize,
-    xTitleFontColor,
-    yTitleFontFamily,
-    yTitleFontSize,
-    yTitleFontColor,
     showLabels = true,
     labelsFontFamily,
     labelsFontSize,
@@ -195,25 +205,8 @@ class RectPlot {
       ymax: yBoundsMaximum
     }
 
-    this.title = {
-      text: title,
-      color: titleFontColor,
-      anchor: 'middle',
-      fontSize: titleFontSize,
-      fontWeight: 'normal',
-      fontFamily: titleFontFamily
-    }
-
-    if (this.title.text === '' || !_.isString(this.title.text)) {
-      // If empty title height, vertical axis numbers may need excess padding
-      this.title.textHeight = _.isNumber(this.axisSettings.fontSize) ? this.axisSettings.fontSize / 2 : 0
-      this.title.paddingBot = 0
-    } else {
-      this.title.textHeight = titleFontSize
-      this.title.paddingBot = 20
-    }
-
-    this.title.y = this.padding.vertical + this.title.textHeight
+    this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize)
+    this.title.setY(this.padding.vertical + this.title.getHeight())
 
     this.grid = !(_.isNull(grid)) ? grid : true
     this.origin = !(_.isNull(origin)) ? origin : true
@@ -224,6 +217,12 @@ class RectPlot {
       this.showLabels = false
     }
 
+    this.subtitle = new Subtitle(subtitle, {
+      color: subtitleFontColor,
+      size: subtitleFontSize,
+      family: subtitleFontFamily
+    })
+
     this.debugMode = debugMode
 
     this.setDim(this.svg, this.width, this.height)
@@ -233,7 +232,7 @@ class RectPlot {
     this.svg = svg
     this.width = width
     this.height = height
-    this.title.x = this.width / 2
+    this.title.setX(this.width / 2)
     this.legend = new Legend(this.legendSettings)
 
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
@@ -335,7 +334,7 @@ class RectPlot {
       }
     }).then(() => {
       try {
-        this.drawTitle()
+        this.title.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
         this.drawAnc()
         this.drawLabs()
@@ -347,22 +346,6 @@ class RectPlot {
         console.log(error)
       }
     })
-  }
-
-  drawTitle () {
-    if (this.title.text !== '') {
-      this.svg.selectAll('.plot-title').remove()
-      this.svg.append('text')
-          .attr('class', 'plot-title')
-          .attr('font-family', this.title.fontFamily)
-          .attr('x', this.title.x)
-          .attr('y', this.title.y)
-          .attr('text-anchor', this.title.anchor)
-          .attr('fill', this.title.color)
-          .attr('font-size', this.title.fontSize)
-          .attr('font-weight', this.title.fontWeight)
-          .text(this.title.text)
-    }
   }
 
   drawResetButton () {
