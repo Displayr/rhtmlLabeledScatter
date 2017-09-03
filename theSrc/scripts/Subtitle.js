@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 class Subtitle {
-  constructor (subtitleText, subtitleFontColor, subtitleFontSize, subtitleFontFamily) {
+  constructor (subtitleText, subtitleFontColor, subtitleFontSize, subtitleFontFamily, titleText) {
     this.font = {
       color: subtitleFontColor,
       size: _.isNumber(subtitleFontSize) ? subtitleFontSize : 0,
@@ -27,7 +27,7 @@ class Subtitle {
         (this.padding.top + this.padding.bot)
     } else {
       this.text = []
-      this.height = this.padding.bot
+      this.height = (titleText === '') ? 0 : this.padding.bot
     }
   }
 

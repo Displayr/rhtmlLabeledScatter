@@ -24,7 +24,6 @@ class Title {
       this.height = this.font.size
     }
 
-    // Positional param initialisation
     this.x = 0
     this.y = plotPaddingVertical + this.height
   }
