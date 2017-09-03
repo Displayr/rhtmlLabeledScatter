@@ -5,9 +5,13 @@ class DebugMessage {
     this.svg = svg
     this.viewBox = viewBox
     this.debugToggle = debugToggle
+    this.fontSize = 10
+    this.x = 10
+    this.y = 30
+    this.fontColor = 'red'
   }
 
-  draw () {
+  draw (labels) {
     if (_.isBoolean(this.debugToggle) && this.debugToggle) {
       this.svg.selectAll('.debug-text').remove()
       const debugText = [
@@ -19,14 +23,18 @@ class DebugMessage {
         'wH: ' + String(this.svg.style('width')),
         'wW: ' + String(this.svg.style('height'))
       ]
+      _.forEach(labels, (l) => {
+        debugText.push(`${l.text}:${l.height}, ${l.width}`)
+      })
       this.svg.selectAll('.debug-text')
               .data(debugText)
               .enter()
               .append('text')
               .attr('class', 'debug-text')
-              .attr('x', 10)
-              .attr('y', (d, i) => 50 + i * 15)
-              .attr('fill', 'red')
+              .attr('font-size', this.fontSize)
+              .attr('x', this.x)
+              .attr('y', (d, i) => this.y + i * this.fontSize)
+              .attr('fill', this.fontColor)
               .text(d => d)
     }
   }

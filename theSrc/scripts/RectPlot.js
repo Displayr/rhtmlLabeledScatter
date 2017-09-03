@@ -275,7 +275,7 @@ class RectPlot {
       })
       .then(() => {
         const debugMsg = new DebugMessage(this.svg, this.vb, this.debugMode)
-        debugMsg.draw()
+        debugMsg.draw(this.data.lab)
         console.log(`draw succeeded after ${this.drawFailureCount} failures`)
         this.drawFailureCount = 0
       })
