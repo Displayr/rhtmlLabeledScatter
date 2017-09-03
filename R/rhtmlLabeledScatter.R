@@ -18,9 +18,18 @@
 #' @param x.title is the title text given to the x axis
 #' @param y.title is the title text given to the y axis
 #' @param z.title is the title text given to the bubble size
+#' @param title is the title text given to the plot
 #' @param title.font.family is the font family of the plot title
 #' @param title.font.color is the font color of the plot title
 #' @param title.font size is the font size of the plot title
+#' @param subtitle is the subtitle text given to the plot
+#' @param subtitle.font.family is the font of the subtitle text
+#' @param subtitle.font.color is the font color of the subtitle text
+#' @param subtitle.font.size is the font size of the subtitle text
+#' @param footer is the footer text given at the bottom at the plot
+#' @param footer.font.family is the font of the footer text
+#' @param footer.font.color is the font color of the footer text
+#' @param footer.font.size is the font size of the footer text
 #' @param labels.show Toggle for showing labels. Defaults to true if labels array given
 #' @param labels.font.family is the font family of the labels
 #' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
@@ -115,6 +124,14 @@ LabeledScatter <- function(
   title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title.font.size = 16,
+  subtitle = "",
+  subtitle.font.family = "Arial",
+  subtitle.font.size = 12,
+  subtitle.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  footer = "",
+  footer.font.family = "Arial",
+  footer.font.size = 8,
+  footer.font.color = rgb(44, 44, 44, maxColorValue = 255),
   labels.show = TRUE,
   labels.font.family = "Arial",
   labels.font.color = NULL,
@@ -192,6 +209,14 @@ LabeledScatter <- function(
     titleFontFamily = title.font.family,
     titleFontColor = title.font.color,
     titleFontSize = title.font.size,
+    subtitle = subtitle,
+    subtitleFontFamily = subtitle.font.family,
+    subtitleFontSize = subtitle.font.size,
+    subtitleFontColor = subtitle.font.color,
+    footer = footer,
+    footerFontFamily = footer.font.family,
+    footerFontSize = footer.font.size,
+    fonterFontColor = footer.font.color,
     showLabels = labels.show,
     labelsFontFamily = labels.font.family,
     labelsFontColor = labels.font.color,

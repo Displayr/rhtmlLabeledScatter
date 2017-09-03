@@ -4,6 +4,8 @@ class ViewBox {
                padding,
                legend,
                title,
+               subtitle,
+               footer,
                labelsFont,
                axisLeaderLineLength,
                axisDimensionText,
@@ -12,11 +14,14 @@ class ViewBox {
     this.svgWidth = width
     this.svgHeight = height
 
+    const titleAndSubtitleHeight = title.getHeight() + subtitle.getHeight()
+    const titleAndSubtitleAndFooterHeight = title.getHeight() + subtitle.getHeight() + footer.getHeight()
+
     this.setWidth(width - legend.getWidth() - (padding.horizontal * 3) - axisLeaderLineLength - axisDimensionText.rowMaxWidth - yTitle.textHeight - axisDimensionText.rightPadding)
-    this.setHeight(height - (padding.vertical * 2) - title.textHeight - title.paddingBot - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
+    this.setHeight(height - (padding.vertical * 2) - titleAndSubtitleAndFooterHeight - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
 
     this.x = (padding.horizontal * 2) + axisDimensionText.rowMaxWidth + axisLeaderLineLength + yTitle.textHeight
-    this.y = padding.vertical + title.textHeight + title.paddingBot
+    this.y = padding.vertical + titleAndSubtitleHeight
 
     this.labelFontSize = labelsFont.size
     this.labelSmallFontSize = labelsFont.size * 0.75
@@ -40,11 +45,16 @@ class ViewBox {
     if (h > 0) {
       this.height = h
     } else {
-      console.log(h)
-      console.log(this.svgWidth)
-      console.log(this.svgHeight)
       throw new Error(`ViewBox height cannot be < 0! ! ${h}, ${this.svgWidth}, ${this.svgHeight}`)
     }
+  }
+
+  getLegendX () {
+    return this.x + this.width
+  }
+
+  getTitleX () {
+    return this.x + (this.width / 2)
   }
 }
 

@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 class SvgUtils {
   static setSvgBBoxWidthAndHeight (dataArray, svgArray) {
-    _(dataArray).each((dataElem, index) => {
+    _.map(dataArray, (dataElem, index) => {
       if (!dataElem.width && !dataElem.height) {
         dataElem.width = svgArray[0][index].getBBox().width
         dataElem.height = svgArray[0][index].getBBox().height

@@ -16,6 +16,9 @@ import LegendSettings from './LegendSettings'
 import Legend from './Legend'
 import DebugMessage from './DebugMessage'
 import ViewBox from './ViewBox'
+import Title from './Title'
+import Subtitle from './Subtitle'
+import Footer from './Footer'
 
 class RectPlot {
   constructor (state,
@@ -29,24 +32,32 @@ class RectPlot {
     labelAlt = [],
     svg,
     fixedRatio,
-    xTitle,
-    yTitle,
-    zTitle = '',
     title = '',
+    titleFontFamily,
+    titleFontSize = 16,
+    titleFontColor,
+    subtitle = '',
+    subtitleFontFamily = 'Arial',
+    subtitleFontSize = 12,
+    subtitleFontColor = 'black',
+    footer = '',
+    footerFontFamily = 'Arial',
+    footerFontSize = 8,
+    footerFontColor = 'black',
+    xTitle,
+    xTitleFontFamily,
+    xTitleFontSize,
+    xTitleFontColor,
+    yTitle,
+    yTitleFontFamily,
+    yTitleFontSize,
+    yTitleFontColor,
+    zTitle = '',
     colors,
     transparency,
     grid,
     origin,
     originAlign,
-    titleFontFamily,
-    titleFontSize = 16,
-    titleFontColor,
-    xTitleFontFamily,
-    xTitleFontSize,
-    xTitleFontColor,
-    yTitleFontFamily,
-    yTitleFontSize,
-    yTitleFontColor,
     showLabels = true,
     labelsFontFamily,
     labelsFontSize,
@@ -195,25 +206,10 @@ class RectPlot {
       ymax: yBoundsMaximum
     }
 
-    this.title = {
-      text: title,
-      color: titleFontColor,
-      anchor: 'middle',
-      fontSize: titleFontSize,
-      fontWeight: 'normal',
-      fontFamily: titleFontFamily
-    }
-
-    if (this.title.text === '' || !_.isString(this.title.text)) {
-      // If empty title height, vertical axis numbers may need excess padding
-      this.title.textHeight = _.isNumber(this.axisSettings.fontSize) ? this.axisSettings.fontSize / 2 : 0
-      this.title.paddingBot = 0
-    } else {
-      this.title.textHeight = titleFontSize
-      this.title.paddingBot = 20
-    }
-
-    this.title.y = this.padding.vertical + this.title.textHeight
+    this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
+    this.subtitle = new Subtitle(subtitle, subtitleFontColor, subtitleFontSize, subtitleFontFamily, this.title.text)
+    this.subtitle.setY(this.title.getSubtitleY())
+    this.footer = new Footer(footer, footerFontColor, footerFontSize, footerFontFamily, this.height)
 
     this.grid = !(_.isNull(grid)) ? grid : true
     this.origin = !(_.isNull(origin)) ? origin : true
@@ -233,14 +229,19 @@ class RectPlot {
     this.svg = svg
     this.width = width
     this.height = height
-    this.title.x = this.width / 2
+    const initTitleX = this.width / 2
+    this.title.setX(initTitleX)
+    this.subtitle.setX(initTitleX)
+    this.footer.setX(initTitleX)
     this.legend = new Legend(this.legendSettings)
 
-    this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.labelsFont,
-      this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
+    this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.footer,
+      this.labelsFont, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 
-    this.legend.setX(this.vb.x + this.vb.width)
-    this.title.x = this.vb.x + (this.vb.width / 2)
+    this.legend.setX(this.vb.getLegendX())
+    this.title.setX(this.vb.getTitleX())
+    this.subtitle.setX(this.vb.getTitleX())
+    this.footer.setX(this.vb.getTitleX())
 
     this.data = new PlotData(this.X,
                          this.Y,
@@ -315,7 +316,10 @@ class RectPlot {
     this.data.normalizeData()
 
     return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
-      this.title.x = this.vb.x + (this.vb.width / 2)
+      const titlesX = this.vb.x + (this.vb.width / 2)
+      this.title.setX(titlesX)
+      this.subtitle.setX(titlesX)
+      this.footer.setX(titlesX)
 
       if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
         _.map(this.state.getLegendPts(), pt => {
@@ -335,7 +339,9 @@ class RectPlot {
       }
     }).then(() => {
       try {
-        this.drawTitle()
+        this.title.drawWith(this.pltUniqueId, this.svg)
+        this.subtitle.drawWith(this.pltUniqueId, this.svg)
+        this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
         this.drawAnc()
         this.drawLabs()
@@ -347,22 +353,6 @@ class RectPlot {
         console.log(error)
       }
     })
-  }
-
-  drawTitle () {
-    if (this.title.text !== '') {
-      this.svg.selectAll('.plot-title').remove()
-      this.svg.append('text')
-          .attr('class', 'plot-title')
-          .attr('font-family', this.title.fontFamily)
-          .attr('x', this.title.x)
-          .attr('y', this.title.y)
-          .attr('text-anchor', this.title.anchor)
-          .attr('fill', this.title.color)
-          .attr('font-size', this.title.fontSize)
-          .attr('font-weight', this.title.fontWeight)
-          .text(this.title.text)
-    }
   }
 
   drawResetButton () {
