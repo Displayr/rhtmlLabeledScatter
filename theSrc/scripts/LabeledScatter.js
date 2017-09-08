@@ -81,8 +81,8 @@ class LabeledScatter {
       DisplayError.checkIfArrayOfPositiveNums(this.data.Z, this.rootElement, 'Given Z value is not array of positive numbers')
     }
 
-    // console.log('rhtmlLabeledScatter data')
-    // console.log(JSON.stringify(this.data))
+    console.log('rhtmlLabeledScatter data')
+    console.log(JSON.stringify(this.data))
     this.plot = new RectPlot(this.stateObj,
                         this.width,
                         this.height,

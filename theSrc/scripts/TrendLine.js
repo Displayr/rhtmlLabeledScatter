@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import md5 from 'md5'
 
 class TrendLine {
   constructor (pts, labs) {
@@ -103,6 +104,45 @@ class TrendLine {
 
   getUniqueGroups () {
     return this.groups
+  }
+
+  drawWith (svg, plotColors, trendLines) {
+    _.map(this.getUniqueGroups(), (group) => {
+      // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
+      const cssGroupName = md5(group)
+
+      // Arrowhead marker
+      svg.selectAll(`#triangle-${cssGroupName}`).remove()
+      svg.append('svg:defs').append('svg:marker')
+         .attr('id', `triangle-${cssGroupName}`)
+         .attr('refX', 6)
+         .attr('refY', 6)
+         .attr('markerWidth', 30)
+         .attr('markerHeight', 30)
+         .attr('orient', 'auto')
+         .append('path')
+         .attr('d', 'M 0 0 12 6 0 12 3 6')
+         .style('fill', plotColors.getColorFromGroup(group))
+
+      svg.selectAll(`.trendline-${cssGroupName}`).remove()
+      svg.selectAll(`.trendline-${cssGroupName}`)
+         .data(this.getLineArray(group))
+         .enter()
+         .append('line')
+         .attr('class', `trendline-${cssGroupName}`)
+         .attr('x1', d => d[0])
+         .attr('y1', d => d[1])
+         .attr('x2', d => d[2])
+         .attr('y2', d => d[3])
+         .attr('stroke', plotColors.getColorFromGroup(group))
+         .attr('stroke-width', trendLines.lineThickness)
+         .attr('marker-end', (d, i) => {
+           // Draw arrowhead on last element in trendline
+           if (i === ((this.getLineArray(group)).length - 1)) {
+             return `url(#triangle-${cssGroupName})`
+           }
+         })
+    })
   }
 }
 

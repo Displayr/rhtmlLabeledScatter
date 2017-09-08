@@ -853,19 +853,7 @@ class RectPlot {
 
   drawLinks () {
     const links = new Links(this.data.pts, this.data.lab)
-    this.svg.selectAll('.link').remove()
-    this.svg.selectAll('.link')
-            .data(links.getLinkData())
-            .enter()
-            .append('line')
-            .attr('class', 'link')
-            .attr('x1', d => d.x1)
-            .attr('y1', d => d.y1)
-            .attr('x2', d => d.x2)
-            .attr('y2', d => d.y2)
-            .attr('stroke-width', d => d.width)
-            .attr('stroke', d => d.color)
-            .style('stroke-opacity', this.data.plotColors.getFillOpacity(this.transparency))
+    links.drawWith(this.svg, this.data.plotColors, this.transparency)
   }
 
   drawTrendLines () {
@@ -873,43 +861,7 @@ class RectPlot {
     if ((this.tl === undefined) || (this.tl === null)) {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
     }
-
-    _.map(this.tl.getUniqueGroups(), (group) => {
-      // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
-      const cssGroupName = md5(group)
-
-      // Arrowhead marker
-      this.svg.selectAll(`#triangle-${cssGroupName}`).remove()
-      this.svg.append('svg:defs').append('svg:marker')
-          .attr('id', `triangle-${cssGroupName}`)
-          .attr('refX', 6)
-          .attr('refY', 6)
-          .attr('markerWidth', 30)
-          .attr('markerHeight', 30)
-          .attr('orient', 'auto')
-          .append('path')
-          .attr('d', 'M 0 0 12 6 0 12 3 6')
-          .style('fill', this.data.plotColors.getColorFromGroup(group))
-
-      this.svg.selectAll(`.trendline-${cssGroupName}`).remove()
-      this.svg.selectAll(`.trendline-${cssGroupName}`)
-        .data(this.tl.getLineArray(group))
-        .enter()
-        .append('line')
-        .attr('class', `trendline-${cssGroupName}`)
-        .attr('x1', d => d[0])
-        .attr('y1', d => d[1])
-        .attr('x2', d => d[2])
-        .attr('y2', d => d[3])
-        .attr('stroke', this.data.plotColors.getColorFromGroup(group))
-        .attr('stroke-width', this.trendLines.lineThickness)
-        .attr('marker-end', (d, i) => {
-          // Draw arrowhead on last element in trendline
-          if (i === ((this.tl.getLineArray(group)).length - 1)) {
-            return `url(#triangle-${cssGroupName})`
-          }
-        })
-    })
+    this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
   }
 }
 
