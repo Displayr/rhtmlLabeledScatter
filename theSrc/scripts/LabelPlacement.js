@@ -19,8 +19,7 @@ class LabelPlacement {
       .start(500)
 
     // Move labels after label placement algorithm
-    labelsSvg.attr('x', d => d.x)
-              .attr('y', d => d.y)
+    labelsSvg.attr('x', d => d.x).attr('y', d => d.y)
 
     if (pinnedLabels.length < labels.length) {
       state.saveAlgoPositionedLabs(labels, vb)
@@ -34,7 +33,7 @@ class LabelPlacement {
 
     const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                  .attr('y', d => d.y - d.height)
+                .attr('y', d => d.y - d.height)
   }
 
   static placeLabels (svg, vb, anchors, labels, state) {
@@ -46,7 +45,7 @@ class LabelPlacement {
     this.place(svg, vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                  .attr('y', d => d.y - d.height)
+                .attr('y', d => d.y - d.height)
   }
 }
 

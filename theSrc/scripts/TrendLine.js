@@ -22,7 +22,7 @@ class TrendLine {
         this.arrowheadLabels[pt.group] = this.labs[i]
       }
 
-      return this.linePts[pt.group].push({
+      this.linePts[pt.group].push({
         x: pt.x,
         y: pt.y,
         z: pt.r,
@@ -143,6 +143,38 @@ class TrendLine {
            }
          })
     })
+  }
+
+  drawLabelsWith (svg, drag) {
+    svg.selectAll('.lab-img').remove()
+    svg.selectAll('.lab-img')
+       .data(_.filter(this.arrowheadLabels, l => l.url !== ''))
+       .enter()
+       .append('svg:image')
+       .attr('class', 'lab-img')
+       .attr('xlink:href', d => d.url)
+       .attr('id', d => d.id)
+       .attr('x', d => d.x - (d.width / 2))
+       .attr('y', d => d.y - d.height)
+       .attr('width', d => d.width)
+       .attr('height', d => d.height)
+       .call(drag)
+
+    svg.selectAll('.lab').remove()
+    svg.selectAll('.lab')
+       .data(_.filter(this.arrowheadLabels, l => l.url === ''))
+       .enter()
+       .append('text')
+       .attr('class', 'lab')
+       .attr('id', d => d.id)
+       .attr('x', d => d.x)
+       .attr('y', d => d.y)
+       .attr('font-family', d => d.fontFamily)
+       .text(d => d.text)
+       .attr('text-anchor', 'middle')
+       .attr('fill', d => d.color)
+       .attr('font-size', d => d.fontSize)
+       .call(drag)
   }
 }
 

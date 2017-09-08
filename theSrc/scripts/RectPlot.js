@@ -347,7 +347,7 @@ class RectPlot {
         this.drawLabs()
         if (this.trendLines.show) { this.drawTrendLines() }
         this.drawDraggedMarkers()
-        if (this.plotBorder.show) { this.drawRect() }
+        if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.drawAxisLabels()
       } catch (error) {
         console.log(error)
@@ -379,19 +379,6 @@ class RectPlot {
     const xAxisPadding = 5
     svgResetButton.attr('x', this.width - svgResetButtonBB.width - xAxisPadding)
                   .attr('y', this.height - svgResetButtonBB.height)
-  }
-
-  drawRect () {
-    this.svg.selectAll('.plot-viewbox').remove()
-    this.svg.append('rect')
-        .attr('class', 'plot-viewbox')
-        .attr('x', this.vb.x)
-        .attr('y', this.vb.y)
-        .attr('width', this.vb.width)
-        .attr('height', this.vb.height)
-        .attr('fill', 'none')
-        .attr('stroke', this.plotBorder.color)
-        .attr('stroke-width', this.plotBorder.width)
   }
 
   drawDimensionMarkers () {
@@ -550,21 +537,21 @@ class RectPlot {
     ]
 
     this.svg.selectAll('.axis-label').remove()
-    return this.svg.selectAll('.axis-label')
-             .data(axisLabels)
-             .enter()
-             .append('text')
-             .attr('class', 'axis-label')
-             .attr('x', d => d.x)
-             .attr('y', d => d.y)
-             .attr('font-family', d => d.fontFamily)
-             .attr('font-size', d => d.fontSize)
-             .attr('fill', d => d.fontColor)
-             .attr('text-anchor', d => d.anchor)
-             .attr('transform', d => d.transform)
-             .text(d => d.text)
-             .style('font-weight', 'normal')
-             .style('display', d => d.display)
+    this.svg.selectAll('.axis-label')
+            .data(axisLabels)
+            .enter()
+            .append('text')
+            .attr('class', 'axis-label')
+            .attr('x', d => d.x)
+            .attr('y', d => d.y)
+            .attr('font-family', d => d.fontFamily)
+            .attr('font-size', d => d.fontSize)
+            .attr('fill', d => d.fontColor)
+            .attr('text-anchor', d => d.anchor)
+            .attr('transform', d => d.transform)
+            .text(d => d.text)
+            .style('font-weight', 'normal')
+            .style('display', d => d.display)
   }
 
   drawLegend () {
@@ -768,12 +755,12 @@ class RectPlot {
 
       this.svg.selectAll('.lab-img').remove()
       this.svg.selectAll('.lab-img')
-          .data(this.data.lab)
+          .data(_.filter(this.data.lab, l => l.url !== ''))
           .enter()
           .append('svg:image')
           .attr('class', 'lab-img')
           .attr('xlink:href', d => d.url)
-          .attr('id', d => { if (d.url !== '') { return d.id } })
+          .attr('id', d => d.id)
           .attr('x', d => d.x - (d.width / 2))
           .attr('y', d => d.y - d.height)
           .attr('width', d => d.width)
@@ -782,15 +769,15 @@ class RectPlot {
 
       this.svg.selectAll('.lab').remove()
       this.svg.selectAll('.lab')
-               .data(this.data.lab)
+               .data(_.filter(this.data.lab, l => l.url === ''))
                .enter()
                .append('text')
                .attr('class', 'lab')
-               .attr('id', d => { if (d.url === '') { return d.id } })
+               .attr('id', d => d.id)
                .attr('x', d => d.x)
                .attr('y', d => d.y)
                .attr('font-family', d => d.fontFamily)
-               .text(d => { if (d.url === '') { return d.text } })
+               .text(d => d.text)
                .attr('text-anchor', 'middle')
                .attr('fill', d => d.color)
                .attr('font-size', d => d.fontSize)
@@ -810,37 +797,7 @@ class RectPlot {
       this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
       drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
-
-      this.svg.selectAll('.lab-img').remove()
-      this.svg.selectAll('.lab-img')
-        .data(this.tl.arrowheadLabels)
-        .enter()
-        .append('svg:image')
-        .attr('class', 'lab-img')
-        .attr('xlink:href', d => d.url)
-        .attr('id', d => { if (d.url !== '') { return d.id } })
-        .attr('x', d => d.x - (d.width / 2))
-        .attr('y', d => d.y - d.height)
-        .attr('width', d => d.width)
-        .attr('height', d => d.height)
-        .call(drag)
-
-      this.svg.selectAll('.lab').remove()
-      this.svg.selectAll('.lab')
-        .data(this.tl.arrowheadLabels)
-        .enter()
-        .append('text')
-        .attr('class', 'lab')
-        .attr('id', d => { if (d.url === '') { return d.id } })
-        .attr('x', d => d.x)
-        .attr('y', d => d.y)
-        .attr('font-family', d => d.fontFamily)
-        .text(d => { if (d.url === '') { return d.text } })
-        .attr('text-anchor', 'middle')
-        .attr('fill', d => d.color)
-        .attr('font-size', d => d.fontSize)
-        .call(drag)
-
+      this.tl.drawLabelsWith(this.svg, drag)
       LabelPlacement.placeTrendLabels(
         this.svg,
         this.data.vb,
