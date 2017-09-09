@@ -6,7 +6,6 @@ import autoBind from 'es6-autobind'
 import Links from './Links'
 import PlotData from './PlotData'
 import TrendLine from './TrendLine'
-import AxisUtils from './utils/AxisUtils'
 import DragUtils from './utils/DragUtils'
 import SvgUtils from './utils/SvgUtils'
 import Utils from './utils/Utils'
@@ -19,6 +18,8 @@ import ViewBox from './ViewBox'
 import Title from './Title'
 import Subtitle from './Subtitle'
 import Footer from './Footer'
+import PlotAxisLabels from './PlotAxisLabels'
+import PlotAxis from './PlotAxis'
 
 class RectPlot {
   constructor (state,
@@ -348,7 +349,8 @@ class RectPlot {
         if (this.trendLines.show) { this.drawTrendLines() }
         this.drawDraggedMarkers()
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
-        this.drawAxisLabels()
+        this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
+        this.axisLabels.drawWith(this.svg)
       } catch (error) {
         console.log(error)
       }
@@ -383,93 +385,18 @@ class RectPlot {
 
   drawDimensionMarkers () {
     return new Promise((function (resolve, reject) {
-      const axisArrays = AxisUtils.getAxisDataArrays(this, this.data, this.vb, this.axisSettings)
+      this.axis = new PlotAxis(this.axisSettings, this, this.data, this.vb)
 
-      // TODO KZ this sequence can be easily consolidated
       if (this.grid) {
-        this.svg.selectAll('.origin').remove()
-        this.svg.selectAll('.origin')
-            .data(axisArrays.gridOrigin)
-            .enter()
-            .append('line')
-            .attr('class', 'origin')
-            .attr('x1', d => d.x1)
-            .attr('y1', d => d.y1)
-            .attr('x2', d => d.x2)
-            .attr('y2', d => d.y2)
-            .attr('stroke-width', 0.8)
-            .attr('opacity', 0.2)
-            .attr('stroke', this.axisSettings.fontColor)
-        if (this.origin) {
-          this.svg.selectAll('.origin')
-              .style('stroke-dasharray', ('4, 6'))
-              .attr('stroke-width', 1)
-              .attr('opacity', 1)
-              .attr('stroke', this.axisSettings.fontColor)
-        }
-
-        this.svg.selectAll('.dim-marker').remove()
-        this.svg.selectAll('.dim-marker')
-                 .data(axisArrays.gridLines)
-                 .enter()
-                 .append('line')
-                 .attr('class', 'dim-marker')
-                 .attr('x1', d => d.x1)
-                 .attr('y1', d => d.y1)
-                 .attr('x2', d => d.x2)
-                 .attr('y2', d => d.y2)
-                 .attr('stroke-width', 0.8)
-                 .attr('opacity', 0.2)
-                 .attr('stroke', this.axisSettings.fontColor)
+        this.axis.drawGridOriginWith(this.svg, this.origin)
+        this.axis.drawGridLinesWith(this.svg)
       } else if (!this.grid && this.origin) {
-        this.svg.selectAll('.origin').remove()
-        this.svg.selectAll('.origin')
-            .data(axisArrays.gridOrigin)
-            .enter()
-            .append('line')
-            .attr('class', 'origin')
-            .attr('x1', d => d.x1)
-            .attr('y1', d => d.y1)
-            .attr('x2', d => d.x2)
-            .attr('y2', d => d.y2)
-            .style('stroke-dasharray', ('4, 6'))
-            .attr('stroke-width', 1)
-            .attr('opacity', 1)
-            .attr('stroke', this.axisSettings.fontColor)
+        this.axis.drawGridOriginWith(this.svg, this.origin)
       }
 
       if (this.axisSettings.showX || this.axisSettings.showY) {
-        let showOrigin = this.origin
-        this.svg.selectAll('.dim-marker-leader').remove()
-        this.svg.selectAll('.dim-marker-leader')
-        .data(axisArrays.axisLeader)
-        .enter()
-        .append('line')
-        .attr('class', 'dim-marker-leader')
-        .attr('x1', d => d.x1)
-        .attr('y1', d => d.y1)
-        .attr('x2', d => d.x2)
-        .attr('y2', d => d.y2)
-        .attr('stroke-width', 0.8)
-        .attr('opacity', d => {
-          if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
-        })
-        .attr('stroke', this.axisSettings.fontColor)
-
-        this.svg.selectAll('.dim-marker-label').remove()
+        this.axis.drawAxisLeaderWith(this.svg, this.origin)
         const markerLabels = this.svg.selectAll('.dim-marker-label')
-        .data(axisArrays.axisLeaderLabel)
-        .enter()
-        .append('text')
-        .attr('class', 'dim-marker-label')
-        .attr('x', d => d.x)
-        .attr('y', d => d.y)
-        .attr('font-family', this.axisSettings.fontFamily)
-        .attr('fill', this.axisSettings.fontColor)
-        .attr('font-size', this.axisSettings.fontSize)
-        .text(d => d.label)
-        .attr('text-anchor', d => d.anchor)
-        .attr('type', d => d.type)
 
         // Figure out the max width of the yaxis dimensional labels
         const initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth
@@ -504,54 +431,6 @@ class RectPlot {
 
       return resolve()
     }.bind(this)))
-  }
-
-  drawAxisLabels () {
-    const axisLabels = [
-      { // x axis label
-        x: this.vb.x + (this.vb.width / 2),
-        y: this.vb.y + this.vb.height +
-           this.axisLeaderLineLength +
-           this.axisDimensionText.colMaxHeight +
-           this.xTitle.topPadding +
-           this.xTitle.textHeight,
-        text: this.xTitle.text,
-        anchor: 'middle',
-        transform: 'rotate(0)',
-        display: this.xTitle === '' ? 'none' : '',
-        fontFamily: this.xTitle.fontFamily,
-        fontSize: this.xTitle.fontSize,
-        fontColor: this.xTitle.fontColor
-      },
-      { // y axis label
-        x: this.padding.horizontal + this.yTitle.textHeight,
-        y: this.vb.y + (this.vb.height / 2),
-        text: this.yTitle.text,
-        anchor: 'middle',
-        transform: `rotate(270,${this.padding.horizontal + this.yTitle.textHeight}, ${this.vb.y + (this.vb.height / 2)})`,
-        display: this.yTitle === '' ? 'none' : '',
-        fontFamily: this.yTitle.fontFamily,
-        fontSize: this.yTitle.fontSize,
-        fontColor: this.yTitle.fontColor
-      }
-    ]
-
-    this.svg.selectAll('.axis-label').remove()
-    this.svg.selectAll('.axis-label')
-            .data(axisLabels)
-            .enter()
-            .append('text')
-            .attr('class', 'axis-label')
-            .attr('x', d => d.x)
-            .attr('y', d => d.y)
-            .attr('font-family', d => d.fontFamily)
-            .attr('font-size', d => d.fontSize)
-            .attr('fill', d => d.fontColor)
-            .attr('text-anchor', d => d.anchor)
-            .attr('transform', d => d.transform)
-            .text(d => d.text)
-            .style('font-weight', 'normal')
-            .style('display', d => d.display)
   }
 
   drawLegend () {
@@ -713,7 +592,7 @@ class RectPlot {
         .attr('stroke', d => d.color)
 
     this.svg.selectAll('.marker-label').remove()
-    return this.svg.selectAll('.marker-label')
+    this.svg.selectAll('.marker-label')
         .data(this.data.outsidePlotMarkers)
         .enter()
         .append('text')
