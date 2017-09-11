@@ -3,9 +3,21 @@ import _ from 'lodash'
 import LegendUtils from './utils/LegendUtils'
 
 class Legend {
-  constructor (legendSettings) {
+  constructor (legendSettings, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix) {
     autoBind(this)
     this.legendSettings = legendSettings
+    this.prefix = {
+      x: xPrefix,
+      y: yPrefix,
+      z: zPrefix
+    }
+    this.suffix = {
+      x: xSuffix,
+      y: ySuffix,
+      z: zSuffix
+    }
+    this.yPrefix = yPrefix
+    this.zPrefix = zPrefix
     this.width = 0
     this.heightOfRow = legendSettings.getFontSize() + 9
     this.padding = {
@@ -147,7 +159,7 @@ class Legend {
       pt: movedPt[0],
       lab: movedLab[0],
       anchor: 'start',
-      text: `${movedLab[0].text} (${movedPt[0].labelX}, ${movedPt[0].labelY})`,
+      text: `${movedLab[0].text} (${this.prefix.x}${movedPt[0].labelX}${this.suffix.x}, ${this.prefix.y}${movedPt[0].labelY}${this.suffix.y})`,
       color: movedPt[0].color,
       isDraggedPt: true
     })
