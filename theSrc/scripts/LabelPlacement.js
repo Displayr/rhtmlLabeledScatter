@@ -19,8 +19,7 @@ class LabelPlacement {
       .start(500)
 
     // Move labels after label placement algorithm
-    labelsSvg.attr('x', d => d.x)
-              .attr('y', d => d.y)
+    labelsSvg.attr('x', d => d.x).attr('y', d => d.y)
 
     if (pinnedLabels.length < labels.length) {
       state.saveAlgoPositionedLabs(labels, vb)
@@ -29,24 +28,24 @@ class LabelPlacement {
 
   static placeTrendLabels (svg, vb, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
-    SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.place(svg, vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state)
 
     const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                  .attr('y', d => d.y - d.height)
+                .attr('y', d => d.y - d.height)
   }
 
   static placeLabels (svg, vb, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
     const labelsImgSvg = svg.selectAll('.lab-img')
-    SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
     this.place(svg, vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                  .attr('y', d => d.y - d.height)
+                .attr('y', d => d.y - d.height)
   }
 }
 

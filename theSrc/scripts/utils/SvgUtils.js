@@ -1,6 +1,17 @@
 import _ from 'lodash'
 
 class SvgUtils {
+  static setMatchingSvgBBoxWidthAndHeight (dataArray, svgArray) {
+    _.map(dataArray, (dataElem) => {
+      if (!dataElem.width && !dataElem.height) {
+        const svgDataElem = _.find(svgArray[0], j => Number(j.getAttribute('id')) === dataElem.id)
+        if (!_.isUndefined(svgDataElem)) {
+          dataElem.width = svgDataElem.getBBox().width
+          dataElem.height = svgDataElem.getBBox().height
+        }
+      }
+    })
+  }
   static setSvgBBoxWidthAndHeight (dataArray, svgArray) {
     _.map(dataArray, (dataElem, index) => {
       if (!dataElem.width && !dataElem.height) {

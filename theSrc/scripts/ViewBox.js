@@ -56,6 +56,19 @@ class ViewBox {
   getTitleX () {
     return this.x + (this.width / 2)
   }
+
+  drawBorderWith (svg, plotBorderSettings) {
+    svg.selectAll('.plot-viewbox').remove()
+    svg.append('rect')
+       .attr('class', 'plot-viewbox')
+       .attr('x', this.x)
+       .attr('y', this.y)
+       .attr('width', this.width)
+       .attr('height', this.height)
+       .attr('fill', 'none')
+       .attr('stroke', plotBorderSettings.color)
+       .attr('stroke-width', plotBorderSettings.width)
+  }
 }
 
 module.exports = ViewBox

@@ -198,6 +198,22 @@ class Links {
 
     return [finalX, finalY]
   }
+
+  drawWith (svg, plotColors, transparency) {
+    svg.selectAll('.link').remove()
+    svg.selectAll('.link')
+       .data(this.getLinkData())
+       .enter()
+       .append('line')
+       .attr('class', 'link')
+       .attr('x1', d => d.x1)
+       .attr('y1', d => d.y1)
+       .attr('x2', d => d.x2)
+       .attr('y2', d => d.y2)
+       .attr('stroke-width', d => d.width)
+       .attr('stroke', d => d.color)
+       .style('stroke-opacity', plotColors.getFillOpacity(transparency))
+  }
 }
 
 module.exports = Links
