@@ -1,5 +1,6 @@
 /* global HTMLWidgets */
 
+import 'babel-polyfill'
 import LabeledScatter from './LabeledScatter'
 
 HTMLWidgets.widget({

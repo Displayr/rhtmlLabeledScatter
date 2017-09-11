@@ -18,6 +18,7 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "bignumber.js": "^2.4.0",
     "bluebird": "^3.4.6",
     "d3": "3.5.16",
