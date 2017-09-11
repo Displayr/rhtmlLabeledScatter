@@ -234,7 +234,7 @@ class RectPlot {
     this.title.setX(initTitleX)
     this.subtitle.setX(initTitleX)
     this.footer.setX(initTitleX)
-    this.legend = new Legend(this.legendSettings)
+    this.legend = new Legend(this.legendSettings, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
 
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.footer,
       this.labelsFont, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
