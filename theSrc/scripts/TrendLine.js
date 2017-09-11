@@ -1,11 +1,10 @@
 import _ from 'lodash'
 import md5 from 'md5'
+import autoBind from 'es6-autobind'
 
 class TrendLine {
   constructor (pts, labs) {
-    this._createLineArrays = this._createLineArrays.bind(this)
-    this.getLineArray = this.getLineArray.bind(this)
-    this.getUniqueGroups = this.getUniqueGroups.bind(this)
+    autoBind(this)
     this.pts = pts
     this.labs = labs
     this.linePts = {}
@@ -26,7 +25,8 @@ class TrendLine {
         x: pt.x,
         y: pt.y,
         z: pt.r,
-        r: pt.r
+        r: pt.r,
+        id: pt.id
       })
     })
 
@@ -56,8 +56,9 @@ class TrendLine {
           this.arrowheadPts.push(groupPts[1])
 
           this.arrowheadLabels[groupName].r = groupPts[1].r
-          this.arrowheadLabels[groupName].x = groupPts[1].x - (this.arrowheadLabels[groupName].width / 2)
-          this.arrowheadLabels[groupName].y = groupPts[1].y - (this.arrowheadLabels[groupName].height / 2)
+          this.arrowheadLabels[groupName].x = groupPts[1].x
+          this.arrowheadLabels[groupName].y = groupPts[1].y
+          this.arrowheadLabels[groupName].id = groupPts[1].id
           return
         default:
           // Adds another point for every "middle" point
@@ -86,8 +87,9 @@ class TrendLine {
           this.arrowheadPts.push(lastLinePt)
 
           this.arrowheadLabels[groupName].r = lastLinePt.r
-          this.arrowheadLabels[groupName].x = lastLinePt.x - (this.arrowheadLabels[groupName].width / 2)
-          this.arrowheadLabels[groupName].y = lastLinePt.y - (this.arrowheadLabels[groupName].height / 2)
+          this.arrowheadLabels[groupName].x = lastLinePt.x
+          this.arrowheadLabels[groupName].y = lastLinePt.y
+          this.arrowheadLabels[groupName].id = lastLinePt.id
       }
     })
     this.arrowheadLabels = _.values(this.arrowheadLabels)

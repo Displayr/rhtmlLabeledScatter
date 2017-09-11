@@ -29,16 +29,9 @@ class LabelPlacement {
   static placeTrendLabels (svg, vb, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
     SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
-    const labelsImgSvg = svg.selectAll('.lab-img')
-    _.map(labelsImgSvg[0], l => {
-      const matchedSvgLabel = _.find(labels, m => m.id === Number(l.getAttribute('id')))
-      if (!_.isUndefined(matchedSvgLabel)) {
-        matchedSvgLabel.x += matchedSvgLabel.width / 2
-      }
-    })
-
     this.place(svg, vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state)
 
+    const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
   }

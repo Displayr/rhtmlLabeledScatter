@@ -628,62 +628,64 @@ class RectPlot {
 
   drawLabs () {
     let drag
-    if (this.showLabels && !this.trendLines.show) {
-      drag = DragUtils.getLabelDragAndDrop(this)
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+    if (this.showLabels) {
+      if (!this.trendLines.show) {
+        drag = DragUtils.getLabelDragAndDrop(this)
+        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
-      this.svg.selectAll('.lab-img').remove()
-      this.svg.selectAll('.lab-img')
-          .data(_.filter(this.data.lab, l => l.url !== ''))
-          .enter()
-          .append('svg:image')
-          .attr('class', 'lab-img')
-          .attr('xlink:href', d => d.url)
-          .attr('id', d => d.id)
-          .attr('x', d => d.x - (d.width / 2))
-          .attr('y', d => d.y - d.height)
-          .attr('width', d => d.width)
-          .attr('height', d => d.height)
-          .call(drag)
+        this.svg.selectAll('.lab-img').remove()
+        this.svg.selectAll('.lab-img')
+            .data(_.filter(this.data.lab, l => l.url !== ''))
+            .enter()
+            .append('svg:image')
+            .attr('class', 'lab-img')
+            .attr('xlink:href', d => d.url)
+            .attr('id', d => d.id)
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
+            .attr('width', d => d.width)
+            .attr('height', d => d.height)
+            .call(drag)
 
-      this.svg.selectAll('.lab').remove()
-      this.svg.selectAll('.lab')
-               .data(_.filter(this.data.lab, l => l.url === ''))
-               .enter()
-               .append('text')
-               .attr('class', 'lab')
-               .attr('id', d => d.id)
-               .attr('x', d => d.x)
-               .attr('y', d => d.y)
-               .attr('font-family', d => d.fontFamily)
-               .text(d => d.text)
-               .attr('text-anchor', 'middle')
-               .attr('fill', d => d.color)
-               .attr('font-size', d => d.fontSize)
-               .call(drag)
+        this.svg.selectAll('.lab').remove()
+        this.svg.selectAll('.lab')
+                 .data(_.filter(this.data.lab, l => l.url === ''))
+                 .enter()
+                 .append('text')
+                 .attr('class', 'lab')
+                 .attr('id', d => d.id)
+                 .attr('x', d => d.x)
+                 .attr('y', d => d.y)
+                 .attr('font-family', d => d.fontFamily)
+                 .text(d => d.text)
+                 .attr('text-anchor', 'middle')
+                 .attr('fill', d => d.color)
+                 .attr('font-size', d => d.fontSize)
+                 .call(drag)
 
-      LabelPlacement.placeLabels(
-        this.svg,
-        this.data.vb,
-        this.data.pts,
-        this.data.lab,
-        this.state
-      )
+        LabelPlacement.placeLabels(
+          this.svg,
+          this.data.vb,
+          this.data.pts,
+          this.data.lab,
+          this.state
+        )
 
-      this.drawLinks()
-    } else if (this.showLabels && this.trendLines.show) {
-      this.tl = new TrendLine(this.data.pts, this.data.lab)
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+        this.drawLinks()
+      } else if (this.trendLines.show) {
+        this.tl = new TrendLine(this.data.pts, this.data.lab)
+        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
-      drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
-      this.tl.drawLabelsWith(this.svg, drag)
-      LabelPlacement.placeTrendLabels(
-        this.svg,
-        this.data.vb,
-        this.tl.arrowheadPts,
-        this.tl.arrowheadLabels,
-        this.state
-      )
+        drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
+        this.tl.drawLabelsWith(this.svg, drag)
+        LabelPlacement.placeTrendLabels(
+          this.svg,
+          this.data.vb,
+          this.tl.pts,
+          this.tl.arrowheadLabels,
+          this.state
+        )
+      }
     }
   }
 
