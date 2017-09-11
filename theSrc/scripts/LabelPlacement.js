@@ -28,7 +28,7 @@ class LabelPlacement {
 
   static placeTrendLabels (svg, vb, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
-    SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.place(svg, vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state)
 
     const labelsImgSvg = svg.selectAll('.lab-img')
@@ -39,7 +39,7 @@ class LabelPlacement {
   static placeLabels (svg, vb, anchors, labels, state) {
     const labelsSvg = svg.selectAll('.lab')
     const labelsImgSvg = svg.selectAll('.lab-img')
-    SvgUtils.setSvgBBoxWidthAndHeight(labels, labelsSvg)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
     this.place(svg, vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state)
