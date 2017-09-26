@@ -167,7 +167,7 @@ class RectPlot {
     this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
       legendFontFamily, legendFontSize, legendFontColor,
       legendBubbleFontFamily, legendBubbleFontSize, legendBubbleFontColor,
-      legendBubbleTitleFontFamily, legendBubbleTitleFontSize, legendBubbleTitleFontColor)
+      legendBubbleTitleFontFamily, legendBubbleTitleFontSize, legendBubbleTitleFontColor, this.zTitle)
 
     if (this.xTitle.text === '') { this.xTitle.textHeight = 0 }
 
@@ -258,8 +258,7 @@ class RectPlot {
                          this.pointRadius,
                          this.bounds,
                          this.transparency,
-                         this.legendSettings,
-                         this.axisDimensionText)
+                         this.legendSettings)
 
     this.drawFailureCount = 0
   }
@@ -437,108 +436,21 @@ class RectPlot {
     return new Promise(function (resolve, reject) {
       this.data.setLegend()
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
-        this.svg.selectAll('.legend-bubbles').remove()
-        this.svg.selectAll('.legend-bubbles')
-            .data(this.legend.getBubbles())
-            .enter()
-            .append('circle')
-            .attr('class', 'legend-bubbles')
-            .attr('cx', d => d.cx)
-            .attr('cy', d => d.cy)
-            .attr('r', d => d.r)
-            .attr('fill', 'none')
-            .attr('stroke', this.axisSettings.fontColor)
-            .attr('stroke-opacity', 0.5)
-
-        this.svg.selectAll('.legend-bubbles-labels').remove()
-        this.svg.selectAll('.legend-bubbles-labels')
-            .data(this.legend.getBubbles())
-            .enter()
-            .append('text')
-            .attr('class', 'legend-bubbles-labels')
-            .attr('x', d => d.x)
-            .attr('y', d => d.y)
-            .attr('text-anchor', 'middle')
-            .attr('font-size', this.legendSettings.getBubbleFontSize())
-            .attr('font-family', this.legendSettings.getBubbleFontFamily())
-            .attr('fill', this.legendSettings.getBubbleFontColor())
-            .text(d => d.text)
-
-        if (this.zTitle !== '') {
-          this.svg.selectAll('.legend-bubbles-title').remove()
-          let legendBubbleTitleFontSize = this.legendSettings.getBubbleTitleFontSize()
-          const legendBubbleTitleSvg = this.svg.selectAll('.legend-bubbles-title')
-              .data(this.legend.getBubblesTitle())
-              .enter()
-              .append('text')
-              .attr('class', 'legend-bubbles-title')
-              .attr('x', d => d.x)
-              .attr('y', d => d.y - (legendBubbleTitleFontSize * 1.5))
-              .attr('text-anchor', 'middle')
-              .attr('font-weight', 'normal')
-              .attr('font-size', this.legendSettings.getBubbleTitleFontSize())
-              .attr('font-family', this.legendSettings.getBubbleTitleFontFamily())
-              .attr('fill', this.legendSettings.getBubbleTitleFontColor())
-              .text(this.zTitle)
-
-          SvgUtils.setSvgBBoxWidthAndHeight(this.legend.getBubblesTitle(), legendBubbleTitleSvg)
-        }
+        this.legend.drawBubblesWith(this.svg, this.axisSettings)
+        this.legend.drawBubblesLabelsWith(this.svg)
+        this.legend.drawBubblesTitleWith(this.svg)
       }
 
       const drag = DragUtils.getLegendLabelDragAndDrop(this, this.data)
-      this.svg.selectAll('.legend-dragged-pts-text').remove()
-      this.svg.selectAll('.legend-dragged-pts-text')
-          .data(this.legend.pts)
-          .enter()
-          .append('text')
-          .attr('class', 'legend-dragged-pts-text')
-          .attr('id', d => `legend-${d.id}`)
-          .attr('x', d => d.x)
-          .attr('y', d => d.y)
-          .attr('font-family', this.legendSettings.getFontFamily())
-          .attr('font-size', this.legendSettings.getFontSize())
-          .attr('text-anchor', d => d.anchor)
-          .attr('fill', d => d.color)
-          .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text } else { return d.text } })
-          .call(drag)
-
-      SvgUtils.setSvgBBoxWidthAndHeight(this.legend.pts, this.svg.selectAll('.legend-dragged-pts-text'))
+      this.legend.drawDraggedPtsTextWith(this.svg, drag)
 
       if (this.legendSettings.showLegend()) {
-        this.svg.selectAll('.legend-groups-text').remove()
-        this.svg.selectAll('.legend-groups-text')
-            .data(this.legend.groups)
-            .enter()
-            .append('text')
-            .attr('class', 'legend-groups-text')
-            .attr('x', d => d.x)
-            .attr('y', d => d.y)
-            .attr('font-family', this.legendSettings.getFontFamily())
-            .attr('fill', this.legendSettings.getFontColor())
-            .attr('font-size', this.legendSettings.getFontSize())
-            .text(d => d.text)
-            .attr('text-anchor', d => d.anchor)
-
-        this.svg.selectAll('.legend-groups-pts').remove()
-        this.svg.selectAll('.legend-groups-pts')
-                .data(this.legend.groups)
-                .enter()
-                .append('circle')
-                .attr('class', 'legend-groups-pts')
-                .attr('cx', d => d.cx)
-                .attr('cy', d => d.cy)
-                .attr('r', d => d.r)
-                .attr('fill', d => d.color)
-                .attr('stroke', d => d.stroke)
-                .attr('stroke-opacity', d => d['stroke-opacity'])
-                .attr('fill-opacity', d => d.fillOpacity)
-
-        // Height and width are not provided
-        SvgUtils.setSvgBBoxWidthAndHeight(this.legend.groups, this.svg.selectAll('.legend-groups-text'))
+        this.legend.drawGroupsTextWith(this.svg)
+        this.legend.drawGroupsPts(this.svg)
       }
 
       if (this.legendSettings.showLegend() || (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
-        if (this.data.resizedAfterLegendGroupsDrawn(this.data.vb)) {
+        if (this.legend.resizedAfterLegendGroupsDrawn(this.data.vb, this.axisDimensionText)) {
           this.data.revertMinMax()
           const error = new Error('drawLegend Failed')
           error.retry = true

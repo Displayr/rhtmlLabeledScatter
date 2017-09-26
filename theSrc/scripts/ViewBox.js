@@ -30,7 +30,7 @@ class ViewBox {
     this.labelLogoScale = labelsFont.logoScale
 
     // Max width of legend is determinant on size of widget
-    legend.setMaxWidth(this.svgWidth * 0.4)
+    legend.setMaxWidth(this.svgWidth * 0.3)
   }
 
   setWidth (w) {

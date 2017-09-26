@@ -24,8 +24,7 @@ class PlotData {
     pointRadius,
     bounds,
     transparency,
-    legendSettings,
-    axisDimensionText) {
+    legendSettings) {
     autoBind(this)
     this.X = X
     this.Y = Y
@@ -42,7 +41,6 @@ class PlotData {
     this.bounds = bounds
     this.transparency = transparency
     this.legendSettings = legendSettings
-    this.axisDimensionText = axisDimensionText
     this.origX = this.X.slice(0)
     this.origY = this.Y.slice(0)
     this.normX = this.X.slice(0)
@@ -367,35 +365,6 @@ class PlotData {
 
   setLegend () {
     this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles)
-  }
-
-  resizedAfterLegendGroupsDrawn (vb) {
-    this.vb = vb
-    const initWidth = vb.width
-
-    const totalLegendItems = this.legendSettings.showLegend() ? this.legend.getNumGroups() + this.legend.getNumPts() : this.legend.getNumPts()
-    const legendGrpsTextMax = (this.legend.getNumGroups() > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.legend.groups, e => e.width)).width : 0
-    const legendPtsTextMax = this.legend.getNumPts() > 0 ? (_.maxBy(this.legend.pts, e => e.width)).width : 0
-
-    const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])
-
-    const spacingAroundMaxTextWidth = this.legend.getSpacingAroundMaxTextWidth()
-    const bubbleLeftRightPadding = this.legend.getBubbleLeftRightPadding()
-
-    this.legend.setCols(Math.ceil(((totalLegendItems) * this.legend.getHeightOfRow()) / this.legend.height))
-    this.legend.setWidth((maxTextWidth * this.legend.getCols()) + spacingAroundMaxTextWidth + (this.legend.getPaddingMid() * (this.legend.getCols() - 1)))
-
-    const bubbleTitleWidth = this.legend.getBubbleTitleWidth()
-    this.legend.setWidth(_.max([this.legend.getWidth(), bubbleTitleWidth + bubbleLeftRightPadding,
-      this.legend.getBubblesMaxWidth() + bubbleLeftRightPadding]))
-
-    this.legend.setColSpace(maxTextWidth)
-
-    vb.setWidth(vb.svgWidth - this.legend.getWidth() - vb.x - this.axisDimensionText.rowMaxWidth)
-    this.legend.setX(vb.x + vb.width)
-
-    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - vb.width) > 0.1
-    return isNewWidthSignficantlyDifferent
   }
 
   isOutsideViewBox (lab) {
