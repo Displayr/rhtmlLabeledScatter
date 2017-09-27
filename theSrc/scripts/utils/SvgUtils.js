@@ -72,6 +72,37 @@ class SvgUtils {
       }
     })
   }
+
+  static svgTextEllipses (textObject, textString, maxWidth) {
+    if (!textString) {
+      textObject.textContent = ''
+      return
+    }
+
+    textObject.textContent = textString
+    let strLength = textString.length
+    let width = textObject.getSubStringLength(0, strLength)
+
+    // ellipsis is needed
+    if (width >= maxWidth) {
+      textObject.textContent = '...' + textString
+      strLength += 3
+
+      // guess truncate position
+      let i = Math.floor(strLength * maxWidth / width) + 1
+
+      // refine by expansion if necessary
+      while (++i < strLength && textObject.getSubStringLength(0, i) < maxWidth);
+
+      // refine by reduction if necessary
+      while (--i > 3 && textObject.getSubStringLength(0, i) > maxWidth);
+
+      textObject.textContent = textString.substring(0, i - 3) + '...'
+
+      // show a title/tooltip of the full text
+      // TooltipUtils.addSimpleToolTip(textObject, textString)
+    }
+  }
 }
 
 module.exports = SvgUtils

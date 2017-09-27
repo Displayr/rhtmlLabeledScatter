@@ -1,6 +1,8 @@
 import autoBind from 'es6-autobind'
 import _ from 'lodash'
 import LegendUtils from './utils/LegendUtils'
+import SvgUtils from './utils/SvgUtils'
+import Utils from './utils/Utils'
 
 class Legend {
   constructor (legendSettings, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix) {
@@ -19,6 +21,7 @@ class Legend {
     this.yPrefix = yPrefix
     this.zPrefix = zPrefix
     this.width = 0
+    this.maxWidth = 0
     this.heightOfRow = legendSettings.getFontSize() + 9
     this.padding = {
       right: legendSettings.getFontSize() / 1.6,
@@ -46,7 +49,7 @@ class Legend {
   }
 
   setWidth (w) {
-    this.width = w
+    this.width = _.min([w, this.maxWidth])
   }
 
   setHeight (h) {
@@ -180,6 +183,43 @@ class Legend {
     })
   }
 
+  resizedAfterLegendGroupsDrawn (vb, axisDimensionText) {
+    this.vb = vb
+    const initWidth = vb.width
+
+    const totalLegendItems = this.legendSettings.showLegend() ? this.getNumGroups() + this.getNumPts() : this.getNumPts()
+    const legendGrpsTextMax = (this.getNumGroups() > 0) && this.legendSettings.showLegend() ? (_.maxBy(this.groups, e => e.width)).width : 0
+    const legendPtsTextMax = this.getNumPts() > 0 ? (_.maxBy(this.pts, e => e.width)).width : 0
+
+    const maxTextWidth = _.max([legendGrpsTextMax, legendPtsTextMax])
+
+    const spacingAroundMaxTextWidth = this.getSpacingAroundMaxTextWidth()
+    const bubbleLeftRightPadding = this.getBubbleLeftRightPadding()
+
+    this.setCols(Math.ceil(((totalLegendItems) * this.getHeightOfRow()) / this.height))
+    this.setWidth((maxTextWidth * this.getCols()) + spacingAroundMaxTextWidth + (this.getPaddingMid() * (this.getCols() - 1)))
+
+    const bubbleTitleWidth = this.getBubbleTitleWidth()
+    this.setWidth(_.max([this.width, bubbleTitleWidth + bubbleLeftRightPadding,
+      this.getBubblesMaxWidth() + bubbleLeftRightPadding]))
+
+    this.setColSpace(_.min([maxTextWidth, this.getMaxTextWidth()]))
+
+    vb.setWidth(vb.svgWidth - this.width - vb.x - axisDimensionText.rowMaxWidth)
+    this.setX(vb.x + vb.width)
+
+    const isNewWidthSignficantlyDifferent = Math.abs(initWidth - vb.width) > 0.1
+    return isNewWidthSignficantlyDifferent
+  }
+
+  getMaxTextWidth () {
+    return (this.maxWidth - (this.getPaddingLeft() + this.getPaddingRight() + this.getPaddingMid() * (this.getCols() - 1))) / this.getCols()
+  }
+
+  getMaxGroupTextWidth () {
+    return (this.maxWidth - (this.getPaddingLeft() + this.getPaddingRight() + this.getPtRadius() + this.getPaddingMid() * this.getCols())) / this.getCols()
+  }
+
   getWidth () { return this.width }
   getHeightOfRow () { return this.heightOfRow }
   getMarkerLen () { return this.marker.len }
@@ -205,6 +245,114 @@ class Legend {
   setBubblesMaxWidth (bubblesMaxWidth) { this.bubblesMaxWidth = bubblesMaxWidth }
   setBubbles (bubbles) { this.bubbles = bubbles }
   setBubblesTitle (title) { this.bubblesTitle = title }
+
+  drawBubblesTitleWith (svg) {
+    if (this.legendSettings.hasTitleText()) {
+      svg.selectAll('.legend-bubbles-title').remove()
+      let legendBubbleTitleFontSize = this.legendSettings.getBubbleTitleFontSize()
+      const legendBubbleTitleSvg = svg.selectAll('.legend-bubbles-title')
+         .data(this.getBubblesTitle())
+         .enter()
+         .append('text')
+         .attr('class', 'legend-bubbles-title')
+         .attr('x', d => d.x)
+         .attr('y', d => d.y - (legendBubbleTitleFontSize * 1.5))
+         .attr('text-anchor', 'middle')
+         .attr('font-weight', 'normal')
+         .attr('font-size', this.legendSettings.getBubbleTitleFontSize())
+         .attr('font-family', this.legendSettings.getBubbleTitleFontFamily())
+         .attr('fill', this.legendSettings.getBubbleTitleFontColor())
+         .text(this.legendSettings.getTitle())
+
+      SvgUtils.setSvgBBoxWidthAndHeight(this.getBubblesTitle(), legendBubbleTitleSvg)
+    }
+  }
+
+  drawBubblesWith (svg, axisSettings) {
+    svg.selectAll('.legend-bubbles').remove()
+    svg.selectAll('.legend-bubbles')
+       .data(this.getBubbles())
+       .enter()
+       .append('circle')
+       .attr('class', 'legend-bubbles')
+       .attr('cx', d => d.cx)
+       .attr('cy', d => d.cy)
+       .attr('r', d => d.r)
+       .attr('fill', 'none')
+       .attr('stroke', axisSettings.fontColor)
+       .attr('stroke-opacity', 0.5)
+  }
+
+  drawBubblesLabelsWith (svg) {
+    svg.selectAll('.legend-bubbles-labels').remove()
+    svg.selectAll('.legend-bubbles-labels')
+       .data(this.getBubbles())
+       .enter()
+       .append('text')
+       .attr('class', 'legend-bubbles-labels')
+       .attr('x', d => d.x)
+       .attr('y', d => d.y)
+       .attr('text-anchor', 'middle')
+       .attr('font-size', this.legendSettings.getBubbleFontSize())
+       .attr('font-family', this.legendSettings.getBubbleFontFamily())
+       .attr('fill', this.legendSettings.getBubbleFontColor())
+       .text(d => d.text)
+  }
+
+  drawDraggedPtsTextWith (svg, drag) {
+    svg.selectAll('.legend-dragged-pts-text').remove()
+    const legendPtsSvg = svg.selectAll('.legend-dragged-pts-text')
+       .data(this.pts)
+       .enter()
+       .append('text')
+       .attr('class', 'legend-dragged-pts-text')
+       .attr('id', d => `legend-${d.id}`)
+       .attr('x', d => d.x)
+       .attr('y', d => d.y)
+       .attr('font-family', this.legendSettings.getFontFamily())
+       .attr('font-size', this.legendSettings.getFontSize())
+       .attr('text-anchor', d => d.anchor)
+       .attr('fill', d => d.color)
+       .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text } else { return d.text } })
+       .call(drag)
+
+    SvgUtils.setSvgBBoxWidthAndHeight(this.pts, svg.selectAll('.legend-dragged-pts-text'))
+    _.map(legendPtsSvg[0], p => SvgUtils.svgTextEllipses(p, p.textContent, this.getMaxTextWidth()))
+  }
+
+  drawGroupsTextWith (svg) {
+    svg.selectAll('.legend-groups-text').remove()
+    const legendGroupsSvg = svg.selectAll('.legend-groups-text')
+       .data(this.groups)
+       .enter()
+       .append('text')
+       .attr('class', 'legend-groups-text')
+       .attr('x', d => d.x)
+       .attr('y', d => d.y)
+       .attr('font-family', this.legendSettings.getFontFamily())
+       .attr('fill', this.legendSettings.getFontColor())
+       .attr('font-size', this.legendSettings.getFontSize())
+       .text(d => d.text)
+       .attr('text-anchor', d => d.anchor)
+    SvgUtils.setSvgBBoxWidthAndHeight(this.groups, svg.selectAll('.legend-groups-text'))
+    _.map(legendGroupsSvg[0], g => SvgUtils.svgTextEllipses(g, g.textContent, this.getMaxGroupTextWidth()))
+  }
+
+  drawGroupsPts (svg) {
+    svg.selectAll('.legend-groups-pts').remove()
+    svg.selectAll('.legend-groups-pts')
+       .data(this.groups)
+       .enter()
+       .append('circle')
+       .attr('class', 'legend-groups-pts')
+       .attr('cx', d => d.cx)
+       .attr('cy', d => d.cy)
+       .attr('r', d => d.r)
+       .attr('fill', d => d.color)
+       .attr('stroke', d => d.stroke)
+       .attr('stroke-opacity', d => d['stroke-opacity'])
+       .attr('fill-opacity', d => d.fillOpacity)
+  }
 }
 
 module.exports = Legend

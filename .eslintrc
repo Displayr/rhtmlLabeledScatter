@@ -11,5 +11,6 @@
     "promise"
   ],
   "rules": {
+    "indent": 0
   }
 }

@@ -1,11 +1,12 @@
 import autoBind from 'es6-autobind'
 import _ from 'lodash'
+import Utils from './utils/Utils'
 
 class LegendSettings {
   constructor (show, showBubbles,
                fontFamily, fontSize, fontColor,
                bubbleFontFamily, bubbleFontSize, bubbleFontColor,
-               bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor) {
+               bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor, zTitle) {
     autoBind(this)
     this.show = show
     this.showBubbles = showBubbles
@@ -26,9 +27,16 @@ class LegendSettings {
         color: _.isString(bubbleTitleFontColor) ? bubbleTitleFontColor : fontColor
       }
     }
+    this.title = zTitle
+  }
+
+  isDisplayed (Z, legendPts) {
+    return this.showLegend() || (this.showBubblesInLegend() && Utils.isArrOfNums(Z)) || !(_.isNull(legendPts))
   }
 
   showLegend () { return this.show }
+  hasTitleText () { return this.title !== '' }
+  getTitle () { return this.title }
   showBubblesInLegend () { return this.showBubbles }
   getFontFamily () { return this.font.family }
   getFontSize () { return this.font.size }
