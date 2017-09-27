@@ -449,7 +449,7 @@ class RectPlot {
         this.legend.drawGroupsPts(this.svg)
       }
 
-      if (this.legendSettings.showLegend() || (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) || !(_.isNull(this.data.legendPts))) {
+      if (this.legendSettings.isDisplayed(this.Z, this.data.legendPts)) {
         if (this.legend.resizedAfterLegendGroupsDrawn(this.data.vb, this.axisDimensionText)) {
           this.data.revertMinMax()
           const error = new Error('drawLegend Failed')

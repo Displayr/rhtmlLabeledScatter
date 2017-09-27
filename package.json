@@ -25,6 +25,7 @@
     "d3-extended": "^1.2.10",
     "es6-autobind": "^1.0.7",
     "es6-promise": "^3.2.1",
+    "eslint": "^4.7.2",
     "jquery": "2.2.2",
     "lodash": "4.17.4",
     "md5": "^2.2.1",

@@ -203,13 +203,21 @@ class Legend {
     this.setWidth(_.max([this.width, bubbleTitleWidth + bubbleLeftRightPadding,
       this.getBubblesMaxWidth() + bubbleLeftRightPadding]))
 
-    this.setColSpace(maxTextWidth)
+    this.setColSpace(_.min([maxTextWidth, this.getMaxTextWidth()]))
 
     vb.setWidth(vb.svgWidth - this.width - vb.x - axisDimensionText.rowMaxWidth)
     this.setX(vb.x + vb.width)
 
     const isNewWidthSignficantlyDifferent = Math.abs(initWidth - vb.width) > 0.1
     return isNewWidthSignficantlyDifferent
+  }
+
+  getMaxTextWidth () {
+    return (this.maxWidth - (this.getPaddingLeft() + this.getPaddingRight() + this.getPaddingMid() * (this.getCols() - 1))) / this.getCols()
+  }
+
+  getMaxGroupTextWidth () {
+    return (this.maxWidth - (this.getPaddingLeft() + this.getPaddingRight() + this.getPtRadius() + this.getPaddingMid() * this.getCols())) / this.getCols()
   }
 
   getWidth () { return this.width }
@@ -293,7 +301,7 @@ class Legend {
 
   drawDraggedPtsTextWith (svg, drag) {
     svg.selectAll('.legend-dragged-pts-text').remove()
-    svg.selectAll('.legend-dragged-pts-text')
+    const legendPtsSvg = svg.selectAll('.legend-dragged-pts-text')
        .data(this.pts)
        .enter()
        .append('text')
@@ -309,11 +317,12 @@ class Legend {
        .call(drag)
 
     SvgUtils.setSvgBBoxWidthAndHeight(this.pts, svg.selectAll('.legend-dragged-pts-text'))
+    _.map(legendPtsSvg[0], p => SvgUtils.svgTextEllipses(p, p.textContent, this.getMaxTextWidth()))
   }
 
   drawGroupsTextWith (svg) {
     svg.selectAll('.legend-groups-text').remove()
-    svg.selectAll('.legend-groups-text')
+    const legendGroupsSvg = svg.selectAll('.legend-groups-text')
        .data(this.groups)
        .enter()
        .append('text')
@@ -326,6 +335,7 @@ class Legend {
        .text(d => d.text)
        .attr('text-anchor', d => d.anchor)
     SvgUtils.setSvgBBoxWidthAndHeight(this.groups, svg.selectAll('.legend-groups-text'))
+    _.map(legendGroupsSvg[0], g => SvgUtils.svgTextEllipses(g, g.textContent, this.getMaxGroupTextWidth()))
   }
 
   drawGroupsPts (svg) {
