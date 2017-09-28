@@ -39,6 +39,15 @@ Feature: State Interactions
     And the "scatterplot_three_point_brand_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 0
 
+  @applitools @state
+  Scenario: User can load a scatterplot label from saved state and see truncated scatterplot with 2 cols
+    Given I am viewing "scatterplot_yaxis_not_visible" with state "legend_truncation_2cols" and dimensions 775x150
+    Then the "scatterplot_with_legend_truncation_2cols" snapshot matches the baseline
+
+  @applitools @state
+  Scenario: User can load a scatterplot label from saved state and see truncated scatterplot with 3 cols
+    Given I am viewing "scatterplot_yaxis_not_visible" with state "legend_truncation_3cols" and dimensions 775x150
+    Then the "scatterplot_with_legend_truncation_3cols" snapshot matches the baseline
 
   @applitools @state @imageLabels
   Scenario: User can drag a scatterplot image label on the canvas
