@@ -20,6 +20,7 @@ import Subtitle from './Subtitle'
 import Footer from './Footer'
 import PlotAxisLabels from './PlotAxisLabels'
 import PlotAxis from './PlotAxis'
+import ResetButton from './ResetButton'
 
 class RectPlot {
   constructor (state,
@@ -357,29 +358,13 @@ class RectPlot {
   }
 
   drawResetButton () {
-    this.svg.selectAll('.plot-reset-button').remove()
-    const svgResetButton = this.svg.append('text')
-        .attr('class', 'plot-reset-button')
-        .attr('font-family', this.title.fontFamily)
-        .attr('fill', '#5B9BD5')
-        .attr('font-size', 10)
-        .attr('font-weight', 'normal')
-        .style('opacity', 0)
-        .text('Reset')
-        .attr('cursor', 'pointer')
-        .on('click', () => {
-          this.data.resetLegendPts()
-          this.state.resetStateLegendPtsAndPositionedLabs()
-          this.draw()
-        })
-    this.svg
-        .on('mouseover', () => { if (this.state.hasStateBeenAlteredByUser()) svgResetButton.style('opacity', 1) })
-        .on('mouseout', () => svgResetButton.style('opacity', 0))
-
-    const svgResetButtonBB = svgResetButton.node().getBBox()
-    const xAxisPadding = 5
-    svgResetButton.attr('x', this.width - svgResetButtonBB.width - xAxisPadding)
-                  .attr('y', this.height - svgResetButtonBB.height)
+    const resetCallback = () => {
+      this.data.resetLegendPts()
+      this.state.resetStateLegendPtsAndPositionedLabs()
+      this.draw()
+    }
+    this.resetButton = new ResetButton(resetCallback)
+    this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state.hasStateBeenAlteredByUser())
   }
 
   drawDimensionMarkers () {
@@ -573,6 +558,7 @@ class RectPlot {
                  .attr('text-anchor', 'middle')
                  .attr('fill', d => d.color)
                  .attr('font-size', d => d.fontSize)
+                 .attr('cursor', 'pointer')
                  .call(drag)
 
         LabelPlacement.placeLabels(
