@@ -313,6 +313,7 @@ class Legend {
        .attr('font-size', this.legendSettings.getFontSize())
        .attr('text-anchor', d => d.anchor)
        .attr('fill', d => d.color)
+       .style('cursor', 'pointer')
        .text(d => { if (!(_.isNull(d.markerId))) { return Utils.getSuperscript(d.markerId + 1) + d.text } else { return d.text } })
        .call(drag)
 

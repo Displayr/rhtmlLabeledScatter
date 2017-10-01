@@ -1,4 +1,6 @@
 import _ from 'lodash'
+import d3 from 'd3'
+import $ from 'jquery'
 const Utils = require('./Utils.js')
 
 class TooltipUtils {
@@ -37,6 +39,10 @@ class TooltipUtils {
         return `${labelTxt}${groupLabel}\n(${xlabel}, ${ylabel})`
       })
     }
+  }
+
+  static addSimpleTooltip (object, tooltipText) {
+    d3.selectAll($(object)).append('title').text(tooltipText)
   }
 }
 

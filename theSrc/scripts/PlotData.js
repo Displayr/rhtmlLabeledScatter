@@ -373,10 +373,15 @@ class PlotData {
     const top = lab.y - lab.height
     const bot = lab.y
 
-    return ((left < this.vb.x) ||
-        (right > (this.vb.x + this.vb.width)) ||
-        (top < this.vb.y) ||
-        (bot > (this.vb.y + this.vb.height)))
+    // const isAnyPartOfLabOutside = ((left < this.vb.x) ||
+    //                               (right > (this.vb.x + this.vb.width)) ||
+    //                               (top < this.vb.y) ||
+    //                               (bot > (this.vb.y + this.vb.height)))
+    const isAllOfLabOutside = ((right < this.vb.x) ||
+                               (left > (this.vb.x + this.vb.width)) ||
+                               (bot < this.vb.y) ||
+                               (top > (this.vb.y + this.vb.height)))
+    return isAllOfLabOutside
   }
 
   isLegendPtOutsideViewBox (lab) {

@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import TooltipUtils from './TooltipUtils'
 
 class SvgUtils {
   static setMatchingSvgBBoxWidthAndHeight (dataArray, svgArray) {
@@ -100,7 +101,7 @@ class SvgUtils {
       textObject.textContent = textString.substring(0, i - 3) + '...'
 
       // show a title/tooltip of the full text
-      // TooltipUtils.addSimpleToolTip(textObject, textString)
+      TooltipUtils.addSimpleTooltip(textObject, textString)
     }
   }
 }
