@@ -558,7 +558,7 @@ class RectPlot {
                  .attr('text-anchor', 'middle')
                  .attr('fill', d => d.color)
                  .attr('font-size', d => d.fontSize)
-                 .attr('cursor', 'pointer')
+                 .style('cursor', 'pointer')
                  .call(drag)
 
         LabelPlacement.placeLabels(

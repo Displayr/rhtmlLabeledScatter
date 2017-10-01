@@ -13,8 +13,8 @@ class ResetButton {
       .attr('font-size', 10)
       .attr('font-weight', 'normal')
       .style('opacity', 0)
+      .style('cursor', 'pointer')
       .text('Reset')
-      .attr('cursor', 'pointer')
       .on('click', () => this.resetCallback)
 
     svg.on('mouseover', () => { if (stateBeenAlteredByUser) svgResetButton.style('opacity', 1) })
