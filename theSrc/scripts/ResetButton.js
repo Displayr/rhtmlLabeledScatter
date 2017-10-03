@@ -1,6 +1,6 @@
 class ResetButton {
-  constructor (resetCallback) {
-    this.resetCallback = resetCallback
+  constructor (plot) {
+    this.plot = plot
   }
 
   drawWith (svg, width, height, title, stateBeenAlteredByUser) {
@@ -15,7 +15,11 @@ class ResetButton {
       .style('opacity', 0)
       .style('cursor', 'pointer')
       .text('Reset')
-      .on('click', () => this.resetCallback)
+      .on('click', () => {
+        this.plot.data.resetLegendPts()
+        this.plot.state.resetStateLegendPtsAndPositionedLabs()
+        this.plot.draw()
+      })
 
     svg.on('mouseover', () => { if (stateBeenAlteredByUser) svgResetButton.style('opacity', 1) })
        .on('mouseout', () => svgResetButton.style('opacity', 0))

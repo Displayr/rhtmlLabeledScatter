@@ -358,12 +358,7 @@ class RectPlot {
   }
 
   drawResetButton () {
-    const resetCallback = () => {
-      this.data.resetLegendPts()
-      this.state.resetStateLegendPtsAndPositionedLabs()
-      this.draw()
-    }
-    this.resetButton = new ResetButton(resetCallback)
+    this.resetButton = new ResetButton(this)
     this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state.hasStateBeenAlteredByUser())
   }
 
