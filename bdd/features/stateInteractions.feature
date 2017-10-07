@@ -24,6 +24,8 @@ Feature: State Interactions
     Then label 0 should be in the legend
     And the "scatterplot_three_point_brand_after_label_drag_to_legend" snapshot matches the baseline
     And the final state callback should match "porche_label_moved_to_legend" within 0.02
+    When I click on reset
+    Then the "scatterplot_reset_click" snapshot matches the baseline
 
   @applitools @state
   Scenario: User can load a scatterplot label with saved state (user drag label to legend) and see their modified scatterplot

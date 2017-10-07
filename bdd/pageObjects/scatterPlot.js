@@ -15,6 +15,10 @@ class ScatterPlot {
   get legendGroup () {
     return element.all(by.css('.legend-groups-text')).get(0)
   }
+
+  plotReset () {
+    return element(by.css('.plot-reset-button'))
+  }
 }
 
 module.exports = ScatterPlot
