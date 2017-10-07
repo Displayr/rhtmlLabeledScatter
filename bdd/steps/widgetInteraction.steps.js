@@ -98,6 +98,12 @@ module.exports = function () {
     })
   })
 
+  this.When(/^I click on reset$/, function () {
+    return wrapInPromiseAndLogErrors(() => {
+      return browser.actions().click(this.context.scatterPlot.plotReset()).perform()
+    })
+  })
+
   this.Then(/^the final state callback should match "(.*)" within ([0-9.]+)$/, function (expectedStateFile, toleranceString) {
     if (!this.context.configName) {
       throw new Error('Cannot state match without configName')
