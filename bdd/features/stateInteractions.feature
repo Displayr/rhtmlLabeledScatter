@@ -100,7 +100,7 @@ Feature: State Interactions
     Given I am viewing "bubbleplot_simple" with state "label_moved_100x100" and dimensions 600x600
     Then the "bubbleplot_simple_label_moved_100x100" snapshot matches the baseline
 
-  @applitools @state @bubbleplot @foo
+  @applitools @state @bubbleplot
   Scenario: User can drag a bubbleplot label off of the canvas
     Given I am viewing "bubbleplot_simple" with dimensions 600x600
     And I wait for animations to complete
@@ -114,7 +114,7 @@ Feature: State Interactions
     Given I am viewing "bubbleplot_simple" with state "label_moved_to_legend" and dimensions 600x600
     Then the "label_moved_to_legend" snapshot matches the baseline
 
-  @applitools @state @bubbleplot @foo
+  @applitools @state @bubbleplot
   Scenario: User can drag a bubbleplot label from the legend back to the canvas and it will snap into the original position
     Given I am viewing "bubbleplot_simple" with state "label_moved_to_legend" and dimensions 600x600
     When I drag legend label 2 to the canvas
