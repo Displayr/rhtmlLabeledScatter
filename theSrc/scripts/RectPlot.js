@@ -65,9 +65,9 @@ class RectPlot {
     labelsFontSize,
     labelsFontColor,
     labelsLogoScale = [],
-    xDecimals = null,
-    yDecimals = null,
-    zDecimals = null,
+    xDecimals = 3,
+    yDecimals = 3,
+    zDecimals = 3,
     xPrefix = '',
     yPrefix = '',
     zPrefix = '',
@@ -122,9 +122,11 @@ class RectPlot {
     this.transparency = transparency
     this.originAlign = originAlign
     this.showLabels = showLabels
-    this.xDecimals = xDecimals
-    this.yDecimals = yDecimals
-    this.zDecimals = zDecimals
+    this.decimals = {
+      x: xDecimals,
+      y: yDecimals,
+      z: zDecimals
+    }
     this.xPrefix = xPrefix
     this.yPrefix = yPrefix
     this.zPrefix = zPrefix
@@ -235,7 +237,7 @@ class RectPlot {
     this.title.setX(initTitleX)
     this.subtitle.setX(initTitleX)
     this.footer.setX(initTitleX)
-    this.legend = new Legend(this.legendSettings, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
+    this.legend = new Legend(this.legendSettings, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix, this.decimals)
 
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.footer,
       this.labelsFont, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
@@ -460,8 +462,7 @@ class RectPlot {
                  return d.r
                }
              })
-    TooltipUtils.appendTooltips(anc, this.Z, this.xDecimals, this.yDecimals,
-      this.zDecimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
+    TooltipUtils.appendTooltips(anc, this.Z, this.decimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
     // Clip paths used to crop bubbles if they expand beyond the plot's borders
     if (Utils.isArrOfNums(this.Z)) {
       this.svg.selectAll('clipPath').remove()
