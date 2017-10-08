@@ -30,7 +30,9 @@ class Utils {
   }
 
   static getFormattedNum (num, decimals, prefix = '', suffix = '') {
-    return prefix + (new BigNumber(num)).toFormat(decimals) + suffix
+    // Note that BigNumber can have a max of 15 decimals
+    const numToDisplay = _.isNull(decimals) ? String(num) : (new BigNumber(num)).toFormat(decimals)
+    return prefix + numToDisplay + suffix
   }
 }
 
