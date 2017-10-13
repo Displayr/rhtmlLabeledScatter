@@ -15,7 +15,12 @@ describe('AxisUtils:', function () {
           colMaxHeight: 10
         },
         xBoundsUnitsMajor: 2,
-        yBoundsUnitsMajor: 2
+        yBoundsUnitsMajor: 2,
+        decimals: {
+          x: 1,
+          y: 1,
+          z: null
+        }
       }
 
       this.defaultViewBox = {
@@ -107,13 +112,13 @@ describe('AxisUtils:', function () {
 
         it('should compute 4 axis markers lines', function () {
           expect(this.result.axisLeaderLabel).to.deep.equal([
-            { x: 0, y: 115, label: '0', anchor: 'middle', type: 'col' },
+            { x: 0, y: 115, label: '0.0', anchor: 'middle', type: 'col' },
             { x: 25, y: 115, label: '2.5', anchor: 'middle', type: 'col' },
-            { x: 50, y: 115, label: '5', anchor: 'middle', type: 'col' },
+            { x: 50, y: 115, label: '5.0', anchor: 'middle', type: 'col' },
             { x: 75, y: 115, label: '7.5', anchor: 'middle', type: 'col' },
-            { x: -5, y: 103.33333333333333, label: '0', anchor: 'end', type: 'row' },
+            { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: 'row' },
             { x: -5, y: 78.33333333333333, label: '2.5', anchor: 'end', type: 'row' },
-            { x: -5, y: 53.333333333333336, label: '5', anchor: 'end', type: 'row' },
+            { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: 'row' },
             { x: -5, y: 28.333333333333332, label: '7.5', anchor: 'end', type: 'row' }
           ])
         })
@@ -145,11 +150,11 @@ describe('AxisUtils:', function () {
 
         it('should compute 6 axis markers lines', function () {
           expect(this.result.axisLeaderLabel).to.deep.equal([
-            {x: 10, y: 115, label: '-6', anchor: 'middle', type: 'col'},
+            {x: 10, y: 115, label: '-6.0', anchor: 'middle', type: 'col'},
             {x: 25, y: 115, label: '-4.5', anchor: 'middle', type: 'col'},
-            {x: 40, y: 115, label: '-3', anchor: 'middle', type: 'col'},
+            {x: 40, y: 115, label: '-3.0', anchor: 'middle', type: 'col'},
             {x: 55.00000000000001, y: 115, label: '-1.5', anchor: 'middle', type: 'col'},
-            {x: 70, y: 115, label: '0', anchor: 'middle', type: 'col'},
+            {x: 70, y: 115, label: '0.0', anchor: 'middle', type: 'col'},
             {x: 85, y: 115, label: '1.5', anchor: 'middle', type: 'col'}
           ])
         })

@@ -5,9 +5,10 @@ import SvgUtils from './utils/SvgUtils'
 import Utils from './utils/Utils'
 
 class Legend {
-  constructor (legendSettings, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix) {
+  constructor (legendSettings, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, decimals) {
     autoBind(this)
     this.legendSettings = legendSettings
+    this.decimals = decimals
     this.prefix = {
       x: xPrefix,
       y: yPrefix,
@@ -162,7 +163,7 @@ class Legend {
       pt: movedPt[0],
       lab: movedLab[0],
       anchor: 'start',
-      text: `${movedLab[0].text} (${this.prefix.x}${movedPt[0].labelX}${this.suffix.x}, ${this.prefix.y}${movedPt[0].labelY}${this.suffix.y})`,
+      text: `${movedLab[0].text} (${Utils.getFormattedNum(movedPt[0].labelX, this.decimals.x, this.prefix.x, this.suffix.x)}, ${Utils.getFormattedNum(movedPt[0].labelY, this.decimals.y, this.prefix.y, this.suffix.y)})`,
       color: movedPt[0].color,
       isDraggedPt: true
     })

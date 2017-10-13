@@ -92,7 +92,7 @@ class AxisUtils {
     const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement) => {
       const leaderLineLen = plot.axisLeaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
-      const { xDecimals, yDecimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
+      const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
 
       const computeNumDecimals = (tickIncr, userDecimals) => {
         // Return user specified number of decimals or 0 if the tickIncr is an integer
@@ -105,7 +105,7 @@ class AxisUtils {
       }
 
       if (type === 'col') {
-        const numDecimals = computeNumDecimals(tickIncrement, xDecimals)
+        const numDecimals = computeNumDecimals(tickIncrement, decimals.x)
         axisLeaderStack.push({
           x1,
           y1: y2,
@@ -123,7 +123,7 @@ class AxisUtils {
       }
 
       if (type === 'row') {
-        const numDecimals = computeNumDecimals(tickIncrement, yDecimals)
+        const numDecimals = computeNumDecimals(tickIncrement, decimals.y)
         axisLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,
