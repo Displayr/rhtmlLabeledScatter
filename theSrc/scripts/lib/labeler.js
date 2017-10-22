@@ -384,24 +384,12 @@ const labeler = function () {
     }, function() {
       currT = cooling_schedule(currT, initialT, nsweeps)
     }, function() {
-      // loop done here
-      console.log("resolveFunc called")
-      console.log(resolveFunc)
+      console.log("rhtmlLabeledScatter: Label placement complete!")
       resolveFunc()
     });
-    
-    // for (let i = 0; i < nsweeps; i++) {
-    //   for (let j = 0; j < lab.length; j++) {
-    //     if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
-    //   }
-    //   currT = cooling_schedule(currT, initialT, nsweeps)
-    //   console.log(currT)
-    // }
   }
   
   labeler.promise = function (resolve) {
-    console.log("resolve")
-    console.log(resolve)
     resolveFunc = resolve
     return labeler
   }
