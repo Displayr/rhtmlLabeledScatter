@@ -347,9 +347,11 @@ class RectPlot {
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
         this.drawAnc()
-        this.drawLabs()
-        if (this.trendLines.show) { this.drawTrendLines() }
-        this.drawDraggedMarkers()
+        const labelPromise = this.drawLabs()
+        labelPromise.then(() => {
+          if (this.trendLines.show) { this.drawTrendLines() }
+          this.drawDraggedMarkers()
+        }).bind(this)
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
         this.axisLabels.drawWith(this.svg)
@@ -557,28 +559,38 @@ class RectPlot {
                  .style('cursor', 'pointer')
                  .call(drag)
 
-        LabelPlacement.placeLabels(
-          this.svg,
-          this.data.vb,
-          this.data.pts,
-          this.data.lab,
-          this.state
-        )
+        const placementPromise = new Promise((resolve, reject) => {
+          LabelPlacement.placeLabels(
+            this.svg,
+            this.data.vb,
+            this.data.pts,
+            this.data.lab,
+            this.state
+          )
+          resolve()
+        })
 
-        this.drawLinks()
+        placementPromise.then(() => {
+          this.drawLinks()
+        }).bind(this)
+        return placementPromise
       } else if (this.trendLines.show) {
         this.tl = new TrendLine(this.data.pts, this.data.lab)
         this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
         this.tl.drawLabelsWith(this.svg, drag)
-        LabelPlacement.placeTrendLabels(
-          this.svg,
-          this.data.vb,
-          this.tl.pts,
-          this.tl.arrowheadLabels,
-          this.state
-        )
+        const placementPromise = new Promise((resolve, reject) => {
+          LabelPlacement.placeTrendLabels(
+            this.svg,
+            this.data.vb,
+            this.tl.pts,
+            this.tl.arrowheadLabels,
+            this.state
+          )
+          resolve()
+        }).bind(this)
+        return placementPromise
       }
     }
   }
