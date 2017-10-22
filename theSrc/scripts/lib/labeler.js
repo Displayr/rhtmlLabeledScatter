@@ -14,6 +14,7 @@ const labeler = function () {
     w2 = 1,
     labeler = {},
     svg = {},
+    resolveFunc = null,
     pinned = [],
     minLabWidth = Infinity
 
@@ -361,13 +362,48 @@ const labeler = function () {
     // main simulated annealing function
     let currT = 1.0
     let initialT = 1.0
-
-    for (let i = 0; i < nsweeps; i++) {
-      for (let j = 0; j < lab.length; j++) {
-        if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
-      }
-      currT = cooling_schedule(currT, initialT, nsweeps)
+  
+    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished) {
+      let i = 0;
+      (function chunk() {
+        let end = Math.min(i + chunksize, count);
+        for ( ; i < end; ++i) {
+          callback.call(null, i);
+        }
+        callbackBtwnChuncks()
+        if (i < count) {
+          setTimeout(chunk, 0);
+        } else {
+          finished.call(null);
+        }
+      })();
     }
+  
+    yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
+      if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+    }, function() {
+      currT = cooling_schedule(currT, initialT, nsweeps)
+    }, function() {
+      // loop done here
+      console.log("resolveFunc called")
+      console.log(resolveFunc)
+      resolveFunc()
+    });
+    
+    // for (let i = 0; i < nsweeps; i++) {
+    //   for (let j = 0; j < lab.length; j++) {
+    //     if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+    //   }
+    //   currT = cooling_schedule(currT, initialT, nsweeps)
+    //   console.log(currT)
+    // }
+  }
+  
+  labeler.promise = function (resolve) {
+    console.log("resolve")
+    console.log(resolve)
+    resolveFunc = resolve
+    return labeler
   }
 
   labeler.svg = function (x) {

@@ -351,7 +351,7 @@ class RectPlot {
         labelPromise.then(() => {
           if (this.trendLines.show) { this.drawTrendLines() }
           this.drawDraggedMarkers()
-        }).bind(this)
+        })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
         this.axisLabels.drawWith(this.svg)
@@ -565,14 +565,28 @@ class RectPlot {
             this.data.vb,
             this.data.pts,
             this.data.lab,
-            this.state
+            this.state,
+            resolve
           )
-          resolve()
         })
 
         placementPromise.then(() => {
+          const labelsSvg = this.svg.selectAll('.lab')
+          const labelsImgSvg = this.svg.selectAll('.lab-img')
+
+          // Move labels after label placement algorithm
+          labelsSvg.attr('x', d => d.x)
+                   .attr('y', d => d.y)
+          labelsImgSvg.attr('x', d => d.x - (d.width / 2))
+                      .attr('y', d => d.y - d.height)
+
+          const pinnedLabels = this.state.getPositionedLabIds(this.vb)
+          const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
+          if (pinnedLabels.length < labels.length) {
+            this.state.saveAlgoPositionedLabs(labels, this.vb)
+          }
           this.drawLinks()
-        }).bind(this)
+        })
         return placementPromise
       } else if (this.trendLines.show) {
         this.tl = new TrendLine(this.data.pts, this.data.lab)
@@ -586,10 +600,26 @@ class RectPlot {
             this.data.vb,
             this.tl.pts,
             this.tl.arrowheadLabels,
-            this.state
+            this.state,
+            resolve
           )
-          resolve()
-        }).bind(this)
+        })
+        placementPromise.then(() => {
+          const labelsSvg = this.svg.selectAll('.lab')
+          const labelsImgSvg = this.svg.selectAll('.lab-img')
+
+          // Move labels after label placement algorithm
+          labelsSvg.attr('x', d => d.x)
+                   .attr('y', d => d.y)
+          labelsImgSvg.attr('x', d => d.x - (d.width / 2))
+                      .attr('y', d => d.y - d.height)
+
+          const pinnedLabels = this.state.getPositionedLabIds(this.vb)
+          const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
+          if (pinnedLabels.length < labels.length) {
+            this.state.saveAlgoPositionedLabs(labels, this.vb)
+          }
+        })
         return placementPromise
       }
     }
