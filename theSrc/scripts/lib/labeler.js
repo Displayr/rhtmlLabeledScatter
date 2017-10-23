@@ -14,6 +14,7 @@ const labeler = function () {
     w2 = 1,
     labeler = {},
     svg = {},
+    resolveFunc = null,
     pinned = [],
     minLabWidth = Infinity
 
@@ -38,13 +39,6 @@ const labeler = function () {
 
   let user_defined_energy,
     user_defined_schedule
-
-  function initLabBoundaries (lab, anc, i) {
-    if (lab[i].x + lab[i].width / 2 > w2) lab[i].x = w2 - lab[i].width / 2
-    if (lab[i].x - lab[i].width / 2 < w1) lab[i].x = w1 + lab[i].width / 2
-    if (lab[i].y > h2) lab[i].y = h2
-    if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height
-  }
 
   function energy (index) {
     // energy function, tailored for label placement
@@ -125,17 +119,16 @@ const labeler = function () {
       y_overlap,
       overlap_area
 
-    for (let i = 0; i < lab.length; i++) {
-      const comparisonLab = lab[i]
+    _.forEach(lab, (comparisonLab, i) => {
       let comparisonAnc = anc.find(e => e.id === comparisonLab.id)
       if (comparisonAnc === undefined) comparisonAnc = anc[i]
-
+  
       if (i !== index) {
         // penalty for intersection of leader lines
         overlap = intersect(currAnc.x, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
           currAnc.y, currLab.y, comparisonAnc.y, comparisonLab.y)
         if (overlap) ener += w_inter
-
+    
         // penalty for label-label overlap
         x11 = comparisonLab.x - comparisonLab.width / 2
         y11 = comparisonLab.y - comparisonLab.height
@@ -146,22 +139,22 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap
         ener += (overlap_area * w_lab2)
       }
-
+  
       // penalty for label-leader line intersection
       const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
         currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y
       )
-
+  
       const intersecTop = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
         currLab.y - currLab.height, currLab.y - currLab.height, comparisonAnc.y, comparisonLab.y
       )
       if (intersecBottom) ener += w_lablink
       if (intersecTop) ener += w_lablink
-    }
+    })
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
-    for (let a of anc) {
+    _.forEach(anc, a => {
       x11 = a.x - a.r
       y11 = a.y - a.r
       x12 = a.x + a.r
@@ -170,7 +163,7 @@ const labeler = function () {
       y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
       overlap_area = x_overlap * y_overlap
       ener += (overlap_area * w_lab_anc)
-    }
+    })
     return ener
   }
 
@@ -346,30 +339,59 @@ const labeler = function () {
     // linear cooling
     return (currT - (initialT / nsweeps))
   }
-
+  
+  function initLabBoundaries (lab) {
+    _.forEach(lab, l => {
+      if (l.x + l.width / 2 > w2) l.x = w2 - l.width / 2
+      if (l.x - l.width / 2 < w1) l.x = w1 + l.width / 2
+      if (l.y > h2) l.y = h2
+      if (l.y - l.height < h1) l.y = h1 + l.height
+    })
+  }
+  
   labeler.start = function (nsweeps) {
-    for (let i = 0; i < lab.length; i++) {
-      if (!_.includes(pinned, lab[i].id)) {
-        lab[i].y -= 5
+    _.forEach(lab, (l, i) => {
+      if (!_.includes(pinned, l.id)) {
+        l.y -= 5
         // determine min labs width for mcrotate
-        if (lab[i].width < minLabWidth) minLabWidth = lab[i].width
+        if (l.width < minLabWidth) minLabWidth = l.width
       }
-    }
+    })
+    initLabBoundaries(lab)
     
-    for (var i = 0; i < lab.length; i++) {
-      initLabBoundaries(lab, anc, i)
+    // main simulated annealing function
+    let currT = 1.0
+    let initialT = 1.0
+  
+    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished) {
+      let i = 0;
+      (function chunk() {
+        let end = Math.min(i + chunksize, count);
+        for ( ; i < end; ++i) {
+          callback.call(null, i);
+        }
+        callbackBtwnChuncks()
+        if (i < count) {
+          setTimeout(chunk, 0);
+        } else {
+          finished.call(null);
+        }
+      })();
     }
-        // main simulated annealing function
-    let m = lab.length,
-      currT = 1.0,
-      initialT = 1.0
-
-    for (i = 0; i < nsweeps; i++) {
-      for (let j = 0; j < m; j++) {
-        if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
-      }
+  
+    yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
+      if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+    }, function() {
       currT = cooling_schedule(currT, initialT, nsweeps)
-    }
+    }, function() {
+      console.log("rhtmlLabeledScatter: Label placement complete!")
+      resolveFunc()
+    });
+  }
+  
+  labeler.promise = function (resolve) {
+    resolveFunc = resolve
+    return labeler
   }
 
   labeler.svg = function (x) {
