@@ -125,9 +125,9 @@ const labeler = function () {
   
       if (i !== index) {
         // penalty for intersection of leader lines
-        overlap = intersect(currAnc.x, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-          currAnc.y, currLab.y, comparisonAnc.y, comparisonLab.y)
-        if (overlap) ener += w_inter
+        // overlap = intersect(currAnc.x, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+        //   currAnc.y, currLab.y, comparisonAnc.y, comparisonLab.y)
+        // if (overlap) ener += w_inter
     
         // penalty for label-label overlap
         x11 = comparisonLab.x - comparisonLab.width / 2
@@ -141,15 +141,15 @@ const labeler = function () {
       }
   
       // penalty for label-leader line intersection
-      const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-        currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y
-      )
-  
-      const intersecTop = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-        currLab.y - currLab.height, currLab.y - currLab.height, comparisonAnc.y, comparisonLab.y
-      )
-      if (intersecBottom) ener += w_lablink
-      if (intersecTop) ener += w_lablink
+      // const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+      //   currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y
+      // )
+      //
+      // const intersecTop = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
+      //   currLab.y - currLab.height, currLab.y - currLab.height, comparisonAnc.y, comparisonLab.y
+      // )
+      // if (intersecBottom) ener += w_lablink
+      // if (intersecTop) ener += w_lablink
     })
 
     // penalty for label-anchor overlap
