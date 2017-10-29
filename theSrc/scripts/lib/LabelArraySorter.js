@@ -17,11 +17,19 @@ class LabelArraySorter {
   }
 
   getBoundaryCheckFunction (name) {
+    function left (l) { return l.x - l.width / 2 }
+    function right (l) { return l.x + l.width / 2 }
+    function top (l) { return l.y - l.height }
+    function bot (l) { return l.y }
     switch (name) {
-      case 'left': return (l1, l2) => (l1.x - l1.width / 2) < (l2.x + l2.width / 2)
-      case 'right': return (l1, l2) => (l1.x + l1.width / 2) < (l2.x - l2.width / 2)
-      case 'top': return (l1, l2) => (l1.y - l1.height) < l2.y
-      case 'bot': return (l1, l2) => l1.y < (l2.y - l2.height)
+      case 'left':
+        return (l1, l2) => left(l1) < right(l2) && left(l1) > left(l2)
+      case 'right':
+        return (l1, l2) => right(l1) < left(l2) && right(l1) < left(l2)
+      case 'top':
+        return (l1, l2) => top(l1) < bot(l2) && top(l1) < top(l2)
+      case 'bot':
+        return (l1, l2) => bot(l1) > top(l2) && bot(l1) < bot(l2)
     }
   }
 
@@ -81,7 +89,6 @@ class LabelArraySorter {
       }
     })
     overlappingLabels = _.uniqBy(overlappingLabels, l => l.id)
-    // console.log(overlappingLabels)
     return overlappingLabels
   }
 }
