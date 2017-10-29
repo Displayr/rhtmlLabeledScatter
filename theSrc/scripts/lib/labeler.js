@@ -125,11 +125,7 @@ const labeler = function () {
 
     const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(index)
     _.forEach(overlappingLabs, (comparisonLab, i) => {
-      let comparisonAnc = anc.find(e => e.id === comparisonLab.id)
-      if (comparisonAnc === undefined) comparisonAnc = anc[i]
-  
       if (i !== index) {
-    
         // penalty for label-label overlap
         x11 = comparisonLab.x - comparisonLab.width / 2
         y11 = comparisonLab.y - comparisonLab.height
@@ -144,7 +140,8 @@ const labeler = function () {
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
-    // const overlappingAncs = AnchorArraySorter.getOverlappingAnchorsWithAnchorId(index)
+    // const overlappingAncs = anchorArraySorter.getOverlappingAnchorsWithLabelId(index)
+    // _.forEach(overlappingAncs, a => {
     _.forEach(anc, a => {
       x11 = a.x - a.r
       y11 = a.y - a.r
@@ -342,7 +339,7 @@ const labeler = function () {
   }
   
   labeler.start = function (nsweeps) {
-    anchorArraySorter = new AnchorArraySorter(anc, lab)
+    // anchorArraySorter = new AnchorArraySorter(anc, lab)
     _.forEach(lab, (l, i) => {
       if (!_.includes(pinned, l.id)) {
         l.y -= 5
