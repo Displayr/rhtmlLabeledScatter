@@ -17,10 +17,10 @@ class LabelArraySorter {
   }
 
   getBoundaryCheckFunction (name) {
-    function left (l) { return l.x - l.width / 2 }
-    function right (l) { return l.x + l.width / 2 }
-    function top (l) { return l.y - l.height }
-    function bot (l) { return l.y }
+    const left = this.getBoundaryFunction('left')
+    const right = this.getBoundaryFunction('right')
+    const top = this.getBoundaryFunction('top')
+    const bot = this.getBoundaryFunction('bot')
     switch (name) {
       case 'left':
         return (l1, l2) => left(l1) < right(l2) && left(l1) > left(l2)
@@ -51,8 +51,8 @@ class LabelArraySorter {
     this.sortedArrays.bot = _.sortBy(this.sortedArrays.bot, this.getBoundaryFunction('bot'))
   }
 
+  // Returns a list of overlapping arrays for energy penalty calculation
   getOverlappingLabelsWithLabelId (id) {
-    // Returns a list of overlapping arrays for energy penalty calculation
     let overlappingLabels = []
 
     // Recursively look in either direction of the sorted arrays for any collisions
@@ -60,7 +60,7 @@ class LabelArraySorter {
       const labelIndexInSortedArray = _.findIndex(sortedArray, (label) => { return label.id === id })
       const isBoundaryOverlapping = this.getBoundaryCheckFunction(sortedArrayKey)
 
-      function recursiveDirectionalBoundaryCheck (accumlatedLabs, sortedArr, index, direction, boundaryCheckFunction) {
+      function recursiveDirectionalBoundaryCheck (accumlatedLabs, sortedArr, labelBeingCheckedIndex, index, direction, boundaryCheckFunction) {
         let nextIndex = index
         if (direction === 'left' && nextIndex > 0) {
           nextIndex--
@@ -69,13 +69,13 @@ class LabelArraySorter {
         } else {
           return
         }
-        if (boundaryCheckFunction(sortedArr[index], sortedArr[nextIndex])) {
+        if (boundaryCheckFunction(sortedArr[labelBeingCheckedIndex], sortedArr[nextIndex])) {
           accumlatedLabs.push(sortedArr[nextIndex])
-          recursiveDirectionalBoundaryCheck(accumlatedLabs, sortedArr, nextIndex, direction, boundaryCheckFunction)
+          recursiveDirectionalBoundaryCheck(accumlatedLabs, sortedArr, labelBeingCheckedIndex, nextIndex, direction, boundaryCheckFunction)
         }
       }
-      recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, 'left', isBoundaryOverlapping)
-      recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, 'right', isBoundaryOverlapping)
+      recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'left', isBoundaryOverlapping)
+      recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'right', isBoundaryOverlapping)
     })
 
     // Result of recursive function contains duplicates, we want to filter for the labels that overlap in >2 directions

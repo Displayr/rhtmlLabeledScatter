@@ -2,6 +2,7 @@
 import Random from 'random-js'
 import _ from 'lodash'
 import LabelArraySorter from './LabelArraySorter'
+import AnchorArraySorter from './AnchorArraySorter'
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
@@ -18,7 +19,8 @@ const labeler = function () {
     resolveFunc = null,
     pinned = [],
     minLabWidth = Infinity,
-    labelArraySorter = null
+    labelArraySorter = null,
+    anchorArraySorter = null
 
     // var investigate = 781;
     // var investigate2 = 182;
@@ -142,6 +144,7 @@ const labeler = function () {
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
+    // const overlappingAncs = AnchorArraySorter.getOverlappingAnchorsWithAnchorId(index)
     _.forEach(anc, a => {
       x11 = a.x - a.r
       y11 = a.y - a.r
@@ -339,6 +342,7 @@ const labeler = function () {
   }
   
   labeler.start = function (nsweeps) {
+    anchorArraySorter = new AnchorArraySorter(anc, lab)
     _.forEach(lab, (l, i) => {
       if (!_.includes(pinned, l.id)) {
         l.y -= 5
