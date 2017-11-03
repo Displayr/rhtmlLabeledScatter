@@ -1,3 +1,7 @@
+// This was an implementation to mirror LabelArraySorter
+// However, testing has found that there is a significant computational penalty when implemented
+// Therefor it is currently being bypassed
+
 import _ from 'lodash'
 import ArraySorter from './ArraySorter'
 
