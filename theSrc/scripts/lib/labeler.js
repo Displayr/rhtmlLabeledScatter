@@ -348,7 +348,8 @@ const labeler = function () {
     let currT = 1.0
     let initialT = 1.0
   
-    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished) {
+    // Non-blocking implementation with timeouts
+    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
       let i = 0;
       (function chunk() {
         let end = Math.min(i + chunksize, count);
@@ -357,21 +358,31 @@ const labeler = function () {
         }
         callbackBtwnChuncks()
         if (i < count) {
-          setTimeout(chunk, 0);
+          timeoutsArray.push(setTimeout(chunk, 0));
         } else {
           finished.call(null);
         }
       })();
     }
   
+    // Stop label placement algorithm after 5s total runtime
+    function timeoutAllChuncks () {
+      _.map(timeOuts, t => { clearTimeout(t) })
+      console.log("rhtmlLabeledScatter: Label placement timed out reached!")
+      resolveFunc()
+    }
+    
+    const timeOuts = []
+    const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
     yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
       if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
     }, function() {
       currT = cooling_schedule(currT, initialT, nsweeps)
     }, function() {
       console.log("rhtmlLabeledScatter: Label placement complete!")
+      clearTimeout(masterTimeout)
       resolveFunc()
-    });
+    }, timeOuts);
   }
   
   labeler.promise = function (resolve) {
