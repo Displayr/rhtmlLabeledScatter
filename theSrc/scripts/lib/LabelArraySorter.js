@@ -43,22 +43,14 @@ class LabelArraySorter extends ArraySorter {
     // Recursively look in either direction of the sorted arrays for any collisions
     _.map(this.sortedArrays, (sortedArray, sortedArrayKey) => {
       const labelIndexInSortedArray = _.findIndex(sortedArray, (label) => { return label.id === id })
-      const isBoundaryOverlapping = this.getBoundaryCheckFunction(sortedArrayKey)
-
-      this.recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'left', isBoundaryOverlapping)
-      this.recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'right', isBoundaryOverlapping)
+      if (labelIndexInSortedArray !== -1) {
+        const isBoundaryOverlapping = this.getBoundaryCheckFunction(sortedArrayKey)
+        this.recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'left', isBoundaryOverlapping)
+        this.recursiveDirectionalBoundaryCheck(overlappingLabels, sortedArray, labelIndexInSortedArray, labelIndexInSortedArray, 'right', isBoundaryOverlapping)
+      }
     })
 
     // Result of recursive function contains duplicates, we want to filter for the labels that overlap in >2 directions
-    const countsById = _.countBy(overlappingLabels, l => l.id)
-    _.remove(overlappingLabels, l => {
-      if (_.has(countsById, l.id)) {
-        const frequencyOfOverlap = _.toNumber(countsById[l.id])
-        if (frequencyOfOverlap < 2) {
-          return true
-        }
-      }
-    })
     overlappingLabels = _.uniqBy(overlappingLabels, l => l.id)
     return overlappingLabels
   }

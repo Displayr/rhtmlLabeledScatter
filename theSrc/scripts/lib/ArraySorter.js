@@ -8,13 +8,13 @@ class ArraySorter {
     const bot = this.getBoundaryFunction('bot')
     switch (name) {
       case 'left':
-        return (l1, l2) => left(l1) < right(l2) && left(l1) > left(l2)
+        return (l1, l2) => left(l1) <= left(l2) && right(l1) >= left(l2)
       case 'right':
-        return (l1, l2) => right(l1) < left(l2) && right(l1) < left(l2)
+        return (l1, l2) => left(l1) <= right(l2) && right(l1) >= right(l2)
       case 'top':
-        return (l1, l2) => top(l1) < bot(l2) && top(l1) < top(l2)
+        return (l1, l2) => top(l1) <= top(l2) && bot(l1) >= top(l2)
       case 'bot':
-        return (l1, l2) => bot(l1) > top(l2) && bot(l1) < bot(l2)
+        return (l1, l2) => top(l1) <= bot(l2) && bot(l1) >= bot(l2)
     }
   }
 
@@ -22,10 +22,12 @@ class ArraySorter {
 
   recursiveDirectionalBoundaryCheck (accumlatedLabs, sortedArr, labelBeingCheckedIndex, index, direction, boundaryCheckFunction) {
     let nextIndex = index
-    if (direction === 'left' && nextIndex > 0) {
-      nextIndex--
-    } else if (direction === 'right' && nextIndex < sortedArr.length - 1) {
-      nextIndex++
+    if (nextIndex > 0 && nextIndex <= sortedArr.length - 2) {
+      if (direction === 'left') {
+        nextIndex--
+      } else if (direction === 'right') {
+        nextIndex++
+      }
     } else {
       return
     }

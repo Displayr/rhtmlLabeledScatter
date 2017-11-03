@@ -123,7 +123,7 @@ const labeler = function () {
       y_overlap,
       overlap_area
 
-    const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(index)
+    const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id)
     _.forEach(overlappingLabs, (comparisonLab, i) => {
       if (i !== index) {
         // penalty for label-label overlap
