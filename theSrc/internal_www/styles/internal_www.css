@@ -28,7 +28,7 @@ pre.config {
     display: none;
 }
 
-.for-consideration .inner-example {
+.for-consideration .widget-container {
     border: 4px dashed red;
 }
 
@@ -39,11 +39,11 @@ pre.config {
     /*border: 1px dashed dimgrey;*/
 }
 
-.no-border .inner-example {
+.no-border .widget-container {
     border: none;
 }
 
-.inner-example {
+.widget-container {
     border: 1px dashed dimgrey;
     margin-left: auto;
     margin-right: auto;
