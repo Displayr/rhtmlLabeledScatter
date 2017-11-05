@@ -1,0 +1,15 @@
+{
+  "widgetEntryPoint": "theSrc/scripts/rhtmlLabeledScatter.js",
+  "widgetFactory": "theSrc/scripts/rhtmlLabeledScatter.factory.js",
+  "widgetName": "rhtmlLabeledScatter",
+  "visualRegressionSuite": {
+    "applitools": {
+      "defaultMatchTimeout": 2
+    }
+  },
+  "internalWebSettings": {
+    "css": [
+      "/styles/rhtmlLabeledScatter.css"
+    ]
+  }
+}
