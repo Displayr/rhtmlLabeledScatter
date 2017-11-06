@@ -8,6 +8,7 @@
     }
   },
   "internalWebSettings": {
+    "default_border": true,
     "css": [
       "/styles/rhtmlLabeledScatter.css"
     ]
