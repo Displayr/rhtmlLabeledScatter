@@ -9,6 +9,7 @@ const labeler = function () {
 
   let lab = [],
     anc = [],
+    isBubble = false,
     h1 = 1,
     h2 = 1,
     w1 = 1,
@@ -139,14 +140,16 @@ const labeler = function () {
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
     _.forEach(anc, a => {
-      x11 = a.x - a.r
-      y11 = a.y - a.r
-      x12 = a.x + a.r
-      y12 = a.y + a.r
-      x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
-      y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
-      overlap_area = x_overlap * y_overlap
-      ener += (overlap_area * w_lab_anc)
+      if (isBubble && a.id !== currLab.id) {
+        x11 = a.x - a.r
+        y11 = a.y - a.r
+        x12 = a.x + a.r
+        y12 = a.y + a.r
+        x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
+        y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
+        overlap_area = x_overlap * y_overlap
+        ener += (overlap_area * w_lab_anc)
+      }
     })
     return ener
   }
@@ -336,7 +339,7 @@ const labeler = function () {
   
   labeler.start = function (nsweeps) {
     _.forEach(lab, (l, i) => {
-      if (!_.includes(pinned, l.id)) {
+      if (!isBubble && !_.includes(pinned, l.id)) {
         l.y -= 5
         // determine min labs width for mcrotate
         if (l.width < minLabWidth) minLabWidth = l.width
@@ -430,6 +433,12 @@ const labeler = function () {
     // users insert anchor positions
     if (!arguments.length) return anc
     anc = x
+    return labeler
+  }
+  
+  labeler.anchorType = function (x) {
+    if (!arguments.length) return isBubble
+    isBubble = x
     return labeler
   }
 

@@ -4,7 +4,7 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  static place (svg, vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
+  static place (svg, vb, anchors, isBubble, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
 
     labeler()
@@ -17,26 +17,27 @@ class LabelPlacement {
       .label(labels)
       .pinned(pinnedLabels)
       .promise(resolve)
+      .anchorType(isBubble)
       .start(500)
   }
 
-  static placeTrendLabels (svg, vb, anchors, labels, state, resolve) {
+  static placeTrendLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll('.lab')
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(svg, vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(svg, vb, anchors, isBubble, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
 
     const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
   }
 
-  static placeLabels (svg, vb, anchors, labels, state, resolve) {
+  static placeLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll('.lab')
     const labelsImgSvg = svg.selectAll('.lab-img')
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
-    this.place(svg, vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(svg, vb, anchors, isBubble, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)

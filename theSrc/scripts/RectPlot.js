@@ -564,6 +564,7 @@ class RectPlot {
             this.svg,
             this.data.vb,
             this.data.pts,
+            Utils.isArrOfNums(this.Z),
             this.data.lab,
             this.state,
             resolve
@@ -599,6 +600,7 @@ class RectPlot {
             this.svg,
             this.data.vb,
             this.tl.pts,
+            Utils.isArrOfNums(this.Z),
             this.tl.arrowheadLabels,
             this.state,
             resolve
