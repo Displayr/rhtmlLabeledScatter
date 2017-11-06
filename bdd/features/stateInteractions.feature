@@ -39,7 +39,7 @@ Feature: State Interactions
     When I drag legend label 0 to the canvas
     Then label 0 should be near the circle anchor 0
     And the "scatterplot_three_point_brand_initial_load" snapshot matches the baseline
-    And the final state callback should match "back_to_original" within 0
+    And the final state callback should match "back_to_original" within 0.02
 
   @applitools @state
   Scenario: User can load a scatterplot label from saved state and see truncated scatterplot with 2 cols
@@ -84,7 +84,7 @@ Feature: State Interactions
     When I drag legend label 2 to the canvas
     Then label 2 should be near the circle anchor 2
     And the "scatterplot_three_point_brand_initial_load" snapshot matches the baseline
-    And the final state callback should match "back_to_original" within 0
+    And the final state callback should match "back_to_original" within 0.02
 
   @applitools @state @bubbleplot
   Scenario: User can drag a bubbleplot label on the canvas

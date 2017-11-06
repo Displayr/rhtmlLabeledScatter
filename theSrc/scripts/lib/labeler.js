@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Random from 'random-js'
 import _ from 'lodash'
+import LabelArraySorter from './LabelArraySorter'
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
@@ -16,7 +17,8 @@ const labeler = function () {
     svg = {},
     resolveFunc = null,
     pinned = [],
-    minLabWidth = Infinity
+    minLabWidth = Infinity,
+    labelArraySorter = null
 
     // var investigate = 781;
     // var investigate2 = 182;
@@ -119,16 +121,9 @@ const labeler = function () {
       y_overlap,
       overlap_area
 
-    _.forEach(lab, (comparisonLab, i) => {
-      let comparisonAnc = anc.find(e => e.id === comparisonLab.id)
-      if (comparisonAnc === undefined) comparisonAnc = anc[i]
-  
+    const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id)
+    _.forEach(overlappingLabs, (comparisonLab, i) => {
       if (i !== index) {
-        // penalty for intersection of leader lines
-        overlap = intersect(currAnc.x, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-          currAnc.y, currLab.y, comparisonAnc.y, comparisonLab.y)
-        if (overlap) ener += w_inter
-    
         // penalty for label-label overlap
         x11 = comparisonLab.x - comparisonLab.width / 2
         y11 = comparisonLab.y - comparisonLab.height
@@ -139,17 +134,6 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap
         ener += (overlap_area * w_lab2)
       }
-  
-      // penalty for label-leader line intersection
-      const intersecBottom = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-        currLab.y, currLab.y, comparisonAnc.y, comparisonLab.y
-      )
-  
-      const intersecTop = intersect(currLab.x - currLab.width / 2, currLab.x + currLab.width / 2, comparisonAnc.x, comparisonLab.x + comparisonLab.width / 2,
-        currLab.y - currLab.height, currLab.y - currLab.height, comparisonAnc.y, comparisonLab.y
-      )
-      if (intersecBottom) ener += w_lablink
-      if (intersecTop) ener += w_lablink
     })
 
     // penalty for label-anchor overlap
@@ -203,6 +187,7 @@ const labeler = function () {
 
     if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
       acc += 1
+      labelArraySorter.sortArrays()
       // if (i == investigate || i == investigate2)
       //    svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
       //                  .attr('y', lab[i].y - lab[i].height)
@@ -288,7 +273,7 @@ const labeler = function () {
 
     if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
       acc += 1
-
+      labelArraySorter.sortArrays()
       // if (i == investigate || i == investigate2) {
       //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
       //                   .attr('y', currLab.y - currLab.height)
@@ -363,7 +348,8 @@ const labeler = function () {
     let currT = 1.0
     let initialT = 1.0
   
-    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished) {
+    // Non-blocking implementation with timeouts
+    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
       let i = 0;
       (function chunk() {
         let end = Math.min(i + chunksize, count);
@@ -372,21 +358,31 @@ const labeler = function () {
         }
         callbackBtwnChuncks()
         if (i < count) {
-          setTimeout(chunk, 0);
+          timeoutsArray.push(setTimeout(chunk, 0));
         } else {
           finished.call(null);
         }
       })();
     }
   
+    // Stop label placement algorithm after 5s total runtime
+    function timeoutAllChuncks () {
+      _.map(timeOuts, t => { clearTimeout(t) })
+      console.log("rhtmlLabeledScatter: Label placement timed out reached!")
+      resolveFunc()
+    }
+    
+    const timeOuts = []
+    const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
     yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
       if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
     }, function() {
       currT = cooling_schedule(currT, initialT, nsweeps)
     }, function() {
       console.log("rhtmlLabeledScatter: Label placement complete!")
+      clearTimeout(masterTimeout)
       resolveFunc()
-    });
+    }, timeOuts);
   }
   
   labeler.promise = function (resolve) {
@@ -426,6 +422,7 @@ const labeler = function () {
         // users insert label positions
     if (!arguments.length) return lab
     lab = x
+    labelArraySorter = new LabelArraySorter(lab)
     return labeler
   }
 
