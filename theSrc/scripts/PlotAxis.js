@@ -45,22 +45,24 @@ class PlotAxis {
        .attr('stroke', this.settings.fontColor)
   }
 
-  drawAxisLeaderWith (svg, showOrigin) {
-    svg.selectAll('.dim-marker-leader').remove()
-    svg.selectAll('.dim-marker-leader')
-       .data(this.axisArrays.axisLeader)
-       .enter()
-       .append('line')
-       .attr('class', 'dim-marker-leader')
-       .attr('x1', d => d.x1)
-       .attr('y1', d => d.y1)
-       .attr('x2', d => d.x2)
-       .attr('y2', d => d.y2)
-       .attr('stroke-width', 0.8)
-       .attr('opacity', d => {
-         if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
-       })
-       .attr('stroke', this.settings.fontColor)
+  drawAxisLeaderWith (svg, showOrigin, showGrid) {
+    if (showGrid) {
+      svg.selectAll('.dim-marker-leader').remove()
+      svg.selectAll('.dim-marker-leader')
+         .data(this.axisArrays.axisLeader)
+         .enter()
+         .append('line')
+         .attr('class', 'dim-marker-leader')
+         .attr('x1', d => d.x1)
+         .attr('y1', d => d.y1)
+         .attr('x2', d => d.x2)
+         .attr('y2', d => d.y2)
+         .attr('stroke-width', 0.8)
+         .attr('opacity', d => {
+           if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
+         })
+         .attr('stroke', this.settings.fontColor)
+    }
 
     svg.selectAll('.dim-marker-label').remove()
     svg.selectAll('.dim-marker-label')

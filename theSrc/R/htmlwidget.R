@@ -216,7 +216,7 @@ LabeledScatter <- function(
     footer = footer,
     footerFontFamily = footer.font.family,
     footerFontSize = footer.font.size,
-    fonterFontColor = footer.font.color,
+    footerFontColor = footer.font.color,
     showLabels = labels.show,
     labelsFontFamily = labels.font.family,
     labelsFontColor = labels.font.color,

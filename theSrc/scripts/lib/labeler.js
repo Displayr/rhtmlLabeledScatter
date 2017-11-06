@@ -419,7 +419,7 @@ const labeler = function () {
   }
 
   labeler.label = function (x) {
-        // users insert label positions
+    // users insert label positions
     if (!arguments.length) return lab
     lab = x
     labelArraySorter = new LabelArraySorter(lab)
@@ -427,21 +427,21 @@ const labeler = function () {
   }
 
   labeler.anchor = function (x) {
-        // users insert anchor positions
+    // users insert anchor positions
     if (!arguments.length) return anc
     anc = x
     return labeler
   }
 
   labeler.pinned = function (x) {
-        // user positioned labels
+    // user positioned labels
     if (!arguments.length) return pinned
     pinned = x
     return labeler
   }
 
   labeler.alt_energy = function (x) {
-        // user defined energy
+    // user defined energy
     if (!arguments.length) return energy
     user_defined_energy = x
     user_energy = true
@@ -449,7 +449,7 @@ const labeler = function () {
   }
 
   labeler.alt_schedule = function (x) {
-        // user defined cooling_schedule
+    // user defined cooling_schedule
     if (!arguments.length) return cooling_schedule
     user_defined_schedule = x
     user_schedule = true
