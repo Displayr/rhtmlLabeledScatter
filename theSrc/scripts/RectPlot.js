@@ -466,7 +466,7 @@ class RectPlot {
              })
     TooltipUtils.appendTooltips(anc, this.Z, this.decimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
     // Clip paths used to crop bubbles if they expand beyond the plot's borders
-    if (Utils.isArrOfNums(this.Z)) {
+    if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
       this.svg.selectAll('clipPath').remove()
       SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb, this.pltUniqueId)
     }
