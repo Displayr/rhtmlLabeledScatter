@@ -378,7 +378,7 @@ class RectPlot {
       }
 
       if (this.axisSettings.showX || this.axisSettings.showY) {
-        this.axis.drawAxisLeaderWith(this.svg, this.origin)
+        this.axis.drawAxisLeaderWith(this.svg, this.origin, this.grid)
         const markerLabels = this.svg.selectAll('.dim-marker-label')
 
         // Figure out the max width of the yaxis dimensional labels
