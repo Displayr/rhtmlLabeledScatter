@@ -65,14 +65,15 @@ const labeler = function () {
       dist7 = Math.sqrt(dx3 * dx3 + dy2 * dy2),
       dist8 = Math.sqrt(dx2 * dx2 + dy * dy),
       overlap = true
+    
 
     // Check if label is inside bubble for centering of label inside bubble
     const labLeftBorder = currLab.x - currLab.width / 2
     const labRightBorder = currLab.x + currLab.width / 2
     const labBotBorder = currLab.y
     const labTopBorder = currLab.y - currLab.height
-    const labIsInsideBubbleAnc = (labRightBorder < currAnc.x + currAnc.r) && (labLeftBorder > currAnc.x - currAnc.r) && (labBotBorder < currAnc.y + currAnc.r) && (labTopBorder > currAnc.y - currAnc.r)
-
+    const labIsInsideBubbleAnc = (labLeftBorder < currAnc.x + currAnc.r) && (labRightBorder > currAnc.x - currAnc.r) && (labTopBorder < currAnc.y + currAnc.r) && (labBotBorder > currAnc.y - currAnc.r)
+  
     if (labIsInsideBubbleAnc) {
       dy = (currLab.y - currLab.height / 4 - currAnc.y)
       ener += Math.sqrt(dx * dx + dy * dy) * w_len
@@ -339,8 +340,8 @@ const labeler = function () {
   
   labeler.start = function (nsweeps) {
     _.forEach(lab, (l, i) => {
-      if (!isBubble && !_.includes(pinned, l.id)) {
-        l.y -= 5
+      if (!_.includes(pinned, l.id)) {
+        if (!isBubble) l.y -= 5
         // determine min labs width for mcrotate
         if (l.width < minLabWidth) minLabWidth = l.width
       }
