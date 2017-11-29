@@ -1,13 +1,10 @@
 import _ from 'lodash'
+import AbstractTitle from './AbstractTitle'
 
-class Footer {
+class Footer extends AbstractTitle {
   constructor (footerText, footerFontColor, footerFontSize, footerFontFamily, containerHeight) {
-    this.font = {
-      color: footerFontColor,
-      size: _.isNumber(footerFontSize) ? footerFontSize : 0,
-      family: footerFontFamily
-    }
-    this.text = footerText
+    super(footerText, footerFontColor, footerFontSize, footerFontFamily)
+    this.font.size = _.isNumber(footerFontSize) ? footerFontSize : 0
 
     this.padding = {
       inner: 0,
@@ -27,24 +24,7 @@ class Footer {
       this.height = 0
     }
 
-    this.x = 0
     this.y = containerHeight - this.getHeight()
-  }
-
-  parseMultiLineText (text) {
-    return text.split('<br>')
-  }
-
-  setX (x) {
-    this.x = x
-  }
-
-  setY (y) {
-    this.y = y
-  }
-
-  getHeight () {
-    return this.height
   }
 
   drawWith (plotId, svg) {

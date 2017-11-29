@@ -1,17 +1,16 @@
 import _ from 'lodash'
+import AbstractTitle from './AbstractTitle'
 
-class Subtitle {
-  constructor (subtitleText, subtitleFontColor, subtitleFontSize, subtitleFontFamily, titleText) {
-    this.font = {
-      color: subtitleFontColor,
-      size: _.isNumber(subtitleFontSize) ? subtitleFontSize : 0,
-      family: subtitleFontFamily
-    }
-    this.text = subtitleText
+class Subtitle extends AbstractTitle {
+  constructor (subtitleText,
+               subtitleFontColor,
+               subtitleFontSize,
+               subtitleFontFamily,
+               titleText) {
+    super(subtitleText, subtitleFontColor, subtitleFontSize, subtitleFontFamily)
+    this.font.size = _.isNumber(subtitleFontSize) ? subtitleFontSize : 0
 
     // Positional parameter initialization
-    this.x = 0
-    this.y = 0
     this.padding = {
       inner: 2,
       top: 10,
@@ -29,22 +28,6 @@ class Subtitle {
       this.text = []
       this.height = (titleText === '') ? 0 : this.padding.bot
     }
-  }
-
-  parseMultiLineText (text) {
-    return text.split('<br>')
-  }
-
-  setX (x) {
-    this.x = x
-  }
-
-  setY (y) {
-    this.y = y
-  }
-
-  getHeight () {
-    return this.height
   }
 
   drawWith (plotId, svg) {

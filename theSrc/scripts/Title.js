@@ -1,13 +1,14 @@
 import _ from 'lodash'
+import AbstractTitle from './AbstractTitle'
 
-class Title {
+class Title extends AbstractTitle {
   constructor (titleText,
                titleFontColor,
                titleFontSize,
                titleFontFamily,
                axisFontSize,
                plotPaddingVertical) {
-    this.text = titleText
+    super(titleText, titleFontColor, titleFontSize, titleFontFamily)
     this.font = {
       color: titleFontColor,
       size: titleFontSize,
@@ -24,20 +25,7 @@ class Title {
       this.height = this.font.size
     }
 
-    this.x = 0
     this.y = plotPaddingVertical + this.height
-  }
-
-  setX (x) {
-    this.x = x
-  }
-
-  setY (y) {
-    this.y = y
-  }
-
-  getHeight () {
-    return this.height
   }
 
   getSubtitleY () {
