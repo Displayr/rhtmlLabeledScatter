@@ -37,15 +37,16 @@ class Links {
   getLinkData () { return this.links }
 
   _labIsInsideBubblePt (lab, pt) {
+    // Will return true if any part of the label is inside the bubble
     const labLeftBorder = lab.x - (lab.width / 2)
     const labRightBorder = lab.x + (lab.width / 2)
     const labBotBorder = lab.y
     const labTopBorder = lab.y - lab.height
 
-    return (labRightBorder < (pt.x + pt.r)) &&
-      (labLeftBorder > (pt.x - pt.r)) &&
-      (labBotBorder < (pt.y + pt.r)) &&
-      (labTopBorder > (pt.y - pt.r))
+    return (labLeftBorder < (pt.x + pt.r)) &&
+      (labRightBorder > (pt.x - pt.r)) &&
+      (labTopBorder < (pt.y + pt.r)) &&
+      (labBotBorder > (pt.y - pt.r))
   }
 
   _getNewPtOnLogoLabelBorder (label, anchor) {

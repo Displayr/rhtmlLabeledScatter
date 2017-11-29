@@ -9,6 +9,7 @@ const labeler = function () {
 
   let lab = [],
     anc = [],
+    isBubble = false,
     h1 = 1,
     h2 = 1,
     w1 = 1,
@@ -64,14 +65,15 @@ const labeler = function () {
       dist7 = Math.sqrt(dx3 * dx3 + dy2 * dy2),
       dist8 = Math.sqrt(dx2 * dx2 + dy * dy),
       overlap = true
+    
 
     // Check if label is inside bubble for centering of label inside bubble
     const labLeftBorder = currLab.x - currLab.width / 2
     const labRightBorder = currLab.x + currLab.width / 2
     const labBotBorder = currLab.y
     const labTopBorder = currLab.y - currLab.height
-    const labIsInsideBubbleAnc = (labRightBorder < currAnc.x + currAnc.r) && (labLeftBorder > currAnc.x - currAnc.r) && (labBotBorder < currAnc.y + currAnc.r) && (labTopBorder > currAnc.y - currAnc.r)
-
+    const labIsInsideBubbleAnc = (labLeftBorder < currAnc.x + currAnc.r) && (labRightBorder > currAnc.x - currAnc.r) && (labTopBorder < currAnc.y + currAnc.r) && (labBotBorder > currAnc.y - currAnc.r)
+  
     if (labIsInsideBubbleAnc) {
       dy = (currLab.y - currLab.height / 4 - currAnc.y)
       ener += Math.sqrt(dx * dx + dy * dy) * w_len
@@ -146,6 +148,9 @@ const labeler = function () {
       x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
       y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
       overlap_area = x_overlap * y_overlap
+      if (isBubble && a.id === index) {
+        overlap_area /= 2
+      }
       ener += (overlap_area * w_lab_anc)
     })
     return ener
@@ -337,7 +342,7 @@ const labeler = function () {
   labeler.start = function (nsweeps) {
     _.forEach(lab, (l, i) => {
       if (!_.includes(pinned, l.id)) {
-        l.y -= 5
+        if (!isBubble) l.y -= 5
         // determine min labs width for mcrotate
         if (l.width < minLabWidth) minLabWidth = l.width
       }
@@ -430,6 +435,12 @@ const labeler = function () {
     // users insert anchor positions
     if (!arguments.length) return anc
     anc = x
+    return labeler
+  }
+  
+  labeler.anchorType = function (x) {
+    if (!arguments.length) return isBubble
+    isBubble = x
     return labeler
   }
 
