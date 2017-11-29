@@ -141,16 +141,14 @@ const labeler = function () {
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
     _.forEach(anc, a => {
-      if (isBubble && a.id !== currLab.id) {
-        x11 = a.x - a.r
-        y11 = a.y - a.r
-        x12 = a.x + a.r
-        y12 = a.y + a.r
-        x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
-        y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
-        overlap_area = x_overlap * y_overlap
-        ener += (overlap_area * w_lab_anc)
-      }
+      x11 = a.x - a.r
+      y11 = a.y - a.r
+      x12 = a.x + a.r
+      y12 = a.y + a.r
+      x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
+      y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
+      overlap_area = x_overlap * y_overlap
+      ener += (overlap_area * w_lab_anc)
     })
     return ener
   }
