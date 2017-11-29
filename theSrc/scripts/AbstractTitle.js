@@ -16,22 +16,17 @@ class AbstractTitle {
     this.y = 0
   }
 
-  setX (x) {
-    this.x = x
-  }
+  setX (x) { this.x = x }
 
-  setY (y) {
-    this.y = y
-  }
+  setY (y) { this.y = y }
 
-  getHeight () {
-    return this.height
-  }
+  getHeight () { return this.height }
 
-  parseMultiLineText (text) {
-    return text.split('<br>')
-  }
+  parseMultiLineText (text) { return text.split('<br>') }
 
+  getText () { return this.text }
+
+  // Not implemented, need to override
   drawWith (plotId, svg) {}
 }
 
