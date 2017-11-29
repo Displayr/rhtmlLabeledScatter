@@ -148,6 +148,9 @@ const labeler = function () {
       x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
       y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
       overlap_area = x_overlap * y_overlap
+      if (isBubble && a.id === index) {
+        overlap_area /= 2
+      }
       ener += (overlap_area * w_lab_anc)
     })
     return ener
