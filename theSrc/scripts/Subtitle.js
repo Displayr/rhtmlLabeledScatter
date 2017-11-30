@@ -16,18 +16,8 @@ class Subtitle extends AbstractTitle {
       top: 10,
       bot: 20
     }
-
-    if (this.text !== '' && _.isString(this.text)) {
-      this.text = this.parseMultiLineText(subtitleText)
-      const linesOfText = this.text.length
-      const numPaddingBtwnLines = linesOfText > 0 ? linesOfText - 1 : 0
-      this.height = (this.font.size * linesOfText) +
-        (this.padding.inner * numPaddingBtwnLines) +
-        (this.padding.top + this.padding.bot)
-    } else {
-      this.text = []
-      this.height = (titleText === '') ? 0 : this.padding.bot
-    }
+    const ifTextEmptyHeight = (titleText === '') ? 0 : this.padding.bot
+    this.generateMultiLineTextArray(ifTextEmptyHeight)
   }
 
   drawWith (plotId, svg) {

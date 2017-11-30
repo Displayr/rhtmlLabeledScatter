@@ -12,18 +12,7 @@ class Footer extends AbstractTitle {
       bot: 10
     }
 
-    if (this.text !== '' && _.isString(this.text)) {
-      this.text = this.parseMultiLineText(footerText)
-      const linesOfText = this.text.length
-      const numPaddingBtwnLines = linesOfText > 0 ? linesOfText - 1 : 0
-      this.height = (this.font.size * linesOfText) +
-        (this.padding.inner * numPaddingBtwnLines) +
-        (this.padding.top + this.padding.bot)
-    } else {
-      this.text = []
-      this.height = 0
-    }
-
+    this.generateMultiLineTextArray(0)
     this.y = containerHeight - this.getHeight()
   }
 

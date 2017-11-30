@@ -3,20 +3,22 @@ import AbstractTitle from './AbstractTitle'
 class AxisTitle extends AbstractTitle {
   constructor (axisTitle, axisFontColor, axisFontSize, axisFontFamily, topPadding) {
     super(axisTitle, axisFontColor, axisFontSize, axisFontFamily)
-    this.topPadding = topPadding
+    this.padding = {
+      top: topPadding
+    }
     this.anchor = 'middle'
     this.font.weight = 'normal'
 
     if (this.text === '') {
       this.height = 0
     } else {
-      this.height = axisFontSize
+      this.height = this.font.size
     }
-
+    // this.generateMultiLineTextArray(0)
     this.display = this.text === '' ? 'none' : ''
   }
 
-  getTopPadding () { return this.topPadding }
+  getTopPadding () { return this.padding.top }
 
   setTransform (t) { this.transform = t }
 
