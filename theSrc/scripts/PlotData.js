@@ -279,8 +279,8 @@ class PlotData {
   getPtsAndLabs (calleeName) {
     console.log(`getPtsAndLabs(${calleeName})`)
     return Promise.all(this.labelNew.getLabels()).then((resolvedLabels) => {
-//      console.log("resolvedLabels for getPtsandLabs callee name #{calleeName}")
-//      console.log(resolvedLabels)
+     // console.log("resolvedLabels for getPtsandLabs callee name #{calleeName}")
+     // console.log(resolvedLabels)
 
       this.pts = []
       this.lab = []
