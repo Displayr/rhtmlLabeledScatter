@@ -35,6 +35,6 @@
   "footer": "Example Footer<br>Example Footer Second Line",
   "footerFontColor": "green",
   "footerFontSize": 8,
-  "xTitle": "X Title",
-  "yTitle": "Y Title"
+  "xTitle": "X Title<br>X Title 2",
+  "yTitle": "Y Title<br>Y Title 2"
 }

@@ -8,13 +8,13 @@ class AxisTitle extends AbstractTitle {
     }
     this.anchor = 'middle'
     this.font.weight = 'normal'
-
-    if (this.text === '') {
-      this.height = 0
-    } else {
-      this.height = this.font.size
+    this.padding = {
+      top: 0,
+      bot: 2,
+      inner: 5
     }
-    // this.generateMultiLineTextArray(0)
+
+    this.generateMultiLineTextArray(0)
     this.display = this.text === '' ? 'none' : ''
   }
 
@@ -24,18 +24,24 @@ class AxisTitle extends AbstractTitle {
 
   drawWith (plotId, svg) {
     svg.selectAll(`.plt-${plotId}-axisTitle`).remove()
-    svg.append('text')
+    const numOfLines = this.text.length - 1
+    const numOfSpacesBtwnLines = this.text.length - 2
+    const startingYPosition = this.padding.top + this.y - (numOfLines * this.font.size + numOfSpacesBtwnLines * this.padding.inner) - this.padding.bot
+    svg.selectAll(`.plt-${plotId}-axisTitle`)
+       .data(this.text)
+       .enter()
+       .append('text')
        .attr('class', 'axis-label')
        .attr('x', this.x)
-       .attr('y', this.y)
+       .attr('y', (d, i) => startingYPosition + (i * (this.font.size + this.padding.inner)))
        .attr('font-family', this.font.family)
        .attr('font-size', this.font.size)
        .attr('fill', this.font.color)
        .attr('text-anchor', this.anchor)
        .attr('transform', this.transform)
-       .text(this.text)
        .style('font-weight', this.font.weight)
        .style('display', this.display)
+       .text(d => d)
   }
 }
 
