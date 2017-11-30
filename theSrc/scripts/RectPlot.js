@@ -159,8 +159,8 @@ class RectPlot {
       logoScale: labelsLogoScale
     }
 
-    this.xTitle = new AxisTitle(xTitle, xTitleFontColor, xTitleFontSize, xTitleFontFamily, 5)
-    this.yTitle = new AxisTitle(yTitle, yTitleFontColor, yTitleFontSize, yTitleFontFamily)
+    this.xTitle = new AxisTitle(xTitle, xTitleFontColor, xTitleFontSize, xTitleFontFamily, 5, 1)
+    this.yTitle = new AxisTitle(yTitle, yTitleFontColor, yTitleFontSize, yTitleFontFamily, 0, 2)
 
     this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
       legendFontFamily, legendFontSize, legendFontColor,

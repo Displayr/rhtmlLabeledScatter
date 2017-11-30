@@ -1,7 +1,6 @@
 import AbstractTitle from './AbstractTitle'
-
 class AxisTitle extends AbstractTitle {
-  constructor (axisTitle, axisFontColor, axisFontSize, axisFontFamily, topPadding) {
+  constructor (axisTitle, axisFontColor, axisFontSize, axisFontFamily, topPadding, axisId) {
     super(axisTitle, axisFontColor, axisFontSize, axisFontFamily)
     this.padding = {
       top: topPadding
@@ -16,6 +15,9 @@ class AxisTitle extends AbstractTitle {
 
     this.generateMultiLineTextArray(0)
     this.display = this.text === '' ? 'none' : ''
+
+    // Id to maintain uniqueness on D3 selection
+    this.axisId = axisId
   }
 
   getTopPadding () { return this.padding.top }
@@ -23,15 +25,15 @@ class AxisTitle extends AbstractTitle {
   setTransform (t) { this.transform = t }
 
   drawWith (plotId, svg) {
-    svg.selectAll(`.plt-${plotId}-axisTitle`).remove()
+    svg.selectAll(`.plt-${plotId}-axisTitle-${this.axisId}`).remove()
     const numOfLines = this.text.length - 1
     const numOfSpacesBtwnLines = this.text.length - 2
     const startingYPosition = this.padding.top + this.y - (numOfLines * this.font.size + numOfSpacesBtwnLines * this.padding.inner) - this.padding.bot
-    svg.selectAll(`.plt-${plotId}-axisTitle`)
+    svg.selectAll(`.plt-${plotId}-axisTitle-${this.axisId}`)
        .data(this.text)
        .enter()
        .append('text')
-       .attr('class', 'axis-label')
+       .attr('class', `plt-${plotId}-axisTitle-${this.axisId}`)
        .attr('x', this.x)
        .attr('y', (d, i) => startingYPosition + (i * (this.font.size + this.padding.inner)))
        .attr('font-family', this.font.family)
