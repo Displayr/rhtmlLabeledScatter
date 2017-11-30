@@ -9,7 +9,7 @@ class AxisTitle extends AbstractTitle {
     this.font.weight = 'normal'
     this.padding = {
       top: 0,
-      bot: 2,
+      bot: 3,
       inner: 5
     }
 
