@@ -114,7 +114,7 @@ class RectPlot {
     this.Y = Y
     this.Z = Z
     this.group = group
-    this.label = label
+    this.label = _.isEmpty(label) ? null : label
     this.labelAlt = labelAlt
     this.svg = svg
     this.zTitle = zTitle
