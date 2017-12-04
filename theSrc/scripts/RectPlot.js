@@ -21,6 +21,7 @@ import Footer from './Footer'
 import PlotAxisLabels from './PlotAxisLabels'
 import PlotAxis from './PlotAxis'
 import ResetButton from './ResetButton'
+import AxisTitle from './AxisTitle'
 
 class RectPlot {
   constructor (state,
@@ -158,30 +159,13 @@ class RectPlot {
       logoScale: labelsLogoScale
     }
 
-    this.xTitle = {
-      text: xTitle,
-      textHeight: xTitleFontSize,
-      fontFamily: xTitleFontFamily,
-      fontSize: xTitleFontSize,
-      fontColor: xTitleFontColor,
-      topPadding: 5
-    }
+    this.xTitle = new AxisTitle(xTitle, xTitleFontColor, xTitleFontSize, xTitleFontFamily, 5, 1)
+    this.yTitle = new AxisTitle(yTitle, yTitleFontColor, yTitleFontSize, yTitleFontFamily, 0, 2)
 
     this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
       legendFontFamily, legendFontSize, legendFontColor,
       legendBubbleFontFamily, legendBubbleFontSize, legendBubbleFontColor,
       legendBubbleTitleFontFamily, legendBubbleTitleFontSize, legendBubbleTitleFontColor, this.zTitle)
-
-    if (this.xTitle.text === '') { this.xTitle.textHeight = 0 }
-
-    this.yTitle = {
-      text: yTitle,
-      textHeight: yTitleFontSize,
-      fontFamily: yTitleFontFamily,
-      fontSize: yTitleFontSize,
-      fontColor: yTitleFontColor
-    }
-    if (this.yTitle.text === '') { this.yTitle.textHeight = 0 }
 
     this.trendLines = {
       show: trendLines,
@@ -308,8 +292,8 @@ class RectPlot {
     const eqLabel = _.isEqual(this.label, otherPlot.label)
     const eqLabelAlt = _.isEqual(this.labelAlt, otherPlot.labelAlt)
     const eqTitle = _.isEqual(this.title.text, otherPlot.title)
-    const eqXTitle = _.isEqual(this.xTitle.text, otherPlot.xTitle)
-    const eqYTitle = _.isEqual(this.yTitle.text, otherPlot.yTitle)
+    const eqXTitle = _.isEqual(this.xTitle.getText(), otherPlot.xTitle)
+    const eqYTitle = _.isEqual(this.yTitle.getText(), otherPlot.yTitle)
     const eqZTitle = _.isEqual(this.zTitle, otherPlot.zTitle)
     const listOfComparisons = [eqX, eqY, eqZ, eqGroup, eqLabel, eqLabelAlt, eqTitle, eqXTitle, eqYTitle, eqZTitle]
     return _.every(listOfComparisons, e => _.isEqual(e, true))
@@ -354,7 +338,7 @@ class RectPlot {
         })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
-        this.axisLabels.drawWith(this.svg)
+        this.axisLabels.drawWith(this.pltUniqueId, this.svg)
       } catch (error) {
         console.log(error)
       }

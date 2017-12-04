@@ -17,10 +17,10 @@ class ViewBox {
     const titleAndSubtitleHeight = title.getHeight() + subtitle.getHeight()
     const titleAndSubtitleAndFooterHeight = title.getHeight() + subtitle.getHeight() + footer.getHeight()
 
-    this.setWidth(width - legend.getWidth() - (padding.horizontal * 3) - axisLeaderLineLength - axisDimensionText.rowMaxWidth - yTitle.textHeight - axisDimensionText.rightPadding)
-    this.setHeight(height - (padding.vertical * 2) - titleAndSubtitleAndFooterHeight - axisDimensionText.colMaxHeight - xTitle.textHeight - axisLeaderLineLength - xTitle.topPadding)
+    this.setWidth(width - legend.getWidth() - (padding.horizontal * 3) - axisLeaderLineLength - axisDimensionText.rowMaxWidth - yTitle.getHeight() - axisDimensionText.rightPadding)
+    this.setHeight(height - (padding.vertical * 2) - titleAndSubtitleAndFooterHeight - axisDimensionText.colMaxHeight - xTitle.getHeight() - axisLeaderLineLength - xTitle.getTopPadding())
 
-    this.x = (padding.horizontal * 2) + axisDimensionText.rowMaxWidth + axisLeaderLineLength + yTitle.textHeight
+    this.x = (padding.horizontal * 2) + axisDimensionText.rowMaxWidth + axisLeaderLineLength + yTitle.getHeight()
     this.y = padding.vertical + titleAndSubtitleHeight
 
     this.labelFontSize = labelsFont.size
