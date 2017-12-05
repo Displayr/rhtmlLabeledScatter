@@ -17,13 +17,13 @@ class PlotAxis {
        .attr('y1', d => d.y1)
        .attr('x2', d => d.x2)
        .attr('y2', d => d.y2)
-       .attr('stroke-width', 0.8)
+       .attr('stroke-width', this.settings.strokeWidth)
        .attr('opacity', 0.2)
        .attr('stroke', this.settings.fontColor)
     if (isDashed) {
       svg.selectAll('.origin')
          .style('stroke-dasharray', ('4, 6'))
-         .attr('stroke-width', 1)
+         .attr('stroke-width', this.settings.strokeWidth)
          .attr('opacity', 1)
          .attr('stroke', this.settings.fontColor)
     }
@@ -40,7 +40,7 @@ class PlotAxis {
        .attr('y1', d => d.y1)
        .attr('x2', d => d.x2)
        .attr('y2', d => d.y2)
-       .attr('stroke-width', 0.8)
+       .attr('stroke-width', this.settings.strokeWidth)
        .attr('opacity', 0.2)
        .attr('stroke', this.settings.fontColor)
   }
@@ -57,7 +57,7 @@ class PlotAxis {
          .attr('y1', d => d.y1)
          .attr('x2', d => d.x2)
          .attr('y2', d => d.y2)
-         .attr('stroke-width', 0.8)
+         .attr('stroke-width', this.settings.strokeWidth)
          .attr('opacity', d => {
            if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
          })
