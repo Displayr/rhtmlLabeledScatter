@@ -149,7 +149,8 @@ class RectPlot {
       fontSize: axisFontSize,
       fontColor: axisFontColor,
       showX: showXAxis,
-      showY: showYAxis
+      showY: showYAxis,
+      strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
     }
 
     this.labelsFont = {
