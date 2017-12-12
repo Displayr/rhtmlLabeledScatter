@@ -7,12 +7,14 @@ class SvgUtils {
       if (!dataElem.width && !dataElem.height) {
         const svgDataElem = _.find(svgArray[0], j => Number(j.getAttribute('id')) === dataElem.id)
         if (!_.isUndefined(svgDataElem)) {
-          dataElem.width = svgDataElem.getBBox().width
+          // VIS-382: getBBox() relies on client side rendering, and thus differs for text widths
+          dataElem.width = svgDataElem.nodeName === 'text' ? svgDataElem.getComputedTextLength() : svgDataElem.getBBox().width
           dataElem.height = svgDataElem.getBBox().height
         }
       }
     })
   }
+
   static setSvgBBoxWidthAndHeight (dataArray, svgArray) {
     _.map(dataArray, (dataElem, index) => {
       if (!dataElem.width && !dataElem.height) {
@@ -21,6 +23,7 @@ class SvgUtils {
       }
     })
   }
+
   // If user defined boundary is less than a bubble, then clip the bubble when it reaches the border
   static clipBubbleIfOutsidePlotArea (svg, pts, vb, pltUniqueId) {
     // Defines boundaries
