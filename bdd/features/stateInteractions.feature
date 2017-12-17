@@ -16,7 +16,7 @@ Feature: State Interactions
     Then the "scatterplot_three_point_brand_after_label_drag" snapshot matches the baseline
 
 
-  @applitools @state
+  @applitools @state @foo
   Scenario: User can drag a scatterplot label off of the canvas
     Given I am viewing "scatterplot_three_point_brand" with dimensions 1000x600
     And I wait for animations to complete
@@ -25,6 +25,7 @@ Feature: State Interactions
     And the "scatterplot_three_point_brand_after_label_drag_to_legend" snapshot matches the baseline
     And the final state callback should match "porche_label_moved_to_legend" within 0.02
     When I click on reset
+    And I wait for animations to complete
     Then the "scatterplot_reset_click" snapshot matches the baseline
 
   @applitools @state
