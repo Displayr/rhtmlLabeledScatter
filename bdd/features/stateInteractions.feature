@@ -16,7 +16,7 @@ Feature: State Interactions
     Then the "scatterplot_three_point_brand_after_label_drag" snapshot matches the baseline
 
 
-  @applitools @state @foo
+  @applitools @state
   Scenario: User can drag a scatterplot label off of the canvas
     Given I am viewing "scatterplot_three_point_brand" with dimensions 1000x600
     And I wait for animations to complete
