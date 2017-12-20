@@ -525,6 +525,7 @@ class RectPlot {
             .attr('y', d => d.y - d.height)
             .attr('width', d => d.width)
             .attr('height', d => d.height)
+            .style('display', 'block')
             .call(drag)
 
         this.svg.selectAll('.lab').remove()
@@ -542,6 +543,7 @@ class RectPlot {
                  .attr('fill', d => d.color)
                  .attr('font-size', d => d.fontSize)
                  .style('cursor', 'pointer')
+                 .style('display', 'block')
                  .call(drag)
 
         const placementPromise = new Promise((resolve, reject) => {
@@ -563,8 +565,10 @@ class RectPlot {
           // Move labels after label placement algorithm
           labelsSvg.attr('x', d => d.x)
                    .attr('y', d => d.y)
+                   .style('display', 'block')
           labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                       .attr('y', d => d.y - d.height)
+                      .style('display', 'block')
 
           const pinnedLabels = this.state.getPositionedLabIds(this.vb)
           const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
@@ -598,8 +602,10 @@ class RectPlot {
           // Move labels after label placement algorithm
           labelsSvg.attr('x', d => d.x)
                    .attr('y', d => d.y)
+                   .style('display', 'block')
           labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                       .attr('y', d => d.y - d.height)
+                      .style('display', 'block')
 
           const pinnedLabels = this.state.getPositionedLabIds(this.vb)
           const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
