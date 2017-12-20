@@ -167,6 +167,6 @@ ${JSON.stringify(actualState[constantKey], {}, 2)}
   })
 
   this.When(/^I wait for animations to complete$/, function () {
-    return browser.sleep(1000)
+    return browser.sleep(3000)
   })
 }

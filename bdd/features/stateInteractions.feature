@@ -37,7 +37,9 @@ Feature: State Interactions
   @applitools @state
   Scenario: User can drag a scatterplot label from the legend back to the canvas and it will snap into the original position
     Given I am viewing "scatterplot_three_point_brand" with state "porche_label_moved_to_legend" and dimensions 1000x600
+    And I wait for animations to complete
     When I drag legend label 0 to the canvas
+    And I wait for animations to complete
     Then label 0 should be near the circle anchor 0
     And the "scatterplot_three_point_brand_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 0.02
@@ -82,7 +84,9 @@ Feature: State Interactions
   @applitools @state @imageLabels
   Scenario: User can drag a scatterplot image label from the legend back to the canvas and it will snap into the original position
     Given I am viewing "scatterplot_three_point_brand" with state "apple_logo_moved_to_legend" and dimensions 1000x600
+    And I wait for animations to complete
     When I drag legend label 2 to the canvas
+    And I wait for animations to complete
     Then label 2 should be near the circle anchor 2
     And the "scatterplot_three_point_brand_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 0.02
@@ -118,7 +122,9 @@ Feature: State Interactions
   @applitools @state @bubbleplot
   Scenario: User can drag a bubbleplot label from the legend back to the canvas and it will snap into the original position
     Given I am viewing "bubbleplot_simple" with state "label_moved_to_legend" and dimensions 600x600
+    And I wait for animations to complete
     When I drag legend label 2 to the canvas
+    And I wait for animations to complete
     Then label 2 should be near the circle anchor 2
     And the "bubbleplot_simple_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 2
