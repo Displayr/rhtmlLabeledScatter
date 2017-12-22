@@ -23,31 +23,24 @@ class LabelPlacement {
 
   static placeTrendLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll('.lab')
-
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.place(svg, vb, anchors, isBubble, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
 
     const labelsImgSvg = svg.selectAll('.lab-img')
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
-                .style('display', 'none')
   }
 
   static placeLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll('.lab')
     const labelsImgSvg = svg.selectAll('.lab-img')
-
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
-
-    // Hide labels until after placement algorithm has completed
-    labelsSvg.style('display', 'none')
 
     this.place(svg, vb, anchors, isBubble, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
-                .style('display', 'none')
   }
 }
 
