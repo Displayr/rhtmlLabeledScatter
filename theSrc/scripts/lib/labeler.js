@@ -74,7 +74,7 @@ const labeler = function () {
     const labTopBorder = currLab.y - currLab.height
     const labIsInsideBubbleAnc = (labLeftBorder < currAnc.x + currAnc.r) && (labRightBorder > currAnc.x - currAnc.r) && (labTopBorder < currAnc.y + currAnc.r) && (labBotBorder > currAnc.y - currAnc.r)
   
-    if (labIsInsideBubbleAnc) {
+    if (isBubble && labIsInsideBubbleAnc) {
       dy = (currLab.y - currLab.height / 4 - currAnc.y)
       ener += Math.sqrt(dx * dx + dy * dy) * w_len
     } else {
