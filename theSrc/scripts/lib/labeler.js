@@ -124,7 +124,10 @@ const labeler = function () {
       overlap_area
 
     const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id)
-    // if (index === 1) {
+    // console.log('----------------------------------')
+    // console.log(currLab.text)
+    // console.log(_.map(overlappingLabs, (a) => a.text))
+    // if (index === 17) {
     //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
     //                   .attr('y', currLab.y - currLab.height)
     //                   .attr('width', currLab.width)
@@ -132,8 +135,8 @@ const labeler = function () {
     //                   .attr('fill', 'blue')
     //                   .attr('fill-opacity', 0.1);
     // }
-    _.forEach(overlappingLabs, (comparisonLab, i) => {
-      if (i !== index) {
+    _.forEach(overlappingLabs, comparisonLab => {
+      if (comparisonLab.id !== currLab.id) {
         // penalty for label-label overlap
         x11 = comparisonLab.x - comparisonLab.width / 2
         y11 = comparisonLab.y - comparisonLab.height
@@ -161,6 +164,7 @@ const labeler = function () {
       }
       ener += (overlap_area * w_lab_anc)
     })
+    // console.log(ener)
     return ener
   }
 
@@ -389,9 +393,9 @@ const labeler = function () {
     const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
     yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
       if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
-    }, function() {
+    }.bind(this), function() {
       currT = cooling_schedule(currT, initialT, nsweeps)
-    }, function() {
+    }.bind(this), function() {
       console.log("rhtmlLabeledScatter: Label placement complete!")
       clearTimeout(masterTimeout)
       resolveFunc()
