@@ -21,19 +21,19 @@ class LabelPlacement {
       .start(500)
   }
 
-  static placeTrendLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
-    const labelsSvg = svg.selectAll('.lab')
+  static placeTrendLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
+    const labelsSvg = svg.selectAll(`.plt-${pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.place(svg, vb, anchors, isBubble, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
 
-    const labelsImgSvg = svg.selectAll('.lab-img')
+    const labelsImgSvg = svg.selectAll(`.plt-${pltId}-lab-img`)
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
   }
 
-  static placeLabels (svg, vb, anchors, isBubble, labels, state, resolve) {
-    const labelsSvg = svg.selectAll('.lab')
-    const labelsImgSvg = svg.selectAll('.lab-img')
+  static placeLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
+    const labelsSvg = svg.selectAll(`.plt-${pltId}-lab`)
+    const labelsImgSvg = svg.selectAll(`.plt-${pltId}-lab-img`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 

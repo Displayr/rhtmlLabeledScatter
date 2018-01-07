@@ -497,7 +497,6 @@ class RectPlot {
       '.legend-pts',
       '.legend-text',
       '.anc',
-      '.lab',
       '.link'
     ]
     for (const elem of Array.from(plotElems)) {
@@ -513,12 +512,12 @@ class RectPlot {
         drag = DragUtils.getLabelDragAndDrop(this)
         this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
-        this.svg.selectAll('.lab-img').remove()
-        this.svg.selectAll('.lab-img')
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
             .data(_.filter(this.data.lab, l => l.url !== ''))
             .enter()
             .append('svg:image')
-            .attr('class', 'lab-img')
+            .attr('class', `plt-${this.pltUniqueId}-lab-img`)
             .attr('xlink:href', d => d.url)
             .attr('id', d => d.id)
             .attr('x', d => d.x - (d.width / 2))
@@ -527,12 +526,12 @@ class RectPlot {
             .attr('height', d => d.height)
             .call(drag)
 
-        this.svg.selectAll('.lab').remove()
-        this.svg.selectAll('.lab')
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`).remove()
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
                  .data(_.filter(this.data.lab, l => l.url === ''))
                  .enter()
                  .append('text')
-                 .attr('class', 'lab')
+                 .attr('class', `plt-${this.pltUniqueId}-lab`)
                  .attr('id', d => d.id)
                  .attr('x', d => d.x)
                  .attr('y', d => d.y)
@@ -546,6 +545,7 @@ class RectPlot {
 
         const placementPromise = new Promise((resolve, reject) => {
           LabelPlacement.placeLabels(
+            this.pltUniqueId,
             this.svg,
             this.data.vb,
             this.data.pts,
@@ -557,8 +557,8 @@ class RectPlot {
         })
 
         placementPromise.then(() => {
-          const labelsSvg = this.svg.selectAll('.lab')
-          const labelsImgSvg = this.svg.selectAll('.lab-img')
+          const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
+          const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
 
           // Move labels after label placement algorithm
           labelsSvg.attr('x', d => d.x)
@@ -579,9 +579,10 @@ class RectPlot {
         this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
-        this.tl.drawLabelsWith(this.svg, drag)
+        this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
         const placementPromise = new Promise((resolve, reject) => {
           LabelPlacement.placeTrendLabels(
+            this.pltUniqueId,
             this.svg,
             this.data.vb,
             this.tl.pts,
@@ -592,8 +593,8 @@ class RectPlot {
           )
         })
         placementPromise.then(() => {
-          const labelsSvg = this.svg.selectAll('.lab')
-          const labelsImgSvg = this.svg.selectAll('.lab-img')
+          const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
+          const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
 
           // Move labels after label placement algorithm
           labelsSvg.attr('x', d => d.x)
