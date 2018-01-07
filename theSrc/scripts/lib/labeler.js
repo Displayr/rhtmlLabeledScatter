@@ -112,7 +112,7 @@ const labeler = function () {
     }
 
     let x21 = currLab.x - currLab.width / 2,
-      y21 = currLab.y - currLab.height,
+      y21 = currLab.y - (currLab.height - labelTopPadding),
       x22 = currLab.x + currLab.width / 2,
       y22 = currLab.y
     let x11,
