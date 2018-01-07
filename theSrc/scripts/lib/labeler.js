@@ -112,7 +112,7 @@ const labeler = function () {
     }
 
     let x21 = currLab.x - currLab.width / 2,
-      y21 = currLab.y - (currLab.height - labelTopPadding),
+      y21 = currLab.y - currLab.height,
       x22 = currLab.x + currLab.width / 2,
       y22 = currLab.y
     let x11,
@@ -124,6 +124,14 @@ const labeler = function () {
       overlap_area
 
     const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id)
+    // if (index === 1) {
+    //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
+    //                   .attr('y', currLab.y - currLab.height)
+    //                   .attr('width', currLab.width)
+    //                   .attr('height', currLab.height)
+    //                   .attr('fill', 'blue')
+    //                   .attr('fill-opacity', 0.1);
+    // }
     _.forEach(overlappingLabs, (comparisonLab, i) => {
       if (i !== index) {
         // penalty for label-label overlap
