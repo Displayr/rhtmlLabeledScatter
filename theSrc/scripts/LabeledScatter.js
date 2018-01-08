@@ -163,6 +163,9 @@ class LabeledScatter {
                         this.data.plotBorderShow,
                         this.data.plotBorderColor,
                         this.data.plotBorderWidth,
+                        this.data.labelPlacementDistanceWeight,
+                        this.data.labelPlacementLabelLabelOverlapWeight,
+                        this.data.labelPlacementLabelAncOverlapWeight,
                         this.data.debugMode
     )
     this.plot.draw()

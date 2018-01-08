@@ -104,6 +104,9 @@ class RectPlot {
     plotBorderShow = true,
     plotBorderColor = 'black',
     plotBorderWidth = 1,
+    labelPlacementDistanceWeight = 10.0,
+    labelPlacementLabelLabelOverlapWeight = 12.0,
+    labelPlacementLabelAncOverlapWeight = 8.0,
     debugMode = false
   ) {
     autoBind(this)
@@ -207,6 +210,12 @@ class RectPlot {
     if (_.isNull(this.label)) {
       this.label = _.map(X, () => { return '' })
       this.showLabels = false
+    }
+
+    this.labelPlacementWeights = {
+      distance: labelPlacementDistanceWeight,
+      labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
+      labelAncOverlap: labelPlacementLabelAncOverlapWeight
     }
 
     this.debugMode = debugMode
@@ -544,7 +553,11 @@ class RectPlot {
                  .call(drag)
 
         const placementPromise = new Promise((resolve, reject) => {
-          LabelPlacement.placeLabels(
+          let placement = new LabelPlacement(
+            this.labelPlacementWeights.distance,
+            this.labelPlacementWeights.labelLabelOverlap,
+            this.labelPlacementWeights.labelAncOverlap)
+          placement.placeLabels(
             this.pltUniqueId,
             this.svg,
             this.data.vb,
@@ -581,7 +594,11 @@ class RectPlot {
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
         this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
         const placementPromise = new Promise((resolve, reject) => {
-          LabelPlacement.placeTrendLabels(
+          let placement = new LabelPlacement(
+            this.labelPlacementWeights.distance,
+            this.labelPlacementWeights.labelLabelOverlap,
+            this.labelPlacementWeights.labelAncOverlap)
+          placement.placeTrendLabels(
             this.pltUniqueId,
             this.svg,
             this.data.vb,

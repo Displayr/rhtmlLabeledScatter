@@ -4,7 +4,13 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  static place (svg, vb, anchors, isBubble, labels, pinnedLabels, labelsSvg, state, resolve) {
+  constructor (wDistance, wLabelLabelOverlap, wLabelAncOverlap) {
+    this.wDistance = wDistance
+    this.wLabelLabelOverlap = wLabelLabelOverlap
+    this.wLabelAncOverlap = wLabelAncOverlap
+  }
+
+  place (svg, vb, anchors, isBubble, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
 
     labeler()
@@ -18,10 +24,11 @@ class LabelPlacement {
       .pinned(pinnedLabels)
       .promise(resolve)
       .anchorType(isBubble)
+      .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
       .start(500)
   }
 
-  static placeTrendLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
+  placeTrendLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll(`.plt-${pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.place(svg, vb, anchors, isBubble, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
@@ -31,7 +38,7 @@ class LabelPlacement {
                 .attr('y', d => d.y - d.height)
   }
 
-  static placeLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
+  placeLabels (pltId, svg, vb, anchors, isBubble, labels, state, resolve) {
     const labelsSvg = svg.selectAll(`.plt-${pltId}-lab`)
     const labelsImgSvg = svg.selectAll(`.plt-${pltId}-lab-img`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)

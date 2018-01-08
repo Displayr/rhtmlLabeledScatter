@@ -28,8 +28,8 @@ const labeler = function () {
     max_angle = 2 * 3.1415,
     acc = 0,
     rej = 0
-
-    // weights
+    
+  // default weights
   let w_len = 10.0, // leader line length
     w_inter = 1.0, // leader line intersection
     w_lablink = 2.0, // leader line-label intersection
@@ -460,6 +460,14 @@ const labeler = function () {
     // user positioned labels
     if (!arguments.length) return pinned
     pinned = x
+    return labeler
+  }
+  
+  labeler.weights = function (x, y, z) {
+    // Weights used in the label placement algorithm
+    w_len = x
+    w_lab2 = y
+    w_lab_anc = z
     return labeler
   }
 
