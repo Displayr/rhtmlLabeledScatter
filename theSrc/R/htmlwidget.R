@@ -84,6 +84,9 @@
 #' @param plot.border.show Boolean toggle to show border around plot area (Default is TRUE).
 #' @param plot.border.color Color of border around plot area (Default is black).
 #' @param plot.border.width Width of border around plot area in px (Default is 1).
+#' @param label.placement.weight.distance Label placement algorithm weight for the distance between the label and the point (Default is 10.0)
+#' @param label.placement.weight.labelLabelOverlap Label placement algorithm weight for the overlap between two labels (Default is 12.0)
+#' @param label.placement.weight.labelAncOverlap Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)
 #' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
@@ -175,6 +178,9 @@ LabeledScatter <- function(
   plot.border.show = TRUE,
   plot.border.color = 'Black',
   plot.border.width = 1,
+  label.placement.weight.distance = 10.0,
+  label.placement.weight.labelLabelOverlap = 12.0,
+  label.placement.weight.labelAncOverlap = 8.0,
   debug.mode = FALSE,
   width = NULL,
   height = NULL
@@ -258,6 +264,9 @@ LabeledScatter <- function(
     trendLinesLineThickness = trend.lines.line.thickness,
     trendLinesPointSize = trend.lines.point.size,
     plotBorderShow = plot.border.show,
+    labelPlacementDistanceWeight = label.placement.weight.distance,
+    labelPlacementLabelLabelOverlapWeight = label.placement.weight.labelLabelOverlap,
+    labelPlacementLabelAncOverlapWeight = label.placement.weight.labelAncOverlap,
     debugMode = debug.mode,
     plotBorderColor = plot.border.color,
     plotBorderWidth = plot.border.width

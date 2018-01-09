@@ -44,8 +44,10 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   point.radius = 2, trend.lines.show = FALSE,
   trend.lines.line.thickness = 1, trend.lines.point.size = 2,
   plot.border.show = TRUE, plot.border.color = "Black",
-  plot.border.width = 1, debug.mode = FALSE, width = NULL,
-  height = NULL)
+  plot.border.width = 1, label.placement.weight.distance = 10,
+  label.placement.weight.labelLabelOverlap = 12,
+  label.placement.weight.labelAncOverlap = 8, debug.mode = FALSE,
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{X}{is array of x coordinates of data set}
@@ -197,6 +199,12 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{plot.border.color}{Color of border around plot area (Default is black).}
 
 \item{plot.border.width}{Width of border around plot area in px (Default is 1).}
+
+\item{label.placement.weight.distance}{Label placement algorithm weight for the distance between the label and the point (Default is 10.0)}
+
+\item{label.placement.weight.labelLabelOverlap}{Label placement algorithm weight for the overlap between two labels (Default is 12.0)}
+
+\item{label.placement.weight.labelAncOverlap}{Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)}
 
 \item{debug.mode}{Boolean toggle to display widget internals for debugging (Default is FALSE)}
 
