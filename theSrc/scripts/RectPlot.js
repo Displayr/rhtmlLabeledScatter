@@ -107,6 +107,10 @@ class RectPlot {
     labelPlacementDistanceWeight = 10.0,
     labelPlacementLabelLabelOverlapWeight = 12.0,
     labelPlacementLabelAncOverlapWeight = 8.0,
+    labelPlacementNumSweeps = 500,
+    labelPlacementSeed = 1,
+    labelPlacementMaxMove = 5.0,
+    labelPlacementMaxAngle = 2 * 3.1415,
     debugMode = false
   ) {
     autoBind(this)
@@ -215,7 +219,11 @@ class RectPlot {
     this.labelPlacementWeights = {
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
-      labelAncOverlap: labelPlacementLabelAncOverlapWeight
+      labelAncOverlap: labelPlacementLabelAncOverlapWeight,
+      numSweeps: labelPlacementNumSweeps,
+      maxMove: labelPlacementMaxMove,
+      maxAngle: labelPlacementMaxAngle,
+      seed: labelPlacementSeed
     }
 
     this.debugMode = debugMode
@@ -225,11 +233,14 @@ class RectPlot {
     this.labelPlacement = new LabelPlacement(
       this.pltUniqueId,
       this.svg,
-      this.data.vb,
       this.labelPlacementWeights.distance,
       this.labelPlacementWeights.labelLabelOverlap,
       this.labelPlacementWeights.labelAncOverlap,
-      Utils.isArrOfNums(this.Z))
+      Utils.isArrOfNums(this.Z),
+      this.labelPlacementWeights.numSweeps,
+      this.labelPlacementWeights.maxMove,
+      this.labelPlacementWeights.maxAngle,
+      this.labelPlacementWeights.seed)
   }
 
   setDim (svg, width, height) {
@@ -563,6 +574,7 @@ class RectPlot {
 
         const placementPromise = new Promise((resolve, reject) => {
           this.labelPlacement.placeLabels(
+            this.vb,
             this.data.pts,
             this.data.lab,
             this.state,
@@ -596,6 +608,7 @@ class RectPlot {
         this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
         const placementPromise = new Promise((resolve, reject) => {
           this.labelPlacement.placeTrendLabels(
+            this.vb,
             this.tl.pts,
             this.tl.arrowheadLabels,
             this.state,
