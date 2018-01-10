@@ -221,6 +221,15 @@ class RectPlot {
     this.debugMode = debugMode
 
     this.setDim(this.svg, this.width, this.height)
+
+    this.labelPlacement = new LabelPlacement(
+      this.pltUniqueId,
+      this.svg,
+      this.data.vb,
+      this.labelPlacementWeights.distance,
+      this.labelPlacementWeights.labelLabelOverlap,
+      this.labelPlacementWeights.labelAncOverlap,
+      Utils.isArrOfNums(this.Z))
   }
 
   setDim (svg, width, height) {
@@ -553,16 +562,8 @@ class RectPlot {
                  .call(drag)
 
         const placementPromise = new Promise((resolve, reject) => {
-          let placement = new LabelPlacement(
-            this.labelPlacementWeights.distance,
-            this.labelPlacementWeights.labelLabelOverlap,
-            this.labelPlacementWeights.labelAncOverlap)
-          placement.placeLabels(
-            this.pltUniqueId,
-            this.svg,
-            this.data.vb,
+          this.labelPlacement.placeLabels(
             this.data.pts,
-            Utils.isArrOfNums(this.Z),
             this.data.lab,
             this.state,
             resolve
@@ -594,16 +595,8 @@ class RectPlot {
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
         this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
         const placementPromise = new Promise((resolve, reject) => {
-          let placement = new LabelPlacement(
-            this.labelPlacementWeights.distance,
-            this.labelPlacementWeights.labelLabelOverlap,
-            this.labelPlacementWeights.labelAncOverlap)
-          placement.placeTrendLabels(
-            this.pltUniqueId,
-            this.svg,
-            this.data.vb,
+          this.labelPlacement.placeTrendLabels(
             this.tl.pts,
-            Utils.isArrOfNums(this.Z),
             this.tl.arrowheadLabels,
             this.state,
             resolve
