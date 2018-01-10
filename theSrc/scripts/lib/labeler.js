@@ -5,7 +5,7 @@ import LabelArraySorter from './LabelArraySorter'
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
-  const random = new Random(Random.engines.mt19937().seed(1))
+  let random = new Random(Random.engines.mt19937().seed(1))
 
   let lab = [],
     anc = [],
@@ -468,6 +468,14 @@ const labeler = function () {
     w_len = x
     w_lab2 = y
     w_lab_anc = z
+    return labeler
+  }
+  
+  labeler.settings = function (seed, maxMove, maxAngle) {
+    // Additional exposed settings
+    random = new Random(Random.engines.mt19937().seed(seed))
+    max_move = maxMove
+    max_angle = maxAngle
     return labeler
   }
 

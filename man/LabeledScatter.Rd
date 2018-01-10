@@ -46,8 +46,10 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   plot.border.show = TRUE, plot.border.color = "Black",
   plot.border.width = 1, label.placement.weight.distance = 10,
   label.placement.weight.labelLabelOverlap = 12,
-  label.placement.weight.labelAncOverlap = 8, debug.mode = FALSE,
-  width = NULL, height = NULL)
+  label.placement.weight.labelAncOverlap = 8,
+  label.placement.numSweeps = 500, label.placement.seed = 1,
+  label.placement.maxMove = 5, label.placement.maxAngle = 2 * 3.1415,
+  debug.mode = FALSE, width = NULL, height = NULL)
 }
 \arguments{
 \item{X}{is array of x coordinates of data set}
@@ -205,6 +207,14 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{label.placement.weight.labelLabelOverlap}{Label placement algorithm weight for the overlap between two labels (Default is 12.0)}
 
 \item{label.placement.weight.labelAncOverlap}{Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)}
+
+\item{label.placement.numSweeps}{Label placement algorithm number of sweeps through the dataset (Default is 500).}
+
+\item{label.placement.seed}{Label placement algorithm setting for the randomiser seed (Default is 1).}
+
+\item{label.placement.maxMove}{Label placement algorithm setting to determine how far in pixels a move is made (Default is 5).}
+
+\item{label.placement.maxAngle}{Label placement algorithm setting to determine the domain of angles chosen for mcrotate (Default is 2*Pi).}
 
 \item{debug.mode}{Boolean toggle to display widget internals for debugging (Default is FALSE)}
 

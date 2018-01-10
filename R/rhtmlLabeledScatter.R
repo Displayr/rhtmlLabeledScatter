@@ -87,6 +87,10 @@
 #' @param label.placement.weight.distance Label placement algorithm weight for the distance between the label and the point (Default is 10.0)
 #' @param label.placement.weight.labelLabelOverlap Label placement algorithm weight for the overlap between two labels (Default is 12.0)
 #' @param label.placement.weight.labelAncOverlap Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)
+#' @param label.placement.numSweeps Label placement algorithm number of sweeps through the dataset (Default is 500).
+#' @param label.placement.maxMove Label placement algorithm setting to determine how far in pixels a move is made (Default is 5).
+#' @param label.placement.maxAngle Label placement algorithm setting to determine the domain of angles chosen for mcrotate (Default is 2*Pi).
+#' @param label.placement.seed Label placement algorithm setting for the randomiser seed (Default is 1).
 #' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
@@ -181,6 +185,10 @@ LabeledScatter <- function(
   label.placement.weight.distance = 10.0,
   label.placement.weight.labelLabelOverlap = 12.0,
   label.placement.weight.labelAncOverlap = 8.0,
+  label.placement.numSweeps = 500,
+  label.placement.seed = 1,
+  label.placement.maxMove = 5.0,
+  label.placement.maxAngle = 2 * 3.1415,
   debug.mode = FALSE,
   width = NULL,
   height = NULL
@@ -267,6 +275,10 @@ LabeledScatter <- function(
     labelPlacementDistanceWeight = label.placement.weight.distance,
     labelPlacementLabelLabelOverlapWeight = label.placement.weight.labelLabelOverlap,
     labelPlacementLabelAncOverlapWeight = label.placement.weight.labelAncOverlap,
+    labelPlacementNumSweeps = label.placement.numSweeps,
+    labelPlacementSeed = label.placement.seed,
+    labelPlacementMaxMove = label.placement.maxMove,
+    labelPlacementMaxAngle = label.placement.maxAngle,
     debugMode = debug.mode,
     plotBorderColor = plot.border.color,
     plotBorderWidth = plot.border.width
