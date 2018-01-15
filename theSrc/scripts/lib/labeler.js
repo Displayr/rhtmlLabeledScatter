@@ -20,7 +20,8 @@ const labeler = function () {
     pinned = [],
     minLabWidth = Infinity,
     labelArraySorter = null,
-    is_label_sorter_on = false
+    is_label_sorter_on = false,
+    is_non_blocking_on = false
 
     // var investigate = 781;
     // var investigate2 = 182;
@@ -205,7 +206,7 @@ const labeler = function () {
 
     if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
       acc += 1
-      labelArraySorter.sortArrays()
+      if (is_label_sorter_on) labelArraySorter.sortArrays()
       // if (i == investigate || i == investigate2)
       //    svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
       //                  .attr('y', lab[i].y - lab[i].height)
@@ -291,7 +292,7 @@ const labeler = function () {
 
     if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
       acc += 1
-      labelArraySorter.sortArrays()
+      if (is_label_sorter_on) labelArraySorter.sortArrays()
       // if (i == investigate || i == investigate2) {
       //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
       //                   .attr('y', currLab.y - currLab.height)
@@ -353,6 +354,10 @@ const labeler = function () {
   }
   
   labeler.start = function (nsweeps) {
+    if (is_label_sorter_on) {
+      labelArraySorter = new LabelArraySorter(lab)
+    }
+    
     _.forEach(lab, (l, i) => {
       if (!_.includes(pinned, l.id)) {
         if (!isBubble) l.y -= 5
@@ -365,42 +370,54 @@ const labeler = function () {
     // main simulated annealing function
     let currT = 1.0
     let initialT = 1.0
-  
-    // Non-blocking implementation with timeouts
-    function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
-      let i = 0;
-      (function chunk() {
-        let end = Math.min(i + chunksize, count);
-        for ( ; i < end; ++i) {
-          callback.call(null, i);
-        }
-        callbackBtwnChuncks()
-        if (i < count) {
-          timeoutsArray.push(setTimeout(chunk, 0));
-        } else {
-          finished.call(null);
-        }
-      })();
-    }
-  
-    // Stop label placement algorithm after 5s total runtime
-    function timeoutAllChuncks () {
-      _.map(timeOuts, t => { clearTimeout(t) })
-      console.log("rhtmlLabeledScatter: Label placement timed out reached!")
-      resolveFunc()
-    }
     
-    const timeOuts = []
-    const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
-    yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
-      if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
-    }.bind(this), function() {
-      currT = cooling_schedule(currT, initialT, nsweeps)
-    }.bind(this), function() {
+    if (is_non_blocking_on) {
+      // Non-blocking implementation with timeouts
+      function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
+        let i = 0;
+        (function chunk() {
+          let end = Math.min(i + chunksize, count);
+          for ( ; i < end; ++i) {
+            callback.call(null, i);
+          }
+          callbackBtwnChuncks()
+          if (i < count) {
+            timeoutsArray.push(setTimeout(chunk, 0));
+          } else {
+            finished.call(null);
+          }
+        })();
+      }
+    
+      // Stop label placement algorithm after 5s total runtime
+      function timeoutAllChuncks () {
+        _.map(timeOuts, t => { clearTimeout(t) })
+        console.log("rhtmlLabeledScatter: Label placement timed out reached!")
+        resolveFunc()
+      }
+      
+      const timeOuts = []
+      const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
+      yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
+        if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+      }.bind(this), function() {
+        currT = cooling_schedule(currT, initialT, nsweeps)
+      }.bind(this), function() {
+        console.log("rhtmlLabeledScatter: Label placement complete!")
+        clearTimeout(masterTimeout)
+        resolveFunc()
+      }, timeOuts);
+    } else {
+      // Blocking implementation - faster for smaller numbers of labels
+      for (let i = 0; i < nsweeps; i++) {
+        for (let j = 0; j < lab.length; j++) {
+          if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+        }
+        currT = cooling_schedule(currT, initialT, nsweeps)
+      }
       console.log("rhtmlLabeledScatter: Label placement complete!")
-      clearTimeout(masterTimeout)
       resolveFunc()
-    }, timeOuts);
+    }
   }
   
   labeler.promise = function (resolve) {
@@ -440,7 +457,6 @@ const labeler = function () {
     // users insert label positions
     if (!arguments.length) return lab
     lab = x
-    labelArraySorter = new LabelArraySorter(lab)
     return labeler
   }
 
@@ -472,12 +488,13 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn) {
+  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn, isNonBlockingOn) {
     // Additional exposed settings
     random = new Random(Random.engines.mt19937().seed(seed))
     max_move = maxMove
     max_angle = maxAngle
     is_label_sorter_on = isLabelSorterOn
+    is_non_blocking_on = isNonBlockingOn
     return labeler
   }
 

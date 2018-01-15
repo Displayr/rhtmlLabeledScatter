@@ -224,7 +224,8 @@ class RectPlot {
       maxMove: labelPlacementMaxMove,
       maxAngle: labelPlacementMaxAngle,
       seed: labelPlacementSeed,
-      isLabelSorterOn: this.label.length > 100
+      isLabelSorterOn: this.label.length > 100,
+      isNonBlockingOn: this.label.length > 100
     }
 
     this.debugMode = debugMode
@@ -242,7 +243,8 @@ class RectPlot {
       this.labelPlacementSettings.maxMove,
       this.labelPlacementSettings.maxAngle,
       this.labelPlacementSettings.seed,
-      this.labelPlacementSettings.isLabelSorterOn)
+      this.labelPlacementSettings.isLabelSorterOn,
+      this.labelPlacementSettings.isNonBlockingOn)
   }
 
   setDim (svg, width, height) {
