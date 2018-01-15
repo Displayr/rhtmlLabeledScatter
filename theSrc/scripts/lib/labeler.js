@@ -19,7 +19,8 @@ const labeler = function () {
     resolveFunc = null,
     pinned = [],
     minLabWidth = Infinity,
-    labelArraySorter = null
+    labelArraySorter = null,
+    is_label_sorter_on = false
 
     // var investigate = 781;
     // var investigate2 = 182;
@@ -123,7 +124,7 @@ const labeler = function () {
       y_overlap,
       overlap_area
 
-    const overlappingLabs = labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id)
+    const overlappingLabs = is_label_sorter_on ? labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id) : lab
     // console.log('----------------------------------')
     // console.log(currLab.text)
     // console.log(_.map(overlappingLabs, (a) => a.text))
@@ -471,11 +472,12 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.settings = function (seed, maxMove, maxAngle) {
+  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn) {
     // Additional exposed settings
     random = new Random(Random.engines.mt19937().seed(seed))
     max_move = maxMove
     max_angle = maxAngle
+    is_label_sorter_on = isLabelSorterOn
     return labeler
   }
 

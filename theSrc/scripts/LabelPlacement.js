@@ -4,7 +4,7 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap, isBubble, numSweeps, maxMove, maxAngle, seed) {
+  constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap, isBubble, numSweeps, maxMove, maxAngle, seed, isLabelSorterOn) {
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -14,6 +14,7 @@ class LabelPlacement {
     this.numSweeps = numSweeps
     this.maxMove = maxMove
     this.maxAngle = maxAngle
+    this.isLabelSorterOn = isLabelSorterOn
     this.seed = seed
   }
 
@@ -32,7 +33,7 @@ class LabelPlacement {
       .promise(resolve)
       .anchorType(this.isBubble)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-      .settings(this.seed, this.maxMove, this.maxAngle)
+      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn)
       .start(this.numSweeps)
   }
 
