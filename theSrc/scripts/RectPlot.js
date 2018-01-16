@@ -216,14 +216,16 @@ class RectPlot {
       this.showLabels = false
     }
 
-    this.labelPlacementWeights = {
+    this.labelPlacementSettings = {
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
       labelAncOverlap: labelPlacementLabelAncOverlapWeight,
       numSweeps: labelPlacementNumSweeps,
       maxMove: labelPlacementMaxMove,
       maxAngle: labelPlacementMaxAngle,
-      seed: labelPlacementSeed
+      seed: labelPlacementSeed,
+      isLabelSorterOn: this.label.length > 100,
+      isNonBlockingOn: this.label.length > 100
     }
 
     this.debugMode = debugMode
@@ -233,14 +235,16 @@ class RectPlot {
     this.labelPlacement = new LabelPlacement(
       this.pltUniqueId,
       this.svg,
-      this.labelPlacementWeights.distance,
-      this.labelPlacementWeights.labelLabelOverlap,
-      this.labelPlacementWeights.labelAncOverlap,
+      this.labelPlacementSettings.distance,
+      this.labelPlacementSettings.labelLabelOverlap,
+      this.labelPlacementSettings.labelAncOverlap,
       Utils.isArrOfNums(this.Z),
-      this.labelPlacementWeights.numSweeps,
-      this.labelPlacementWeights.maxMove,
-      this.labelPlacementWeights.maxAngle,
-      this.labelPlacementWeights.seed)
+      this.labelPlacementSettings.numSweeps,
+      this.labelPlacementSettings.maxMove,
+      this.labelPlacementSettings.maxAngle,
+      this.labelPlacementSettings.seed,
+      this.labelPlacementSettings.isLabelSorterOn,
+      this.labelPlacementSettings.isNonBlockingOn)
   }
 
   setDim (svg, width, height) {
