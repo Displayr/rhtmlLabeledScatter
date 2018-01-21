@@ -282,9 +282,11 @@ class RectPlot {
                          this.legendSettings)
 
     this.drawFailureCount = 0
+    this.isDrawing = false
   }
 
   draw () {
+    this.isDrawing = true
     this.drawDimensionMarkers()
       .then(this.drawLegend.bind(this))
       .then(this.drawLabsAndPlot.bind(this))
@@ -299,6 +301,7 @@ class RectPlot {
         debugMsg.draw(this.data.lab)
         console.log(`draw succeeded after ${this.drawFailureCount} failures`)
         this.drawFailureCount = 0
+        this.isDrawing = false
       })
       .catch((err) => {
         this.drawFailureCount++
