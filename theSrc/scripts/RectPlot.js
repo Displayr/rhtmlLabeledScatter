@@ -381,7 +381,7 @@ class RectPlot {
 
   drawResetButton () {
     this.resetButton = new ResetButton(this)
-    this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state.hasStateBeenAlteredByUser())
+    this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state)
   }
 
   drawDimensionMarkers () {

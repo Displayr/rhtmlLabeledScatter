@@ -122,6 +122,8 @@ class State {
       x: (labx - vb.x) / vb.width,
       y: (laby - vb.y) / vb.height
     })
+    console.log('pushUserPositionedLabs')
+    console.log(this.userPositionedLabs)
     this.updateViewBox(vb)
     this.saveToState({'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs})
   }
