@@ -46,10 +46,10 @@ class DragUtils {
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
         plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.vb)
+        plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
         if (!showTrendLine) {
           plot.drawLinks()
         }
-        plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
       }
     }
 
