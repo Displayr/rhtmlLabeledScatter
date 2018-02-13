@@ -368,6 +368,7 @@ class RectPlot {
         labelPromise.then(() => {
           if (this.trendLines.show) { this.drawTrendLines() }
           this.drawDraggedMarkers()
+        }).finally(() => {
           this.drawAnc()
         })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
@@ -638,7 +639,7 @@ class RectPlot {
         return placementPromise
       }
     } else {
-      return Promise.resolve()
+      return Promise.reject('Labels turned off')
     }
   }
 
