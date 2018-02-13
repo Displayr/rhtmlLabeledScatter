@@ -637,6 +637,8 @@ class RectPlot {
         })
         return placementPromise
       }
+    } else {
+      return Promise.resolve()
     }
   }
 
