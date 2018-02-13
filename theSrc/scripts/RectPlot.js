@@ -364,11 +364,11 @@ class RectPlot {
         this.subtitle.drawWith(this.pltUniqueId, this.svg)
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
-        this.drawAnc()
         const labelPromise = this.drawLabs()
         labelPromise.then(() => {
           if (this.trendLines.show) { this.drawTrendLines() }
           this.drawDraggedMarkers()
+          this.drawAnc()
         })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
