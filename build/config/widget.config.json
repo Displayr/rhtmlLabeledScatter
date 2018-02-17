@@ -4,7 +4,8 @@
   "widgetName": "rhtmlLabeledScatter",
   "visualRegressionSuite": {
     "applitools": {
-      "defaultMatchTimeout": 2
+      "defaultMatchTimeout": 5,
+      "pageLoadDelay": 5
     }
   },
   "internalWebSettings": {
