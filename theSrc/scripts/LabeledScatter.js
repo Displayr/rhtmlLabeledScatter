@@ -4,6 +4,7 @@ import _ from 'lodash'
 import DisplayError from './DisplayError'
 import RectPlot from './RectPlot'
 import State from './State'
+import 'babel-polyfill'
 
 class LabeledScatter {
   getResizeDelayPromise () {

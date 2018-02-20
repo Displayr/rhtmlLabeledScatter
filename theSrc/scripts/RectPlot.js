@@ -1,6 +1,7 @@
 
 import _ from 'lodash'
 import d3 from 'd3'
+import 'babel-polyfill'
 import md5 from 'md5'
 import autoBind from 'es6-autobind'
 import Links from './Links'
@@ -285,6 +286,9 @@ class RectPlot {
   }
 
   draw () {
+    // Tell visual tests widget as not ready
+    this.svg.attr('class', (this.svg.attr('class')).replace('rhtmlLabeledScatter-isReadySelector', ''))
+
     this.drawDimensionMarkers()
       .then(this.drawLegend.bind(this))
       .then(this.drawLabsAndPlot.bind(this))
@@ -313,6 +317,11 @@ class RectPlot {
         }
 
         throw err
+      }).finally(() => {
+        // Tell visual tests that widget is done rendering
+        if (!this.svg.attr('class').includes('rhtmlLabeledScatter-isReadySelector')) {
+          this.svg.attr('class', this.svg.attr('class') + ' rhtmlLabeledScatter-isReadySelector')
+        }
       })
   }
 
@@ -364,11 +373,12 @@ class RectPlot {
         this.subtitle.drawWith(this.pltUniqueId, this.svg)
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
-        this.drawAnc()
         const labelPromise = this.drawLabs()
         labelPromise.then(() => {
           if (this.trendLines.show) { this.drawTrendLines() }
           this.drawDraggedMarkers()
+        }).finally(() => {
+          this.drawAnc()
         })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
@@ -637,6 +647,8 @@ class RectPlot {
         })
         return placementPromise
       }
+    } else {
+      return Promise.reject('Labels turned off')
     }
   }
 

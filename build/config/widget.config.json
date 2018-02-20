@@ -3,6 +3,7 @@
   "widgetFactory": "theSrc/scripts/rhtmlLabeledScatter.factory.js",
   "widgetName": "rhtmlLabeledScatter",
   "visualRegressionSuite": {
+    "isReadySelector": ".rhtmlLabeledScatter-isReadySelector",
     "applitools": {
       "defaultMatchTimeout": 2
     }
