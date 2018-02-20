@@ -314,6 +314,10 @@ class RectPlot {
         }
 
         throw err
+      }).finally(() => {
+        // Tell visual tests that widget is done rendering
+        this.svg.selectAll('.rhtmlLabeledScatter-isReadySelector').remove()
+        this.svg.append('svg').attr('class', 'rhtmlLabeledScatter-isReadySelector')
       })
   }
 
@@ -371,10 +375,6 @@ class RectPlot {
           this.drawDraggedMarkers()
         }).finally(() => {
           this.drawAnc()
-
-          // Tell visual tests that widget is done rendering
-          this.svg.selectAll('.rhtmlLabeledScatter-isReadySelector').remove()
-          this.svg.append('svg').attr('class', 'rhtmlLabeledScatter-isReadySelector')
         })
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
