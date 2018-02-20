@@ -286,6 +286,9 @@ class RectPlot {
   }
 
   draw () {
+    // Tell visual tests widget as not ready
+    this.svg.attr('class', (this.svg.attr('class')).replace('rhtmlLabeledScatter-isReadySelector', ''))
+
     this.drawDimensionMarkers()
       .then(this.drawLegend.bind(this))
       .then(this.drawLabsAndPlot.bind(this))
@@ -316,8 +319,9 @@ class RectPlot {
         throw err
       }).finally(() => {
         // Tell visual tests that widget is done rendering
-        this.svg.selectAll('.rhtmlLabeledScatter-isReadySelector').remove()
-        this.svg.append('svg').attr('class', 'rhtmlLabeledScatter-isReadySelector')
+        if (!this.svg.attr('class').includes('rhtmlLabeledScatter-isReadySelector')) {
+          this.svg.attr('class', this.svg.attr('class') + ' rhtmlLabeledScatter-isReadySelector')
+        }
       })
   }
 
