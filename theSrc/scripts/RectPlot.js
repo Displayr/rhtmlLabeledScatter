@@ -374,13 +374,26 @@ class RectPlot {
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
 
-        // VIS-402: Anchors drawn before labs to avoid bubbles covering labs
-        const ancPromise = this.drawAnc()
-        const labelPromise = ancPromise.then(() => { this.drawLabs() })
-        labelPromise.then(() => {
-          if (this.trendLines.show) { this.drawTrendLines() }
-          this.drawDraggedMarkers()
-        })
+        if (Utils.isArrOfNums(this.Z)) {
+          // Anchors drawn before labs to avoid bubbles covering labs
+          const ancPromise = this.drawAnc()
+          const labelPromise = ancPromise.then(() => {
+            this.drawLabs()
+          })
+          labelPromise.then(() => {
+            if (this.trendLines.show) { this.drawTrendLines() }
+            this.drawDraggedMarkers()
+          })
+        } else {
+          // If no bubbles, then draw anc on top of potential logos
+          const labelPromise = this.drawLabs()
+          labelPromise.then(() => {
+            if (this.trendLines.show) { this.drawTrendLines() }
+            this.drawDraggedMarkers()
+          }).finally(() => {
+            this.drawAnc()
+          })
+        }
 
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
