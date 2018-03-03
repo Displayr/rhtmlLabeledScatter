@@ -12,7 +12,7 @@
     "gulp": "^3.9.1",
     "karma": "^1.7.0",
     "protractor": "^5.1.2",
-    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#2.0.4",
+    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0",
     "watchify": "^3.9.0"

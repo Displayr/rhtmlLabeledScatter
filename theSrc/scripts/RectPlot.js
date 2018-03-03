@@ -373,13 +373,28 @@ class RectPlot {
         this.subtitle.drawWith(this.pltUniqueId, this.svg)
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
-        const labelPromise = this.drawLabs()
-        labelPromise.then(() => {
-          if (this.trendLines.show) { this.drawTrendLines() }
-          this.drawDraggedMarkers()
-        }).finally(() => {
-          this.drawAnc()
-        })
+
+        if (Utils.isArrOfNums(this.Z)) {
+          // Anchors drawn before labs to avoid bubbles covering labs
+          const ancPromise = this.drawAnc()
+          const labelPromise = ancPromise.then(() => {
+            this.drawLabs()
+          })
+          labelPromise.then(() => {
+            if (this.trendLines.show) { this.drawTrendLines() }
+            this.drawDraggedMarkers()
+          })
+        } else {
+          // If no bubbles, then draw anc on top of potential logos
+          const labelPromise = this.drawLabs()
+          labelPromise.then(() => {
+            if (this.trendLines.show) { this.drawTrendLines() }
+            this.drawDraggedMarkers()
+          }).finally(() => {
+            this.drawAnc()
+          })
+        }
+
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
         this.axisLabels.drawWith(this.pltUniqueId, this.svg)
@@ -474,30 +489,33 @@ class RectPlot {
   }
 
   drawAnc () {
-    this.svg.selectAll('.anc').remove()
-    const anc = this.svg.selectAll('.anc')
-             .data(this.data.pts)
-             .enter()
-             .append('circle')
-             .attr('class', 'anc')
-             .attr('id', d => `anc-${d.id}`)
-             .attr('cx', d => d.x)
-             .attr('cy', d => d.y)
-             .attr('fill', d => d.color)
-             .attr('fill-opacity', d => d.fillOpacity)
-             .attr('r', (d) => {
-               if (this.trendLines.show) {
-                 return this.trendLines.pointSize
-               } else {
-                 return d.r
-               }
-             })
-    TooltipUtils.appendTooltips(anc, this.Z, this.decimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
-    // Clip paths used to crop bubbles if they expand beyond the plot's borders
-    if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
-      this.svg.selectAll('clipPath').remove()
-      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb, this.pltUniqueId)
-    }
+    return new Promise(function (resolve, reject) {
+      this.svg.selectAll('.anc').remove()
+      const anc = this.svg.selectAll('.anc')
+               .data(this.data.pts)
+               .enter()
+               .append('circle')
+               .attr('class', 'anc')
+               .attr('id', d => `anc-${d.id}`)
+               .attr('cx', d => d.x)
+               .attr('cy', d => d.y)
+               .attr('fill', d => d.color)
+               .attr('fill-opacity', d => d.fillOpacity)
+               .attr('r', (d) => {
+                 if (this.trendLines.show) {
+                   return this.trendLines.pointSize
+                 } else {
+                   return d.r
+                 }
+               })
+      TooltipUtils.appendTooltips(anc, this.Z, this.decimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
+      // Clip paths used to crop bubbles if they expand beyond the plot's borders
+      if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
+        this.svg.selectAll('clipPath').remove()
+        SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb, this.pltUniqueId)
+      }
+      resolve()
+    }.bind(this))
   }
 
   drawDraggedMarkers () {
