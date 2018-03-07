@@ -28,6 +28,7 @@ class LabeledScatter {
                   .attr('height', this.height)
                   .attr('class', 'plot-container rhtmlwidget-outer-svg')
           this.plot.setDim(svg, this.width, this.height)
+          this.plot.state.resetStateOnResize()
           this.plot.draw()
           this.resizeDelayPromise = null
         }
