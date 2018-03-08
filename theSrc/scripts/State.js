@@ -76,6 +76,12 @@ class State {
     this.saveToState({'legend.pts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
+  resetStateOnResize () {
+    this.userPositionedLabs = []
+    this.algoPositionedLabs = []
+    this.saveToState({'userPositionedLabs': this.userPositionedLabs, 'algoPositionedLabs': this.algoPositionedLabs})
+  }
+
   resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
