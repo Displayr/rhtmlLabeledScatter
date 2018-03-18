@@ -575,7 +575,7 @@ class RectPlot {
 
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
-            .data(_.filter(this.data.lab, l => l.url !== ''))
+            .data(this.data.getImgLabels())
             .enter()
             .append('svg:image')
             .attr('class', `plt-${this.pltUniqueId}-lab-img`)
@@ -589,7 +589,7 @@ class RectPlot {
 
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`).remove()
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
-                 .data(_.filter(this.data.lab, l => l.url === ''))
+                 .data(this.data.getTextLabels())
                  .enter()
                  .append('text')
                  .attr('class', `plt-${this.pltUniqueId}-lab`)
@@ -624,11 +624,6 @@ class RectPlot {
           labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                       .attr('y', d => d.y - d.height)
 
-          const pinnedLabels = this.state.getPositionedLabIds(this.vb)
-          const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
-          if (pinnedLabels.length < labels.length) {
-            this.state.saveAlgoPositionedLabs(labels, this.vb)
-          }
           this.drawLinks()
         })
         return placementPromise
@@ -656,12 +651,6 @@ class RectPlot {
                    .attr('y', d => d.y)
           labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                       .attr('y', d => d.y - d.height)
-
-          const pinnedLabels = this.state.getPositionedLabIds(this.vb)
-          const labels = _.filter(this.data.lab, l => l.text !== '' || (l.text === '' && l.url !== ''))
-          if (pinnedLabels.length < labels.length) {
-            this.state.saveAlgoPositionedLabs(labels, this.vb)
-          }
         })
         return placementPromise
       }
@@ -681,6 +670,16 @@ class RectPlot {
       this.tl = new TrendLine(this.data.pts, this.data.lab)
     }
     this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
+  }
+
+  resized (svg, width, height) {
+    this.svg = svg
+    this.width = width
+    this.height = height
+    this.setDim(this.svg, this.width, this.height)
+    this.labelPlacement.updateSvgOnResize(this.svg)
+    this.state.resetStateOnResize(this.vb)
+    this.draw()
   }
 }
 

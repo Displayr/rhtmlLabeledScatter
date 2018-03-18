@@ -21,6 +21,10 @@ class LabelPlacement {
     this.seed = seed
   }
 
+  updateSvgOnResize (svg) {
+    this.svg = svg
+  }
+
   place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
 

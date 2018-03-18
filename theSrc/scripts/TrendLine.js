@@ -108,6 +108,14 @@ class TrendLine {
     return this.groups
   }
 
+  getTextLabels () {
+    return _.filter(this.arrowheadLabels, l => l.url === '')
+  }
+
+  getImgLabels () {
+    return _.filter(this.arrowheadLabels, l => l.url !== '')
+  }
+
   drawWith (svg, plotColors, trendLines) {
     _.map(this.getUniqueGroups(), (group) => {
       // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
@@ -150,7 +158,7 @@ class TrendLine {
   drawLabelsWith (pltId, svg, drag) {
     svg.selectAll(`.plt-${pltId}-lab-img`).remove()
     svg.selectAll(`.plt-${pltId}-lab-img`)
-       .data(_.filter(this.arrowheadLabels, l => l.url !== ''))
+       .data(this.getImgLabels())
        .enter()
        .append('svg:image')
        .attr('class', `plt-${pltId}-lab-img`)
@@ -164,7 +172,7 @@ class TrendLine {
 
     svg.selectAll(`plt-${pltId}-lab`).remove()
     svg.selectAll(`plt-${pltId}-lab`)
-       .data(_.filter(this.arrowheadLabels, l => l.url === ''))
+       .data(this.getTextLabels())
        .enter()
        .append('text')
        .attr('class', `plt-${pltId}-lab`)
