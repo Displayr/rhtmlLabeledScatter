@@ -76,10 +76,16 @@ class State {
     this.saveToState({'legend.pts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
-  resetStateOnResize () {
+  resetStateOnResize (vb) {
     this.userPositionedLabs = []
     this.algoPositionedLabs = []
-    this.saveToState({'userPositionedLabs': this.userPositionedLabs, 'algoPositionedLabs': this.algoPositionedLabs})
+    this.updateViewBox(vb)
+    this.stateObj = {
+      'vb': this.vb,
+      'userPositionedLabs': this.userPositionedLabs,
+      'algoPositionedLabs': this.algoPositionedLabs
+    }
+    this.saveToState(this.stateObj)
   }
 
   resetStateLegendPtsAndPositionedLabs () {
@@ -156,6 +162,7 @@ class State {
 
   getPositionedLabIds (currentvb) {
     if (_.isEmpty(this.vb)) {
+      console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
       return this.getUserPositionedLabIds()
     } else {

@@ -426,6 +426,14 @@ class PlotData {
       if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id)
     })
   }
+
+  getTextLabels () {
+    return _.filter(this.lab, l => l.url === '')
+  }
+
+  getImgLabels () {
+    return _.filter(this.lab, l => l.url !== '')
+  }
 }
 
 module.exports = PlotData
