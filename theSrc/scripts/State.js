@@ -24,7 +24,7 @@ class State {
 
     this.legendPts = this.retrieveLegendPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
-    this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
+    // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
   }
 
@@ -64,26 +64,26 @@ class State {
   pushLegendPt (id) {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
-    this.algoPositionedLabs = []
+    // this.algoPositionedLabs = []
     this.saveToState({'legend.pts': this.legendPts,
-      'userPositionedLabs': this.userPositionedLabs,
-      'algoPositionedLabs': this.algoPositionedLabs})
+      'userPositionedLabs': this.userPositionedLabs})
+      // 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   pullLegendPt (id) {
     _.pull(this.legendPts, id)
-    this.algoPositionedLabs = []
-    this.saveToState({'legend.pts': this.legendPts, 'algoPositionedLabs': this.algoPositionedLabs})
+    // this.algoPositionedLabs = []
+    this.saveToState({ 'legend.pts': this.legendPts }) // , 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
   resetStateOnResize (vb) {
     this.userPositionedLabs = []
-    this.algoPositionedLabs = []
+    // this.algoPositionedLabs = []
     this.updateViewBox(vb)
     this.stateObj = {
       'vb': this.vb,
-      'userPositionedLabs': this.userPositionedLabs,
-      'algoPositionedLabs': this.algoPositionedLabs
+      'userPositionedLabs': this.userPositionedLabs
+      // 'algoPositionedLabs': this.algoPositionedLabs
     }
     this.saveToState(this.stateObj)
   }
@@ -91,7 +91,7 @@ class State {
   resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
-    this.algoPositionedLabs = []
+    // this.algoPositionedLabs = []
     this.vb = {}
     this.resetState()
   }
@@ -126,7 +126,7 @@ class State {
   }
 
   pushUserPositionedLabel (id, labx, laby, vb) {
-    _.remove(this.algoPositionedLabs, e => e.id === id)
+    // _.remove(this.algoPositionedLabs, e => e.id === id)
     _.remove(this.userPositionedLabs, e => e.id === id)
 
     this.userPositionedLabs.push({
@@ -139,7 +139,7 @@ class State {
   }
 
   updateLabelsWithPositionedData (labels, vb) {
-    const combinedLabs = this.userPositionedLabs.concat(this.algoPositionedLabs)
+    const combinedLabs = this.userPositionedLabs // .concat(this.algoPositionedLabs)
     if (!_.isEmpty(combinedLabs)) {
       _(labels).each((label) => {
         const matchingLabel = _.find(combinedLabs, e => e.id === label.id)
@@ -156,7 +156,7 @@ class State {
   }
 
   getAllPositionedLabsIds () {
-    const combinedLabs = this.userPositionedLabs.concat(this.algoPositionedLabs)
+    const combinedLabs = this.userPositionedLabs // .concat(this.algoPositionedLabs)
     return _.map(combinedLabs, e => e.id)
   }
 
@@ -179,25 +179,25 @@ class State {
     }
   }
 
-  saveAlgoPositionedLabs (labels, vb) {
-    _.map(labels, lab => {
-      if (_.every(this.userPositionedLabs, userlab => userlab.id !== lab.id)) {
-        this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, vb)
-      }
-    })
-    this.updateViewBox(vb)
-    this.saveToState({'vb': this.vb, 'algoPositionedLabs': this.algoPositionedLabs})
-  }
+  // saveAlgoPositionedLabs (labels, vb) {
+  //   _.map(labels, lab => {
+  //     if (_.every(this.userPositionedLabs, userlab => userlab.id !== lab.id)) {
+  //       this.pushAlgoPositionedLabel(lab.id, lab.x, lab.y, vb)
+  //     }
+  //   })
+  //   this.updateViewBox(vb)
+  //   this.saveToState({'vb': this.vb, 'algoPositionedLabs': this.algoPositionedLabs})
+  // }
 
-  pushAlgoPositionedLabel (id, labx, laby, vb) {
-    _.remove(this.algoPositionedLabs, e => e.id === id)
-
-    this.algoPositionedLabs.push({
-      id,
-      x: (labx - vb.x) / vb.width,
-      y: (laby - vb.y) / vb.height
-    })
-  }
+  // pushAlgoPositionedLabel (id, labx, laby, vb) {
+  //   _.remove(this.algoPositionedLabs, e => e.id === id)
+  //
+  //   this.algoPositionedLabs.push({
+  //     id,
+  //     x: (labx - vb.x) / vb.width,
+  //     y: (laby - vb.y) / vb.height
+  //   })
+  // }
 }
 
 module.exports = State

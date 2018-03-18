@@ -126,5 +126,6 @@ Feature: State Interactions
     When I drag legend label 2 to the canvas
     And I wait for animations to complete
     Then label 2 should be near the circle anchor 2
+    And I wait for animations to complete
     And the "bubbleplot_simple_initial_load" snapshot matches the baseline
     And the final state callback should match "back_to_original" within 2
