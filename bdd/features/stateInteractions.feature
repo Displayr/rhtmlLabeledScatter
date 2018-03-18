@@ -23,7 +23,6 @@ Feature: State Interactions
     When I drag label 0 to the legend
     Then label 0 should be in the legend
     And the "scatterplot_three_point_brand_after_label_drag_to_legend" snapshot matches the baseline
-    And the final state callback should match "porche_label_moved_to_legend" within 0.02
     When I click on reset
     And I wait for animations to complete
     Then the "scatterplot_reset_click" snapshot matches the baseline
@@ -74,7 +73,6 @@ Feature: State Interactions
     When I drag label 2 to the legend
     Then label 2 should be in the legend
     And the "scatterplot_three_point_brand_after_apple_logo_moved_to_legend" snapshot matches the baseline
-    And the final state callback should match "apple_logo_moved_to_legend" within 2
 
   @applitools @state @imageLabels
   Scenario: User can load a scatterplot image label with saved state (image label moved to legend) and see their modified scatterplot
@@ -112,7 +110,6 @@ Feature: State Interactions
     When I drag label 2 to the legend
     Then label 2 should be in the legend
     And the "bubbleplot_simple_after_label_moved_to_legend" snapshot matches the baseline
-    And the final state callback should match "label_moved_to_legend" within 2
 
   @applitools @state @bubbleplot
   Scenario: User can load a bubbleplot label with saved state (label moved to legend) and see their modified scatterplot
