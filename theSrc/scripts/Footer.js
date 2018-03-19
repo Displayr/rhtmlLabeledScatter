@@ -16,6 +16,10 @@ class Footer extends AbstractTitle {
     this.y = containerHeight - this.getHeight()
   }
 
+  updateContainerHeight (height) {
+    this.y = height - this.getHeight()
+  }
+
   drawWith (plotId, svg) {
     svg.selectAll(`.plt-${plotId}-footer`).remove()
     return svg.selectAll(`.plt-${plotId}-footer`)

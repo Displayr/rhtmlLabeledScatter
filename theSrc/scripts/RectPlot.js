@@ -676,6 +676,7 @@ class RectPlot {
     this.svg = svg
     this.width = width
     this.height = height
+    this.footer.updateContainerHeight(this.height)
     this.setDim(this.svg, this.width, this.height)
     this.labelPlacement.updateSvgOnResize(this.svg)
     this.state.resetStateOnResize(this.vb)
