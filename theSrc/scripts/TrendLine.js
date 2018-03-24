@@ -10,6 +10,7 @@ class TrendLine {
     this.linePts = {}
     this.arrowheadLabels = {}
     this.groupToLabel = {}
+    this.lastPtPadding = 5
 
     _.map(this.pts, (pt, i) => {
       if (this.linePts[pt.group] == null) {
@@ -30,9 +31,19 @@ class TrendLine {
       })
     })
 
+    this._increasePaddingAroundLastPtArrow()
     this.groups = _.keys(this.linePts)
-
     this._createLineArrays()
+  }
+
+  _increasePaddingAroundLastPtArrow () {
+    _.map(this.linePts, (groupPts, groupName) => {
+      if (groupPts.length > 1) {
+        let lastPtInGroupId = _.last(this.linePts[groupName]).id
+        let lastPt = _.find(this.pts, (p) => p.id === lastPtInGroupId)
+        lastPt.r = lastPt.r + this.lastPtPadding
+      }
+    })
   }
 
   _createLineArrays () {
