@@ -308,7 +308,7 @@ class PlotData {
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
           let fontSize = this.vb.labelFontSize
 
-          // If pt hsa been already condensed
+          // If pt has been already condensed
           if (_.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
             const pt = _.find(this.outsidePlotCondensedPts, e => e.dataId === i)
             label = pt.markerId + 1
