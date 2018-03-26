@@ -181,8 +181,8 @@ class TrendLine {
        .attr('height', d => d.height)
        .call(drag)
 
-    svg.selectAll(`plt-${pltId}-lab`).remove()
-    svg.selectAll(`plt-${pltId}-lab`)
+    svg.selectAll(`.plt-${pltId}-lab`).remove()
+    svg.selectAll(`.plt-${pltId}-lab`)
        .data(this.getTextLabels())
        .enter()
        .append('text')
