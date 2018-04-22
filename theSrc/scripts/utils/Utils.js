@@ -7,7 +7,11 @@ class Utils {
   }
 
   static isValidDate (date) {
-    return !(Number.isNaN((new Date(date)).getTime()))
+    if (_.isString(date)) {
+      return !(Number.isNaN((new Date(date)).getTime()))
+    } else {
+      return false
+    }
   }
 
   static isArr (arr) {
