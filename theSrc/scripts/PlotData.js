@@ -26,7 +26,13 @@ class PlotData {
     transparency,
     legendSettings) {
     autoBind(this)
-    this.X = X
+    if (_.every(X, n => _.isDate(n))) {
+      this.X = _.map(X, n => n.getTime())
+      this.isXdate = true
+    } else {
+      this.X = X
+      this.isXdate = false
+    }
     this.Y = Y
     this.Z = Z
     this.group = group

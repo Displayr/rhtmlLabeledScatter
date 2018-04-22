@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Utils from './Utils'
 import d3 from 'd3'
+import TickLabel from './TickLabel'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -106,6 +107,7 @@ class AxisUtils {
 
       if (type === 'col') {
         const numDecimals = computeNumDecimals(tickIncrement, decimals.x)
+        const tickXLabel = new TickLabel(label, numDecimals, xPrefix, xSuffix, data.isXdate)
         axisLeaderStack.push({
           x1,
           y1: y2,
@@ -116,7 +118,7 @@ class AxisUtils {
         axisLeaderLabelStack.push({
           x: x1,
           y: y2 + leaderLineLen + labelHeight,
-          label: Utils.getFormattedNum(label, numDecimals, xPrefix, xSuffix),
+          label: tickXLabel.getLabel(),
           anchor: 'middle',
           type
         })
@@ -124,6 +126,7 @@ class AxisUtils {
 
       if (type === 'row') {
         const numDecimals = computeNumDecimals(tickIncrement, decimals.y)
+        const tickYLabel = new TickLabel(label, numDecimals, yPrefix, ySuffix, false)
         axisLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,
@@ -134,7 +137,7 @@ class AxisUtils {
         axisLeaderLabelStack.push({
           x: x1 - leaderLineLen,
           y: y2 + (labelHeight / 3),
-          label: Utils.getFormattedNum(label, numDecimals, yPrefix, ySuffix),
+          label: tickYLabel.getLabel(),
           anchor: 'end',
           type
         })
