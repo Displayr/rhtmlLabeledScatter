@@ -6,6 +6,10 @@ class Utils {
     return !(_.isNull(num)) && _.isNumber(num)
   }
 
+  static isValidDate (date) {
+    return !(Number.isNaN((new Date(date)).getTime()))
+  }
+
   static isArr (arr) {
     return !(_.isNull(arr)) && _.isArray(arr)
   }
@@ -16,6 +20,10 @@ class Utils {
 
   static isArrOfPositiveNums (arr) {
     return this.isArr(arr) && _.every(arr, n => _.isFinite(n) && n >= 0)
+  }
+
+  static isArrOfDates (arr) {
+    return this.isArr(arr) && _.every(arr, n => this.isValidDate(n))
   }
 
   static getSuperscript (id) {
