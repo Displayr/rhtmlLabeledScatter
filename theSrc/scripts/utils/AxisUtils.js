@@ -57,15 +57,9 @@ class AxisUtils {
 
   static _getTickExponential (unroundedTickSize) {
     // Round to 2 sig figs
-    let exponentTick = this.getExponentOfNum(unroundedTickSize)
+    let exponentTick = Utils.getExponentOfNum(unroundedTickSize)
     exponentTick *= -1
     return exponentTick
-  }
-
-  static getExponentOfNum (num) {
-    const numExponentialForm = num.toExponential()
-    const exponent = _.toNumber(_.last(numExponentialForm.split('e')))
-    return exponent
   }
 
   static _normalizeXCoords (data, Xcoord) {
@@ -95,19 +89,8 @@ class AxisUtils {
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
 
-      const computeNumDecimals = (tickIncr, userDecimals) => {
-        // Return user specified number of decimals or 0 if the tickIncr is an integer
-        if (!_.isNull(userDecimals)) return userDecimals
-        if (_.isInteger(tickIncr)) return 0
-
-        // Otherwise, return the inverse exponent of the tick increment
-        const tickExponent = this.getExponentOfNum(tickIncr)
-        return ((tickExponent < 0) ? Math.abs(tickExponent) : 0)
-      }
-
       if (type === 'col') {
-        const numDecimals = computeNumDecimals(tickIncrement, decimals.x)
-        const tickXLabel = new TickLabel(label, numDecimals, xPrefix, xSuffix, data.isXdate)
+        const tickXLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate)
         axisLeaderStack.push({
           x1,
           y1: y2,
@@ -125,8 +108,7 @@ class AxisUtils {
       }
 
       if (type === 'row') {
-        const numDecimals = computeNumDecimals(tickIncrement, decimals.y)
-        const tickYLabel = new TickLabel(label, numDecimals, yPrefix, ySuffix, false)
+        const tickYLabel = new TickLabel(label, tickIncrement, decimals.x, yPrefix, ySuffix, false)
         axisLeaderStack.push({
           x1: x1 - leaderLineLen,
           y1,

@@ -46,6 +46,12 @@ class Utils {
     const numToDisplay = _.isNull(decimals) ? String(num) : (new BigNumber(num)).toFormat(decimals)
     return prefix + numToDisplay + suffix
   }
+
+  static getExponentOfNum (num) {
+    const numExponentialForm = num.toExponential()
+    const exponent = _.toNumber(_.last(numExponentialForm.split('e')))
+    return exponent
+  }
 }
 
 module.exports = Utils
