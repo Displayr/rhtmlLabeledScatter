@@ -52,13 +52,7 @@ class AxisUtils {
   }
 
   static _getRoundedScaleTime (min, max) {
-    // let scaleDateTime = []
-    console.log('*******************************')
-    console.log(min)
-    console.log(max)
-    console.log(scaleTime().domain([min, max]).range(max - min).ticks(5))
-    let a = scaleTime().domain([min, max]).range(max - min).ticks(5)
-    console.log(a[0].getTime())
+    return scaleTime().domain([min, max]).range(max - min).ticks(5)
   }
 
   static _getTickInterval (min, max) {
@@ -84,7 +78,7 @@ class AxisUtils {
     return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * vb.height) + vb.y + vb.height
   }
 
-  // TODO KZ calculation of x axis and y axis are independent ? If so, then split into a reusable function
+  // TODO Separate similarities between X and Y axis calls
   static getAxisDataArrays (plot, data, vb, axisSettings) {
     // exit if all points have been dragged off plot
     if (!(data.len > 0)) {
@@ -127,36 +121,51 @@ class AxisUtils {
 
     // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax()
-    this._getRoundedScaleTime(data.minX, data.maxX)
 
     let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
-    const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
-    _.map(xRoundedScaleLinear, (val, i) => {
-      if (val === 0) {
-        const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-        const yAxisOrigin = {
-          x1: xCoordOfYAxisOrigin,
-          y1: vb.y,
-          x2: xCoordOfYAxisOrigin,
-          y2: vb.y + vb.height
-        }
-        if (axisSettings.showX) {
-          pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
-        }
-        if ((data.minX !== 0) && (data.maxX !== 0)) {
-          originAxis.push(yAxisOrigin)
-        }
-      } else {
-        let x1 = this._normalizeXCoords(data, val)
+    if (data.isXdate) {
+      const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
+      console.log(xTickDates)
+      _.map(xTickDates, (date, i) => {
+        let timeFromEpoch = date.getTime()
+        let x1 = this._normalizeXCoords(data, timeFromEpoch)
         let y1 = vb.y
-        let x2 = this._normalizeXCoords(data, val)
+        let x2 = this._normalizeXCoords(data, timeFromEpoch)
         let y2 = vb.y + vb.height
         gridLineStack.push({ x1, y1, x2, y2 })
         if (axisSettings.showX) {
-          pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
+          pushTickLabel('col', x1, y1, x2, y2, timeFromEpoch, ticksX)
         }
-      }
-    })
+      })
+    } else {
+      const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
+      _.map(xRoundedScaleLinear, (val, i) => {
+        if (val === 0) {
+          const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
+          const yAxisOrigin = {
+            x1: xCoordOfYAxisOrigin,
+            y1: vb.y,
+            x2: xCoordOfYAxisOrigin,
+            y2: vb.y + vb.height
+          }
+          if (axisSettings.showX) {
+            pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
+          }
+          if ((data.minX !== 0) && (data.maxX !== 0)) {
+            originAxis.push(yAxisOrigin)
+          }
+        } else {
+          let x1 = this._normalizeXCoords(data, val)
+          let y1 = vb.y
+          let x2 = this._normalizeXCoords(data, val)
+          let y2 = vb.y + vb.height
+          gridLineStack.push({ x1, y1, x2, y2 })
+          if (axisSettings.showX) {
+            pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
+          }
+        }
+      })
+    }
 
     let ticksY = getTicks(plot.yBoundsUnitsMajor, data.minY, data.maxY)
     const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
