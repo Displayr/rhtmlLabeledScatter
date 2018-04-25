@@ -1,7 +1,9 @@
 import _ from 'lodash'
 import Utils from './Utils'
 import d3 from 'd3'
+import { scaleTime } from 'd3-scale'
 import TickLabel from './TickLabel'
+import TickLine from './TickLine'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -49,6 +51,16 @@ class AxisUtils {
     }
   }
 
+  static _getRoundedScaleTime (min, max) {
+    // let scaleDateTime = []
+    console.log('*******************************')
+    console.log(min)
+    console.log(max)
+    console.log(scaleTime().domain([min, max]).range(max - min).ticks(5))
+    let a = scaleTime().domain([min, max]).range(max - min).ticks(5)
+    console.log(a[0].getTime())
+  }
+
   static _getTickInterval (min, max) {
     const scaleTicks = this._getScaleLinear(min, max)
     const unroundedTickInterval = Math.abs(scaleTicks[0] - scaleTicks[1])
@@ -88,41 +100,18 @@ class AxisUtils {
       const leaderLineLen = plot.axisLeaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
+      const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
       if (type === 'col') {
-        const tickXLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate)
-        axisLeaderStack.push({
-          x1,
-          y1: y2,
-          x2: x1,
-          y2: y2 + leaderLineLen,
-          num: label
-        })
-        axisLeaderLabelStack.push({
-          x: x1,
-          y: y2 + leaderLineLen + labelHeight,
-          label: tickXLabel.getLabel(),
-          anchor: 'middle',
-          type
-        })
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2)
+        axisLeaderStack.push(tickLine.getXAxisTickLineData())
+        axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
       if (type === 'row') {
-        const tickYLabel = new TickLabel(label, tickIncrement, decimals.x, yPrefix, ySuffix, false)
-        axisLeaderStack.push({
-          x1: x1 - leaderLineLen,
-          y1,
-          x2: x1,
-          y2,
-          num: label
-        })
-        axisLeaderLabelStack.push({
-          x: x1 - leaderLineLen,
-          y: y2 + (labelHeight / 3),
-          label: tickYLabel.getLabel(),
-          anchor: 'end',
-          type
-        })
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.y, yPrefix, ySuffix, false, leaderLineLen, labelHeight, x1, y1, x2, y2)
+        axisLeaderStack.push(tickLine.getYAxisTickLineData())
+        axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }
     }
 
@@ -138,6 +127,7 @@ class AxisUtils {
 
     // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax()
+    this._getRoundedScaleTime(data.minX, data.maxX)
 
     let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
     const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)

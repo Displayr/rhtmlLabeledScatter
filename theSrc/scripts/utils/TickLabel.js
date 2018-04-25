@@ -4,7 +4,8 @@ import _ from 'lodash'
 import autoBind from 'es6-autobind'
 
 class TickLabel {
-  constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat) {
+  constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat, leaderLineLength, labelHeight,
+                x1, y1, x2, y2) {
     autoBind(this)
     this.text = text
     this.prefix = prefix
@@ -12,6 +13,12 @@ class TickLabel {
     this.isDateFormat = isDateFormat
     this.tickIncr = tickIncr
     this.userDecimals = userDecimals
+    this.leaderLineLength = leaderLineLength
+    this.labelHeight = labelHeight
+    this.x1 = x1
+    this.y1 = y1
+    this.x2 = x2
+    this.y2 = y2
   }
 
   computeNumDecimals (tickIncr, userDecimals) {
@@ -24,12 +31,32 @@ class TickLabel {
     return ((tickExponent < 0) ? Math.abs(tickExponent) : 0)
   }
 
-  getLabel () {
+  getDisplayLabel () {
     this.numDecimals = this.computeNumDecimals(this.tickIncr, this.userDecimals)
     if (this.isDateFormat) {
       return moment(this.text).format('YYYY-MM-DD')
     } else {
       return Utils.getFormattedNum(this.text, this.numDecimals, this.prefix, this.suffix)
+    }
+  }
+
+  getXAxisLabelData () {
+    return {
+      x: this.x1,
+      y: this.y2 + this.leaderLineLength + this.labelHeight,
+      label: this.getDisplayLabel(),
+      anchor: 'middle',
+      type: 'col'
+    }
+  }
+
+  getYAxisLabelData () {
+    return {
+      x: this.x1 - this.leaderLineLength,
+      y: this.y2 + (this.labelHeight / 3),
+      label: this.getDisplayLabel(),
+      anchor: 'end',
+      type: 'row'
     }
   }
 }
