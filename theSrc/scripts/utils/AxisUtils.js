@@ -125,15 +125,13 @@ class AxisUtils {
     data.calculateMinMax()
 
     let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
-    if (data.isXdate) {
+    if (data.isXdate && axisSettings.showX) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
-      _.map(xTickDates, (date, i) => {
+      _.map(xTickDates, date => {
         let timeFromEpoch = date.getTime()
         const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
-        if (axisSettings.showX) {
-          pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX)
-        }
+        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX)
       })
     } else {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
@@ -148,9 +146,9 @@ class AxisUtils {
             originAxis.push(yAxisOrigin.getData())
           }
         } else {
-          const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
-          gridLineStack.push(gridLine.getData())
           if (axisSettings.showX) {
+            const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
+            gridLineStack.push(gridLine.getData())
             pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX)
           }
         }
@@ -170,9 +168,9 @@ class AxisUtils {
           originAxis.push(xAxisOrigin.getData())
         }
       } else {
-        const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
-        gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {
+          const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
+          gridLineStack.push(gridLine.getData())
           pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY)
         }
       }
