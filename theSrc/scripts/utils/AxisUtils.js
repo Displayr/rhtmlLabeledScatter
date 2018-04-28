@@ -4,6 +4,7 @@ import d3 from 'd3'
 import { scaleTime } from 'd3-scale'
 import TickLabel from './TickLabel'
 import TickLine from './TickLine'
+import GridLine from './GridLine'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -125,16 +126,12 @@ class AxisUtils {
     let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
     if (data.isXdate) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
-      console.log(xTickDates)
       _.map(xTickDates, (date, i) => {
         let timeFromEpoch = date.getTime()
-        let x1 = this._normalizeXCoords(data, timeFromEpoch)
-        let y1 = vb.y
-        let x2 = this._normalizeXCoords(data, timeFromEpoch)
-        let y2 = vb.y + vb.height
-        gridLineStack.push({ x1, y1, x2, y2 })
+        const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
+        gridLineStack.push(gridLine.getData())
         if (axisSettings.showX) {
-          pushTickLabel('col', x1, y1, x2, y2, timeFromEpoch, ticksX)
+          pushTickLabel('col', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX)
         }
       })
     } else {
@@ -142,26 +139,18 @@ class AxisUtils {
       _.map(xRoundedScaleLinear, (val, i) => {
         if (val === 0) {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-          const yAxisOrigin = {
-            x1: xCoordOfYAxisOrigin,
-            y1: vb.y,
-            x2: xCoordOfYAxisOrigin,
-            y2: vb.y + vb.height
-          }
+          const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
           if (axisSettings.showX) {
             pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
           }
           if ((data.minX !== 0) && (data.maxX !== 0)) {
-            originAxis.push(yAxisOrigin)
+            originAxis.push(yAxisOrigin.getData())
           }
         } else {
-          let x1 = this._normalizeXCoords(data, val)
-          let y1 = vb.y
-          let x2 = this._normalizeXCoords(data, val)
-          let y2 = vb.y + vb.height
-          gridLineStack.push({ x1, y1, x2, y2 })
+          const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
+          gridLineStack.push(gridLine.getData())
           if (axisSettings.showX) {
-            pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
+            pushTickLabel('col', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX)
           }
         }
       })
@@ -172,26 +161,18 @@ class AxisUtils {
     _.map(yRoundedScaleLinear, (val, i) => {
       if (val === 0) {
         const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
-        const xAxisOrigin = {
-          x1: vb.x,
-          y1: yCoordOfXAxisOrigin,
-          x2: vb.x + vb.width,
-          y2: yCoordOfXAxisOrigin
-        }
+        const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
         if (axisSettings.showY) {
           pushTickLabel('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
         }
         if ((data.minY !== 0) && (data.maxY !== 0)) {
-          originAxis.push(xAxisOrigin)
+          originAxis.push(xAxisOrigin.getData())
         }
       } else {
-        let x1 = vb.x
-        let y1 = this._normalizeYCoords(data, val)
-        let x2 = vb.x + vb.width
-        let y2 = this._normalizeYCoords(data, val)
-        gridLineStack.push({x1, y1, x2, y2})
+        const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
+        gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {
-          pushTickLabel('row', x1, y1, x2, y2, val, ticksY)
+          pushTickLabel('row', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY)
         }
       }
     })
