@@ -2,6 +2,7 @@ import Utils from './Utils'
 import moment from 'moment'
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
+import AxisTypeEnum from './AxisTypeEnum'
 
 class TickLabel {
   constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat, leaderLineLength, labelHeight,
@@ -46,7 +47,7 @@ class TickLabel {
       y: this.y2 + this.leaderLineLength + this.labelHeight,
       label: this.getDisplayLabel(),
       anchor: 'middle',
-      type: 'col'
+      type: AxisTypeEnum.X
     }
   }
 
@@ -56,7 +57,7 @@ class TickLabel {
       y: this.y2 + (this.labelHeight / 3),
       label: this.getDisplayLabel(),
       anchor: 'end',
-      type: 'row'
+      type: AxisTypeEnum.Y
     }
   }
 }

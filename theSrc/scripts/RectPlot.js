@@ -23,6 +23,7 @@ import PlotAxisLabels from './PlotAxisLabels'
 import PlotAxis from './PlotAxis'
 import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
+import AxisTypeEnum from './utils/AxisTypeEnum'
 
 class RectPlot {
   constructor (state,
@@ -431,12 +432,12 @@ class RectPlot {
         const initAxisTextColHeight = this.axisDimensionText.colMaxHeight
         for (let i = 0; i < markerLabels[0].length; i++) {
           const markerLabel = markerLabels[0][i]
-          const labelType = d3.select(markerLabel).attr('type')
+          const labelType = Number(d3.select(markerLabel).attr('type'))
           const bb = markerLabel.getBBox()
-          if ((this.axisDimensionText.rowMaxWidth < bb.width) && (labelType === 'row')) { this.axisDimensionText.rowMaxWidth = bb.width }
-          if ((this.axisDimensionText.colMaxWidth < bb.width) && (labelType === 'col')) { this.axisDimensionText.colMaxWidth = bb.width }
-          if ((this.axisDimensionText.rowMaxHeight < bb.height) && (labelType === 'row')) { this.axisDimensionText.rowMaxHeight = bb.height }
-          if ((this.axisDimensionText.colMaxHeight < bb.height) && (labelType === 'col')) { this.axisDimensionText.colMaxHeight = bb.height }
+          if ((this.axisDimensionText.rowMaxWidth < bb.width) && (labelType === AxisTypeEnum.Y)) { this.axisDimensionText.rowMaxWidth = bb.width }
+          if ((this.axisDimensionText.colMaxWidth < bb.width) && (labelType === AxisTypeEnum.X)) { this.axisDimensionText.colMaxWidth = bb.width }
+          if ((this.axisDimensionText.rowMaxHeight < bb.height) && (labelType === AxisTypeEnum.Y)) { this.axisDimensionText.rowMaxHeight = bb.height }
+          if ((this.axisDimensionText.colMaxHeight < bb.height) && (labelType === AxisTypeEnum.X)) { this.axisDimensionText.colMaxHeight = bb.height }
 
           if (this.width < (bb.x + bb.width)) {
             this.axisDimensionText.rightPadding = bb.width / 2
