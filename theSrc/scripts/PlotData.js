@@ -33,7 +33,13 @@ class PlotData {
       this.X = X
       this.isXdate = false
     }
-    this.Y = Y
+    if (_.every(Y, n => _.isDate(n))) {
+      this.Y = _.map(Y, n => n.getTime())
+      this.isYdate = true
+    } else {
+      this.Y = Y
+      this.isYdate = false
+    }
     this.Z = Z
     this.group = group
     this.label = label

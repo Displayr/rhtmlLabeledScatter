@@ -8,9 +8,9 @@ import $ from 'jquery'
 import Utils from './utils/Utils'
 
 class DisplayError {
-  static isXAxisValid (inputArray, svg) {
+  static isAxisValid (inputArray, svg, errorMsg) {
     if (!Utils.isArrOfNums(inputArray)) {
-      this.checkIfArrayOfDates(inputArray, svg, 'Given X values is neither array of nums or arrays!')
+      this.checkIfArrayOfDates(inputArray, svg, errorMsg)
     }
   }
 

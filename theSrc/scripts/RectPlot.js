@@ -121,7 +121,7 @@ class RectPlot {
     this.width = width
     this.height = height
     this.X = Utils.isArrOfDates(X) ? _.map(X, (d) => new Date(d)) : X
-    this.Y = Y
+    this.Y = Utils.isArrOfDates(Y) ? _.map(Y, (d) => new Date(d)) : Y
     this.Z = Z
     this.group = group
     this.label = _.isEmpty(label) ? null : label
