@@ -21,7 +21,8 @@ describe('AxisUtils:', function () {
           x: 1,
           y: 1,
           z: null
-        }
+        },
+        dateFormat: 'YYYY-MM-DD'
       }
 
       this.defaultViewBox = {

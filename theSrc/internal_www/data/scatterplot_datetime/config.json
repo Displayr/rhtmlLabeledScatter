@@ -83,5 +83,7 @@
   "labelPlacementMaxAngle":6.283,
   "debugMode":false,
   "plotBorderColor":"Black",
-  "plotBorderWidth":1
+  "plotBorderWidth":1,
+  "xDateFormat": "YYYY-MM-DD",
+  "yDateFormat": "MMMM Do YYYY, h:mm:ss a"
 }

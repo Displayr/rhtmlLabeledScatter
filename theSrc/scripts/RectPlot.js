@@ -77,6 +77,8 @@ class RectPlot {
     xSuffix = '',
     ySuffix = '',
     zSuffix = '',
+    xDateFormat = 'YYYY-MM-DD',
+    yDateFormat = 'YYYY-MM-DD',
     legendShow = true,
     legendBubblesShow = true,
     legendFontFamily,
@@ -190,6 +192,11 @@ class RectPlot {
       colMaxWidth: 0,
       colMaxHeight: 0,
       rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
+    }
+
+    this.dateFormat = {
+      x: xDateFormat,
+      y: yDateFormat
     }
 
     this.padding = {

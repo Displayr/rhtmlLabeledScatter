@@ -135,6 +135,8 @@ class LabeledScatter {
                         this.data.xSuffix,
                         this.data.ySuffix,
                         this.data.zSuffix,
+                        this.data.xDateFormat,
+                        this.data.yDateFormat,
                         this.data.legendShow,
                         this.data.legendBubblesShow,
                         this.data.legendFontFamily,

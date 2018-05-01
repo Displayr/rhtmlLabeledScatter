@@ -71,6 +71,8 @@
 #' @param y.suffix A string that suffixes all y values(eg. "kg")
 #' @param x.suffix A string that suffixes all x values(eg. "kg")
 #' @param z.suffix A string that suffixes all bubble values(eg. "kg")
+#' @param x.date.format A string that is interpreted for the date format of the x axis labels. Default is "YYYY-MM-DD".
+#' @param y.date.format A string that is interpreted for the date format of y axis labels. Default is "YYYY-MM-DD".
 #' @param point.radius Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.
 #' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting on the x axis
 #' @param x.bounds.maximum Integer or NULL; set minimum of range for plotting on the x axis
@@ -128,6 +130,8 @@ LabeledScatter <- function(
   x.suffix = "",
   y.suffix = "",
   z.suffix = "",
+  x.date.format = "YYYY-MM-DD",
+  y.date.format = "YYYY-MM-DD",
   title.font.family = "Arial",
   title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title.font.size = 16,
@@ -220,6 +224,8 @@ LabeledScatter <- function(
     xSuffix = x.suffix,
     ySuffix = y.suffix,
     zSuffix = z.suffix,
+    xDateFormat = x.date.format,
+    yDateFormat = y.date.format,
     titleFontFamily = title.font.family,
     titleFontColor = title.font.color,
     titleFontSize = title.font.size,

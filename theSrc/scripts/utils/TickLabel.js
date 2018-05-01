@@ -6,7 +6,7 @@ import AxisTypeEnum from './AxisTypeEnum'
 
 class TickLabel {
   constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat, leaderLineLength, labelHeight,
-                x1, y1, x2, y2) {
+                x1, y1, x2, y2, dateFormat) {
     autoBind(this)
     this.text = text
     this.prefix = prefix
@@ -20,6 +20,7 @@ class TickLabel {
     this.y1 = y1
     this.x2 = x2
     this.y2 = y2
+    this.dateFormat = dateFormat
   }
 
   computeNumDecimals (tickIncr, userDecimals) {
@@ -35,7 +36,7 @@ class TickLabel {
   getDisplayLabel () {
     this.numDecimals = this.computeNumDecimals(this.tickIncr, this.userDecimals)
     if (this.isDateFormat) {
-      return moment(this.text).format('YYYY-MM-DD')
+      return moment(this.text).format(this.dateFormat)
     } else {
       return Utils.getFormattedNum(this.text, this.numDecimals, this.prefix, this.suffix)
     }
