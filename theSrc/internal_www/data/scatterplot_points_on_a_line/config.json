@@ -78,5 +78,7 @@
   "plotBorderShow":true,
   "debugMode":false,
   "plotBorderColor":"Black",
-  "plotBorderWidth":1
+  "plotBorderWidth":1,
+  "xFormat": "e",
+  "yFormat": ",.4f"
 }

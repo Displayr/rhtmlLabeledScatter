@@ -15,14 +15,14 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   origin.align = FALSE, y.title = "", x.title = "", z.title = "",
   title = "", x.decimals = NULL, y.decimals = NULL, z.decimals = NULL,
   x.prefix = "", y.prefix = "", z.prefix = "", x.suffix = "",
-  y.suffix = "", z.suffix = "", x.date.format = "YYYY-MM-DD",
-  y.date.format = "YYYY-MM-DD", title.font.family = "Arial",
-  title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  title.font.size = 16, subtitle = "", subtitle.font.family = "Arial",
-  subtitle.font.size = 12, subtitle.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), footer = "", footer.font.family = "Arial",
-  footer.font.size = 8, footer.font.color = rgb(44, 44, 44, maxColorValue =
-  255), labels.show = TRUE, labels.font.family = "Arial",
+  y.suffix = "", z.suffix = "", x.format = NULL, y.format = NULL,
+  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title.font.size = 16, subtitle = "",
+  subtitle.font.family = "Arial", subtitle.font.size = 12,
+  subtitle.font.color = rgb(44, 44, 44, maxColorValue = 255), footer = "",
+  footer.font.family = "Arial", footer.font.size = 8,
+  footer.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  labels.show = TRUE, labels.font.family = "Arial",
   labels.font.color = NULL, labels.font.size = 10,
   labels.logo.scale = NULL, legend.show = TRUE,
   legend.bubbles.show = TRUE, legend.font.color = rgb(44, 44, 44,
@@ -103,9 +103,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{z.suffix}{A string that suffixes all bubble values(eg. "kg")}
 
-\item{x.date.format}{A string that is interpreted for the date format of the x axis labels. Default is "YYYY-MM-DD".}
+\item{x.format}{A string that is interpreted for the format of the x axis labels. Default is NULL.}
 
-\item{y.date.format}{A string that is interpreted for the date format of y axis labels. Default is "YYYY-MM-DD".}
+\item{y.format}{A string that is interpreted for the format of the y axis labels. Default is NULL.}
 
 \item{title.font.family}{is the font family of the plot title}
 

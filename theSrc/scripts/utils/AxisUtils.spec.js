@@ -21,8 +21,7 @@ describe('AxisUtils:', function () {
           x: 1,
           y: 1,
           z: null
-        },
-        dateFormat: 'YYYY-MM-DD'
+        }
       }
 
       this.defaultViewBox = {
@@ -43,7 +42,9 @@ describe('AxisUtils:', function () {
 
       this.defaultAxisSettings = {
         showX: true,
-        showY: true
+        showY: true,
+        x: { format: null },
+        y: { format: null }
       }
 
       this.compute = ({ plot = this.defaultPlot, data = this.defaultData, vb = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {

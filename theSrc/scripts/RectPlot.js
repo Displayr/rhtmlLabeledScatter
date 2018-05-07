@@ -77,8 +77,8 @@ class RectPlot {
     xSuffix = '',
     ySuffix = '',
     zSuffix = '',
-    xDateFormat = 'YYYY-MM-DD',
-    yDateFormat = 'YYYY-MM-DD',
+    xFormat = null,
+    yFormat = null,
     legendShow = true,
     legendBubblesShow = true,
     legendFontFamily,
@@ -161,6 +161,12 @@ class RectPlot {
       fontColor: axisFontColor,
       showX: showXAxis,
       showY: showYAxis,
+      x: {
+        format: xFormat
+      },
+      y: {
+        format: yFormat
+      },
       strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
     }
 
@@ -192,11 +198,6 @@ class RectPlot {
       colMaxWidth: 0,
       colMaxHeight: 0,
       rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
-    }
-
-    this.dateFormat = {
-      x: xDateFormat,
-      y: yDateFormat
     }
 
     this.padding = {

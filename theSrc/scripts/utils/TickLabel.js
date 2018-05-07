@@ -1,12 +1,12 @@
 import Utils from './Utils'
-import moment from 'moment'
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
 import AxisTypeEnum from './AxisTypeEnum'
+import d3 from 'd3'
 
 class TickLabel {
   constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat, leaderLineLength, labelHeight,
-                x1, y1, x2, y2, dateFormat) {
+                x1, y1, x2, y2, tickLabelFormat) {
     autoBind(this)
     this.text = text
     this.prefix = prefix
@@ -20,7 +20,7 @@ class TickLabel {
     this.y1 = y1
     this.x2 = x2
     this.y2 = y2
-    this.dateFormat = dateFormat
+    this.tickLabelFormat = tickLabelFormat
   }
 
   computeNumDecimals (tickIncr, userDecimals) {
@@ -36,7 +36,11 @@ class TickLabel {
   getDisplayLabel () {
     this.numDecimals = this.computeNumDecimals(this.tickIncr, this.userDecimals)
     if (this.isDateFormat) {
-      return moment(this.text).format(this.dateFormat)
+      // return moment(this.text).format(this.dateFormat)
+      let formatDate = d3.time.format(this.tickLabelFormat)
+      return formatDate(new Date(this.text))
+    } else if (this.tickLabelFormat !== null) {
+      return d3.format(this.tickLabelFormat)(Number(this.text))
     } else {
       return Utils.getFormattedNum(this.text, this.numDecimals, this.prefix, this.suffix)
     }

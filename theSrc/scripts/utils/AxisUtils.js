@@ -92,20 +92,20 @@ class AxisUtils {
     const axisLeaderLabelStack = []
     const originAxis = []
 
-    const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement, dateFormat) => {
+    const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement, format) => {
       const leaderLineLen = plot.axisLeaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
       if (type === AxisTypeEnum.X) {
-        const tickLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, dateFormat)
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getXAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
       if (type === AxisTypeEnum.Y) {
-        const tickLabel = new TickLabel(label, tickIncrement, decimals.y, yPrefix, ySuffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, dateFormat)
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.y, yPrefix, ySuffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getYAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }
@@ -132,7 +132,7 @@ class AxisUtils {
         let timeFromEpoch = date.getTime()
         const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
-        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, plot.dateFormat.x)
+        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
       })
     } else {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
@@ -141,7 +141,7 @@ class AxisUtils {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
           const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
           if (axisSettings.showX) {
-            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, plot.dateFormat.x)
+            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
           }
           if ((data.minX !== 0) && (data.maxX !== 0)) {
             originAxis.push(yAxisOrigin.getData())
@@ -150,7 +150,7 @@ class AxisUtils {
           if (axisSettings.showX) {
             const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
             gridLineStack.push(gridLine.getData())
-            pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, plot.dateFormat.x)
+            pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
           }
         }
       })
@@ -163,7 +163,7 @@ class AxisUtils {
         let timeFromEpoch = date.getTime()
         const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, date), vb.x + vb.width, this._normalizeYCoords(data, date))
         gridLineStack.push(gridLine.getData())
-        pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, plot.dateFormat.y)
+        pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
       })
     } else {
       const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
@@ -172,7 +172,7 @@ class AxisUtils {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
           const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
           if (axisSettings.showY) {
-            pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, plot.dateFormat.y)
+            pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
           }
           if ((data.minY !== 0) && (data.maxY !== 0)) {
             originAxis.push(xAxisOrigin.getData())
@@ -181,7 +181,7 @@ class AxisUtils {
           if (axisSettings.showY) {
             const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
             gridLineStack.push(gridLine.getData())
-            pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, plot.dateFormat.y)
+            pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, axisSettings.y.format)
           }
         }
       })
