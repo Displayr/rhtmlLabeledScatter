@@ -8,14 +8,26 @@ import $ from 'jquery'
 import Utils from './utils/Utils'
 
 class DisplayError {
-  static checkIfArrayOfPositiveNums (candidateArray, svg, errorMsg) {
-    if (!Utils.isArrOfPositiveNums(candidateArray)) {
+  static isAxisValid (inputArray, svg, errorMsg) {
+    if (!Utils.isArrOfNums(inputArray)) {
+      this.checkIfArrayOfDates(inputArray, svg, errorMsg)
+    }
+  }
+
+  static checkIfArrayOfDates (inputArray, svg, errorMsg) {
+    if (!Utils.isArrOfDates(inputArray)) {
       this.displayErrorMessage(svg, errorMsg)
     }
   }
 
-  static checkIfArrayOfNums (candidateArray, svg, errorMsg) {
-    if (!Utils.isArrOfNums(candidateArray)) {
+  static checkIfArrayOfPositiveNums (inputArray, svg, errorMsg) {
+    if (!Utils.isArrOfPositiveNums(inputArray)) {
+      this.displayErrorMessage(svg, errorMsg)
+    }
+  }
+
+  static checkIfArrayOfNums (inputArray, svg, errorMsg) {
+    if (!Utils.isArrOfNums(inputArray)) {
       this.displayErrorMessage(svg, errorMsg)
     }
   }

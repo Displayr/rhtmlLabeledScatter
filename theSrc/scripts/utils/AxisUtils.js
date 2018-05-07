@@ -1,6 +1,11 @@
 import _ from 'lodash'
 import Utils from './Utils'
 import d3 from 'd3'
+import { scaleTime } from 'd3-scale'
+import TickLabel from './TickLabel'
+import TickLine from './TickLine'
+import GridLine from './GridLine'
+import AxisTypeEnum from './AxisTypeEnum'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -48,6 +53,10 @@ class AxisUtils {
     }
   }
 
+  static _getRoundedScaleTime (min, max) {
+    return scaleTime().domain([min, max]).range(max - min).ticks(5)
+  }
+
   static _getTickInterval (min, max) {
     const scaleTicks = this._getScaleLinear(min, max)
     const unroundedTickInterval = Math.abs(scaleTicks[0] - scaleTicks[1])
@@ -56,15 +65,9 @@ class AxisUtils {
 
   static _getTickExponential (unroundedTickSize) {
     // Round to 2 sig figs
-    let exponentTick = this.getExponentOfNum(unroundedTickSize)
+    let exponentTick = Utils.getExponentOfNum(unroundedTickSize)
     exponentTick *= -1
     return exponentTick
-  }
-
-  static getExponentOfNum (num) {
-    const numExponentialForm = num.toExponential()
-    const exponent = _.toNumber(_.last(numExponentialForm.split('e')))
-    return exponent
   }
 
   static _normalizeXCoords (data, Xcoord) {
@@ -77,7 +80,7 @@ class AxisUtils {
     return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * vb.height) + vb.y + vb.height
   }
 
-  // TODO KZ calculation of x axis and y axis are independent ? If so, then split into a reusable function
+  // TODO Separate similarities between X and Y axis calls
   static getAxisDataArrays (plot, data, vb, axisSettings) {
     // exit if all points have been dragged off plot
     if (!(data.len > 0)) {
@@ -89,55 +92,22 @@ class AxisUtils {
     const axisLeaderLabelStack = []
     const originAxis = []
 
-    const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement) => {
+    const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement, dateFormat) => {
       const leaderLineLen = plot.axisLeaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
+      const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
-      const computeNumDecimals = (tickIncr, userDecimals) => {
-        // Return user specified number of decimals or 0 if the tickIncr is an integer
-        if (!_.isNull(userDecimals)) return userDecimals
-        if (_.isInteger(tickIncr)) return 0
-
-        // Otherwise, return the inverse exponent of the tick increment
-        const tickExponent = this.getExponentOfNum(tickIncr)
-        return ((tickExponent < 0) ? Math.abs(tickExponent) : 0)
+      if (type === AxisTypeEnum.X) {
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, dateFormat)
+        axisLeaderStack.push(tickLine.getXAxisTickLineData())
+        axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
-      if (type === 'col') {
-        const numDecimals = computeNumDecimals(tickIncrement, decimals.x)
-        axisLeaderStack.push({
-          x1,
-          y1: y2,
-          x2: x1,
-          y2: y2 + leaderLineLen,
-          num: label
-        })
-        axisLeaderLabelStack.push({
-          x: x1,
-          y: y2 + leaderLineLen + labelHeight,
-          label: Utils.getFormattedNum(label, numDecimals, xPrefix, xSuffix),
-          anchor: 'middle',
-          type
-        })
-      }
-
-      if (type === 'row') {
-        const numDecimals = computeNumDecimals(tickIncrement, decimals.y)
-        axisLeaderStack.push({
-          x1: x1 - leaderLineLen,
-          y1,
-          x2: x1,
-          y2,
-          num: label
-        })
-        axisLeaderLabelStack.push({
-          x: x1 - leaderLineLen,
-          y: y2 + (labelHeight / 3),
-          label: Utils.getFormattedNum(label, numDecimals, yPrefix, ySuffix),
-          anchor: 'end',
-          type
-        })
+      if (type === AxisTypeEnum.Y) {
+        const tickLabel = new TickLabel(label, tickIncrement, decimals.y, yPrefix, ySuffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, dateFormat)
+        axisLeaderStack.push(tickLine.getYAxisTickLineData())
+        axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }
     }
 
@@ -155,62 +125,67 @@ class AxisUtils {
     data.calculateMinMax()
 
     let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
-    const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
-    _.map(xRoundedScaleLinear, (val, i) => {
-      if (val === 0) {
-        const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-        const yAxisOrigin = {
-          x1: xCoordOfYAxisOrigin,
-          y1: vb.y,
-          x2: xCoordOfYAxisOrigin,
-          y2: vb.y + vb.height
+    if (data.isXdate && axisSettings.showX) {
+      const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
+
+      _.map(xTickDates, date => {
+        let timeFromEpoch = date.getTime()
+        const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
+        gridLineStack.push(gridLine.getData())
+        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, plot.dateFormat.x)
+      })
+    } else {
+      const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
+      _.map(xRoundedScaleLinear, (val, i) => {
+        if (val === 0) {
+          const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
+          const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
+          if (axisSettings.showX) {
+            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, plot.dateFormat.x)
+          }
+          if ((data.minX !== 0) && (data.maxX !== 0)) {
+            originAxis.push(yAxisOrigin.getData())
+          }
+        } else {
+          if (axisSettings.showX) {
+            const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
+            gridLineStack.push(gridLine.getData())
+            pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, plot.dateFormat.x)
+          }
         }
-        if (axisSettings.showX) {
-          pushTickLabel('col', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX)
-        }
-        if ((data.minX !== 0) && (data.maxX !== 0)) {
-          originAxis.push(yAxisOrigin)
-        }
-      } else {
-        let x1 = this._normalizeXCoords(data, val)
-        let y1 = vb.y
-        let x2 = this._normalizeXCoords(data, val)
-        let y2 = vb.y + vb.height
-        gridLineStack.push({ x1, y1, x2, y2 })
-        if (axisSettings.showX) {
-          pushTickLabel('col', x1, y1, x2, y2, val, ticksX)
-        }
-      }
-    })
+      })
+    }
 
     let ticksY = getTicks(plot.yBoundsUnitsMajor, data.minY, data.maxY)
-    const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
-    _.map(yRoundedScaleLinear, (val, i) => {
-      if (val === 0) {
-        const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
-        const xAxisOrigin = {
-          x1: vb.x,
-          y1: yCoordOfXAxisOrigin,
-          x2: vb.x + vb.width,
-          y2: yCoordOfXAxisOrigin
+    if (data.isYdate && axisSettings.showY) {
+      const yTickDates = this._getRoundedScaleTime(data.minY, data.maxY)
+      _.map(yTickDates, date => {
+        let timeFromEpoch = date.getTime()
+        const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, date), vb.x + vb.width, this._normalizeYCoords(data, date))
+        gridLineStack.push(gridLine.getData())
+        pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, plot.dateFormat.y)
+      })
+    } else {
+      const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
+      _.map(yRoundedScaleLinear, (val, i) => {
+        if (val === 0) {
+          const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
+          const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
+          if (axisSettings.showY) {
+            pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, plot.dateFormat.y)
+          }
+          if ((data.minY !== 0) && (data.maxY !== 0)) {
+            originAxis.push(xAxisOrigin.getData())
+          }
+        } else {
+          if (axisSettings.showY) {
+            const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
+            gridLineStack.push(gridLine.getData())
+            pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, plot.dateFormat.y)
+          }
         }
-        if (axisSettings.showY) {
-          pushTickLabel('row', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY)
-        }
-        if ((data.minY !== 0) && (data.maxY !== 0)) {
-          originAxis.push(xAxisOrigin)
-        }
-      } else {
-        let x1 = vb.x
-        let y1 = this._normalizeYCoords(data, val)
-        let x2 = vb.x + vb.width
-        let y2 = this._normalizeYCoords(data, val)
-        gridLineStack.push({x1, y1, x2, y2})
-        if (axisSettings.showY) {
-          pushTickLabel('row', x1, y1, x2, y2, val, ticksY)
-        }
-      }
-    })
+      })
+    }
 
     return {
       gridOrigin: originAxis,

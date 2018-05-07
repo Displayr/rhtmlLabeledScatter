@@ -74,15 +74,16 @@ class LabeledScatter {
             .attr('height', this.height)
             .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
+    // console.log('rhtmlLabeledScatter data')
+    // console.log(JSON.stringify(this.data))
+
     // Error checking
-    DisplayError.checkIfArrayOfNums(this.data.X, this.rootElement, 'Given X value is not an array of numbers')
-    DisplayError.checkIfArrayOfNums(this.data.Y, this.rootElement, 'Given Y value is not an array of numbers')
+    DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums or dates!')
+    DisplayError.isAxisValid(this.data.Y, this.rootElement, 'Given Y values is neither array of nums or dates!')
     if (!_.isEmpty(this.data.Z)) {
       DisplayError.checkIfArrayOfPositiveNums(this.data.Z, this.rootElement, 'Given Z value is not array of positive numbers')
     }
 
-    // console.log('rhtmlLabeledScatter data')
-    // console.log(JSON.stringify(this.data))
     this.plot = new RectPlot(this.stateObj,
                         this.width,
                         this.height,
@@ -134,6 +135,8 @@ class LabeledScatter {
                         this.data.xSuffix,
                         this.data.ySuffix,
                         this.data.zSuffix,
+                        this.data.xDateFormat,
+                        this.data.yDateFormat,
                         this.data.legendShow,
                         this.data.legendBubblesShow,
                         this.data.legendFontFamily,

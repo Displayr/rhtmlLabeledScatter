@@ -6,6 +6,14 @@ class Utils {
     return !(_.isNull(num)) && _.isNumber(num)
   }
 
+  static isValidDate (date) {
+    if (_.isString(date)) {
+      return !(Number.isNaN((new Date(date)).getTime()))
+    } else {
+      return false
+    }
+  }
+
   static isArr (arr) {
     return !(_.isNull(arr)) && _.isArray(arr)
   }
@@ -16,6 +24,10 @@ class Utils {
 
   static isArrOfPositiveNums (arr) {
     return this.isArr(arr) && _.every(arr, n => _.isFinite(n) && n >= 0)
+  }
+
+  static isArrOfDates (arr) {
+    return this.isArr(arr) && _.every(arr, n => this.isValidDate(n))
   }
 
   static getSuperscript (id) {
@@ -33,6 +45,12 @@ class Utils {
     // Note that BigNumber can have a max of 15 decimals
     const numToDisplay = _.isNull(decimals) ? String(num) : (new BigNumber(num)).toFormat(decimals)
     return prefix + numToDisplay + suffix
+  }
+
+  static getExponentOfNum (num) {
+    const numExponentialForm = num.toExponential()
+    const exponent = _.toNumber(_.last(numExponentialForm.split('e')))
+    return exponent
   }
 }
 
