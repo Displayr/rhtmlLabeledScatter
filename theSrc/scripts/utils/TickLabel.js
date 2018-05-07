@@ -37,7 +37,7 @@ class TickLabel {
     this.numDecimals = this.computeNumDecimals(this.tickIncr, this.userDecimals)
     if (this.isDateFormat) {
       // return moment(this.text).format(this.dateFormat)
-      let formatDate = d3.time.format(this.tickLabelFormat)
+      let formatDate = _.isNull(this.tickLabelFormat) ? d3.time.format('%Y-%m-%d') : d3.time.format(this.tickLabelFormat)
       return formatDate(new Date(this.text))
     } else if (this.tickLabelFormat !== null) {
       return d3.format(this.tickLabelFormat)(Number(this.text))
