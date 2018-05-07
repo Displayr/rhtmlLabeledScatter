@@ -15,8 +15,6 @@ describe('AxisUtils:', function () {
           rowMaxHeight: 10,
           colMaxHeight: 10
         },
-        xBoundsUnitsMajor: 2,
-        yBoundsUnitsMajor: 2,
         decimals: {
           x: 1,
           y: 1,
@@ -43,8 +41,14 @@ describe('AxisUtils:', function () {
       this.defaultAxisSettings = {
         showX: true,
         showY: true,
-        x: { format: null },
-        y: { format: null }
+        x: {
+          format: null,
+          boundsUnitsMajor: 2
+        },
+        y: {
+          format: null,
+          boundsUnitsMajor: 2
+        }
       }
 
       this.compute = ({ plot = this.defaultPlot, data = this.defaultData, vb = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
@@ -87,11 +91,17 @@ describe('AxisUtils:', function () {
       describe('Simple all positive one quadrant grid', function () {
         beforeEach(function () {
           this.compute({
-            data: _.merge({}, this.defaultData, { minX: 0, maxX: 10, minY: 0, maxY: 10 }),
+            data: _.merge({}, this.defaultData, {minX: 0, maxX: 10, minY: 0, maxY: 10}),
             plot: _.merge({}, this.defaultPlot, {
-              axisLeaderLineLength: 5,
-              xBoundsUnitsMajor: 5,
-              yBoundsUnitsMajor: 5
+              axisLeaderLineLength: 5
+            }),
+            axisSettings: _.merge({}, this.defaultAxisSettings, {
+              x: {
+                boundsUnitsMajor: 5
+              },
+              y: {
+                boundsUnitsMajor: 5
+              }
             })
           })
         })
@@ -132,9 +142,15 @@ describe('AxisUtils:', function () {
           this.compute({
             data: _.merge({}, this.defaultData, { minX: -7, maxX: 3, minY: 1, maxY: 1 }),
             plot: _.merge({}, this.defaultPlot, {
-              axisLeaderLineLength: 5,
-              xBoundsUnitsMajor: 3,
-              yBoundsUnitsMajor: 3
+              axisLeaderLineLength: 5
+            }),
+            axisSettings: _.merge({}, this.defaultAxisSettings, {
+              x: {
+                boundsUnitsMajor: 3
+              },
+              y: {
+                boundsUnitsMajor: 3
+              }
             })
           })
         })

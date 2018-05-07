@@ -146,8 +146,8 @@ class RectPlot {
     this.ySuffix = ySuffix
     this.zSuffix = zSuffix
     this.pointRadius = pointRadius
-    this.xBoundsUnitsMajor = xBoundsUnitsMajor
-    this.yBoundsUnitsMajor = yBoundsUnitsMajor
+    // this.xBoundsUnitsMajor = xBoundsUnitsMajor
+    // this.yBoundsUnitsMajor = yBoundsUnitsMajor
     this.plotBorder = {
       show: plotBorderShow,
       color: plotBorderColor,
@@ -162,10 +162,12 @@ class RectPlot {
       showX: showXAxis,
       showY: showYAxis,
       x: {
-        format: xFormat
+        format: xFormat,
+        boundsUnitsMajor: xBoundsUnitsMajor
       },
       y: {
-        format: yFormat
+        format: yFormat,
+        boundsUnitsMajor: yBoundsUnitsMajor
       },
       strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
     }

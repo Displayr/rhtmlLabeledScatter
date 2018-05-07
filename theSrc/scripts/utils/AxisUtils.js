@@ -124,7 +124,7 @@ class AxisUtils {
     // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax()
 
-    let ticksX = getTicks(plot.xBoundsUnitsMajor, data.minX, data.maxX)
+    let ticksX = getTicks(axisSettings.x.boundsUnitsMajor, data.minX, data.maxX)
     if (data.isXdate && axisSettings.showX) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
 
@@ -135,7 +135,7 @@ class AxisUtils {
         pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
       })
     } else {
-      const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, plot.xBoundsUnitsMajor)
+      const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
       _.map(xRoundedScaleLinear, (val, i) => {
         if (val === 0) {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
@@ -156,7 +156,7 @@ class AxisUtils {
       })
     }
 
-    let ticksY = getTicks(plot.yBoundsUnitsMajor, data.minY, data.maxY)
+    let ticksY = getTicks(axisSettings.y.boundsUnitsMajor, data.minY, data.maxY)
     if (data.isYdate && axisSettings.showY) {
       const yTickDates = this._getRoundedScaleTime(data.minY, data.maxY)
       _.map(yTickDates, date => {
@@ -166,7 +166,7 @@ class AxisUtils {
         pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
       })
     } else {
-      const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, plot.yBoundsUnitsMajor)
+      const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, axisSettings.y.boundsUnitsMajor)
       _.map(yRoundedScaleLinear, (val, i) => {
         if (val === 0) {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
