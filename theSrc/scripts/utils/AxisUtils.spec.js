@@ -10,7 +10,6 @@ describe('AxisUtils:', function () {
   describe('getAxisDataArrays()', function () {
     beforeEach(function () {
       this.defaultPlot = {
-        axisLeaderLineLength: 5,
         axisDimensionText: {
           rowMaxHeight: 10,
           colMaxHeight: 10
@@ -41,6 +40,7 @@ describe('AxisUtils:', function () {
       this.defaultAxisSettings = {
         showX: true,
         showY: true,
+        leaderLineLength: 5,
         x: {
           format: null,
           boundsUnitsMajor: 2

@@ -161,6 +161,7 @@ class RectPlot {
       fontColor: axisFontColor,
       showX: showXAxis,
       showY: showYAxis,
+      leaderLineLength: 5,
       x: {
         format: xFormat,
         boundsUnitsMajor: xBoundsUnitsMajor
@@ -193,7 +194,6 @@ class RectPlot {
       pointSize: trendLinesPointSize
     }
 
-    this.axisLeaderLineLength = 5
     this.axisDimensionText = {
       rowMaxWidth: 0,
       rowMaxHeight: 0,
@@ -270,7 +270,7 @@ class RectPlot {
     this.legend = new Legend(this.legendSettings, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix, this.decimals)
 
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.footer,
-      this.labelsFont, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
+      this.labelsFont, this.axisSettings.leaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
 
     this.legend.setX(this.vb.getLegendX())
     this.title.setX(this.vb.getTitleX())
@@ -407,7 +407,7 @@ class RectPlot {
         }
 
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
-        this.axisLabels = new PlotAxisLabels(this.vb, this.axisLeaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
+        this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
         this.axisLabels.drawWith(this.pltUniqueId, this.svg)
       } catch (error) {
         console.log(error)

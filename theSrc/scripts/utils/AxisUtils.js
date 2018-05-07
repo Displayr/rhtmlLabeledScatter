@@ -93,7 +93,7 @@ class AxisUtils {
     const originAxis = []
 
     const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement, format) => {
-      const leaderLineLen = plot.axisLeaderLineLength
+      const leaderLineLen = axisSettings.leaderLineLength
       const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
       const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
