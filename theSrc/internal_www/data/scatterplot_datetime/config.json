@@ -84,6 +84,6 @@
   "debugMode":false,
   "plotBorderColor":"Black",
   "plotBorderWidth":1,
-  "xDateFormat": "YYYY-MM-DD",
-  "yDateFormat": "MMMM Do YYYY, h:mm:ss a"
+  "xFormat": "%Y-%m-%d",
+  "yFormat": "%B %d %Y, %I:%M:%S"
 }

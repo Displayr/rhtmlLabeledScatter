@@ -5,22 +5,24 @@ import SvgUtils from './utils/SvgUtils'
 import Utils from './utils/Utils'
 
 class Legend {
-  constructor (legendSettings, xPrefix, yPrefix, zPrefix, xSuffix, ySuffix, zSuffix, decimals) {
+  constructor (legendSettings, axisSettings) {
     autoBind(this)
     this.legendSettings = legendSettings
-    this.decimals = decimals
+    this.decimals = {
+      x: axisSettings.x.decimals,
+      y: axisSettings.y.decimals,
+      z: axisSettings.z.decimals
+    }
     this.prefix = {
-      x: xPrefix,
-      y: yPrefix,
-      z: zPrefix
+      x: axisSettings.x.prefix,
+      y: axisSettings.y.prefix,
+      z: axisSettings.z.prefix
     }
     this.suffix = {
-      x: xSuffix,
-      y: ySuffix,
-      z: zSuffix
+      x: axisSettings.x.suffix,
+      y: axisSettings.y.suffix,
+      z: axisSettings.z.suffix
     }
-    this.yPrefix = yPrefix
-    this.zPrefix = zPrefix
     this.width = 0
     this.maxWidth = 0
     this.heightOfRow = legendSettings.getFontSize() + 9
