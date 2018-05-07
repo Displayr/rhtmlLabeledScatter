@@ -81,7 +81,7 @@ class AxisUtils {
   }
 
   // TODO Separate similarities between X and Y axis calls
-  static getAxisDataArrays (plot, data, vb, axisSettings) {
+  static getAxisDataArrays (data, vb, axisSettings) {
     // exit if all points have been dragged off plot
     if (!(data.len > 0)) {
       return {}
@@ -94,18 +94,17 @@ class AxisUtils {
 
     const pushTickLabel = (type, x1, y1, x2, y2, label, tickIncrement, format) => {
       const leaderLineLen = axisSettings.leaderLineLength
-      const labelHeight = _.max([plot.axisDimensionText.rowMaxHeight, plot.axisDimensionText.colMaxHeight])
-      const { decimals, xPrefix, yPrefix, xSuffix, ySuffix } = plot
+      const labelHeight = _.max([axisSettings.textDimensions.rowMaxHeight, axisSettings.textDimensions.colMaxHeight])
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
       if (type === AxisTypeEnum.X) {
-        const tickLabel = new TickLabel(label, tickIncrement, decimals.x, xPrefix, xSuffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getXAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
       if (type === AxisTypeEnum.Y) {
-        const tickLabel = new TickLabel(label, tickIncrement, decimals.y, yPrefix, ySuffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getYAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }

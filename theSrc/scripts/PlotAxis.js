@@ -1,9 +1,9 @@
 import AxisUtils from './utils/AxisUtils'
 
 class PlotAxis {
-  constructor (axisSettings, plot, data, vb) {
+  constructor (axisSettings, data, vb) {
     this.settings = axisSettings
-    this.axisArrays = AxisUtils.getAxisDataArrays(plot, data, vb, this.settings)
+    this.axisArrays = AxisUtils.getAxisDataArrays(data, vb, this.settings)
   }
 
   drawGridOriginWith (svg, isDashed) {

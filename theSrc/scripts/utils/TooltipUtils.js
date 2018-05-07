@@ -6,13 +6,7 @@ const Utils = require('./Utils.js')
 class TooltipUtils {
   static appendTooltips (anchors,
                          Z,
-                         decimals,
-                         xPrefix,
-                         yPrefix,
-                         zPrefix,
-                         xSuffix,
-                         ySuffix,
-                         zSuffix) {
+                         axisSettings) {
     let labelTxt,
       xlabel,
       ylabel,
@@ -20,9 +14,9 @@ class TooltipUtils {
     if (Utils.isArrOfNums(Z)) {
       anchors.append('title')
       .text((d) => {
-        xlabel = Utils.getFormattedNum(d.labelX, decimals.x, xPrefix, xSuffix)
-        ylabel = Utils.getFormattedNum(d.labelY, decimals.y, yPrefix, ySuffix)
-        const zlabel = Utils.getFormattedNum(d.labelZ, decimals.z, zPrefix, zSuffix)
+        xlabel = Utils.getFormattedNum(d.labelX, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix)
+        ylabel = Utils.getFormattedNum(d.labelY, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix)
+        const zlabel = Utils.getFormattedNum(d.labelZ, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix)
         labelTxt = d.label === '' ? d.labelAlt : d.label
         groupLabel = _.isUndefined(d.group) ? '' : `,  ${d.group}`
         return `${labelTxt}${groupLabel}\n${zlabel}\n(${xlabel}, ${ylabel})`
@@ -30,8 +24,8 @@ class TooltipUtils {
     } else {
       anchors.append('title')
       .text((d) => {
-        xlabel = Utils.getFormattedNum(d.labelX, decimals.x, xPrefix, xSuffix)
-        ylabel = Utils.getFormattedNum(d.labelY, decimals.y, yPrefix, ySuffix)
+        xlabel = Utils.getFormattedNum(d.labelX, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix)
+        ylabel = Utils.getFormattedNum(d.labelY, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix)
         labelTxt = d.label === '' ? d.labelAlt : d.label
         groupLabel = _.isUndefined(d.group) ? '' : `,  ${d.group}`
         return `${labelTxt}${groupLabel}\n(${xlabel}, ${ylabel})`

@@ -134,20 +134,7 @@ class RectPlot {
     this.transparency = transparency
     this.originAlign = originAlign
     this.showLabels = showLabels
-    this.decimals = {
-      x: xDecimals,
-      y: yDecimals,
-      z: zDecimals
-    }
-    this.xPrefix = xPrefix
-    this.yPrefix = yPrefix
-    this.zPrefix = zPrefix
-    this.xSuffix = xSuffix
-    this.ySuffix = ySuffix
-    this.zSuffix = zSuffix
     this.pointRadius = pointRadius
-    // this.xBoundsUnitsMajor = xBoundsUnitsMajor
-    // this.yBoundsUnitsMajor = yBoundsUnitsMajor
     this.plotBorder = {
       show: plotBorderShow,
       color: plotBorderColor,
@@ -161,14 +148,32 @@ class RectPlot {
       fontColor: axisFontColor,
       showX: showXAxis,
       showY: showYAxis,
+      textDimensions: {
+        rowMaxWidth: 0,
+        rowMaxHeight: 0,
+        colMaxWidth: 0,
+        colMaxHeight: 0,
+        rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
+      },
       leaderLineLength: 5,
       x: {
         format: xFormat,
-        boundsUnitsMajor: xBoundsUnitsMajor
+        boundsUnitsMajor: xBoundsUnitsMajor,
+        prefix: xPrefix,
+        suffix: xSuffix,
+        decimals: xDecimals
       },
       y: {
         format: yFormat,
-        boundsUnitsMajor: yBoundsUnitsMajor
+        boundsUnitsMajor: yBoundsUnitsMajor,
+        prefix: yPrefix,
+        suffix: ySuffix,
+        decimals: yDecimals
+      },
+      z: {
+        prefix: zPrefix,
+        suffix: zSuffix,
+        decimals: zDecimals
       },
       strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
     }
@@ -192,14 +197,6 @@ class RectPlot {
       show: trendLines,
       lineThickness: trendLinesLineThickness,
       pointSize: trendLinesPointSize
-    }
-
-    this.axisDimensionText = {
-      rowMaxWidth: 0,
-      rowMaxHeight: 0,
-      colMaxWidth: 0,
-      colMaxHeight: 0,
-      rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
     }
 
     this.padding = {
@@ -267,10 +264,10 @@ class RectPlot {
     this.title.setX(initTitleX)
     this.subtitle.setX(initTitleX)
     this.footer.setX(initTitleX)
-    this.legend = new Legend(this.legendSettings, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix, this.decimals)
+    this.legend = new Legend(this.legendSettings, this.axisSettings)
 
     this.vb = new ViewBox(width, height, this.padding, this.legend, this.title, this.subtitle, this.footer,
-      this.labelsFont, this.axisSettings.leaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle)
+      this.labelsFont, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle)
 
     this.legend.setX(this.vb.getLegendX())
     this.title.setX(this.vb.getTitleX())
@@ -407,7 +404,7 @@ class RectPlot {
         }
 
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
-        this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisDimensionText, this.xTitle, this.yTitle, this.padding)
+        this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle, this.padding)
         this.axisLabels.drawWith(this.pltUniqueId, this.svg)
       } catch (error) {
         console.log(error)
@@ -422,7 +419,7 @@ class RectPlot {
 
   drawDimensionMarkers () {
     return new Promise((function (resolve, reject) {
-      this.axis = new PlotAxis(this.axisSettings, this, this.data, this.vb)
+      this.axis = new PlotAxis(this.axisSettings, this.data, this.vb)
 
       if (this.grid) {
         this.axis.drawGridOriginWith(this.svg, this.origin)
@@ -436,28 +433,28 @@ class RectPlot {
         const markerLabels = this.svg.selectAll('.dim-marker-label')
 
         // Figure out the max width of the yaxis dimensional labels
-        const initAxisTextRowWidth = this.axisDimensionText.rowMaxWidth
-        const initAxisTextColWidth = this.axisDimensionText.colMaxWidth
-        const initAxisTextRowHeight = this.axisDimensionText.rowMaxHeight
-        const initAxisTextColHeight = this.axisDimensionText.colMaxHeight
+        const initAxisTextRowWidth = this.axisSettings.textDimensions.rowMaxWidth
+        const initAxisTextColWidth = this.axisSettings.textDimensions.colMaxWidth
+        const initAxisTextRowHeight = this.axisSettings.textDimensions.rowMaxHeight
+        const initAxisTextColHeight = this.axisSettings.textDimensions.colMaxHeight
         for (let i = 0; i < markerLabels[0].length; i++) {
           const markerLabel = markerLabels[0][i]
           const labelType = Number(d3.select(markerLabel).attr('type'))
           const bb = markerLabel.getBBox()
-          if ((this.axisDimensionText.rowMaxWidth < bb.width) && (labelType === AxisTypeEnum.Y)) { this.axisDimensionText.rowMaxWidth = bb.width }
-          if ((this.axisDimensionText.colMaxWidth < bb.width) && (labelType === AxisTypeEnum.X)) { this.axisDimensionText.colMaxWidth = bb.width }
-          if ((this.axisDimensionText.rowMaxHeight < bb.height) && (labelType === AxisTypeEnum.Y)) { this.axisDimensionText.rowMaxHeight = bb.height }
-          if ((this.axisDimensionText.colMaxHeight < bb.height) && (labelType === AxisTypeEnum.X)) { this.axisDimensionText.colMaxHeight = bb.height }
+          if ((this.axisSettings.textDimensions.rowMaxWidth < bb.width) && (labelType === AxisTypeEnum.Y)) { this.axisSettings.textDimensions.rowMaxWidth = bb.width }
+          if ((this.axisSettings.textDimensions.colMaxWidth < bb.width) && (labelType === AxisTypeEnum.X)) { this.axisSettings.textDimensions.colMaxWidth = bb.width }
+          if ((this.axisSettings.textDimensions.rowMaxHeight < bb.height) && (labelType === AxisTypeEnum.Y)) { this.axisSettings.textDimensions.rowMaxHeight = bb.height }
+          if ((this.axisSettings.textDimensions.colMaxHeight < bb.height) && (labelType === AxisTypeEnum.X)) { this.axisSettings.textDimensions.colMaxHeight = bb.height }
 
           if (this.width < (bb.x + bb.width)) {
-            this.axisDimensionText.rightPadding = bb.width / 2
+            this.axisSettings.textDimensions.rightPadding = bb.width / 2
           }
         }
 
-        if ((initAxisTextRowWidth !== this.axisDimensionText.rowMaxWidth) ||
-          (initAxisTextColWidth !== this.axisDimensionText.colMaxWidth) ||
-          (initAxisTextRowHeight !== this.axisDimensionText.rowMaxHeight) ||
-          (initAxisTextColHeight !== this.axisDimensionText.colMaxHeight)) {
+        if ((initAxisTextRowWidth !== this.axisSettings.textDimensions.rowMaxWidth) ||
+          (initAxisTextColWidth !== this.axisSettings.textDimensions.colMaxWidth) ||
+          (initAxisTextRowHeight !== this.axisSettings.textDimensions.rowMaxHeight) ||
+          (initAxisTextColHeight !== this.axisSettings.textDimensions.colMaxHeight)) {
           this.setDim(this.svg, this.width, this.height)
           this.data.revertMinMax()
           const error = new Error('axis marker out of bound')
@@ -488,7 +485,7 @@ class RectPlot {
       }
 
       if (this.legendSettings.isDisplayed(this.Z, this.data.legendPts)) {
-        if (this.legend.resizedAfterLegendGroupsDrawn(this.data.vb, this.axisDimensionText)) {
+        if (this.legend.resizedAfterLegendGroupsDrawn(this.data.vb, this.axisSettings.textDimensions)) {
           this.data.revertMinMax()
           const error = new Error('drawLegend Failed')
           error.retry = true
@@ -519,7 +516,7 @@ class RectPlot {
                    return d.r
                  }
                })
-      TooltipUtils.appendTooltips(anc, this.Z, this.decimals, this.xPrefix, this.yPrefix, this.zPrefix, this.xSuffix, this.ySuffix, this.zSuffix)
+      TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings)
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
         this.svg.selectAll('clipPath').remove()

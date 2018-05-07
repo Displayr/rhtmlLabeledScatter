@@ -9,18 +9,6 @@ const AxisTypeEnum = require('./AxisTypeEnum.js')
 describe('AxisUtils:', function () {
   describe('getAxisDataArrays()', function () {
     beforeEach(function () {
-      this.defaultPlot = {
-        axisDimensionText: {
-          rowMaxHeight: 10,
-          colMaxHeight: 10
-        },
-        decimals: {
-          x: 1,
-          y: 1,
-          z: null
-        }
-      }
-
       this.defaultViewBox = {
         x: 0,
         y: 0,
@@ -43,18 +31,27 @@ describe('AxisUtils:', function () {
         leaderLineLength: 5,
         x: {
           format: null,
-          boundsUnitsMajor: 2
+          boundsUnitsMajor: 2,
+          decimals: 1
         },
         y: {
           format: null,
-          boundsUnitsMajor: 2
+          boundsUnitsMajor: 2,
+          decimals: 1
+        },
+        z: {
+          decimals: null
+        },
+        textDimensions: {
+          rowMaxHeight: 10,
+          colMaxHeight: 10
         }
       }
 
-      this.compute = ({ plot = this.defaultPlot, data = this.defaultData, vb = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
+      this.compute = ({ data = this.defaultData, vb = this.defaultViewBox, axisSettings = this.defaultAxisSettings } = {}) => {
         // TODO KZ remove this duplicate dependency bug (see normalizeXCoords and normalizeYCoords)
         data.vb = vb
-        this.result = AxisUtils.getAxisDataArrays(plot, data, vb, axisSettings)
+        this.result = AxisUtils.getAxisDataArrays(data, vb, axisSettings)
       }
     })
 
@@ -92,9 +89,6 @@ describe('AxisUtils:', function () {
         beforeEach(function () {
           this.compute({
             data: _.merge({}, this.defaultData, {minX: 0, maxX: 10, minY: 0, maxY: 10}),
-            plot: _.merge({}, this.defaultPlot, {
-              axisLeaderLineLength: 5
-            }),
             axisSettings: _.merge({}, this.defaultAxisSettings, {
               x: {
                 boundsUnitsMajor: 5
@@ -141,9 +135,6 @@ describe('AxisUtils:', function () {
         beforeEach(function () {
           this.compute({
             data: _.merge({}, this.defaultData, { minX: -7, maxX: 3, minY: 1, maxY: 1 }),
-            plot: _.merge({}, this.defaultPlot, {
-              axisLeaderLineLength: 5
-            }),
             axisSettings: _.merge({}, this.defaultAxisSettings, {
               x: {
                 boundsUnitsMajor: 3
