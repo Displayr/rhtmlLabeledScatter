@@ -32,7 +32,7 @@ class DisplayError {
     }
   }
 
-  static isXAndYEqualLength (inputXArray, inputYArray, svg, errorMsg) {
+  static isEqualLength (inputXArray, inputYArray, svg, errorMsg) {
     if (inputXArray.length !== inputYArray.length) {
       this.displayErrorMessage(svg, errorMsg)
     }
