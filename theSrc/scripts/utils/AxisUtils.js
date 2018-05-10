@@ -124,14 +124,16 @@ class AxisUtils {
     data.calculateMinMax()
 
     let ticksX = getTicks(axisSettings.x.boundsUnitsMajor, data.minX, data.maxX)
-    if (data.isXdate && axisSettings.showX) {
+    if (data.isXdate) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
 
       _.map(xTickDates, date => {
         let timeFromEpoch = date.getTime()
         const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
-        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
+        if (axisSettings.showX) {
+          pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
+        }
       })
     } else {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
@@ -146,9 +148,9 @@ class AxisUtils {
             originAxis.push(yAxisOrigin.getData())
           }
         } else {
+          const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
+          gridLineStack.push(gridLine.getData())
           if (axisSettings.showX) {
-            const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
-            gridLineStack.push(gridLine.getData())
             pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
           }
         }
@@ -156,13 +158,15 @@ class AxisUtils {
     }
 
     let ticksY = getTicks(axisSettings.y.boundsUnitsMajor, data.minY, data.maxY)
-    if (data.isYdate && axisSettings.showY) {
+    if (data.isYdate) {
       const yTickDates = this._getRoundedScaleTime(data.minY, data.maxY)
       _.map(yTickDates, date => {
         let timeFromEpoch = date.getTime()
         const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, date), vb.x + vb.width, this._normalizeYCoords(data, date))
         gridLineStack.push(gridLine.getData())
-        pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
+        if (axisSettings.showY) {
+          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
+        }
       })
     } else {
       const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, axisSettings.y.boundsUnitsMajor)
@@ -177,9 +181,9 @@ class AxisUtils {
             originAxis.push(xAxisOrigin.getData())
           }
         } else {
+          const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
+          gridLineStack.push(gridLine.getData())
           if (axisSettings.showY) {
-            const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
-            gridLineStack.push(gridLine.getData())
             pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, axisSettings.y.format)
           }
         }
