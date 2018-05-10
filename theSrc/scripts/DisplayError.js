@@ -32,6 +32,12 @@ class DisplayError {
     }
   }
 
+  static isXAndYEqualLength (inputXArray, inputYArray, svg, errorMsg) {
+    if (inputXArray.length !== inputYArray.length) {
+      this.displayErrorMessage(svg, errorMsg)
+    }
+  }
+
   static displayErrorMessage (svg, msg) {
     const errorContainer = $('<div class="rhtml-error-container">')
     const errorImage = $(`<img width="32px" height="32px" src="${this.getErrorImgUrl()}"/>`)

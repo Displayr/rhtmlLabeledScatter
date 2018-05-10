@@ -83,6 +83,7 @@ class LabeledScatter {
     if (!_.isEmpty(this.data.Z)) {
       DisplayError.checkIfArrayOfPositiveNums(this.data.Z, this.rootElement, 'Given Z value is not array of positive numbers')
     }
+    DisplayError.isXAndYEqualLength(this.data.X, this.data.Y, this.rootElement, 'Given X and Y arrays not equal length!')
 
     this.plot = new RectPlot(this.stateObj,
                         this.width,
