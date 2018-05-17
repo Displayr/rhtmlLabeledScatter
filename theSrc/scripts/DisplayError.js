@@ -10,15 +10,21 @@ import Utils from './utils/Utils'
 class DisplayError {
   static isAxisValid (inputArray, svg, errorMsg) {
     if (!Utils.isArrOfNums(inputArray)) {
-      this.checkIfArrayOfDates(inputArray, svg, errorMsg)
+      this.checkIfArrayOfStrings(inputArray, svg, errorMsg)
     }
   }
 
-  static checkIfArrayOfDates (inputArray, svg, errorMsg) {
-    if (!Utils.isArrOfDates(inputArray)) {
+  static checkIfArrayOfStrings (inputArray, svg, errorMsg) {
+    if (!Utils.isArrOfStrings(inputArray)) {
       this.displayErrorMessage(svg, errorMsg)
     }
   }
+
+  // static checkIfArrayOfDates (inputArray, svg, errorMsg) {
+  //   if (!Utils.isArrOfDates(inputArray)) {
+  //     this.displayErrorMessage(svg, errorMsg)
+  //   }
+  // }
 
   static checkIfArrayOfPositiveNums (inputArray, svg, errorMsg) {
     if (!Utils.isArrOfPositiveNums(inputArray)) {

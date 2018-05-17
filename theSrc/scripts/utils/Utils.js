@@ -30,6 +30,10 @@ class Utils {
     return this.isArr(arr) && _.every(arr, n => this.isValidDate(n))
   }
 
+  static isArrOfStrings (arr) {
+    return this.isArr(arr) && _.every(arr, n => _.isString(n))
+  }
+
   static getSuperscript (id) {
     const superscript = [8304, 185, 178, 179, 8308, 8309, 8310, 8311, 8312, 8313] // '⁰¹²³⁴⁵⁶⁷⁸⁹'
     let ss = ''

@@ -78,8 +78,8 @@ class LabeledScatter {
     // console.log(JSON.stringify(this.data))
 
     // Error checking
-    DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums or dates!')
-    DisplayError.isAxisValid(this.data.Y, this.rootElement, 'Given Y values is neither array of nums or dates!')
+    DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')
+    DisplayError.isAxisValid(this.data.Y, this.rootElement, 'Given Y values is neither array of nums, dates, or strings!')
     DisplayError.isEqualLength(this.data.X, this.data.Y, this.rootElement, 'Given X and Y arrays not equal length!')
     if (!_.isEmpty(this.data.Z)) {
       DisplayError.checkIfArrayOfPositiveNums(this.data.Z, this.rootElement, 'Given Z value is not array of positive numbers')
