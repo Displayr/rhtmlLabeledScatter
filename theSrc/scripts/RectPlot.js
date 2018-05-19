@@ -124,12 +124,14 @@ class RectPlot {
     this.width = width
     this.height = height
     if (Utils.isArrOfDates(X)) {
-      console.log('here')
       this.X = _.map(X, (d) => new Date(d))
       this.xDataType = DataTypeEnum.date
-    } else {
+    } else if (Utils.isArrOfNums(X)) {
       this.X = X
       this.xDataType = DataTypeEnum.numeric
+    } else {
+      this.X = X
+      this.xDataType = DataTypeEnum.ordinal
     }
     if (Utils.isArrOfDates(Y)) {
       this.Y = _.map(Y, (d) => new Date(d))

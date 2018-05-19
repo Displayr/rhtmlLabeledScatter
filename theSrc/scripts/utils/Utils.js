@@ -19,7 +19,7 @@ class Utils {
   }
 
   static isArrOfNums (arr) {
-    return this.isArr(arr) && _.every(arr, n => _.isFinite(n))
+    return this.isArr(arr) && _.every(arr, n => _.isFinite(Number(n)))
   }
 
   static isArrOfPositiveNums (arr) {

@@ -138,24 +138,40 @@ class AxisUtils {
       })
     } else {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
-      _.map(xRoundedScaleLinear, val => {
-        if (val === 0) {
-          const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-          const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
-          if (axisSettings.showX) {
-            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
-          }
-          if ((data.minX !== 0) && (data.maxX !== 0)) {
-            originAxis.push(yAxisOrigin.getData())
-          }
-        } else {
-          const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
-          gridLineStack.push(gridLine.getData())
-          if (axisSettings.showX) {
-            pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
-          }
-        }
+      console.log('--------------')
+      console.log(xRoundedScaleLinear)
+      console.log(data.X)
+      // console.log((d3.scale.ordinal().domain(data.X).rangePoints([0, 1]))('three'))
+      const scaleOrdinal = d3.scale.ordinal().domain(data.X).rangePoints([0, 1])
+
+      const uniqX = _.uniq(data.X)
+      _.map(uniqX, x => {
+        console.log(x)
+        const gridX = (scaleOrdinal(x) * vb.width) + vb.x
+        const gridLine = new GridLine(gridX, vb.y, gridX, vb.y + vb.height)
+        gridLineStack.push(gridLine.getData())
+        pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, x, ticksX, axisSettings.x.format)
+        // pushTickLabel()
       })
+
+      // _.map(xRoundedScaleLinear, val => {
+      //   if (val === 0) {
+      //     const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
+      //     const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
+      //     if (axisSettings.showX) {
+      //       pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
+      //     }
+      //     if ((data.minX !== 0) && (data.maxX !== 0)) {
+      //       originAxis.push(yAxisOrigin.getData())
+      //     }
+      //   } else {
+      //     const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
+      //     gridLineStack.push(gridLine.getData())
+      //     if (axisSettings.showX) {
+      //       pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
+      //     }
+      //   }
+      // })
     }
 
     let ticksY = getTicks(axisSettings.y.boundsUnitsMajor, data.minY, data.maxY)
