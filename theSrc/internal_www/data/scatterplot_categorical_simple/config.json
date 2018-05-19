@@ -2,7 +2,7 @@
   "X":["one", "two", "three", "four"],
   "Y":["a","b","c","d"],
   "Z":{},
-  "label":["a","b","c","d"],
+  "label":["first","second","third","fourth"],
   "labelAlt":{},
   "group":{},
   "fixedAspectRatio":false,

@@ -136,9 +136,12 @@ class RectPlot {
     if (Utils.isArrOfDates(Y)) {
       this.Y = _.map(Y, (d) => new Date(d))
       this.yDataType = DataTypeEnum.date
-    } else {
+    } else if (Utils.isArrOfNums(Y)) {
       this.Y = Y
       this.yDataType = DataTypeEnum.numeric
+    } else {
+      this.Y = Y
+      this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z
     this.group = group
