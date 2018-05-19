@@ -24,6 +24,7 @@ import PlotAxis from './PlotAxis'
 import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
+import DataTypeEnum from './utils/DataTypeEnum'
 
 class RectPlot {
   constructor (state,
@@ -122,8 +123,21 @@ class RectPlot {
     this.state = state
     this.width = width
     this.height = height
-    this.X = Utils.isArrOfDates(X) ? _.map(X, (d) => new Date(d)) : X
-    this.Y = Utils.isArrOfDates(Y) ? _.map(Y, (d) => new Date(d)) : Y
+    if (Utils.isArrOfDates(X)) {
+      console.log('here')
+      this.X = _.map(X, (d) => new Date(d))
+      this.xDataType = DataTypeEnum.date
+    } else {
+      this.X = X
+      this.xDataType = DataTypeEnum.numeric
+    }
+    if (Utils.isArrOfDates(Y)) {
+      this.Y = _.map(Y, (d) => new Date(d))
+      this.yDataType = DataTypeEnum.date
+    } else {
+      this.Y = Y
+      this.yDataType = DataTypeEnum.numeric
+    }
     this.Z = Z
     this.group = group
     this.label = _.isEmpty(label) ? null : label
@@ -277,6 +291,8 @@ class RectPlot {
     this.data = new PlotData(this.X,
                          this.Y,
                          this.Z,
+                         this.xDataType,
+                         this.yDataType,
                          this.group,
                          this.label,
                          this.labelAlt,

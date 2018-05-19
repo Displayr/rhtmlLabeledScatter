@@ -2,16 +2,17 @@ import Utils from './Utils'
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
 import AxisTypeEnum from './AxisTypeEnum'
+import DataTypeEnum from './DataTypeEnum'
 import d3 from 'd3'
 
 class TickLabel {
-  constructor (text, tickIncr, userDecimals, prefix, suffix, isDateFormat, leaderLineLength, labelHeight,
+  constructor (text, tickIncr, userDecimals, prefix, suffix, dataFormat, leaderLineLength, labelHeight,
                 x1, y1, x2, y2, tickLabelFormat) {
     autoBind(this)
     this.text = text
     this.prefix = prefix
     this.suffix = suffix
-    this.isDateFormat = isDateFormat
+    this.isDateFormat = (dataFormat === DataTypeEnum.date)
     this.tickIncr = tickIncr
     this.userDecimals = userDecimals
     this.leaderLineLength = leaderLineLength

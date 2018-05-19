@@ -4,6 +4,7 @@ import PlotColors from './PlotColors'
 import PlotLabel from './PlotLabel'
 import LegendUtils from './utils/LegendUtils'
 import Utils from './utils/Utils'
+import DataTypeEnum from './utils/DataTypeEnum'
 
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
@@ -13,6 +14,8 @@ class PlotData {
   constructor (X,
     Y,
     Z,
+    xDataType,
+    yDataType,
     group,
     label,
     labelAlt,
@@ -24,23 +27,22 @@ class PlotData {
     pointRadius,
     bounds,
     transparency,
-    legendSettings) {
+    legendSettings
+  ) {
     autoBind(this)
-    if (_.every(X, n => _.isDate(n))) {
-      this.X = _.map(X, n => n.getTime())
-      this.isXdate = true
+    if (xDataType === DataTypeEnum.date) {
+      this.X = _.map(X, d => d.getTime())
     } else {
       this.X = X
-      this.isXdate = false
     }
-    if (_.every(Y, n => _.isDate(n))) {
-      this.Y = _.map(Y, n => n.getTime())
-      this.isYdate = true
+    if (yDataType === DataTypeEnum.date) {
+      this.Y = _.map(Y, d => d.getTime())
     } else {
       this.Y = Y
-      this.isYdate = false
     }
     this.Z = Z
+    this.xDataType = xDataType
+    this.yDataType = yDataType
     this.group = group
     this.label = label
     this.labelAlt = labelAlt
@@ -52,7 +54,6 @@ class PlotData {
     this.pointRadius = pointRadius
     this.bounds = bounds
     this.transparency = transparency
-    this.legendSettings = legendSettings
     this.origX = this.X.slice(0)
     this.origY = this.Y.slice(0)
     this.normX = this.X.slice(0)
@@ -62,6 +63,7 @@ class PlotData {
     // this.legendPts = []
     this.outsidePlotCondensedPts = []
     this.legendRequiresRedraw = false
+    this.legendSettings = legendSettings
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)

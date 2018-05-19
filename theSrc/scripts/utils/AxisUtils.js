@@ -6,6 +6,7 @@ import TickLabel from './TickLabel'
 import TickLine from './TickLine'
 import GridLine from './GridLine'
 import AxisTypeEnum from './AxisTypeEnum'
+import DataTypeEnum from './DataTypeEnum'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -98,13 +99,13 @@ class AxisUtils {
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
       if (type === AxisTypeEnum.X) {
-        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.xDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getXAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
       if (type === AxisTypeEnum.Y) {
-        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.yDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getYAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }
@@ -124,7 +125,7 @@ class AxisUtils {
     data.calculateMinMax()
 
     let ticksX = getTicks(axisSettings.x.boundsUnitsMajor, data.minX, data.maxX)
-    if (data.isXdate) {
+    if (data.xDataType === DataTypeEnum.date) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
 
       _.map(xTickDates, date => {
@@ -137,7 +138,7 @@ class AxisUtils {
       })
     } else {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
-      _.map(xRoundedScaleLinear, (val, i) => {
+      _.map(xRoundedScaleLinear, val => {
         if (val === 0) {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
           const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
@@ -158,7 +159,7 @@ class AxisUtils {
     }
 
     let ticksY = getTicks(axisSettings.y.boundsUnitsMajor, data.minY, data.maxY)
-    if (data.isYdate) {
+    if (data.yDataType === DataTypeEnum.date) {
       const yTickDates = this._getRoundedScaleTime(data.minY, data.maxY)
       _.map(yTickDates, date => {
         let timeFromEpoch = date.getTime()
@@ -170,7 +171,7 @@ class AxisUtils {
       })
     } else {
       const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, axisSettings.y.boundsUnitsMajor)
-      _.map(yRoundedScaleLinear, (val, i) => {
+      _.map(yRoundedScaleLinear, val => {
         if (val === 0) {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
           const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
