@@ -173,7 +173,6 @@ class AxisUtils {
 
       const uniqX = _.uniq(data.X)
       _.map(uniqX, x => {
-        console.log(x)
         const gridX = (scaleOrdinal(x) * vb.width) + vb.x
         const gridLine = new GridLine(gridX, vb.y, gridX, vb.y + vb.height)
         gridLineStack.push(gridLine.getData())

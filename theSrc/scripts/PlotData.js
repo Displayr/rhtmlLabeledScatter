@@ -5,6 +5,7 @@ import PlotLabel from './PlotLabel'
 import LegendUtils from './utils/LegendUtils'
 import Utils from './utils/Utils'
 import DataTypeEnum from './utils/DataTypeEnum'
+import d3 from 'd3'
 
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
@@ -303,9 +304,21 @@ class PlotData {
       while (i < this.origLen) {
         if ((!_.includes(this.outsidePlotPtsId, i)) ||
            _.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
-          var ptColor
-          const x = (this.normX[i] * this.vb.width) + this.vb.x
-          const y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
+          let ptColor
+          let x = 0
+          let y = 0
+          if (this.xDataType === DataTypeEnum.ordinal) {
+            const scaleOrdinal = d3.scale.ordinal().domain(this.X).rangePoints([0, 1])
+            x = (scaleOrdinal(this.X[i]) * this.vb.width) + this.vb.x
+          } else {
+            x = (this.normX[i] * this.vb.width) + this.vb.x
+          }
+          if (this.yDataType === DataTypeEnum.ordinal) {
+            const scaleOrdinal = d3.scale.ordinal().domain(this.Y).rangePoints([0, 1])
+            y = (scaleOrdinal(this.Y[i]) * this.vb.height) + this.vb.y
+          } else {
+            y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
+          }
           let r = this.pointRadius
           if (Utils.isArrOfNums(this.Z)) {
             const legendUtils = LegendUtils

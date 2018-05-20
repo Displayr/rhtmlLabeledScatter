@@ -39,11 +39,11 @@ describe('Utils:', function () {
     const tests = [
       { input: 4, expected: false },
       { input: '4', expected: false },
-      { input: ['4'], expected: false },
+      { input: ['4'], expected: true },
       { input: [4], expected: true },
       { input: [4, 5], expected: true },
       { input: [4, 'a', 5], expected: false },
-      { input: [4, '4.5', 5], expected: false },
+      { input: [4, '4.5', 5], expected: true },
       { input: [4.5, -5.5], expected: true },
       { input: undefined, expected: false },
       { input: null, expected: false }
