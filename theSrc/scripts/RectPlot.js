@@ -37,6 +37,8 @@ class RectPlot {
     label,
     labelAlt = [],
     svg,
+    xLevels,
+    yLevels,
     fixedRatio,
     title = '',
     titleFontFamily,
@@ -148,6 +150,8 @@ class RectPlot {
     this.label = _.isEmpty(label) ? null : label
     this.labelAlt = labelAlt
     this.svg = svg
+    this.xLevels = xLevels
+    this.yLevels = yLevels
     this.zTitle = zTitle
     this.colors = colors
     this.transparency = transparency
