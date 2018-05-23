@@ -74,8 +74,8 @@ class LabeledScatter {
             .attr('height', this.height)
             .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
-    // console.log('rhtmlLabeledScatter data')
-    // console.log(JSON.stringify(this.data))
+    console.log('rhtmlLabeledScatter data')
+    console.log(JSON.stringify(this.data))
 
     // Error checking
     DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')
