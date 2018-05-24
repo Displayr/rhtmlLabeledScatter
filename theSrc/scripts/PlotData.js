@@ -17,6 +17,8 @@ class PlotData {
     Z,
     xDataType,
     yDataType,
+    xLevels,
+    yLevels,
     group,
     label,
     labelAlt,
@@ -35,11 +37,13 @@ class PlotData {
       this.X = _.map(X, d => d.getTime())
     } else {
       this.X = X
+      this.xLevels = xLevels
     }
     if (yDataType === DataTypeEnum.date) {
       this.Y = _.map(Y, d => d.getTime())
     } else {
       this.Y = Y
+      this.yLevels = yLevels
     }
     this.Z = Z
     this.xDataType = xDataType
@@ -308,14 +312,16 @@ class PlotData {
           let x = 0
           let y = 0
           if (this.xDataType === DataTypeEnum.ordinal) {
-            const scaleOrdinal = d3.scale.ordinal().domain(this.X).rangePoints([0, 1])
-            x = (scaleOrdinal(this.X[i]) * this.vb.width) + this.vb.x
+            const scaleOrdinal = d3.scale.ordinal().domain(this.xLevels).rangePoints([0, 1])
+            const sidePadPercent = 0.08
+            x = (scaleOrdinal(this.X[i]) * this.vb.width * (1 - 2 * sidePadPercent)) + this.vb.x + (this.vb.width * sidePadPercent)
           } else {
             x = (this.normX[i] * this.vb.width) + this.vb.x
           }
           if (this.yDataType === DataTypeEnum.ordinal) {
-            const scaleOrdinal = d3.scale.ordinal().domain(this.Y).rangePoints([0, 1])
-            y = (scaleOrdinal(this.Y[i]) * this.vb.height) + this.vb.y
+            const scaleOrdinal = d3.scale.ordinal().domain(this.yLevels).rangePoints([0, 1])
+            const sidePadPercent = 0.08
+            y = (scaleOrdinal(this.Y[i]) * this.vb.height * (1 - 2 * sidePadPercent)) + this.vb.y + (this.vb.height * sidePadPercent)
           } else {
             y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
           }

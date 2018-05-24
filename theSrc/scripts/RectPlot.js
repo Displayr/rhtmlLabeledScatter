@@ -37,8 +37,8 @@ class RectPlot {
     label,
     labelAlt = [],
     svg,
-    xLevels,
-    yLevels,
+    xLevels = null,
+    yLevels = null,
     fixedRatio,
     title = '',
     titleFontFamily,
@@ -127,22 +127,28 @@ class RectPlot {
     this.height = height
     if (Utils.isArrOfDates(X)) {
       this.X = _.map(X, (d) => new Date(d))
+      this.xLevels = null
       this.xDataType = DataTypeEnum.date
     } else if (Utils.isArrOfNums(X)) {
       this.X = X
+      this.xLevels = null
       this.xDataType = DataTypeEnum.numeric
     } else {
       this.X = X
+      this.xLevels = _.isNull(xLevels) ? _.uniq(X) : xLevels
       this.xDataType = DataTypeEnum.ordinal
     }
     if (Utils.isArrOfDates(Y)) {
       this.Y = _.map(Y, (d) => new Date(d))
+      this.yLevels = null
       this.yDataType = DataTypeEnum.date
     } else if (Utils.isArrOfNums(Y)) {
       this.Y = Y
+      this.yLevels = null
       this.yDataType = DataTypeEnum.numeric
     } else {
       this.Y = Y
+      this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
       this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z
@@ -150,8 +156,6 @@ class RectPlot {
     this.label = _.isEmpty(label) ? null : label
     this.labelAlt = labelAlt
     this.svg = svg
-    this.xLevels = xLevels
-    this.yLevels = yLevels
     this.zTitle = zTitle
     this.colors = colors
     this.transparency = transparency
@@ -302,6 +306,8 @@ class RectPlot {
                          this.Z,
                          this.xDataType,
                          this.yDataType,
+                         this.xLevels,
+                         this.yLevels,
                          this.group,
                          this.label,
                          this.labelAlt,
