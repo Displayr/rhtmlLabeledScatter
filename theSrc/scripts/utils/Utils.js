@@ -19,7 +19,7 @@ class Utils {
   }
 
   static isArrOfNums (arr) {
-    return this.isArr(arr) && _.every(arr, n => _.isFinite(n))
+    return this.isArr(arr) && _.every(arr, n => _.isFinite(Number(n)))
   }
 
   static isArrOfPositiveNums (arr) {
@@ -28,6 +28,10 @@ class Utils {
 
   static isArrOfDates (arr) {
     return this.isArr(arr) && _.every(arr, n => this.isValidDate(n))
+  }
+
+  static isArrOfStrings (arr) {
+    return this.isArr(arr) && _.every(arr, n => _.isString(n))
   }
 
   static getSuperscript (id) {

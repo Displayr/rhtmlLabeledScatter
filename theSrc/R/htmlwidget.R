@@ -9,6 +9,8 @@
 #' @param label is the array of text labels for the data set (can supply an url to show logos)
 #' @param label.alt is an optional array of alternate label text when an url was provided as the label. NOTE: must be same length as label
 #' @param group is the array of group name for each data point
+#' @param x.levels is the levels for the categorical X input array. Default is levels(X)
+#' @param y.levels is the levels for the categorical Y input array. Default is levels(Y)
 #' @param fixed.aspect Default to FALSE. Cannot be guarenteed if any of the axis bounds are set.
 #' @param colors is the color wheel to be used when plotting the data points. Defaults to Q color wheel.
 #' @param color.transparency Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z
@@ -111,6 +113,8 @@ LabeledScatter <- function(
   label = NULL,
   label.alt = NULL,
   group = NULL,
+  x.levels = NULL,
+  y.levels = NULL,
   fixed.aspect = FALSE,
   colors = c('#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47','#255E91','#9E480E','#636363','#997300','#264478','#43682B','#FF2323'),
   color.transparency = NULL,
@@ -205,6 +209,8 @@ LabeledScatter <- function(
     label = jsonlite::toJSON(label),
     labelAlt = jsonlite::toJSON(label.alt),
     group = jsonlite::toJSON(group),
+    xLevels = if(is.null(x.levels)) levels(X) else x.levels,
+    yLevels = if(is.null(y.levels)) levels(Y) else y.levels,
     fixedAspectRatio = fixed.aspect,
     colors = jsonlite::toJSON(colors),
     transparency = color.transparency,

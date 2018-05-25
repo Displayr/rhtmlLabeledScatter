@@ -24,6 +24,7 @@ import PlotAxis from './PlotAxis'
 import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
+import DataTypeEnum from './utils/DataTypeEnum'
 
 class RectPlot {
   constructor (state,
@@ -36,6 +37,8 @@ class RectPlot {
     label,
     labelAlt = [],
     svg,
+    xLevels = null,
+    yLevels = null,
     fixedRatio,
     title = '',
     titleFontFamily,
@@ -122,8 +125,32 @@ class RectPlot {
     this.state = state
     this.width = width
     this.height = height
-    this.X = Utils.isArrOfDates(X) ? _.map(X, (d) => new Date(d)) : X
-    this.Y = Utils.isArrOfDates(Y) ? _.map(Y, (d) => new Date(d)) : Y
+    if (Utils.isArrOfDates(X)) {
+      this.X = _.map(X, (d) => new Date(d))
+      this.xLevels = null
+      this.xDataType = DataTypeEnum.date
+    } else if (Utils.isArrOfNums(X)) {
+      this.X = X
+      this.xLevels = null
+      this.xDataType = DataTypeEnum.numeric
+    } else {
+      this.X = X
+      this.xLevels = _.isNull(xLevels) ? _.uniq(X) : xLevels
+      this.xDataType = DataTypeEnum.ordinal
+    }
+    if (Utils.isArrOfDates(Y)) {
+      this.Y = _.map(Y, (d) => new Date(d))
+      this.yLevels = null
+      this.yDataType = DataTypeEnum.date
+    } else if (Utils.isArrOfNums(Y)) {
+      this.Y = Y
+      this.yLevels = null
+      this.yDataType = DataTypeEnum.numeric
+    } else {
+      this.Y = Y
+      this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
+      this.yDataType = DataTypeEnum.ordinal
+    }
     this.Z = Z
     this.group = group
     this.label = _.isEmpty(label) ? null : label
@@ -277,6 +304,10 @@ class RectPlot {
     this.data = new PlotData(this.X,
                          this.Y,
                          this.Z,
+                         this.xDataType,
+                         this.yDataType,
+                         this.xLevels,
+                         this.yLevels,
                          this.group,
                          this.label,
                          this.labelAlt,

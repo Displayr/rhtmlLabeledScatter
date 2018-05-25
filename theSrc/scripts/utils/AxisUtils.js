@@ -6,6 +6,7 @@ import TickLabel from './TickLabel'
 import TickLine from './TickLine'
 import GridLine from './GridLine'
 import AxisTypeEnum from './AxisTypeEnum'
+import DataTypeEnum from './DataTypeEnum'
 
 /* To Refactor:
  *  * marker leader lines + labels can surely be grouped or at least the lines can be derived at presentation time
@@ -72,12 +73,22 @@ class AxisUtils {
 
   static _normalizeXCoords (data, Xcoord) {
     const { vb } = data
-    return (((Xcoord - data.minX) / (data.maxX - data.minX)) * vb.width) + vb.x
+    if (data.xDataType === DataTypeEnum.ordinal) {
+      const scaleOrdinal = d3.scale.ordinal().domain(data.X).rangePoints([0, 1])
+      return (scaleOrdinal(Xcoord) * vb.width) + vb.x
+    } else {
+      return (((Xcoord - data.minX) / (data.maxX - data.minX)) * vb.width) + vb.x
+    }
   }
 
   static _normalizeYCoords (data, Ycoord) {
     const { vb } = data
-    return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * vb.height) + vb.y + vb.height
+    if (data.yDataType === DataTypeEnum.ordinal) {
+      const scaleOrdinal = d3.scale.ordinal().domain(data.Y).rangePoints([0, 1])
+      return (scaleOrdinal(Ycoord) * vb.height) + vb.y
+    } else {
+      return ((-(Ycoord - data.minY) / (data.maxY - data.minY)) * vb.height) + vb.y + vb.height
+    }
   }
 
   // TODO Separate similarities between X and Y axis calls
@@ -98,13 +109,13 @@ class AxisUtils {
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
       if (type === AxisTypeEnum.X) {
-        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.isXdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.xDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getXAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
       if (type === AxisTypeEnum.Y) {
-        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.isYdate, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
+        const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.yDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getYAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
       }
@@ -124,7 +135,7 @@ class AxisUtils {
     data.calculateMinMax()
 
     let ticksX = getTicks(axisSettings.x.boundsUnitsMajor, data.minX, data.maxX)
-    if (data.isXdate) {
+    if (data.xDataType === DataTypeEnum.date) {
       const xTickDates = this._getRoundedScaleTime(data.minX, data.maxX)
 
       _.map(xTickDates, date => {
@@ -135,9 +146,9 @@ class AxisUtils {
           pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
         }
       })
-    } else {
+    } else if (data.xDataType === DataTypeEnum.numeric) {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
-      _.map(xRoundedScaleLinear, (val, i) => {
+      _.map(xRoundedScaleLinear, val => {
         if (val === 0) {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
           const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
@@ -155,10 +166,21 @@ class AxisUtils {
           }
         }
       })
+    } else if (data.xDataType === DataTypeEnum.ordinal) {
+      const scaleOrdinal = d3.scale.ordinal().domain(data.xLevels).rangePoints([0, 1])
+      _.map(data.xLevels, x => {
+        const sidePadPercent = 0.08
+        const gridX = (scaleOrdinal(x) * vb.width * (1 - 2 * sidePadPercent)) + vb.x + (vb.width * sidePadPercent)
+        const gridLine = new GridLine(gridX, vb.y, gridX, vb.y + vb.height)
+        gridLineStack.push(gridLine.getData())
+        if (axisSettings.showX) {
+          pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, x, ticksX, axisSettings.x.format)
+        }
+      })
     }
 
     let ticksY = getTicks(axisSettings.y.boundsUnitsMajor, data.minY, data.maxY)
-    if (data.isYdate) {
+    if (data.yDataType === DataTypeEnum.date) {
       const yTickDates = this._getRoundedScaleTime(data.minY, data.maxY)
       _.map(yTickDates, date => {
         let timeFromEpoch = date.getTime()
@@ -168,9 +190,9 @@ class AxisUtils {
           pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
         }
       })
-    } else {
+    } else if (data.yDataType === DataTypeEnum.numeric) {
       const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, axisSettings.y.boundsUnitsMajor)
-      _.map(yRoundedScaleLinear, (val, i) => {
+      _.map(yRoundedScaleLinear, val => {
         if (val === 0) {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
           const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
@@ -186,6 +208,17 @@ class AxisUtils {
           if (axisSettings.showY) {
             pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, axisSettings.y.format)
           }
+        }
+      })
+    } else if (data.yDataType === DataTypeEnum.ordinal) {
+      const scaleOrdinal = d3.scale.ordinal().domain(data.yLevels).rangePoints([0, 1])
+      const sidePadPercent = 0.08
+      _.map(data.yLevels, y => {
+        const gridY = (scaleOrdinal(y) * vb.height * (1 - 2 * sidePadPercent)) + vb.y + (vb.height * sidePadPercent)
+        const gridLine = new GridLine(vb.x, gridY, vb.x + vb.width, gridY)
+        gridLineStack.push(gridLine.getData())
+        if (axisSettings.showY) {
+          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, y, ticksY, axisSettings.x.format)  // TODO: TicksY needs to be removed along with ticksX
         }
       })
     }

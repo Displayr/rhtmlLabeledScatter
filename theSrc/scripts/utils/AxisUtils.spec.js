@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const AxisUtils = require('./AxisUtils.js')
 const AxisTypeEnum = require('./AxisTypeEnum.js')
+const DataTypeEnum = require('./DataTypeEnum.js')
 
 /*
  * * not testing leaderlines as I suspect we can merge them with the labels and figure them out at presentation time
@@ -22,7 +23,9 @@ describe('AxisUtils:', function () {
         minX: -5,
         maxX: 5,
         minY: -5,
-        maxY: 5
+        maxY: 5,
+        xDataType: DataTypeEnum.numeric,
+        yDataType: DataTypeEnum.numeric
       }
 
       this.defaultAxisSettings = {

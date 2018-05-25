@@ -4,6 +4,8 @@ import PlotColors from './PlotColors'
 import PlotLabel from './PlotLabel'
 import LegendUtils from './utils/LegendUtils'
 import Utils from './utils/Utils'
+import DataTypeEnum from './utils/DataTypeEnum'
+import d3 from 'd3'
 
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
@@ -13,6 +15,10 @@ class PlotData {
   constructor (X,
     Y,
     Z,
+    xDataType,
+    yDataType,
+    xLevels,
+    yLevels,
     group,
     label,
     labelAlt,
@@ -24,23 +30,24 @@ class PlotData {
     pointRadius,
     bounds,
     transparency,
-    legendSettings) {
+    legendSettings
+  ) {
     autoBind(this)
-    if (_.every(X, n => _.isDate(n))) {
-      this.X = _.map(X, n => n.getTime())
-      this.isXdate = true
+    if (xDataType === DataTypeEnum.date) {
+      this.X = _.map(X, d => d.getTime())
     } else {
       this.X = X
-      this.isXdate = false
+      this.xLevels = xLevels
     }
-    if (_.every(Y, n => _.isDate(n))) {
-      this.Y = _.map(Y, n => n.getTime())
-      this.isYdate = true
+    if (yDataType === DataTypeEnum.date) {
+      this.Y = _.map(Y, d => d.getTime())
     } else {
       this.Y = Y
-      this.isYdate = false
+      this.yLevels = yLevels
     }
     this.Z = Z
+    this.xDataType = xDataType
+    this.yDataType = yDataType
     this.group = group
     this.label = label
     this.labelAlt = labelAlt
@@ -52,7 +59,6 @@ class PlotData {
     this.pointRadius = pointRadius
     this.bounds = bounds
     this.transparency = transparency
-    this.legendSettings = legendSettings
     this.origX = this.X.slice(0)
     this.origY = this.Y.slice(0)
     this.normX = this.X.slice(0)
@@ -62,6 +68,7 @@ class PlotData {
     // this.legendPts = []
     this.outsidePlotCondensedPts = []
     this.legendRequiresRedraw = false
+    this.legendSettings = legendSettings
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
@@ -301,9 +308,23 @@ class PlotData {
       while (i < this.origLen) {
         if ((!_.includes(this.outsidePlotPtsId, i)) ||
            _.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
-          var ptColor
-          const x = (this.normX[i] * this.vb.width) + this.vb.x
-          const y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
+          let ptColor
+          let x = 0
+          let y = 0
+          if (this.xDataType === DataTypeEnum.ordinal) {
+            const scaleOrdinal = d3.scale.ordinal().domain(this.xLevels).rangePoints([0, 1])
+            const sidePadPercent = 0.08
+            x = (scaleOrdinal(this.X[i]) * this.vb.width * (1 - 2 * sidePadPercent)) + this.vb.x + (this.vb.width * sidePadPercent)
+          } else {
+            x = (this.normX[i] * this.vb.width) + this.vb.x
+          }
+          if (this.yDataType === DataTypeEnum.ordinal) {
+            const scaleOrdinal = d3.scale.ordinal().domain(this.yLevels).rangePoints([0, 1])
+            const sidePadPercent = 0.08
+            y = (scaleOrdinal(this.Y[i]) * this.vb.height * (1 - 2 * sidePadPercent)) + this.vb.y + (this.vb.height * sidePadPercent)
+          } else {
+            y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
+          }
           let r = this.pointRadius
           if (Utils.isArrOfNums(this.Z)) {
             const legendUtils = LegendUtils
