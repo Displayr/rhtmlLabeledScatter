@@ -599,9 +599,9 @@ class RectPlot {
       '.anc',
       '.link'
     ]
-    for (const elem of Array.from(plotElems)) {
+    _.forEach(plotElems, (elem, i) => {
       this.svg.selectAll(elem).remove()
-    }
+    })
     return this.draw()
   }
 
