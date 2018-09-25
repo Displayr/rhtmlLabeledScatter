@@ -185,7 +185,7 @@ class PlotData {
     this.outsidePlotMarkers = []
     this.outsidePlotMarkersIter = 0
 
-    for (const lp of Array.from(this.legend.pts)) {
+    _.forEach(this.legend.pts, (lp, i) => {
       const id = lp.id
       let draggedNormX = (this.X[id] - this.minX) / (this.maxX - this.minX)
       let draggedNormY = (this.Y[id] - this.minY) / (this.maxY - this.minY)
@@ -257,7 +257,7 @@ class PlotData {
         }
       }
       this.outsidePlotMarkersIter++
-    }
+    })
 
     // Remove pts that are outside plot if user bounds were set
     this.outsideBoundsPtsId = []
@@ -386,11 +386,11 @@ class PlotData {
 
       // Remove pts outside plot because user bounds set
       return (() => {
-        for (const p of Array.from(this.outsideBoundsPtsId)) {
+        _.forEach(this.outsideBoundsPtsId, (p, i) => {
           if (!_.includes(this.outsidePlotPtsId, p)) {
             this.addElemToLegend(p)
           }
-        }
+        })
         this.setLegend()
       })()
     }).catch(err => console.log(err))
