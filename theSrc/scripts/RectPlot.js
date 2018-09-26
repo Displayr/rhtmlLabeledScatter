@@ -136,6 +136,7 @@ class RectPlot {
     } else {
       this.X = X
       this.xLevels = _.isNull(xLevels) ? _.uniq(X) : xLevels
+      this.xLevels = _.orderBy(this.xLevels, [], ['asc'])
       this.xDataType = DataTypeEnum.ordinal
     }
     if (Utils.isArrOfDates(Y)) {
@@ -149,6 +150,7 @@ class RectPlot {
     } else {
       this.Y = Y
       this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
+      this.yLevels = _.orderBy(this.yLevels, [], ['desc'])
       this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z
