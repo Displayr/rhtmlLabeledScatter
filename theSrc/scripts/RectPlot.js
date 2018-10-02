@@ -150,7 +150,7 @@ class RectPlot {
     } else {
       this.Y = Y
       this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
-      this.yLevels = _.orderBy(this.yLevels, [], ['desc'])
+      this.yLevels = _.orderBy(this.yLevels, [], ['asc'])
       this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z
