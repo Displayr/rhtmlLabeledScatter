@@ -254,6 +254,7 @@ class RectPlot {
       this.showLabels = false
     }
 
+    const numNonEmptyLabels = _.filter(this.label, (l) => l !== '')
     this.labelPlacementSettings = {
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
@@ -262,8 +263,8 @@ class RectPlot {
       maxMove: labelPlacementMaxMove,
       maxAngle: labelPlacementMaxAngle,
       seed: labelPlacementSeed,
-      isLabelSorterOn: this.label.length > 100,
-      isNonBlockingOn: this.label.length > 100
+      isLabelSorterOn: numNonEmptyLabels > 100,
+      isNonBlockingOn: numNonEmptyLabels > 100
     }
 
     this.debugMode = debugMode
