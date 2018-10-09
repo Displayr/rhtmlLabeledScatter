@@ -4,9 +4,10 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
+  constructor (isOn, pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
                isLabelSorterOn, isNonBlockingOn) {
+    this.isOn = isOn
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -27,21 +28,24 @@ class LabelPlacement {
 
   place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
-
-    labeler()
-      .svg(this.svg)
-      .w1(vb.x)
-      .w2(vb.x + vb.width)
-      .h1(vb.y)
-      .h2(vb.y + vb.height)
-      .anchor(anchors)
-      .label(labels)
-      .pinned(pinnedLabels)
-      .promise(resolve)
-      .anchorType(this.isBubble)
-      .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn)
-      .start(this.numSweeps)
+    if (this.isOn) {
+      labeler()
+        .svg(this.svg)
+        .w1(vb.x)
+        .w2(vb.x + vb.width)
+        .h1(vb.y)
+        .h2(vb.y + vb.height)
+        .anchor(anchors)
+        .label(labels)
+        .pinned(pinnedLabels)
+        .promise(resolve)
+        .anchorType(this.isBubble)
+        .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
+        .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn)
+        .start(this.numSweeps)
+    } else {
+      resolve()
+    }
   }
 
   placeTrendLabels (vb, anchors, labels, state, resolve) {

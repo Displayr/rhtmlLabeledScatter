@@ -255,8 +255,10 @@ class RectPlot {
     }
 
     const numNonEmptyLabels = _.filter(this.label, (l) => l !== '')
+    const labelPlacementOnThreshold = numNonEmptyLabels < 100
     const labelSorterThreshold = 200
     this.labelPlacementSettings = {
+      isOn: labelPlacementOnThreshold,
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
       labelAncOverlap: labelPlacementLabelAncOverlapWeight,
@@ -273,6 +275,7 @@ class RectPlot {
     this.setDim(this.svg, this.width, this.height)
 
     this.labelPlacement = new LabelPlacement(
+      this.labelPlacementSettings.isOn,
       this.pltUniqueId,
       this.svg,
       this.labelPlacementSettings.distance,
