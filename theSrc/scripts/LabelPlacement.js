@@ -4,10 +4,9 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  constructor (isOn, pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
+  constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
-               isLabelSorterOn, isNonBlockingOn) {
-    this.isOn = isOn
+               isLabelSorterOn, isNonBlockingOn, isLabelPlacementAlgoOn) {
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -20,6 +19,7 @@ class LabelPlacement {
     this.isLabelSorterOn = isLabelSorterOn
     this.isNonBlockingOn = isNonBlockingOn
     this.seed = seed
+    this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
   updateSvgOnResize (svg) {
@@ -28,24 +28,20 @@ class LabelPlacement {
 
   place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
-    if (this.isOn) {
-      labeler()
-        .svg(this.svg)
-        .w1(vb.x)
-        .w2(vb.x + vb.width)
-        .h1(vb.y)
-        .h2(vb.y + vb.height)
-        .anchor(anchors)
-        .label(labels)
-        .pinned(pinnedLabels)
-        .promise(resolve)
-        .anchorType(this.isBubble)
-        .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-        .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn)
-        .start(this.numSweeps)
-    } else {
-      resolve()
-    }
+    labeler()
+      .svg(this.svg)
+      .w1(vb.x)
+      .w2(vb.x + vb.width)
+      .h1(vb.y)
+      .h2(vb.y + vb.height)
+      .anchor(anchors)
+      .label(labels)
+      .pinned(pinnedLabels)
+      .promise(resolve)
+      .anchorType(this.isBubble)
+      .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
+      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
+      .start(this.numSweeps)
   }
 
   placeTrendLabels (vb, anchors, labels, state, resolve) {
