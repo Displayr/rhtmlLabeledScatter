@@ -21,7 +21,8 @@ const labeler = function () {
     minLabWidth = Infinity,
     labelArraySorter = null,
     is_label_sorter_on = false,
-    is_non_blocking_on = false
+    is_non_blocking_on = false,
+    is_placement_algo_on = true
 
     // var investigate = 781;
     // var investigate2 = 182;
@@ -371,7 +372,12 @@ const labeler = function () {
     let currT = 1.0
     let initialT = 1.0
     
-    if (is_non_blocking_on) {
+    if (!is_placement_algo_on) {
+      // Turn off label placement algo if way too many labels given
+      console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
+      resolveFunc()
+      
+    } else if (is_non_blocking_on) {
       // Non-blocking implementation with timeouts
       function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
         let i = 0;
@@ -488,13 +494,14 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn, isNonBlockingOn) {
+  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn, isNonBlockingOn, isPlacementAlgoOn) {
     // Additional exposed settings
     random = new Random(Random.engines.mt19937().seed(seed))
     max_move = maxMove
     max_angle = maxAngle
     is_label_sorter_on = isLabelSorterOn
     is_non_blocking_on = isNonBlockingOn
+    is_placement_algo_on = isPlacementAlgoOn
     return labeler
   }
 

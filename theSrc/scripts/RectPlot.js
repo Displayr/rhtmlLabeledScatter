@@ -254,6 +254,9 @@ class RectPlot {
       this.showLabels = false
     }
 
+    const numNonEmptyLabels = (_.filter(this.label, (l) => l !== '')).length
+    const labelPlacementAlgoOnToggle = numNonEmptyLabels < 100
+    const labelSorterThreshold = 200 // VIS-390: this is effectively turned off
     this.labelPlacementSettings = {
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
@@ -262,8 +265,9 @@ class RectPlot {
       maxMove: labelPlacementMaxMove,
       maxAngle: labelPlacementMaxAngle,
       seed: labelPlacementSeed,
-      isLabelSorterOn: this.label.length > 100,
-      isNonBlockingOn: this.label.length > 100
+      isLabelSorterOn: numNonEmptyLabels > labelSorterThreshold,
+      isNonBlockingOn: numNonEmptyLabels > labelSorterThreshold,
+      isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
     }
 
     this.debugMode = debugMode
@@ -282,7 +286,8 @@ class RectPlot {
       this.labelPlacementSettings.maxAngle,
       this.labelPlacementSettings.seed,
       this.labelPlacementSettings.isLabelSorterOn,
-      this.labelPlacementSettings.isNonBlockingOn)
+      this.labelPlacementSettings.isNonBlockingOn,
+      this.labelPlacementSettings.isLabelPlacementAlgoOn)
   }
 
   setDim (svg, width, height) {

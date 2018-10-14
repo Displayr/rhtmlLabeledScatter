@@ -6,7 +6,7 @@ import _ from 'lodash'
 class LabelPlacement {
   constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
-               isLabelSorterOn, isNonBlockingOn) {
+               isLabelSorterOn, isNonBlockingOn, isLabelPlacementAlgoOn) {
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -19,6 +19,7 @@ class LabelPlacement {
     this.isLabelSorterOn = isLabelSorterOn
     this.isNonBlockingOn = isNonBlockingOn
     this.seed = seed
+    this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
   updateSvgOnResize (svg) {
@@ -27,7 +28,6 @@ class LabelPlacement {
 
   place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
-
     labeler()
       .svg(this.svg)
       .w1(vb.x)
@@ -40,7 +40,7 @@ class LabelPlacement {
       .promise(resolve)
       .anchorType(this.isBubble)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn)
+      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)
   }
 
