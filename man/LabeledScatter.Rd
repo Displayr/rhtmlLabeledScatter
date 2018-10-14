@@ -40,12 +40,13 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   x.bounds.units.major = NULL, y.bounds.units.major = NULL,
-  tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
-  point.radius = 2, trend.lines.show = FALSE,
-  trend.lines.line.thickness = 1, trend.lines.point.size = 2,
-  plot.border.show = TRUE, plot.border.color = "Black",
-  plot.border.width = 1, label.placement.weight.distance = 10,
+  tooltip.text = NULL, tooltip.title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), tooltip.title.font.family = "Arial",
+  tooltip.title.font.size = 10, point.radius = 2,
+  trend.lines.show = FALSE, trend.lines.line.thickness = 1,
+  trend.lines.point.size = 2, plot.border.show = TRUE,
+  plot.border.color = "Black", plot.border.width = 1,
+  label.placement.weight.distance = 10,
   label.placement.weight.labelLabelOverlap = 12,
   label.placement.weight.labelAncOverlap = 8,
   label.placement.numSweeps = 500, label.placement.seed = 1,
@@ -196,6 +197,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{x.bounds.units.major}{Integer or NULL; set the distance between each tick mark on the x axis.}
 
 \item{y.bounds.units.major}{Integer or NULL; set the distance between each tick mark on the y axis.}
+
+\item{tooltip.text}{is an array of text containing custom tool tip text that appears on mouse hover (\n for new line)}
 
 \item{point.radius}{Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.}
 

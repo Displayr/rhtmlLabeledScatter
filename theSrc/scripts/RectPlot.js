@@ -118,6 +118,7 @@ class RectPlot {
     labelPlacementSeed = 1,
     labelPlacementMaxMove = 5.0,
     labelPlacementMaxAngle = 2 * 3.1415,
+    tooltipText = [],
     debugMode = false
   ) {
     autoBind(this)
@@ -269,6 +270,8 @@ class RectPlot {
       isNonBlockingOn: numNonEmptyLabels > labelSorterThreshold,
       isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
     }
+
+    this.tooltipText = tooltipText
 
     this.debugMode = debugMode
 
@@ -554,7 +557,7 @@ class RectPlot {
                    return d.r
                  }
                })
-      TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings)
+      TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
         this.svg.selectAll('clipPath').remove()
