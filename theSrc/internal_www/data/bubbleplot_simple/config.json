@@ -29,5 +29,5 @@
     "#ED7D31"
   ],
   "fixedAspectRatio": false,
-  "tooltipText": [ "custom6", "custom5", "custom4", "custom3", "custom2", "custom1\nNew line" ]
+  "tooltipText": [ "A \n 10 \nCustom text", "custom5", "custom4", "custom3", "custom2", "custom1\nNew line" ]
 }

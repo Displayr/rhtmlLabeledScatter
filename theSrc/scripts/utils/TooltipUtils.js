@@ -12,7 +12,7 @@ class TooltipUtils {
       ylabel,
       groupLabel
 
-    let customTooltipTextGiven = (tooltipText.length === Z.length)
+    let customTooltipTextGiven = _.isNull(tooltipText) ? false : (tooltipText.length === anchors.size())
 
     if (Utils.isArrOfNums(Z)) {
       anchors.append('title')
