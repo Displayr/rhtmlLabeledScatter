@@ -25,6 +25,7 @@ import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
+import $ from 'bootstrap-jquery'
 
 class RectPlot {
   constructor (state,
@@ -544,7 +545,7 @@ class RectPlot {
                .data(this.data.pts)
                .enter()
                .append('circle')
-               .attr('class', 'anc')
+               .attr('class', d => `anc a${d.id}`)
                .attr('id', d => `anc-${d.id}`)
                .attr('cx', d => d.x)
                .attr('cy', d => d.y)
@@ -557,6 +558,46 @@ class RectPlot {
                    return d.r
                  }
                })
+
+      let voronoi = d3.geom.voronoi()
+                           .x(d => d.x)
+                           .y(d => d.y)
+                           .clipExtent([[this.vb.x, this.vb.y], [this.vb.x + this.vb.width, this.vb.y + this.vb.height]])
+
+      console.log('----------------')
+      console.log($)
+      console.log($.popover)
+
+      this.svg.selectAll('path')
+          .data(voronoi(this.data.pts))
+          .enter()
+          .append('path')
+          .attr('d', (d, i) => 'M' + d.join('L') + 'Z')
+          .datum((d, i) => d.point)
+          .attr('class', (d, i) => 'voronoi ' + d.CountryCode)
+          .style('stroke', '#2074A0') // visualise the voronoi cells
+          .style('fill', 'none')
+          .style('pointer-events', 'all')
+          .on('mouseover', showTooltip)
+          .on('mouseout', removeTooltip)
+
+      function showTooltip (d) {
+        let element = d3.selectAll('.anc.a' + d.id)
+
+        $(element).popover({
+          placement: 'auto bottom',
+          container: '.plot-container',
+          trigger: 'manual',
+          html: true,
+          content: () => d.id
+        })
+        $(element).popover('show')
+      }
+
+      function removeTooltip (d) {
+        $('.popover').each(() => $(this).remove())
+      }
+
       TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
