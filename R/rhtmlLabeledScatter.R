@@ -59,6 +59,7 @@
 #' @param axis.font.family Font Family of the axis labels
 #' @param axis.font.size Font size of the axis labels
 #' @param axis.font.color Font color of the axis labels
+#' @param tooltip.text is an array of text containing custom tool tip text that appears on mouse hover (\n for new line)
 #' @param tooltip.font.color is the font color of the tooltips
 #' @param tooltip.font.family is the font family of the tooltips
 #' @param tooltip.font.size is the font size of the tooltips
@@ -180,9 +181,10 @@ LabeledScatter <- function(
   y.bounds.maximum = NULL,
   x.bounds.units.major = NULL,
   y.bounds.units.major = NULL,
-  tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  tooltip.title.font.family = "Arial",
-  tooltip.title.font.size = 10,
+  tooltip.text = NULL,
+  tooltip.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  tooltip.font.family = "Arial",
+  tooltip.font.size = 10,
   point.radius = 2,
   trend.lines.show = FALSE,
   trend.lines.line.thickness = 1,
@@ -270,9 +272,10 @@ LabeledScatter <- function(
     axisFontFamily = axis.font.family,
     axisFontColor = axis.font.color,
     axisFontSize = axis.font.size,
-    tooltipTitleFontColor = tooltip.title.font.color,
-    toolTipTitleFontFamily = tooltip.title.font.family,
-    tooltipTitleFontSize = tooltip.title.font.size,
+    tooltipText = tooltip.text,
+    tooltipFontColor = tooltip.font.color,
+    tooltipFontFamily = tooltip.font.family,
+    tooltipFontSize = tooltip.font.size,
     pointRadius = point.radius,
     xBoundsMinimum = x.bounds.minimum,
     xBoundsMaximum = x.bounds.maximum,

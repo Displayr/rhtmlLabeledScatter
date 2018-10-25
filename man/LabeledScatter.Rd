@@ -40,8 +40,8 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   x.bounds.units.major = NULL, y.bounds.units.major = NULL,
-  tooltip.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  tooltip.title.font.family = "Arial", tooltip.title.font.size = 10,
+  tooltip.text = NULL, tooltip.font.color = rgb(44, 44, 44, maxColorValue =
+  255), tooltip.font.family = "Arial", tooltip.font.size = 10,
   point.radius = 2, trend.lines.show = FALSE,
   trend.lines.line.thickness = 1, trend.lines.point.size = 2,
   plot.border.show = TRUE, plot.border.color = "Black",
@@ -197,6 +197,14 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{y.bounds.units.major}{Integer or NULL; set the distance between each tick mark on the y axis.}
 
+\item{tooltip.text}{is an array of text containing custom tool tip text that appears on mouse hover (\n for new line)}
+
+\item{tooltip.font.color}{is the font color of the tooltips}
+
+\item{tooltip.font.family}{is the font family of the tooltips}
+
+\item{tooltip.font.size}{is the font size of the tooltips}
+
 \item{point.radius}{Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.}
 
 \item{trend.lines.show}{Boolean toggle to show trendlines based on groups given}
@@ -232,12 +240,6 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 \item{height}{is the height of the plot. Defaults to the max of window}
 
 \item{title.font}{size is the font size of the plot title}
-
-\item{tooltip.font.color}{is the font color of the tooltips}
-
-\item{tooltip.font.family}{is the font family of the tooltips}
-
-\item{tooltip.font.size}{is the font size of the tooltips}
 }
 \description{
 A HTMLWidget that creates a labeled scatter plot.
