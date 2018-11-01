@@ -1,6 +1,6 @@
 
-import d3 from 'd3'
 import $ from 'jquery'
+import d3 from 'd3'
 import _ from 'lodash'
 import Utils from './Utils'
 

@@ -1,6 +1,6 @@
-import $ from 'jquery'
 import d3 from 'd3'
 import _ from 'lodash'
+import $ from 'jquery'
 import DisplayError from './DisplayError'
 import RectPlot from './RectPlot'
 import State from './State'
@@ -26,6 +26,7 @@ class LabeledScatter {
                   .append('svg')
                   .attr('width', this.width)
                   .attr('height', this.height)
+                  .attr('id', 'chart')
                   .attr('class', 'plot-container rhtmlwidget-outer-svg')
           this.plot.resized(svg, this.width, this.height)
           this.resizeDelayPromise = null
@@ -72,6 +73,7 @@ class LabeledScatter {
             .append('svg')
             .attr('width', this.width)
             .attr('height', this.height)
+            .attr('id', 'chart')
             .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // console.log('rhtmlLabeledScatter data')

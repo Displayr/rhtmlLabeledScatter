@@ -1,6 +1,8 @@
 
 import _ from 'lodash'
 import d3 from 'd3'
+import $ from 'jquery'
+import 'bootstrap'
 import 'babel-polyfill'
 import md5 from 'md5'
 import autoBind from 'es6-autobind'
@@ -25,7 +27,6 @@ import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
-import $ from 'bootstrap-jquery'
 
 class RectPlot {
   constructor (state,
@@ -551,6 +552,11 @@ class RectPlot {
                .attr('cy', d => d.y)
                .attr('fill', d => d.color)
                .attr('fill-opacity', d => d.fillOpacity)
+               // .attr('title', 'Tooltip title')
+               // .attr('data-content', "<span style='font-size: 11px; text-align: center;'>content</span>")
+               .attr('data-content', 'blah')
+               .attr('data-placement', 'top')
+               .attr('data-animation', false)
                .attr('r', (d) => {
                  if (this.trendLines.show) {
                    return this.trendLines.pointSize
@@ -578,27 +584,38 @@ class RectPlot {
           .style('stroke', '#2074A0') // visualise the voronoi cells
           .style('fill', 'none')
           .style('pointer-events', 'all')
-          .on('mouseover', showTooltip)
-          .on('mouseout', removeTooltip)
+          .on('mouseover', showTooltip.bind(this))
+          .on('mouseout', removeTooltip.bind(this))
 
       function showTooltip (d) {
         let element = d3.selectAll('.anc.a' + d.id)
+        console.log('showTooltip')
+        console.log(element)
+        console.log($(element))
 
-        $(element).popover({
-          placement: 'auto bottom',
-          container: '.plot-container',
+        $(element.node()).popover(
+          {
+          placement: 'top', // place the tooltip above the item
+          container: '#chart', // the name (class or id) of the container
           trigger: 'manual',
           html: true,
-          content: () => d.id
-        })
-        $(element).popover('show')
+          content: function () { // the html content to show inside the tooltip
+            return "<span style='font-size: 11px; text-align: center;'>blah</span>"
+          }
+        }
+        )
+        // console.log('0000000000000000000')
+        $(element.node()).popover('show')
+        // $(element.node()).css({ opacity: 0.6 })
       }
 
       function removeTooltip (d) {
-        $('.popover').each(() => $(this).remove())
+        console.log('removeTooltip')
+        // $('.popover').remove()
       }
 
       TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
+
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
         this.svg.selectAll('clipPath').remove()

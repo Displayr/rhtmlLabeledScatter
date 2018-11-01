@@ -4,8 +4,8 @@
  *
  */
 
-import $ from 'jquery'
 import Utils from './utils/Utils'
+import $ from 'jquery'
 
 class DisplayError {
   static isAxisValid (inputArray, svg, errorMsg) {
