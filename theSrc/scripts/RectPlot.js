@@ -12,7 +12,7 @@ import TrendLine from './TrendLine'
 import DragUtils from './utils/DragUtils'
 import SvgUtils from './utils/SvgUtils'
 import Utils from './utils/Utils'
-import TooltipUtils from './utils/TooltipUtils'
+// import TooltipUtils from './utils/TooltipUtils'
 import LabelPlacement from './LabelPlacement'
 import LegendSettings from './LegendSettings'
 import Legend from './Legend'
@@ -541,12 +541,11 @@ class RectPlot {
 
   drawAnc () {
     return new Promise(function (resolve, reject) {
-
       const ancGroup = this.svg.append('g')
                                  .attr('class', 'ancWrapper')
 
       this.svg.selectAll('.anc').remove()
-      const anc = ancGroup.selectAll('.anc')
+      ancGroup.selectAll('.anc')
                .data(this.data.pts)
                .enter()
                .append('circle')
@@ -578,7 +577,8 @@ class RectPlot {
       console.log($)
       console.log($.popover)
 
-      this.svg.selectAll('path')
+      const voronoiGroup = this.svg.append('g').attr('class', 'voronoiWrapper')
+      voronoiGroup.selectAll('.voronoi')
           .data(voronoi(this.data.pts))
           .enter()
           .append('path')
@@ -598,9 +598,15 @@ class RectPlot {
         console.log($(element))
 
         $(element.node()).popover(
+        // $(element).popover( - this doens't work
           {
-          placement: 'top', // place the tooltip above the item
-          container: 'body', // the name (class or id) of the container - must be a div
+          // placement: function (popoverElem, ancElem) {
+          //   console.log(popoverElem)
+          //   console.log(ancElem)
+          //   this.svg.append(popoverElem)
+          // },
+          placement: 'top', // putting "auto" here causes it to fail (cannot read property of "indexOf")
+          container: 'body',
           trigger: 'manual',
           html: true,
           content: function () { // the html content to show inside the tooltip
@@ -608,6 +614,7 @@ class RectPlot {
           }
         }
         )
+        // $(element).popover('show') - this doens't work
         $(element.node()).popover('show')
         // $(element.node()).css({ opacity: 0.6 })
       }
