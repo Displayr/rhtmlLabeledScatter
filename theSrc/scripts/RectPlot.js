@@ -541,8 +541,12 @@ class RectPlot {
 
   drawAnc () {
     return new Promise(function (resolve, reject) {
+
+      const ancGroup = this.svg.append('g')
+                                 .attr('class', 'ancWrapper')
+
       this.svg.selectAll('.anc').remove()
-      const anc = this.svg.selectAll('.anc')
+      const anc = ancGroup.selectAll('.anc')
                .data(this.data.pts)
                .enter()
                .append('circle')
@@ -554,8 +558,8 @@ class RectPlot {
                .attr('fill-opacity', d => d.fillOpacity)
                // .attr('title', 'Tooltip title')
                // .attr('data-content', "<span style='font-size: 11px; text-align: center;'>content</span>")
-               .attr('data-content', 'blah')
-               .attr('data-placement', 'top')
+               // .attr('data-content', 'blah')
+               // .attr('data-placement', 'top')
                .attr('data-animation', false)
                .attr('r', (d) => {
                  if (this.trendLines.show) {
@@ -580,7 +584,7 @@ class RectPlot {
           .append('path')
           .attr('d', (d, i) => 'M' + d.join('L') + 'Z')
           .datum((d, i) => d.point)
-          .attr('class', (d, i) => 'voronoi ' + d.CountryCode)
+          .attr('class', (d, i) => 'voronoi a' + d.label)
           .style('stroke', '#2074A0') // visualise the voronoi cells
           .style('fill', 'none')
           .style('pointer-events', 'all')
@@ -596,15 +600,14 @@ class RectPlot {
         $(element.node()).popover(
           {
           placement: 'top', // place the tooltip above the item
-          container: '#chart', // the name (class or id) of the container
+          container: 'body', // the name (class or id) of the container - must be a div
           trigger: 'manual',
           html: true,
           content: function () { // the html content to show inside the tooltip
-            return "<span style='font-size: 11px; text-align: center;'>blah</span>"
+            return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
           }
         }
         )
-        // console.log('0000000000000000000')
         $(element.node()).popover('show')
         // $(element.node()).css({ opacity: 0.6 })
       }
@@ -614,7 +617,7 @@ class RectPlot {
         // $('.popover').remove()
       }
 
-      TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
+      // TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
 
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {

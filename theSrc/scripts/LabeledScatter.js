@@ -22,7 +22,10 @@ class LabeledScatter {
           this.width = width
           this.height = height
           d3.select('.plot-container').remove()
-          const svg = d3.select(el)
+          const chartDiv = d3.select(el)
+                            .append('div')
+                            .attr('id', 'chart')
+          const svg = chartDiv
                   .append('svg')
                   .attr('width', this.width)
                   .attr('height', this.height)
@@ -69,11 +72,14 @@ class LabeledScatter {
   draw () {
     $(this.rootElement).find('*').remove()
 
-    const svg = d3.select(this.rootElement)
+    const chartDiv = d3.select(this.rootElement)
+                       .append('div')
+                       .attr('id', 'chart')
+
+    const svg = chartDiv
             .append('svg')
             .attr('width', this.width)
             .attr('height', this.height)
-            .attr('id', 'chart')
             .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // console.log('rhtmlLabeledScatter data')
