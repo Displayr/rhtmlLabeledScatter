@@ -611,7 +611,8 @@ class RectPlot {
           html: true,
           content: function () { // the html content to show inside the tooltip
             return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
-          }
+          },
+          template: '<div class="popover" style="margin-top: -22px;" role="tooltip"><div class="arrow" style="left: -3px; bottom: -55%; border-top-color: white;"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>'
         }
         )
         // $(element).popover('show') - this doens't work
