@@ -1,7 +1,7 @@
 {
   "label": [ "11", "5", "Something<br>longer", "3", "a<br>b<br>c", "4", "1" ],
   "X": [ 11, 5, 3, 3, 4, 4, 1.2 ],
-  "Y": [ 10, 6, 3, 4, 3, 4, 1.2],
+  "Y": [ 12, 6, 3, 4, 3, 4, 1.2],
   "group": [ "G1", "G1", "G1", "G2", "G1", "G2", "G2" ],
   "titleFontSize": 40,
   "yTitleFontSize": 16,
@@ -28,10 +28,6 @@
     "#ED7D31"
   ],
   "fixedAspectRatio": false,
-  "title": "Example Title",
-  "subtitle": "Example Subtitle<br>Example Subtitle Second Line<br>Example Third Subtitle",
-  "subtitleFontColor": "red",
-  "subtitleFontSize": 10,
   "footer": "Example Footer<br>Example Footer Second Line",
   "footerFontColor": "green",
   "footerFontSize": 8,

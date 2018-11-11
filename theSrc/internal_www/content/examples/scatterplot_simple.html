@@ -5,20 +5,39 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
 <style>
-    .arrow:after {
+    .bs-popover-top>.arrow {
+        bottom: -22px !important;
+        border-top-color: rgba(0,0,0,.25);
+    }
+
+    .bs-popover-top>.arrow:after {
         border-top-color: white !important;
         margin-left: -10px;
         margin-top: -11px;
     }
-    .popover.bs-popover-top {
+    .bs-popover-top {
         top: -10px !important;
+    }
+
+    .bs-popover-bottom {
+        top: 10px !important;
+    }
+
+    .bs-popover-bottom>.arrow:after {
+        border-bottom-color: white !important;
+        margin-left: -10px;
+        margin-top: -9px;
+    }
+
+    .bs-popover-bottom>.arrow {
+        top: -22px !important;
+        border-bottom-color: rgba(0,0,0,.25);
     }
 </style>
 </head>
 <body>
 
 <section>
-    <h2>Simple Scatterplot</h2>
     <div snapshot-name='scatterplot-simple'>
         <div class="example" data-width="800" data-height="500" data-config="scatterplot_simple"></div>
     </div>

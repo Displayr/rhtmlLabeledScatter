@@ -14,13 +14,36 @@ svg text::selection {
     background: none;
 }
 
-.arrow:after {
-  border-top-color: white !important;
-  margin-left: -10px;
-  margin-top: -11px;
-}
 .popover.bs-popover-top {
   top: -10px !important;
+
+  .arrow {
+    bottom: -22px !important;
+    border-top-color: rgba(0,0,0,.25);
+    left: -3px;
+  }
+
+  .arrow:after {
+    border-top-color: white !important;
+    margin-left: -10px;
+    margin-top: -11px;
+  }
+}
+
+.popover.show.bs-popover-bottom {
+  top: 10px !important;
+
+  .arrow {
+    top: -22px !important;
+    border-bottom-color: rgba(0,0,0,.25);
+    left: -3px;
+  }
+
+  .arrow:after {
+    border-bottom-color: white !important;
+    margin-left: -10px;
+    margin-top: -9px;
+  }
 }
 
 /*!

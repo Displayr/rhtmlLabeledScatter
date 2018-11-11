@@ -12,13 +12,31 @@ svg text {
 svg text::selection {
   background: none;
 }
-.arrow:after {
+.popover.bs-popover-top {
+  top: -10px !important;
+}
+.popover.bs-popover-top .arrow {
+  bottom: -22px !important;
+  border-top-color: rgba(0, 0, 0, 0.25);
+  left: -3px;
+}
+.popover.bs-popover-top .arrow:after {
   border-top-color: white !important;
   margin-left: -10px;
   margin-top: -11px;
 }
-.popover.bs-popover-top {
-  top: -10px !important;
+.popover.show.bs-popover-bottom {
+  top: 10px !important;
+}
+.popover.show.bs-popover-bottom .arrow {
+  top: -22px !important;
+  border-bottom-color: rgba(0, 0, 0, 0.25);
+  left: -3px;
+}
+.popover.show.bs-popover-bottom .arrow:after {
+  border-bottom-color: white !important;
+  margin-left: -10px;
+  margin-top: -9px;
 }
 /*!
 * Bootstrap v3.3.7 (http://getbootstrap.com)

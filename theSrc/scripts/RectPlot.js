@@ -600,7 +600,6 @@ class RectPlot {
 
         if (tooltipText !== '') {
           $(element.node()).popover(
-          // $(element).popover( - this doens't work
             {
             // placement: function (popoverElem, ancElem) {
             //   console.log(popoverElem)
@@ -614,17 +613,15 @@ class RectPlot {
             content: function () { // the html content to show inside the tooltip
               return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
             },
-            template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow" style="left: -3px; bottom: -22px; border-top-color: rgba(0,0,0,.25);"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
+            template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
           }
           )
-          // $(element).popover('show') - this doens't work
           $(element.node()).popover('show')
           // $(element.node()).css({ opacity: 0.6 })
         }
       }
 
       function removeTooltip (d) {
-        console.log('removeTooltip')
         $('.popover').remove()
       }
 
