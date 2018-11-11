@@ -585,7 +585,7 @@ class RectPlot {
           .attr('d', (d, i) => 'M' + d.join('L') + 'Z')
           .datum((d, i) => d.point)
           .attr('class', (d, i) => 'voronoi a' + d.label)
-          .style('stroke', '#2074A0') // visualise the voronoi cells
+          // .style('stroke', '#2074A0') // visualise the voronoi cells
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .on('mouseover', showTooltip.bind(this))
