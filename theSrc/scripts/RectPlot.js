@@ -616,7 +616,7 @@ class RectPlot {
             content: function () { // the html content to show inside the tooltip
               return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
             },
-            template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
+            template: `<div class="popover" style="pointer-events: none; backface-visibility: hidden; -webkit-font-smoothing: subpixel-antialiased;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
             // callback: function() {
             //
             // }
