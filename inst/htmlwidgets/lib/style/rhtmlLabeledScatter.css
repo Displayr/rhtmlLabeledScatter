@@ -12,6 +12,9 @@ svg text {
 svg text::selection {
   background: none;
 }
+svg .plot-container {
+  -webkit-font-smoothing: subpixel-antialiased;
+}
 .popover.bs-popover-top {
   top: -10px !important;
 }
