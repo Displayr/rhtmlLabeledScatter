@@ -14,7 +14,7 @@ svg text::selection {
 }
 .popover.bs-popover-top {
   top: -10px !important;
-  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-font-smoothing: antialiased;
 }
 .popover.bs-popover-top .arrow {
   bottom: -22px !important;
@@ -28,7 +28,7 @@ svg text::selection {
 }
 .popover.show.bs-popover-bottom {
   top: 10px !important;
-  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-font-smoothing: antialiased;
 }
 .popover.show.bs-popover-bottom .arrow {
   top: -22px !important;
