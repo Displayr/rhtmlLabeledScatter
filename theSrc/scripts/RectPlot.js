@@ -605,7 +605,7 @@ class RectPlot {
             content: function () { // the html content to show inside the tooltip
               return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
             },
-            template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
+            template: `<div class="popover" style="pointer-events: none; -webkit-perspective: 1000;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
           }
           )
           $(element.node()).popover('show')
@@ -614,7 +614,7 @@ class RectPlot {
       }
 
       function removeTooltip (d) {
-        $('.popover').remove()
+        // $('.popover').remove()
       }
 
       // TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
