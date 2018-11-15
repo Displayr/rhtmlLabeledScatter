@@ -557,6 +557,7 @@ class RectPlot {
                .attr('fill-opacity', d => d.fillOpacity)
                // .attr('title', 'Tooltip title')
                // .attr('data-content', "<span style='font-size: 11px; text-align: center;'>content</span>")
+               .attr('data-toggle', 'popover')
                // .attr('data-content', 'blah')
                // .attr('data-placement', 'top')
                .attr('data-animation', false)
@@ -589,10 +590,20 @@ class RectPlot {
           .on('mouseout', removeTooltip.bind(this))
 
       function showTooltip (d) {
+        // var tmp = $.fn.popover.Constructor.prototype.show;
+        // $.fn.popover.Constructor.prototype.show = function () {
+        //   tmp.call(this)
+        //   console.log(this)
+        //   if (this.config.callback) {
+        //     this.config.callback()
+        //     console.log('-------------------------------------')
+        //     console.log(this)
+        //     console.log($('.popover').css('will-change'))
+        //     console.log($('.popover').css('transform'))
+        //   }
+        // }
+
         let element = d3.selectAll('.anc.a' + d.id)
-        console.log('showTooltip')
-        console.log(element)
-        console.log($(element))
         let tooltipText = d.label
 
         if (tooltipText !== '') {
@@ -606,11 +617,22 @@ class RectPlot {
               return `<span style='font-size: 11px; text-align: center;'>${d.label}</span>`
             },
             template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
+            // callback: function() {
+            //
+            // }
           }
           )
-          $(element.node()).popover({
-            gpuAcceleration: !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform))
-          })
+
+          // Fix to blurriness
+          // $(element.node()).on('shown.bs.popover', function () {
+          //   console.log($('.popover'))
+          //   console.log($('.popover').css('will-change'))
+          //   console.log($('.popover').css('transform'))
+          //   $('.popover').bind('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
+          //     console.log('here---------')
+          //   })
+          // })
+
           $(element.node()).popover('show')
           // $(element.node()).css({ opacity: 0.6 })
         }
