@@ -608,6 +608,9 @@ class RectPlot {
             template: `<div class="popover" style="pointer-events: none;" role="tooltip"><div class="arrow"></div><div class="popover-body" style="padding: 9px 14px;"></div></div>`
           }
           )
+          $(element.node()).popover({
+            gpuAcceleration: !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform))
+          })
           $(element.node()).popover('show')
           // $(element.node()).css({ opacity: 0.6 })
         }
