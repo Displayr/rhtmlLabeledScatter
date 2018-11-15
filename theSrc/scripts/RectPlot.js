@@ -573,10 +573,6 @@ class RectPlot {
                            .y(d => d.y)
                            .clipExtent([[this.vb.x, this.vb.y], [this.vb.x + this.vb.width, this.vb.y + this.vb.height]])
 
-      console.log('----------------')
-      console.log($)
-      console.log($.popover)
-
       const voronoiGroup = this.svg.append('g').attr('class', 'voronoiWrapper')
       voronoiGroup.selectAll('.voronoi')
           .data(voronoi(this.data.pts))
@@ -586,6 +582,7 @@ class RectPlot {
           .datum((d, i) => d.point)
           .attr('class', (d, i) => 'voronoi a' + d.label)
           // .style('stroke', '#2074A0') // visualise the voronoi cells
+          .style('fill-opacity', 0)
           .style('fill', 'none')
           .style('pointer-events', 'all')
           .on('mouseover', showTooltip.bind(this))
@@ -601,11 +598,6 @@ class RectPlot {
         if (tooltipText !== '') {
           $(element.node()).popover(
             {
-            // placement: function (popoverElem, ancElem) {
-            //   console.log(popoverElem)
-            //   console.log(ancElem)
-            //   this.svg.append(popoverElem)
-            // },
             placement: 'top', // putting "auto" here causes it to fail (cannot read property of "indexOf")
             container: 'body',
             trigger: 'manual',
