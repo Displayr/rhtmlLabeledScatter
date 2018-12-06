@@ -2,13 +2,10 @@
   "widgetEntryPoint": "theSrc/scripts/rhtmlLabeledScatter.js",
   "widgetFactory": "theSrc/scripts/rhtmlLabeledScatter.factory.js",
   "widgetName": "rhtmlLabeledScatter",
-  "visualRegressionSuite": {
-    "isReadySelector": ".rhtmlLabeledScatter-isReadySelector",
-    "applitools": {
-      "defaultMatchTimeout": 2
-    }
-  },
+  "visualRegressionSuite": {},
   "internalWebSettings": {
+    "isReadySelector": ".rhtmlLabeledScatter-isReadySelector",
+    "singleWidgetSnapshotSelector": "svg.rhtmlwidget-outer-svg",
     "default_border": true,
     "css": [
       "/styles/rhtmlLabeledScatter.css"
