@@ -59,7 +59,7 @@
 #' @param axis.font.family Font Family of the axis labels
 #' @param axis.font.size Font size of the axis labels
 #' @param axis.font.color Font color of the axis labels
-#' @param tooltip.text is an array of text containing custom tool tip text that appears on mouse hover (\n for new line)
+#' @param tooltip.text is an array of text containing custom tool tip text that appears on mouse hover ('\\n' for new line)
 #' @param tooltip.font.color is the font color of the tooltips
 #' @param tooltip.font.family is the font family of the tooltips
 #' @param tooltip.font.size is the font size of the tooltips

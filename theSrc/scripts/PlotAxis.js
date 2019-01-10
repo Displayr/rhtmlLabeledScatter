@@ -41,8 +41,8 @@ class PlotAxis {
        .attr('x2', d => d.x2)
        .attr('y2', d => d.y2)
        .attr('stroke-width', this.settings.strokeWidth)
-       .attr('opacity', 0.2)
-       .attr('stroke', this.settings.fontColor)
+       .attr('opacity', 1.0)
+       .attr('stroke', '#e1e1e1')
   }
 
   drawAxisLeaderWith (svg, showOrigin, showGrid) {
