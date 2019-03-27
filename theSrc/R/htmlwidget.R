@@ -76,7 +76,9 @@
 #' @param z.suffix A string that suffixes all bubble values(eg. "kg")
 #' @param x.format A string that is interpreted for the format of the x axis labels. Default is NULL.
 #' @param y.format A string that is interpreted for the format of the y axis labels. Default is NULL.
-#' @param point.radius Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.
+#' @param point.radius Radius of the points when bubble parameter \code{Z} is not supplied. Defaults to 2.
+#'     When the \code{Z} is supplied, the points are scaled so that the largest point has a radius of
+#'     \code{point.radius * 50/3} (i.e. a diameter of roughly an inch for the default value).
 #' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting on the x axis
 #' @param x.bounds.maximum Integer or NULL; set minimum of range for plotting on the x axis
 #' @param y.bounds.minimum Integer or NULL; set minimum of range for plotting on the y axis

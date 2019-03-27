@@ -208,7 +208,9 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL, label = NULL,
 
 \item{tooltip.font.size}{is the font size of the tooltips}
 
-\item{point.radius}{Radius of the points when bubble (Z) parameter not supplied. Defaults to 2.}
+\item{point.radius}{Radius of the points when bubble parameter \code{Z} is not supplied. Defaults to 2.
+When the \code{Z} is supplied, the points are scaled so that the largest point has a radius of
+\code{point.radius * 50/3} (i.e. a diameter of roughly an inch for the default value).}
 
 \item{trend.lines.show}{Boolean toggle to show trendlines based on groups given}
 

@@ -21,8 +21,11 @@ class LegendUtils {
     return this.exponentialShortForms[val]
   }
 
-  static normalizedZtoRadius (vb, normZval) {
-    return Math.sqrt((vb.width * vb.height) / 16 / Math.PI) * normZval
+  static normalizedZtoRadius (scale, normZval) {
+    // z values are multiplied by the point size and a constant multiplier (50/3)
+    // the constant multiplier makes LabeledScatter behave consistently with flipStandardCharts::Scatter
+    // it means that when point.radius = 3 (default), the largest marker will have a radius of 50 pixels
+    return (normZval * scale * 50 / 3)
   }
 
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
@@ -98,10 +101,10 @@ class LegendUtils {
     })
   }
 
-  static setupBubbles (vb, Zquartiles, legend) {
-    const rTop = this.normalizedZtoRadius(vb, Zquartiles.top.val)
-    const rMid = this.normalizedZtoRadius(vb, Zquartiles.mid.val)
-    const rBot = this.normalizedZtoRadius(vb, Zquartiles.bot.val)
+  static setupBubbles (vb, Zquartiles, legend, pointRadius) {
+    const rTop = this.normalizedZtoRadius(pointRadius, Zquartiles.top.val)
+    const rMid = this.normalizedZtoRadius(pointRadius, Zquartiles.mid.val)
+    const rBot = this.normalizedZtoRadius(pointRadius, Zquartiles.bot.val)
     const cx = vb.x + vb.width + (legend.getWidth() / 2)
     const viewBoxYBottom = vb.y + vb.height
     const bubbleTextPadding = 5

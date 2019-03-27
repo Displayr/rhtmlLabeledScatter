@@ -328,7 +328,7 @@ class PlotData {
           let r = this.pointRadius
           if (Utils.isArrOfNums(this.Z)) {
             const legendUtils = LegendUtils
-            r = legendUtils.normalizedZtoRadius(this.vb, this.normZ[i])
+            r = legendUtils.normalizedZtoRadius(this.pointRadius, this.normZ[i])
           }
           const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
 
@@ -397,7 +397,7 @@ class PlotData {
   }
 
   setLegend () {
-    this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles)
+    this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles, this.pointRadius)
   }
 
   isOutsideViewBox (lab) {
