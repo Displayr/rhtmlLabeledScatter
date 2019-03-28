@@ -187,7 +187,7 @@ LabeledScatter <- function(
   tooltip.font.color = rgb(44, 44, 44, maxColorValue = 255),
   tooltip.font.family = "Arial",
   tooltip.font.size = 10,
-  point.radius = 2,
+  point.radius = if (is.null(Z)) 2 else 4,
   trend.lines.show = FALSE,
   trend.lines.line.thickness = 1,
   trend.lines.point.size=2,
