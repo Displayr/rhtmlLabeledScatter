@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#3.0.7"
+    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#d98ead"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",

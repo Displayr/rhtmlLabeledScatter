@@ -3,17 +3,17 @@ import _ from 'lodash'
 class LegendUtils {
   static get exponentialShortForms () {
     return {
-      3: 'k',    // thousand
-      6: 'm',    // million
-      9: 'b',    // billion
-      12: 't',   // trillion
-      15: 'qd',  // quadrillion
-      18: 'qt',  // quintillion
+      3: 'k', // thousand
+      6: 'm', // million
+      9: 'b', // billion
+      12: 't', // trillion
+      15: 'qd', // quadrillion
+      18: 'qt', // quintillion
       21: 'sxt', // sextillion
       24: 'spt', // septillion
       27: 'oct', // octillian
-      30: 'nn',  // nonillian
-      33: 'dc'  // decillian
+      30: 'nn', // nonillian
+      33: 'dc' // decillian
     }
   }
 
