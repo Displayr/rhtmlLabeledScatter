@@ -218,7 +218,7 @@ class AxisUtils {
         const gridLine = new GridLine(vb.x, gridY, vb.x + vb.width, gridY)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {
-          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, y, ticksY, axisSettings.x.format)  // TODO: TicksY needs to be removed along with ticksX
+          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, y, ticksY, axisSettings.x.format) // TODO: TicksY needs to be removed along with ticksX
         }
       })
     }

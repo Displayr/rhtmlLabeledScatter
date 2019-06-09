@@ -8,8 +8,8 @@
     "test": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#3.0.7"
+    "gulp": "^4.0.2",
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",

@@ -183,7 +183,7 @@ class RectPlot {
         rowMaxHeight: 0,
         colMaxWidth: 0,
         colMaxHeight: 0,
-        rightPadding: 0  // Set later, for when axis markers labels protrude (VIS-146)
+        rightPadding: 0 // Set later, for when axis markers labels protrude (VIS-146)
       },
       leaderLineLength: 5,
       x: {
