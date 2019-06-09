@@ -8,7 +8,7 @@
     "test": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "rhtmlBuildUtils": "Displayr/rhtmlBuildUtils#d98ead"
   },
   "dependencies": {
