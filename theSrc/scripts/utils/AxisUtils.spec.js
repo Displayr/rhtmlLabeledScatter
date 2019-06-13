@@ -91,7 +91,7 @@ describe('AxisUtils:', function () {
       describe('Simple all positive one quadrant grid', function () {
         beforeEach(function () {
           this.compute({
-            data: _.merge({}, this.defaultData, {minX: 0, maxX: 10, minY: 0, maxY: 10}),
+            data: _.merge({}, this.defaultData, { minX: 0, maxX: 10, minY: 0, maxY: 10 }),
             axisSettings: _.merge({}, this.defaultAxisSettings, {
               x: {
                 boundsUnitsMajor: 5
@@ -154,21 +154,21 @@ describe('AxisUtils:', function () {
         })
 
         it('should compute gridlines', function () {
-          expect(this.result.gridLines[0], 'gridLine[4] is wrong').to.deep.equal({x1: 10, y1: 0, x2: 10, y2: 100}) // -6
-          expect(this.result.gridLines[1], 'gridLine[3] is wrong').to.deep.equal({x1: 25, y1: 0, x2: 25, y2: 100}) // -4.5
-          expect(this.result.gridLines[2], 'gridLine[2] is wrong').to.deep.equal({x1: 40, y1: 0, x2: 40, y2: 100}) // -3
-          expect(this.result.gridLines[3], 'gridLine[1] is wrong').to.deep.equal({x1: 55.00000000000001, y1: 0, x2: 55.00000000000001, y2: 100}) // -1.5
-          expect(this.result.gridLines[4], 'gridLine[0] is wrong').to.deep.equal({x1: 85, y1: 0, x2: 85, y2: 100}) // 1.5
+          expect(this.result.gridLines[0], 'gridLine[4] is wrong').to.deep.equal({ x1: 10, y1: 0, x2: 10, y2: 100 }) // -6
+          expect(this.result.gridLines[1], 'gridLine[3] is wrong').to.deep.equal({ x1: 25, y1: 0, x2: 25, y2: 100 }) // -4.5
+          expect(this.result.gridLines[2], 'gridLine[2] is wrong').to.deep.equal({ x1: 40, y1: 0, x2: 40, y2: 100 }) // -3
+          expect(this.result.gridLines[3], 'gridLine[1] is wrong').to.deep.equal({ x1: 55.00000000000001, y1: 0, x2: 55.00000000000001, y2: 100 }) // -1.5
+          expect(this.result.gridLines[4], 'gridLine[0] is wrong').to.deep.equal({ x1: 85, y1: 0, x2: 85, y2: 100 }) // 1.5
         })
 
         it('should compute 6 axis markers lines', function () {
           expect(this.result.axisLeaderLabel).to.deep.equal([
-            {x: 10, y: 115, label: '-6.0', anchor: 'middle', type: AxisTypeEnum.X},
-            {x: 25, y: 115, label: '-4.5', anchor: 'middle', type: AxisTypeEnum.X},
-            {x: 40, y: 115, label: '-3.0', anchor: 'middle', type: AxisTypeEnum.X},
-            {x: 55.00000000000001, y: 115, label: '-1.5', anchor: 'middle', type: AxisTypeEnum.X},
-            {x: 70, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X},
-            {x: 85, y: 115, label: '1.5', anchor: 'middle', type: AxisTypeEnum.X}
+            { x: 10, y: 115, label: '-6.0', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 25, y: 115, label: '-4.5', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 40, y: 115, label: '-3.0', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 55.00000000000001, y: 115, label: '-1.5', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 70, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 85, y: 115, label: '1.5', anchor: 'middle', type: AxisTypeEnum.X }
           ])
         })
       })

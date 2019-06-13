@@ -19,7 +19,7 @@ class State {
            !_.isEqual(storedY, Y) ||
            !_.isEqual(storedLabel, label)) {
       this.stateObj = {}
-      this.saveToState({'X': X, 'Y': Y, 'label': label})
+      this.saveToState({ 'X': X, 'Y': Y, 'label': label })
     }
 
     this.legendPts = this.retrieveLegendPts()
@@ -65,8 +65,8 @@ class State {
     this.legendPts.push(id)
     _.remove(this.userPositionedLabs, e => e.id === id)
     // this.algoPositionedLabs = []
-    this.saveToState({'legend.pts': this.legendPts,
-      'userPositionedLabs': this.userPositionedLabs})
+    this.saveToState({ 'legend.pts': this.legendPts,
+      'userPositionedLabs': this.userPositionedLabs })
       // 'algoPositionedLabs': this.algoPositionedLabs})
   }
 
@@ -113,7 +113,7 @@ class State {
 
   updateViewBoxAndSave (vb) {
     this.updateViewBox(vb)
-    this.saveToState({'vb': this.vb})
+    this.saveToState({ 'vb': this.vb })
   }
 
   updateViewBox (vb) {
@@ -135,7 +135,7 @@ class State {
       y: (laby - vb.y) / vb.height
     })
     this.updateViewBox(vb)
-    this.saveToState({'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs})
+    this.saveToState({ 'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs })
   }
 
   updateLabelsWithPositionedData (labels, vb) {
