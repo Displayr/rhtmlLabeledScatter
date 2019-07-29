@@ -40,11 +40,11 @@ class TickLabel {
     if (this.isDateFormat) {
       // return moment(this.text).format(this.dateFormat)
       let formatDate = _.isNull(this.tickLabelFormat) ? d3.time.format('%Y-%m-%d') : d3.time.format(this.tickLabelFormat)
-      return formatDate(new Date(this.text))
+      return this.prefix + formatDate(new Date(this.text)) + this.suffix
     } else if (this.labelDataType === DataTypeEnum.ordinal) {
-      return this.text
+      return this.prefix + this.text + this.suffix
     } else if (this.tickLabelFormat !== null) {
-      return d3.format(this.tickLabelFormat)(Number(this.text))
+      return this.prefix + d3.format(this.tickLabelFormat)(Number(this.text)) + this.suffix
     } else {
       return Utils.getFormattedNum(this.text, this.numDecimals, this.prefix, this.suffix)
     }
