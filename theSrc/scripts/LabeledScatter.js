@@ -92,6 +92,8 @@ class LabeledScatter {
                         this.data.X,
                         this.data.Y,
                         this.data.Z,
+                        this.data.xIsDateTime,
+                        this.data.yIsDateTime,
                         this.data.group,
                         this.data.label,
                         this.data.labelAlt,

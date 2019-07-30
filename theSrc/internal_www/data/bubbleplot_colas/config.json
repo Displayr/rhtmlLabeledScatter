@@ -49,7 +49,7 @@
   "tooltipTitleFontColor":"#2C2C2C",
   "toolTipTitleFontFamily":"Arial",
   "tooltipTitleFontSize":10,
-  "pointRadius":0,
+  "pointRadius":2,
   "xBoundsMinimum":null,
   "xBoundsMaximum":null,
   "yBoundsMinimum":null,

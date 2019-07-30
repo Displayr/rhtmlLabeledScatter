@@ -33,6 +33,8 @@ class RectPlot {
     X,
     Y,
     Z,
+    xIsDateTime,
+    yIsDateTime,
     group,
     label,
     labelAlt = [],
@@ -126,32 +128,30 @@ class RectPlot {
     this.state = state
     this.width = width
     this.height = height
-    if (Utils.isArrOfDates(X)) {
+    if (xIsDateTime) {
       this.X = _.map(X, (d) => new Date(d))
       this.xLevels = null
       this.xDataType = DataTypeEnum.date
-    } else if (Utils.isArrOfNums(X)) {
+    } else if (Utils.isArrOfNumTypes(X)) {
       this.X = X
       this.xLevels = null
       this.xDataType = DataTypeEnum.numeric
     } else {
       this.X = X
       this.xLevels = _.isNull(xLevels) ? _.uniq(X) : xLevels
-      this.xLevels = _.orderBy(this.xLevels, [], ['asc'])
       this.xDataType = DataTypeEnum.ordinal
     }
-    if (Utils.isArrOfDates(Y)) {
+    if (yIsDateTime) {
       this.Y = _.map(Y, (d) => new Date(d))
       this.yLevels = null
       this.yDataType = DataTypeEnum.date
-    } else if (Utils.isArrOfNums(Y)) {
+    } else if (Utils.isArrOfNumTypes(Y)) {
       this.Y = Y
       this.yLevels = null
       this.yDataType = DataTypeEnum.numeric
     } else {
       this.Y = Y
       this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
-      this.yLevels = _.orderBy(this.yLevels, [], ['asc'])
       this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z
