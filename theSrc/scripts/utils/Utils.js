@@ -6,14 +6,6 @@ class Utils {
     return !(_.isNull(num)) && _.isNumber(num)
   }
 
-  static isValidDate (date) {
-    if (_.isString(date)) {
-      return !(Number.isNaN((new Date(date)).getTime()))
-    } else {
-      return false
-    }
-  }
-
   static isArr (arr) {
     return !(_.isNull(arr)) && _.isArray(arr)
   }
@@ -22,12 +14,12 @@ class Utils {
     return this.isArr(arr) && _.every(arr, n => _.isFinite(Number(n)))
   }
 
-  static isArrOfPositiveNums (arr) {
-    return this.isArr(arr) && _.every(arr, n => _.isFinite(n) && n >= 0)
+  static isArrOfNumTypes (arr) {
+    return this.isArr(arr) && _.every(arr, n => typeof n === 'number')
   }
 
-  static isArrOfDates (arr) {
-    return this.isArr(arr) && _.every(arr, n => this.isValidDate(n))
+  static isArrOfPositiveNums (arr) {
+    return this.isArr(arr) && _.every(arr, n => _.isFinite(n) && n >= 0)
   }
 
   static isArrOfStrings (arr) {

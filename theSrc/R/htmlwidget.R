@@ -206,10 +206,16 @@ LabeledScatter <- function(
   height = NULL
   ) {
 
+  isDateTime <- function(x) { return (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))}
+  xIsDateTime <- isDateTime(X[1])
+  yIsDateTime <- isDateTime(Y[1])
+
   x = list(
     X = jsonlite::toJSON(X),
     Y = jsonlite::toJSON(Y),
     Z = jsonlite::toJSON(Z),
+    xIsDateTime = xIsDateTime,
+    yIsDateTime = yIsDateTime,
     label = jsonlite::toJSON(label),
     labelAlt = jsonlite::toJSON(label.alt),
     group = jsonlite::toJSON(group),

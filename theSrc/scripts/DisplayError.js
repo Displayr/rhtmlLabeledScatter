@@ -20,12 +20,6 @@ class DisplayError {
     }
   }
 
-  // static checkIfArrayOfDates (inputArray, svg, errorMsg) {
-  //   if (!Utils.isArrOfDates(inputArray)) {
-  //     this.displayErrorMessage(svg, errorMsg)
-  //   }
-  // }
-
   static checkIfArrayOfPositiveNums (inputArray, svg, errorMsg) {
     if (!Utils.isArrOfPositiveNums(inputArray)) {
       this.displayErrorMessage(svg, errorMsg)
