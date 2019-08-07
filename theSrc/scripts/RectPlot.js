@@ -146,12 +146,13 @@ class RectPlot {
       this.yLevels = null
       this.yDataType = DataTypeEnum.date
     } else if (Utils.isArrOfNumTypes(Y)) {
+      console.log('foo')
       this.Y = Y
       this.yLevels = null
       this.yDataType = DataTypeEnum.numeric
     } else {
       this.Y = Y
-      this.yLevels = _.isNull(yLevels) ? _.uniq(Y) : yLevels
+      this.yLevels = _.isNull(yLevels) ? _(Y).uniq().reverse().value() : yLevels
       this.yDataType = DataTypeEnum.ordinal
     }
     this.Z = Z

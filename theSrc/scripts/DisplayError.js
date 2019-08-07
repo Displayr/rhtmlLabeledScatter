@@ -1,9 +1,3 @@
-/* To Refactor:
- *   * use a data uri instead of an S3 asset pointing at Kyles S3 account
- *   * Are we allowed to use this image ?
- *
- */
-
 import $ from 'jquery'
 import Utils from './utils/Utils'
 
