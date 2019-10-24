@@ -15,9 +15,14 @@ class State {
     const storedX = this.isStoredInState('X') ? this.getStored('X') : []
     const storedY = this.isStoredInState('Y') ? this.getStored('Y') : []
     const storedLabel = this.isStoredInState('label') ? this.getStored('label') : []
-    if (!_.isEqual(storedX, X) ||
-           !_.isEqual(storedY, Y) ||
-           !_.isEqual(storedLabel, label)) {
+
+    const xIsEqual = _.isEqual(storedX, X)
+    const yIsEqual = _.isEqual(storedY, Y)
+    const labelIsEqual = _.isEqual(storedLabel, label)
+
+    console.log(`checkstate: xIsEqual: ${xIsEqual} || yIsEqual: ${yIsEqual} || labelIsEqual: ${labelIsEqual}`)
+
+    if (!xIsEqual || !yIsEqual || !labelIsEqual) {
       this.stateObj = {}
       this.saveToState({ 'X': X, 'Y': Y, 'label': label })
     }
