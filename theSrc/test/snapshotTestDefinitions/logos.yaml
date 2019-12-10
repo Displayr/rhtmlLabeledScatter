@@ -1,0 +1,5 @@
+type: multi_widget_multi_page
+width: 576
+height:  512
+configs:
+  - config: data.logos.softdrink_logos

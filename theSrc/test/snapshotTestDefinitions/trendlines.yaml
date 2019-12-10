@@ -1,0 +1,11 @@
+type: multi_widget_single_page
+widgets:
+  - config: data.trendlines.trendData1
+    width: 1800
+    height: 900
+  - config: data.trendlines.trendData2
+    width: 1800
+    height: 900
+  - config: data.trendlines.trendData3
+    width: 576
+    height: 512

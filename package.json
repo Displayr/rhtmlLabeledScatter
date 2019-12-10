@@ -1,14 +1,22 @@
 {
   "private": true,
   "engines": {
-    "node": ">=8.12.0"
+    "node": ">=12.9.0"
   },
   "scripts": {
-    "prepush": "node ./bin/prepush",
-    "test": "gulp testSpecs && gulp testVisual"
+    "prepush": "node ./build/bin/prepush",
+    "test": "gulp testSpecs && gulp testVisual",
+    "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp testSpecs && gulp testVisual",
+    "travisTest": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "jest": "^24.9.0",
+    "jest-image-snapshot": "^2.11.1",
+    "nilsimsa": "^0.2.2",
+    "puppeteer": "^2.0.0",
+    "request-promise": "^4.2.5",
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.6"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -17,11 +25,14 @@
     "d3": "3.5.16",
     "d3-extended": "^1.2.10",
     "d3-scale": "^2.0.0",
+    "deep-diff": "^1.0.2",
     "es6-autobind": "^1.0.7",
+    "inquirer": "^7.0.0",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.5"
+    "rbush": "^3.0.1",
+    "yargs": "^15.1.0"
   }
 }
