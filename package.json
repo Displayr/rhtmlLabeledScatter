@@ -8,8 +8,7 @@
     "test": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
-    "gulp": "^4.0.2",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.0"
+    "gulp": "^4.0.2"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -22,6 +21,7 @@
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
-    "random-js": "^1.0.8"
+    "random-js": "^1.0.8",
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.5"
   }
 }
