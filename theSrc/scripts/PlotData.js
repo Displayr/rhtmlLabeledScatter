@@ -298,16 +298,17 @@ class PlotData {
   getPtsAndLabs (calleeName) {
     console.log(`getPtsAndLabs(${calleeName})`)
     return Promise.all(this.labelNew.getLabels()).then((resolvedLabels) => {
-     // console.log("resolvedLabels for getPtsandLabs callee name #{calleeName}")
-     // console.log(resolvedLabels)
+      // resolvedLabels is array of { height, width, label, url }
+      // console.log(`resolvedLabels for getPtsandLabs callee name ${calleeName}`)
+      // console.log(resolvedLabels)
 
       this.pts = []
       this.lab = []
 
       let i = 0
       while (i < this.origLen) {
-        if ((!_.includes(this.outsidePlotPtsId, i)) ||
-           _.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
+        // TODO this assumes the IDs are the indexes
+        if ((!_.includes(this.outsidePlotPtsId, i)) || _.includes((_.map(this.outsidePlotCondensedPts, 'dataId')), i)) {
           let ptColor
           let x = 0
           let y = 0
@@ -354,32 +355,8 @@ class PlotData {
           let fontColor = (ptColor = this.plotColors.getColor(i))
           if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
           const group = (this.group != null) ? this.group[i] : ''
-          this.pts.push({
-            x,
-            y,
-            r,
-            label,
-            labelAlt,
-            labelX: this.origX[i].toString(),
-            labelY: this.origY[i].toString(),
-            labelZ,
-            group,
-            color: ptColor,
-            id: i,
-            fillOpacity
-          })
-          this.lab.push({
-            x,
-            y,
-            color: fontColor,
-            id: i,
-            fontSize,
-            fontFamily: this.vb.labelFontFamily,
-            text: label,
-            width,
-            height,
-            url
-          })
+          this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
+          this.lab.push({ x, y, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
         }
         i++
       }

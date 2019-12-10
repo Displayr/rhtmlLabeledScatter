@@ -26,7 +26,7 @@ class LabelPlacement {
     this.svg = svg
   }
 
-  place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
+  place (vb, anchors, labels, pinnedLabels, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
     labeler()
       .svg(this.svg)
@@ -40,14 +40,16 @@ class LabelPlacement {
       .promise(resolve)
       .anchorType(this.isBubble)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
+      // TODO need to readd logic for enable / disable label sorter
       .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
+      // .settings(this.seed, this.maxMove, this.maxAngle, true, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)
   }
 
   placeTrendLabels (vb, anchors, labels, state, resolve) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), state, resolve)
 
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
@@ -60,7 +62,7 @@ class LabelPlacement {
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
-    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), state, resolve)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
