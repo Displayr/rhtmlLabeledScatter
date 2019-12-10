@@ -1,0 +1,43 @@
+type: multi_widget_multi_page
+width: 576
+height: 512
+configs:
+  - config: data.displayr_regression.set9.bubblechart
+  - config: data.displayr_regression.set9.bubblechart_debug
+  - config: data.displayr_regression.set9.bubblechart_fonts
+  - config: data.displayr_regression.set9.bubblechart_no_autoposition
+  - config: data.displayr_regression.set9.chart_1col_entered_with_names
+  - config: data.displayr_regression.set9.chart_1col_vector_with_names
+  - config: data.displayr_regression.set9.chart_customcolor
+  - config: data.displayr_regression.set9.chart_hideaxes_labeled
+  - config: data.displayr_regression.set9.chart_labeled
+  - config: data.displayr_regression.set9.chart_labeled_debug
+  - config: data.displayr_regression.set9.chart_logos_debug
+  - config: data.displayr_regression.set9.chart_multiple_tables
+  - config: data.displayr_regression.set9.chart_multiple_tables_logos_trendlines
+  - config: data.displayr_regression.set9.chart_multiple_tables_na
+  - config: data.displayr_regression.set9.chart_multiple_tables_reordered
+  - config: data.displayr_regression.set9.chart_multiple_tables_trendlines
+  - config: data.displayr_regression.set9.chart_nogrid_labeled
+  - config: data.displayr_regression.set9.chart_points_fontsize
+  - config: data.displayr_regression.set9.chart_pointsonly
+  - config: data.displayr_regression.set9.chart_titles_fontsize_labeled
+  - config: data.displayr_regression.set9.chart_titles_labeled
+  - config: data.displayr_regression.set9.chart_unnamed_columns_ds1493
+  - config: data.displayr_regression.set9.charts_datalabels
+  - config: data.displayr_regression.set9.charts_datalabels_fonts
+  - config: data.displayr_regression.set9.charts_datalabels_fonts_debug
+  - config: data.displayr_regression.set9.charts_datalabels_fontsize
+  - config: data.displayr_regression.set9.charts_datalabels_fontsize_debug
+  - config: data.displayr_regression.set9.charts_pointsonly_debug
+  - config: data.displayr_regression.set9.charts_prefix_suffix
+  - config: data.displayr_regression.set9.charts_prefix_suffix_debug
+  - config: data.displayr_regression.set9.vardata_color_date_category_labelled
+  - config: data.displayr_regression.set9.vardata_color_numeric_more_labeled
+  - config: data.displayr_regression.set9.vardata_data_categoric_axis_labeled
+  - config: data.displayr_regression.set9.vardata_size_and_color_categoric_labeled
+  - config: data.displayr_regression.set9.vardata_size_data_labeled
+  - config: data.displayr_regression.set9.vardata_size_data_labeled_hidebubblelegend
+  - config: data.displayr_regression.set9.vardata_size_data_labeled_marker_size
+  - config: data.displayr_regression.set9.vardata_size_numeric_labeled
+  - config: data.displayr_regression.set9.vardata_size_numeric_labeled_filtered

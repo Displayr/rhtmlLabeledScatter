@@ -1,0 +1,9 @@
+type: multi_widget_multi_page
+width: 576
+height: 512
+configs:
+  - config: data.displayr_regression.set4.distance_entered
+  - config: data.displayr_regression.set4.distance_metric
+  - config: data.displayr_regression.set4.distance_non_metric
+  - config: data.displayr_regression.set4.distance_object
+  - config: data.displayr_regression.set4.entered_data_non_metric
