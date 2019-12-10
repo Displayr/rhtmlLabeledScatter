@@ -3,6 +3,14 @@ import Random from 'random-js'
 import _ from 'lodash'
 import LabelArraySorter from './LabelArraySorter'
 
+const NO_LOGGING = 0
+const MINIMAL_LOGGING = 1
+const OUTER_LOOP_LOGGING = 2
+const INNER_LOOP_LOGGING = 3
+const HECTIC_LOGGING = 4
+
+const LOG_LEVEL = MINIMAL_LOGGING
+
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
@@ -147,11 +155,11 @@ const labeler = function () {
         y_overlap = Math.max(0, Math.min(comparisonLabelBoundaries.bottom, labelBoundaries.bottom) - Math.max(comparisonLabelBoundaries.top, labelBoundaries.top))
         overlap_area = x_overlap * y_overlap
 
-        if (overlap_area > 0) { labelOverlapCount++; console.log(`label overlap!`) }
+        if (LOG_LEVEL >= HECTIC_LOGGING) { if (overlap_area > 0) { labelOverlapCount++; console.log(`label overlap!`) } }
         energy += (overlap_area * w_lab2)
       }
     })
-    console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`)
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`) }
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
@@ -171,10 +179,10 @@ const labeler = function () {
       if (isBubble && a.id === currentLabel.id) {
         overlap_area /= 2
       }
-      if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) }
+      if (LOG_LEVEL >= INNER_LOOP_LOGGING) { if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) } }
       energy += (overlap_area * w_lab_anc)
     })
-    console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`)
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
     return energy
   }
 
@@ -214,7 +222,7 @@ const labeler = function () {
     // the hotter the temperature (at beginning of sim), higher this value
     const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
 
-    console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`)
+    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`) }
     const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
 
     if (acceptChange) {
@@ -281,7 +289,7 @@ const labeler = function () {
     // the hotter the temperature (at beginning of sim), higher this value
     const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
 
-    console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`)
+    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`) }
     const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
 
     if (acceptChange) {
@@ -297,7 +305,7 @@ const labeler = function () {
 
   function cooling_schedule (currTemperature, initialTemperature, maxSweeps) {
     // linear cooling
-    // console.log('(currTemperature - (initialTemperature / maxSweeps))', (currTemperature - (initialTemperature / maxSweeps)))
+    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log('(currTemperature - (initialTemperature / maxSweeps))', (currTemperature - (initialTemperature / maxSweeps))) }
     return (currTemperature - (initialTemperature / maxSweeps))
   }
   
@@ -380,13 +388,15 @@ const labeler = function () {
         currTemperature = cooling_schedule(currTemperature, initialTemperature, maxSweeps)
         //console.log(`sweep ${sweep} complete`)
       }
-      console.log(`rhtmlLabeledScatter: Label placement complete after ${sweep} sweeps. accept/reject: ${acc}/${rej}!`)
-      console.log(JSON.stringify({
-        duration: Date.now() - startTime,
-        sweep,
-        monte_carlo_rounds: acc + rej,
-        pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
-      }))
+      if (LOG_LEVEL >= MINIMAL_LOGGING) {
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${sweep} sweeps. accept/reject: ${acc}/${rej}!`)
+        console.log(JSON.stringify({
+          duration: Date.now() - startTime,
+          sweep,
+          monte_carlo_rounds: acc + rej,
+          pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
+        }))
+      }
       resolveFunc()
     }
   }
