@@ -355,6 +355,7 @@ const labeler = function () {
   }
   
   labeler.start = function (nsweeps) {
+    const startTime = Date.now()
     if (is_label_sorter_on) {
       labelArraySorter = new LabelArraySorter(lab)
     }
@@ -415,13 +416,20 @@ const labeler = function () {
       }, timeOuts);
     } else {
       // Blocking implementation - faster for smaller numbers of labels
-      for (let i = 0; i < nsweeps; i++) {
+      let sweep = null
+      for (sweep = 0; sweep < nsweeps; sweep++) {
         for (let j = 0; j < lab.length; j++) {
           if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
         }
         currT = cooling_schedule(currT, initialT, nsweeps)
       }
-      console.log("rhtmlLabeledScatter: Label placement complete!")
+      console.log(`rhtmlLabeledScatter: Label placement complete after ${sweep} sweeps. accept/reject: ${acc}/${rej}!`)
+      console.log(JSON.stringify({
+        duration: Date.now() - startTime,
+        sweep,
+        monte_carlo_rounds: acc + rej,
+        pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
+      }))
       resolveFunc()
     }
   }
