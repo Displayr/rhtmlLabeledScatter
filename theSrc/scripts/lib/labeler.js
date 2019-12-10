@@ -7,171 +7,178 @@ const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
 
-  let lab = [],
-    anc = [],
-    isBubble = false,
-    h1 = 1,
-    h2 = 1,
-    w1 = 1,
-    w2 = 1,
-    labeler = {},
-    svg = {},
-    resolveFunc = null,
-    pinned = [],
-    minLabWidth = Infinity,
-    labelArraySorter = null,
-    is_label_sorter_on = false,
-    is_non_blocking_on = false,
-    is_placement_algo_on = true
+  let lab = []
+  let anc = []
+  let isBubble = false
+  let h1 = 1
+  let h2 = 1
+  let w1 = 1
+  let w2 = 1
+  let labeler = {}
+  let svg = {}
+  let resolveFunc = null
+  let pinned = []
+  let minLabWidth = Infinity
+  let labelArraySorter = null
+  let is_label_sorter_on = false
+  let is_non_blocking_on = false
+  let is_placement_algo_on = true
 
-    // var investigate = 781;
-    // var investigate2 = 182;
   const labelTopPadding = 5
-  let max_move = 5.0,
-    max_angle = 2 * 3.1415,
-    acc = 0,
-    rej = 0
+  let max_move = 5.0
+  let max_angle = 2 * 3.1415
+  let acc = 0
+  let rej = 0
     
   // default weights
-  let w_len = 10.0, // leader line length
-    w_inter = 1.0, // leader line intersection
-    w_lablink = 2.0, // leader line-label intersection
-    w_lab2 = 12.0, // label-label overlap
-    w_lab_anc = 8 // label-anchor overlap
+  let weightLineLength = 10.0 // leader line length
+  let w_inter = 1.0 // leader line intersection
+  let w_lablink = 2.0 // leader line-label intersection
+  let w_lab2 = 12.0 // label-label overlap
+  let w_lab_anc = 8 // label-anchor overlap
+
+  // penalty for length of leader line
+  const placementPenaltyMultipliers = {
+    centeredAboveAnchor: weightLineLength * 1,
+    centeredUnderneathAnchor: weightLineLength * 1.5,
+    leftOfAnchor: weightLineLength * 8,
+    rightOfAnchor: weightLineLength * 8,
+    diagonalOfAnchor: weightLineLength * 15
+  }
+
 
     // booleans for user defined functions
-  let user_energy = false,
-    user_schedule = false
+  let user_energy = false
+  let user_schedule = false
 
-  let user_defined_energy,
-    user_defined_schedule
+  let user_defined_energy
+  let user_defined_schedule
 
-  function energy (index) {
+  function energy (index, sweep = 'N/A') {
     // energy function, tailored for label placement
 
-    const currLab = lab[index]
-    let currAnc = anc.find(e => e.id === currLab.id)
-    if (currAnc === undefined) currAnc = anc[index]
-    let ener = 0,
-      dx = currLab.x - currAnc.x,
-      dx2 = currLab.x - 4 - currLab.width / 2 - currAnc.x,
-      dx3 = currLab.x + 4 + currLab.width / 2 - currAnc.x,
-      dy = currLab.y - (currAnc.y - 5),
-      dy2 = (currLab.y - (currLab.height - labelTopPadding)) - currAnc.y,
-      dy3 = (currLab.y - currLab.height / 2) - currAnc.y,
-      dist = Math.sqrt(dx * dx + dy * dy),
-      dist2 = Math.sqrt(dx * dx + dy2 * dy2),
-      dist3 = Math.sqrt(dx2 * dx2 + dy3 * dy3),
-      dist4 = Math.sqrt(dx3 * dx3 + dy3 * dy3),
-      dist5 = Math.sqrt(dx2 * dx2 + dy2 * dy2),
-      dist6 = Math.sqrt(dx3 * dx3 + dy * dy),
-      dist7 = Math.sqrt(dx3 * dx3 + dy2 * dy2),
-      dist8 = Math.sqrt(dx2 * dx2 + dy * dy),
-      overlap = true
-    
+    const currentLabel = lab[index]
+    let currAnchor = anc.find(e => e.id === currentLabel.id) || anc[index]
+    let energy = 0
+
+    const labelBoundaries = {
+      left: currentLabel.x - currentLabel.width / 2,
+      right: currentLabel.x + currentLabel.width / 2,
+      top: currentLabel.y - currentLabel.height, // TODO account for padding here ?
+      bottom: currentLabel.y,
+    }
+
+    // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
+
+    let hdLabelLeftToAnchor = labelBoundaries.left - 4 - currAnchor.x
+    let hdLabelCenterToAnchor = currentLabel.x - currAnchor.x
+    let hdLabelRightToAnchor = labelBoundaries.right + 4 - currAnchor.x
+    let vdLabelBottomToAnchor = labelBoundaries.bottom - (currAnchor.y - 5)
+    let vdLabelCenterToAnchor = (currentLabel.y - currentLabel.height / 2) - currAnchor.y
+    let vdLabelTopToAnchor = labelBoundaries.top + labelTopPadding - currAnchor.y
+
+    const hypotenuseDistanceGivenTwoSides = (x,y) => Math.sqrt(Math.pow(x,2) + Math.pow(y,2))
+    const centerBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
+    const centerTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelTopToAnchor)
+    const leftCenterDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelCenterToAnchor)
+    const rightCenterDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelCenterToAnchor)
+    const leftTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelTopToAnchor)
+    const rightBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelBottomToAnchor)
+    const rightTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelTopToAnchor)
+    const leftBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
     // Check if label is inside bubble for centering of label inside bubble
-    const labLeftBorder = currLab.x - currLab.width / 2
-    const labRightBorder = currLab.x + currLab.width / 2
-    const labBotBorder = currLab.y
-    const labTopBorder = currLab.y - currLab.height
-    const labIsInsideBubbleAnc = (labLeftBorder < currAnc.x + currAnc.r) && (labRightBorder > currAnc.x - currAnc.r) && (labTopBorder < currAnc.y + currAnc.r) && (labBotBorder > currAnc.y - currAnc.r)
+    const labIsInsideBubbleAnc = (labelBoundaries.left < currAnchor.x + currAnchor.r)
+      && (labelBoundaries.right > currAnchor.x - currAnchor.r)
+      && (labelBoundaries.top < currAnchor.y + currAnchor.r)
+      && (labelBoundaries.bottom > currAnchor.y - currAnchor.r)
   
     if (isBubble && labIsInsideBubbleAnc) {
-      dy = (currLab.y - currLab.height / 4 - currAnc.y)
-      ener += Math.sqrt(dx * dx + dy * dy) * w_len
+      vdLabelBottomToAnchor = (currentLabel.y - currentLabel.height / 4 - currAnchor.y)
+      energy += hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
     } else {
-      // penalty for length of leader line
-      const perfect2penalty = 1.5
-      const perfect3penalty = 8
-      const perfect4penalty = 15
 
-      const minDist = Math.min(dist, dist2, dist3, dist4, dist5, dist6, dist7, dist8)
+      // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
+      const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
       switch (minDist) {
-        case dist:
-          ener += dist * w_len
+        case centerBottomDistance:
+          energy += centerBottomDistance * placementPenaltyMultipliers.centeredAboveAnchor
           break
-        case dist2:
-          ener += dist2 * w_len * perfect2penalty
+        case centerTopDistance:
+          energy += centerTopDistance * placementPenaltyMultipliers.centeredUnderneathAnchor
           break
-        case dist3:
-          ener += dist3 * w_len * perfect3penalty
+        case leftCenterDistance:
+          energy += leftCenterDistance * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
           break
-        case dist4:
-          ener += dist4 * w_len * perfect3penalty
+        case rightCenterDistance:
+          energy += rightCenterDistance * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
           break
-        case dist5:
-          ener += dist5 * w_len * perfect4penalty
+        case leftTopDistance:
+          energy += leftTopDistance * placementPenaltyMultipliers.diagonalOfAnchor
           break
-        case dist6:
-          ener += dist6 * w_len * perfect4penalty
+        case rightBottomDistance:
+          energy += rightBottomDistance * placementPenaltyMultipliers.diagonalOfAnchor
           break
-        case dist7:
-          ener += dist7 * w_len * perfect4penalty
+        case rightTopDistance:
+          energy += rightTopDistance * placementPenaltyMultipliers.diagonalOfAnchor
           break
-        case dist8:
-          ener += dist8 * w_len * perfect4penalty
+        case leftBottomDistance:
+          energy += leftBottomDistance * placementPenaltyMultipliers.diagonalOfAnchor
       }
     }
 
-    let x21 = currLab.x - currLab.width / 2,
-      y21 = currLab.y - (currLab.height - labelTopPadding),
-      x22 = currLab.x + currLab.width / 2,
-      y22 = currLab.y
-    let x11,
-      x12,
-      y11,
-      y12,
-      x_overlap,
-      y_overlap,
-      overlap_area
+    const potentiallyOverlappingLabels = is_label_sorter_on ? labelArraySorter.getOverlappingLabelsWithLabelId(currentLabel.id) : lab
 
-    const overlappingLabs = is_label_sorter_on ? labelArraySorter.getOverlappingLabelsWithLabelId(currLab.id) : lab
-    // console.log('----------------------------------')
-    // console.log(currLab.text)
-    // console.log(_.map(overlappingLabs, (a) => a.text))
-    // if (index === 17) {
-    //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
-    //                   .attr('y', currLab.y - currLab.height)
-    //                   .attr('width', currLab.width)
-    //                   .attr('height', currLab.height)
-    //                   .attr('fill', 'blue')
-    //                   .attr('fill-opacity', 0.1);
-    // }
-    _.forEach(overlappingLabs, comparisonLab => {
-      if (comparisonLab.id !== currLab.id) {
-        // penalty for label-label overlap
-        x11 = comparisonLab.x - comparisonLab.width / 2
-        y11 = comparisonLab.y - comparisonLab.height
-        x12 = comparisonLab.x + comparisonLab.width / 2
-        y12 = comparisonLab.y
-        x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
-        y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
+    let x_overlap = null
+    let y_overlap = null
+    let overlap_area = null
+
+    // penalty for label-label overlap
+    let labelOverlapCount = 0
+    _.forEach(potentiallyOverlappingLabels, comparisonLab => {
+      if (comparisonLab.id !== currentLabel.id) {
+        const comparisonLabelBoundaries = {
+          left: comparisonLab.x - comparisonLab.width / 2,
+          right: comparisonLab.x + comparisonLab.width / 2,
+          top: comparisonLab.y - comparisonLab.height,
+          bottom: comparisonLab.y,
+        }
+        x_overlap = Math.max(0, Math.min(comparisonLabelBoundaries.right, labelBoundaries.right) - Math.max(comparisonLabelBoundaries.left, labelBoundaries.left))
+        y_overlap = Math.max(0, Math.min(comparisonLabelBoundaries.bottom, labelBoundaries.bottom) - Math.max(comparisonLabelBoundaries.top, labelBoundaries.top))
         overlap_area = x_overlap * y_overlap
-        ener += (overlap_area * w_lab2)
+
+        if (overlap_area > 0) { labelOverlapCount++; console.log(`label overlap!`) }
+        energy += (overlap_area * w_lab2)
       }
     })
+    console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`)
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
+    let anchorOverlapCount = 0
     _.forEach(anc, a => {
-      x11 = a.x - a.r
-      y11 = a.y - a.r
-      x12 = a.x + a.r
-      y12 = a.y + a.r
-      x_overlap = Math.max(0, Math.min(x12, x22) - Math.max(x11, x21))
-      y_overlap = Math.max(0, Math.min(y12, y22) - Math.max(y11, y21))
+      const anchorBoundaries = {
+        left: a.x - a.r,
+        right: a.x + a.r,
+        top: a.y - a.r,
+        bottom: a.y + a.r,
+      }
+      x_overlap = Math.max(0, Math.min(anchorBoundaries.right, labelBoundaries.right) - Math.max(anchorBoundaries.left, labelBoundaries.left))
+      y_overlap = Math.max(0, Math.min(anchorBoundaries.bottom, labelBoundaries.bottom) - Math.max(anchorBoundaries.top, labelBoundaries.top))
       overlap_area = x_overlap * y_overlap
-      if (isBubble && a.id === currLab.id) {
+
+      // TODO: why ?
+      if (isBubble && a.id === currentLabel.id) {
         overlap_area /= 2
       }
-      ener += (overlap_area * w_lab_anc)
+      if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) }
+      energy += (overlap_area * w_lab_anc)
     })
-    // console.log(ener)
-    return ener
+    console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`)
+    return energy
   }
 
-  function mcmove (currT) {
+  function mcmove (currTemperature, sweep = 'N/A') {
     // Monte Carlo translation move
 
     // select a random label
@@ -185,8 +192,7 @@ const labeler = function () {
     const y_old = lab[i].y
 
     // old energy
-    let old_energy
-    if (user_energy) { old_energy = user_defined_energy(i, lab, anc) } else { old_energy = energy(i) }
+    let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
     // random translation
     lab[i].x += (random.real(0, 1) - 0.5) * max_move
@@ -199,40 +205,30 @@ const labeler = function () {
     if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height
 
     // new energy
-    let new_energy
-    if (user_energy) { new_energy = user_defined_energy(i, lab, anc) } else { new_energy = energy(i) }
+    let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
-    // delta E
-    const delta_energy = new_energy - old_energy
+    // TODO: I think this duplicated code between mcmove and mcrotate should be done at higher callee level
 
-    if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
+    // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
+    // the more that new energy is less than old energy, the higher this gets
+    // the hotter the temperature (at beginning of sim), higher this value
+    const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
+
+    console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`)
+    const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
+
+    if (acceptChange) {
       acc += 1
       if (is_label_sorter_on) labelArraySorter.sortArrays()
-      // if (i == investigate || i == investigate2)
-      //    svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
-      //                  .attr('y', lab[i].y - lab[i].height)
-      //                  .attr('width', lab[i].width)
-      //                  .attr('height', lab[i].height)
-      //                  .attr('text-anchor', 'middle')
-      //                  .attr('fill', 'green')
-      //                  .attr('fill-opacity', 0.1);
     } else {
       // move back to old coordinates
       lab[i].x = x_old
       lab[i].y = y_old
       rej += 1
-      // if (i == investigate)
-      //   svg.append('rect').attr('x', lab[i].x - lab[i].width/2)
-      //                    .attr('y', lab[i].y - lab[i].height)
-      //                    .attr('width', lab[i].width)
-      //                    .attr('height', lab[i].height)
-      //                    .attr('text-anchor', 'middle')
-      //                    .attr('fill', 'red')
-      //                    .attr('fill-opacity', 0.1);
     }
   }
 
-  function mcrotate (currT) {
+  function mcrotate (currTemperature, sweep = 'N/A') {
     // Monte Carlo rotation move
 
     // select a random label
@@ -249,8 +245,7 @@ const labeler = function () {
     const y_old = currLab.y
 
     // old energy
-    let old_energy
-    if (user_energy) { old_energy = user_defined_energy(i, lab, anc) } else { old_energy = energy(i) }
+    let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
     // random angle
     const angle = (random.real(0, 1) - 0.5) * max_angle
@@ -276,73 +271,34 @@ const labeler = function () {
     if (currLab.y > h2) currLab.y = h2
     if (currLab.y - currLab.height < h1) currLab.y = h1 + currLab.height
 
-    // if (i == investigate)
-    // svg.append('rect').attr('x', currLab.x)
-    //    .attr('y', currLab.y - currLab.height)
-    //    .attr('width', currLab.width)
-    //    .attr('height', currLab.height)
-    //    .attr('fill', 'green')
-    //    .attr('fill-opacity', 0.1);
-
     // new energy
-    let new_energy
-    if (user_energy) { new_energy = user_defined_energy(i, lab, anc) } else { new_energy = energy(i) }
+    let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
-    // delta E
-    const delta_energy = new_energy - old_energy
+    // TODO: I think this duplicated code between mcmove and mcrotate should be done at higher callee level
 
-    if (random.real(0, 1) < Math.exp(-delta_energy / currT)) {
+    // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
+    // the more that new energy is less than old energy, the higher this gets
+    // the hotter the temperature (at beginning of sim), higher this value
+    const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
+
+    console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`)
+    const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
+
+    if (acceptChange) {
       acc += 1
       if (is_label_sorter_on) labelArraySorter.sortArrays()
-      // if (i == investigate || i == investigate2) {
-      //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
-      //                   .attr('y', currLab.y - currLab.height)
-      //                   .attr('width', currLab.width)
-      //                   .attr('height', currLab.height)
-      //                   .attr('fill', 'blue')
-      //                   .attr('fill-opacity', 0.1);
-      // }
     } else {
       // move back to old coordinates
       currLab.x = x_old
       currLab.y = y_old
       rej += 1
-      // if (i == investigate)
-      //   svg.append('rect').attr('x', currLab.x - currLab.width/2)
-      //                   .attr('y', currLab.y - currLab.height)
-      //                   .attr('width', currLab.width)
-      //                   .attr('height', currLab.height)
-      //                   .attr('fill', 'red')
-      //                   .attr('fill-opacity', 0.1);
     }
   }
 
-  function intersect (x1, x2, x3, x4, y1, y2, y3, y4) {
-    // returns true if two lines intersect, else false
-    // from http://paulbourke.net/geometry/lineline2d/
-
-    let mua,
-      mub
-    let denom,
-      numera,
-      numerb
-
-    denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
-    numera = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)
-    numerb = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)
-
-      /* Is the intersection along the the segments */
-    mua = numera / denom
-    mub = numerb / denom
-    if (!(mua < 0 || mua > 1 || mub < 0 || mub > 1)) {
-      return true
-    }
-    return false
-  }
-
-  function cooling_schedule (currT, initialT, nsweeps) {
+  function cooling_schedule (currTemperature, initialTemperature, maxSweeps) {
     // linear cooling
-    return (currT - (initialT / nsweeps))
+    // console.log('(currTemperature - (initialTemperature / maxSweeps))', (currTemperature - (initialTemperature / maxSweeps)))
+    return (currTemperature - (initialTemperature / maxSweeps))
   }
   
   function initLabBoundaries (lab) {
@@ -354,7 +310,8 @@ const labeler = function () {
     })
   }
   
-  labeler.start = function (nsweeps) {
+  labeler.start = function (maxSweeps) {
+    const startTime = Date.now()
     if (is_label_sorter_on) {
       labelArraySorter = new LabelArraySorter(lab)
     }
@@ -369,8 +326,8 @@ const labeler = function () {
     initLabBoundaries(lab)
     
     // main simulated annealing function
-    let currT = 1.0
-    let initialT = 1.0
+    let currTemperature = 1.0
+    let initialTemperature = 1.0
     
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
@@ -404,10 +361,10 @@ const labeler = function () {
       
       const timeOuts = []
       const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
-      yieldingLoop(nsweeps * lab.length, lab.length, function(i) {
-        if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+      yieldingLoop(maxSweeps * lab.length, lab.length, function(i) {
+        if (random.real(0, 1) < 0.8) { mcmove(currTemperature) } else { mcrotate(currTemperature) }
       }.bind(this), function() {
-        currT = cooling_schedule(currT, initialT, nsweeps)
+        currTemperature = cooling_schedule(currTemperature, initialTemperature, maxSweeps)
       }.bind(this), function() {
         console.log("rhtmlLabeledScatter: Label placement complete!")
         clearTimeout(masterTimeout)
@@ -415,13 +372,21 @@ const labeler = function () {
       }, timeOuts);
     } else {
       // Blocking implementation - faster for smaller numbers of labels
-      for (let i = 0; i < nsweeps; i++) {
+      let sweep = null
+      for (sweep = 0; sweep < maxSweeps; sweep++) {
         for (let j = 0; j < lab.length; j++) {
-          if (random.real(0, 1) < 0.8) { mcmove(currT) } else { mcrotate(currT) }
+          (random.real(0, 1) < 0.8) ? mcmove(currTemperature, sweep) : mcrotate(currTemperature, sweep)
         }
-        currT = cooling_schedule(currT, initialT, nsweeps)
+        currTemperature = cooling_schedule(currTemperature, initialTemperature, maxSweeps)
+        //console.log(`sweep ${sweep} complete`)
       }
-      console.log("rhtmlLabeledScatter: Label placement complete!")
+      console.log(`rhtmlLabeledScatter: Label placement complete after ${sweep} sweeps. accept/reject: ${acc}/${rej}!`)
+      console.log(JSON.stringify({
+        duration: Date.now() - startTime,
+        sweep,
+        monte_carlo_rounds: acc + rej,
+        pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
+      }))
       resolveFunc()
     }
   }
@@ -488,7 +453,7 @@ const labeler = function () {
   
   labeler.weights = function (x, y, z) {
     // Weights used in the label placement algorithm
-    w_len = x
+    weightLineLength = x
     w_lab2 = y
     w_lab_anc = z
     return labeler
