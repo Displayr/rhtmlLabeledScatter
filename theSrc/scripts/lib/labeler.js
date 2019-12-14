@@ -9,6 +9,9 @@ const OUTER_LOOP_LOGGING = 2
 const INNER_LOOP_LOGGING = 3
 const HECTIC_LOGGING = 4
 
+// independent log flags
+const TEMPERATURE_LOGGING = false
+
 const LOG_LEVEL = MINIMAL_LOGGING
 
 const labeler = function () {
@@ -220,10 +223,13 @@ const labeler = function () {
     // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
     // the more that new energy is less than old energy, the higher this gets
     // the hotter the temperature (at beginning of sim), higher this value
-    const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
+    const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
 
-    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`) }
-    const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
+    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+      if (new_energy < old_energy) { console.log(`accepting improvement`) }
+      else { console.log(`worse: old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)}`) }
+    }
+    const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
 
     if (acceptChange) {
       acc += 1
@@ -287,10 +293,10 @@ const labeler = function () {
     // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
     // the more that new energy is less than old energy, the higher this gets
     // the hotter the temperature (at beginning of sim), higher this value
-    const attenuatedImprovementIndex = Math.exp((old_energy - new_energy) / currTemperature)
+    const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
 
-    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, attenuatedImprovementIndex: ${attenuatedImprovementIndex}`) }
-    const acceptChange = random.real(0, 1) < attenuatedImprovementIndex
+    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, oddsOfAcceptingWorseLayout: ${oddsOfAcceptingWorseLayout}`) }
+    const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
 
     if (acceptChange) {
       acc += 1
@@ -303,10 +309,11 @@ const labeler = function () {
     }
   }
 
-  function cooling_schedule (currTemperature, initialTemperature, maxSweeps) {
-    // linear cooling
-    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log('(currTemperature - (initialTemperature / maxSweeps))', (currTemperature - (initialTemperature / maxSweeps))) }
-    return (currTemperature - (initialTemperature / maxSweeps))
+  function cooling_schedule ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
+    const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentSweep / maxSweeps)
+
+    if (TEMPERATURE_LOGGING) { console.log(`currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
+    return newTemperature
   }
   
   function initLabBoundaries (lab) {
@@ -334,65 +341,30 @@ const labeler = function () {
     initLabBoundaries(lab)
     
     // main simulated annealing function
-    let currTemperature = 1.0
-    let initialTemperature = 1.0
-    
+    let finalTemperature = 1.0
+    let initialTemperature = 100.0
+    let currTemperature = initialTemperature
+
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
       resolveFunc()
       
-    } else if (is_non_blocking_on) {
-      // Non-blocking implementation with timeouts
-      function yieldingLoop(count, chunksize, callback, callbackBtwnChuncks, finished, timeoutsArray) {
-        let i = 0;
-        (function chunk() {
-          let end = Math.min(i + chunksize, count);
-          for ( ; i < end; ++i) {
-            callback.call(null, i);
-          }
-          callbackBtwnChuncks()
-          if (i < count) {
-            timeoutsArray.push(setTimeout(chunk, 0));
-          } else {
-            finished.call(null);
-          }
-        })();
-      }
-    
-      // Stop label placement algorithm after 5s total runtime
-      function timeoutAllChuncks () {
-        _.map(timeOuts, t => { clearTimeout(t) })
-        console.log("rhtmlLabeledScatter: Label placement timed out reached!")
-        resolveFunc()
-      }
-      
-      const timeOuts = []
-      const masterTimeout = setTimeout(timeoutAllChuncks, 5000)
-      yieldingLoop(maxSweeps * lab.length, lab.length, function(i) {
-        if (random.real(0, 1) < 0.8) { mcmove(currTemperature) } else { mcrotate(currTemperature) }
-      }.bind(this), function() {
-        currTemperature = cooling_schedule(currTemperature, initialTemperature, maxSweeps)
-      }.bind(this), function() {
-        console.log("rhtmlLabeledScatter: Label placement complete!")
-        clearTimeout(masterTimeout)
-        resolveFunc()
-      }, timeOuts);
     } else {
       // Blocking implementation - faster for smaller numbers of labels
-      let sweep = null
-      for (sweep = 0; sweep < maxSweeps; sweep++) {
+      let currentSweep = 0
+      for (currentSweep = 0; currentSweep < maxSweeps; currentSweep++) {
         for (let j = 0; j < lab.length; j++) {
-          (random.real(0, 1) < 0.8) ? mcmove(currTemperature, sweep) : mcrotate(currTemperature, sweep)
+          (random.real(0, 1) < 0.8) ? mcmove(currTemperature, currentSweep) : mcrotate(currTemperature, currentSweep)
         }
-        currTemperature = cooling_schedule(currTemperature, initialTemperature, maxSweeps)
+        currTemperature = cooling_schedule({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps })
         //console.log(`sweep ${sweep} complete`)
       }
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${sweep} sweeps. accept/reject: ${acc}/${rej}!`)
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject: ${acc}/${rej}!`)
         console.log(JSON.stringify({
           duration: Date.now() - startTime,
-          sweep,
+          sweep: currentSweep,
           monte_carlo_rounds: acc + rej,
           pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
         }))
