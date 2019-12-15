@@ -39,6 +39,7 @@ const labeler = function () {
   let max_move = 5.0
   let max_angle = 2 * 3.1415
   let acc = 0
+  let acc_worse = 0
   let rej = 0
     
   // default weights
@@ -233,6 +234,7 @@ const labeler = function () {
 
     if (acceptChange) {
       acc += 1
+      if (new_energy >= old_energy) { acc_worse += 1}
       if (is_label_sorter_on) labelArraySorter.sortArrays()
     } else {
       // move back to old coordinates
@@ -300,6 +302,7 @@ const labeler = function () {
 
     if (acceptChange) {
       acc += 1
+      if (new_energy >= old_energy) { acc_worse += 1}
       if (is_label_sorter_on) labelArraySorter.sortArrays()
     } else {
       // move back to old coordinates
@@ -361,12 +364,16 @@ const labeler = function () {
         //console.log(`sweep ${sweep} complete`)
       }
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject: ${acc}/${rej}!`)
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject: ${acc}/${rej}! (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
           duration: Date.now() - startTime,
           sweep: currentSweep,
           monte_carlo_rounds: acc + rej,
-          pass_rate: Math.round((acc / (acc + rej)) * 100) / 100
+          pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
+          accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
+          acc,
+          rej,
+          acc_worse
         }))
       }
       resolveFunc()
