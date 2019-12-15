@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Random from 'random-js'
 import _ from 'lodash'
-import LabelArraySorter from './LabelArraySorter'
+import RBush from 'rbush'
 
 const NO_LOGGING = 0
 const MINIMAL_LOGGING = 1
@@ -30,24 +30,23 @@ const labeler = function () {
   let resolveFunc = null
   let pinned = []
   let minLabWidth = Infinity
-  let labelArraySorter = null
-  let is_label_sorter_on = false
   let is_non_blocking_on = false
   let is_placement_algo_on = true
 
   const labelTopPadding = 5
   let max_move = 5.0
   let max_angle = 2 * 3.1415
+  let skip = 0
   let acc = 0
   let acc_worse = 0
   let rej = 0
     
   // default weights
   let weightLineLength = 10.0 // leader line length
-  let w_inter = 1.0 // leader line intersection
-  let w_lablink = 2.0 // leader line-label intersection
-  let w_lab2 = 12.0 // label-label overlap
-  let w_lab_anc = 8 // label-anchor overlap
+  let weightLabelToLabelOverlap = 12.0 // label-label overlap
+  let weightLabelToAnchorOverlap = 8 // label-anchor overlap
+  // 1.0 - NB legacy value for leader line intersection (was never implemented)
+  // 2.0 - NB legacy value for leader line-label intersection (was never implemented)
 
   // penalty for length of leader line
   const placementPenaltyMultipliers = {
@@ -58,8 +57,7 @@ const labeler = function () {
     diagonalOfAnchor: weightLineLength * 15
   }
 
-
-    // booleans for user defined functions
+  // booleans for user defined functions
   let user_energy = false
   let user_schedule = false
 
@@ -139,7 +137,7 @@ const labeler = function () {
       }
     }
 
-    const potentiallyOverlappingLabels = is_label_sorter_on ? labelArraySorter.getOverlappingLabelsWithLabelId(currentLabel.id) : lab
+    const potentiallyOverlappingLabels = lab
 
     let x_overlap = null
     let y_overlap = null
@@ -160,7 +158,7 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap
 
         if (LOG_LEVEL >= HECTIC_LOGGING) { if (overlap_area > 0) { labelOverlapCount++; console.log(`label overlap!`) } }
-        energy += (overlap_area * w_lab2)
+        energy += (overlap_area * weightLabelToLabelOverlap)
       }
     })
     if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`) }
@@ -184,7 +182,7 @@ const labeler = function () {
         overlap_area /= 2
       }
       if (LOG_LEVEL >= INNER_LOOP_LOGGING) { if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) } }
-      energy += (overlap_area * w_lab_anc)
+      energy += (overlap_area * weightLabelToAnchorOverlap)
     })
     if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
     return energy
@@ -193,28 +191,39 @@ const labeler = function () {
   function mcmove (currTemperature, sweep = 'N/A') {
     // Monte Carlo translation move
 
+    // XXX: scanning for anchor is inefficient. Better to link once
     // select a random label
     const i = Math.floor(random.real(0, 1) * lab.length)
+    const currLab = lab[i]
+    let currAnc = anc.find(e => e.id === currLab.id)
+    if (currAnc === undefined) currAnc = anc[i]
 
     // Ignore if user moved label
-    if (_.includes(pinned, lab[i].id)) { return }
+    if (_.includes(pinned, lab[i].id)) { skip++; return }
+
+    // Ignore if the label fits inside the anchor point
+    if (!currAnc.collidesWithOtherAnchors && currAnc.labelFitsInside) {
+      // console.log('mcmove skipping a perfectly fit non colliding anchor point')
+      skip++
+      return
+    }
 
     // save old coordinates
-    const x_old = lab[i].x
-    const y_old = lab[i].y
+    const x_old = currLab.x
+    const y_old = currLab.y
 
     // old energy
     let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
     // random translation
-    lab[i].x += (random.real(0, 1) - 0.5) * max_move
-    lab[i].y += (random.real(0, 1) - 0.5) * max_move
+    currLab.x += (random.real(0, 1) - 0.5) * max_move
+    currLab.y += (random.real(0, 1) - 0.5) * max_move
 
     // hard wall boundaries
-    if (lab[i].x + lab[i].width / 2 > w2) lab[i].x = w2 - lab[i].width / 2
-    if (lab[i].x - lab[i].width / 2 < w1) lab[i].x = w1 + lab[i].width / 2
-    if (lab[i].y > h2) lab[i].y = h2
-    if (lab[i].y - lab[i].height < h1) lab[i].y = h1 + lab[i].height
+    if (currLab.x + currLab.width / 2 > w2) currLab.x = w2 - currLab.width / 2
+    if (currLab.x - currLab.width / 2 < w1) currLab.x = w1 + currLab.width / 2
+    if (currLab.y > h2) currLab.y = h2
+    if (currLab.y - currLab.height < h1) currLab.y = h1 + currLab.height
 
     // new energy
     let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
@@ -235,7 +244,6 @@ const labeler = function () {
     if (acceptChange) {
       acc += 1
       if (new_energy >= old_energy) { acc_worse += 1}
-      if (is_label_sorter_on) labelArraySorter.sortArrays()
     } else {
       // move back to old coordinates
       lab[i].x = x_old
@@ -254,7 +262,14 @@ const labeler = function () {
     if (currAnc === undefined) currAnc = anc[i]
 
     // Ignore if user moved label
-    if (_.includes(pinned, currLab.id)) { return }
+    if (_.includes(pinned, currLab.id)) { skip++; return }
+
+    // Ignore if the label fits inside the anchor point
+    if (!currAnc.collidesWithOtherAnchors && currAnc.labelFitsInside) {
+      // console.log('mcrotate skipping a perfectly fit non colliding anchor point')
+      skip++
+      return
+    }
 
     // save old coordinates
     const x_old = currLab.x
@@ -303,7 +318,6 @@ const labeler = function () {
     if (acceptChange) {
       acc += 1
       if (new_energy >= old_energy) { acc_worse += 1}
-      if (is_label_sorter_on) labelArraySorter.sortArrays()
     } else {
       // move back to old coordinates
       currLab.x = x_old
@@ -330,10 +344,10 @@ const labeler = function () {
   
   labeler.start = function (maxSweeps) {
     const startTime = Date.now()
-    if (is_label_sorter_on) {
-      labelArraySorter = new LabelArraySorter(lab)
-    }
-    
+
+    this.checkAnchorSetForCollision()
+
+    // TODO extract out arbitrary 5 px shift ...
     _.forEach(lab, (l, i) => {
       if (!_.includes(pinned, l.id)) {
         if (!isBubble) l.y -= 5
@@ -371,6 +385,7 @@ const labeler = function () {
           monte_carlo_rounds: acc + rej,
           pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
           accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
+          skip,
           acc,
           rej,
           acc_worse
@@ -379,7 +394,32 @@ const labeler = function () {
       resolveFunc()
     }
   }
-  
+
+  labeler.checkAnchorSetForCollision = function () {
+    const tree = new RBush()
+    _(anc).each(a => {
+      a.minX = a.x - a.r
+      a.maxX = a.x + a.r
+      a.minY = a.y - a.r
+      a.maxY = a.y + a.r
+    })
+    tree.load(anc)
+    // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
+    // TODO: test each collision more precisely
+    _(anc).each(a => {
+      const search = tree.search(a)
+        .filter(matchingAnchor => matchingAnchor.id !== a.id)
+      // console.log(`anchor ${a.id} collision:` , search)
+      a.collidesWithOtherAnchors = (search.length > 0)
+
+      // TODO this is an approximation
+      let matchingLabel = lab.find(e => e.id === a.id)
+      if (matchingLabel && matchingLabel.width < 2 * a.r) {
+        a.labelFitsInside = true
+      }
+    })
+  }
+
   labeler.promise = function (resolve) {
     resolveFunc = resolve
     return labeler
@@ -417,6 +457,7 @@ const labeler = function () {
     // users insert label positions
     if (!arguments.length) return lab
     lab = x
+
     return labeler
   }
 
@@ -424,6 +465,7 @@ const labeler = function () {
     // users insert anchor positions
     if (!arguments.length) return anc
     anc = x
+
     return labeler
   }
   
@@ -443,8 +485,8 @@ const labeler = function () {
   labeler.weights = function (x, y, z) {
     // Weights used in the label placement algorithm
     weightLineLength = x
-    w_lab2 = y
-    w_lab_anc = z
+    weightLabelToLabelOverlap = y
+    weightLabelToAnchorOverlap = z
     return labeler
   }
   
@@ -453,7 +495,6 @@ const labeler = function () {
     random = new Random(Random.engines.mt19937().seed(seed))
     max_move = maxMove
     max_angle = maxAngle
-    is_label_sorter_on = isLabelSorterOn
     is_non_blocking_on = isNonBlockingOn
     is_placement_algo_on = isPlacementAlgoOn
     return labeler
