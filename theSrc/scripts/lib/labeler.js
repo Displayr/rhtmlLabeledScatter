@@ -412,10 +412,15 @@ const labeler = function () {
       // console.log(`anchor ${a.id} collision:` , search)
       a.collidesWithOtherAnchors = (search.length > 0)
 
-      // TODO this is an approximation
+      // TODO the "if it fits" is an approximation
+      // TODO the "move it down by 1/4 of heith is a hack.
+      //  * shouldn't be done here
+      //  * don't understand why its not 1/2 of height, not 1/4
+      //  * visually it works so leaving it now
       let matchingLabel = lab.find(e => e.id === a.id)
       if (matchingLabel && matchingLabel.width < 2 * a.r) {
         a.labelFitsInside = true
+        matchingLabel.y = a.y + matchingLabel.height / 4
       }
     })
   }
