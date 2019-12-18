@@ -41,3 +41,10 @@ configs:
   - config: data.displayr_regression.set9.vardata_size_data_labeled_marker_size
   - config: data.displayr_regression.set9.vardata_size_numeric_labeled
   - config: data.displayr_regression.set9.vardata_size_numeric_labeled_filtered
+comments:
+  - location: vardata_size_numeric_labeled_filtered
+    text: bottom left labelling
+    status: red
+  - location: vardata_size_numeric_labeled
+    text: bottom left labelling
+    status: red

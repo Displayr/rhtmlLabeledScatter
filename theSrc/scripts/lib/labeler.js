@@ -10,7 +10,9 @@ const INNER_LOOP_LOGGING = 3
 const HECTIC_LOGGING = 4
 
 // independent log flags
+const OBSERVATION_LOGGING = false
 const TEMPERATURE_LOGGING = false
+const INITIALISATION_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
 
@@ -20,6 +22,10 @@ const labeler = function () {
 
   let lab = []
   let anc = []
+  // TODO: better name for points (they are not points). Nodes ? Members ?
+  let points = [] // combined data structure for efficiency like
+  let pointsWithLabels = []
+  let collisionTree = null
   let isBubble = false
   let h1 = 1
   let h2 = 1
@@ -191,39 +197,44 @@ const labeler = function () {
   function mcmove (currTemperature, sweep = 'N/A') {
     // Monte Carlo translation move
 
-    // XXX: scanning for anchor is inefficient. Better to link once
     // select a random label
-    const i = Math.floor(random.real(0, 1) * lab.length)
-    const currLab = lab[i]
-    let currAnc = anc.find(e => e.id === currLab.id)
-    if (currAnc === undefined) currAnc = anc[i]
+    const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
+    const currentPoint = pointsWithLabels[i]
+    const { label, anchor, pinned } = currentPoint
 
     // Ignore if user moved label
-    if (_.includes(pinned, lab[i].id)) { skip++; return }
+    if (pinned) { skip++; return }
 
-    // Ignore if the label fits inside the anchor point
-    if (!currAnc.collidesWithOtherAnchors && currAnc.labelFitsInside) {
-      // console.log('mcmove skipping a perfectly fit non colliding anchor point')
+    // Ignore if the label fits inside the anchor bubble
+    if (!anchor.collidesWithOtherAnchors && anchor.labelFitsInsideBubble) {
+      // console.log('mcrotate skipping a label that fits inside its bubble')
+      skip++
+      return
+    }
+
+    // Ignore if the label is optimal and has no nearby neighbors
+    if (currentPoint.noInitialCollisionAndNoNearbyNeibhbors) {
+      // console.log('mcrotate skipping a optimally placed label with no nearby neighbors')
       skip++
       return
     }
 
     // save old coordinates
-    const x_old = currLab.x
-    const y_old = currLab.y
+    const x_old = label.x
+    const y_old = label.y
 
     // old energy
     let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
 
     // random translation
-    currLab.x += (random.real(0, 1) - 0.5) * max_move
-    currLab.y += (random.real(0, 1) - 0.5) * max_move
+    label.x += (random.real(0, 1) - 0.5) * max_move
+    label.y += (random.real(0, 1) - 0.5) * max_move
 
     // hard wall boundaries
-    if (currLab.x + currLab.width / 2 > w2) currLab.x = w2 - currLab.width / 2
-    if (currLab.x - currLab.width / 2 < w1) currLab.x = w1 + currLab.width / 2
-    if (currLab.y > h2) currLab.y = h2
-    if (currLab.y - currLab.height < h1) currLab.y = h1 + currLab.height
+    if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
+    if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
+    if (label.y > h2) label.y = h2
+    if (label.y - label.height < h1) label.y = h1 + label.height
 
     // new energy
     let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
@@ -256,24 +267,30 @@ const labeler = function () {
     // Monte Carlo rotation move
 
     // select a random label
-    const i = Math.floor(random.real(0, 1) * lab.length)
-    const currLab = lab[i]
-    let currAnc = anc.find(e => e.id === currLab.id)
-    if (currAnc === undefined) currAnc = anc[i]
+    const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
+    const currentPoint = pointsWithLabels[i]
+    const { label, anchor, pinned } = currentPoint
 
     // Ignore if user moved label
-    if (_.includes(pinned, currLab.id)) { skip++; return }
+    if (pinned) { skip++; return }
 
-    // Ignore if the label fits inside the anchor point
-    if (!currAnc.collidesWithOtherAnchors && currAnc.labelFitsInside) {
-      // console.log('mcrotate skipping a perfectly fit non colliding anchor point')
+    // Ignore if the label fits inside the anchor bubble
+    if (isBubble && !anchor.collidesWithOtherAnchors && anchor.labelFitsInsideBubble) {
+      // console.log('mcrotate skipping a label that fits inside its bubble')
+      skip++
+      return
+    }
+
+    // Ignore if the label is optimal and has no nearby neighbors
+    if (currentPoint.noInitialCollisionAndNoNearbyNeibhbors) {
+      // console.log('mcrotate skipping a optimally placed label with no nearby neighbors')
       skip++
       return
     }
 
     // save old coordinates
-    const x_old = currLab.x
-    const y_old = currLab.y
+    const x_old = label.x
+    const y_old = label.y
 
     // old energy
     let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
@@ -285,22 +302,22 @@ const labeler = function () {
     const c = Math.cos(angle)
 
     // translate label (relative to anchor at origin):
-    currLab.x -= currAnc.x + minLabWidth / 2
-    currLab.y -= currAnc.y
+    label.x -= anchor.x + minLabWidth / 2
+    label.y -= anchor.y
 
     // rotate label
-    let x_new = currLab.x * c - currLab.y * s,
-      y_new = currLab.x * s + currLab.y * c
+    let x_new = label.x * c - label.y * s,
+      y_new = label.x * s + label.y * c
 
     // translate label back
-    currLab.x = x_new + currAnc.x - currLab.width / 2
-    currLab.y = y_new + currAnc.y
+    label.x = x_new + anchor.x - label.width / 2
+    label.y = y_new + anchor.y
 
     // hard wall boundaries
-    if (currLab.x + currLab.width / 2 > w2) currLab.x = w2 - currLab.width / 2
-    if (currLab.x - currLab.width / 2 < w1) currLab.x = w1 + currLab.width / 2
-    if (currLab.y > h2) currLab.y = h2
-    if (currLab.y - currLab.height < h1) currLab.y = h1 + currLab.height
+    if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
+    if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
+    if (label.y > h2) label.y = h2
+    if (label.y - label.height < h1) label.y = h1 + label.height
 
     // new energy
     let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
@@ -320,8 +337,8 @@ const labeler = function () {
       if (new_energy >= old_energy) { acc_worse += 1}
     } else {
       // move back to old coordinates
-      currLab.x = x_old
-      currLab.y = y_old
+      label.x = x_old
+      label.y = y_old
       rej += 1
     }
   }
@@ -345,7 +362,9 @@ const labeler = function () {
   labeler.start = function (maxSweeps) {
     const startTime = Date.now()
 
-    this.checkAnchorSetForCollision()
+    initLabBoundaries(lab)
+    this.buildDataStructures()
+    this.makeInitialObservations()
 
     // TODO extract out arbitrary 5 px shift ...
     _.forEach(lab, (l, i) => {
@@ -355,13 +374,13 @@ const labeler = function () {
         if (l.width < minLabWidth) minLabWidth = l.width
       }
     })
-    initLabBoundaries(lab)
-    
+
     // main simulated annealing function
     let finalTemperature = 1.0
     let initialTemperature = 100.0
     let currTemperature = initialTemperature
 
+    // TODO: this is no longer accurate as we still do _some_ stuff before this point
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
@@ -378,7 +397,7 @@ const labeler = function () {
         //console.log(`sweep ${sweep} complete`)
       }
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject: ${acc}/${rej}! (accept_worse: ${acc_worse})`)
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject/skip: ${acc}/${rej}/${skip}! (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
           duration: Date.now() - startTime,
           sweep: currentSweep,
@@ -395,34 +414,91 @@ const labeler = function () {
     }
   }
 
-  labeler.checkAnchorSetForCollision = function () {
-    const tree = new RBush()
-    _(anc).each(a => {
-      a.minX = a.x - a.r
-      a.maxX = a.x + a.r
-      a.minY = a.y - a.r
-      a.maxY = a.y + a.r
-    })
-    tree.load(anc)
+  labeler.buildDataStructures = function () {
+    _(anc).each(addMinMaxToCircle)
+    _(anc).each(a => addTypeToObject(a, 'anchor'))
+    _(lab).each(addMinMaxToRectangle)
+    _(lab).each(l => addTypeToObject(l, 'label'))
+    const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
+
+    // XXX can merge pinned here too and simplify
+    const mergedStructure = _.merge(
+      _.keyBy(nestUnderField(lab, 'label'), 'id'),
+      _.keyBy(nestUnderField(anc, 'anchor'), 'id')
+    )
+    points = _(mergedStructure)
+      .map(({ label, anchor, id }) => {
+        if (id !== anchor.id && id !== label.id) {
+          const errorMessage = 'unexpected id mismatch'
+          console.error(errorMessage)
+          throw new Error(errorMessage)
+        }
+        return {
+          id,
+          label,
+          anchor,
+          pinned: (_.includes(pinned, id))
+        }
+      })
+      .values()
+      .value()
+
+    collisionTree = new RBush()
+    collisionTree.load(anc)
+    collisionTree.load(lab)
+  }
+
+  labeler.makeInitialObservations = function () {
     // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
     // TODO: test each collision more precisely
-    _(anc).each(a => {
-      const search = tree.search(a)
-        .filter(matchingAnchor => matchingAnchor.id !== a.id)
-      // console.log(`anchor ${a.id} collision:` , search)
-      a.collidesWithOtherAnchors = (search.length > 0)
+    points.forEach(point => {
+      const {label, anchor} = point
+      const search = collisionTree.search(anchor)
+        .filter(isAnchor)
+        .filter(notSameId(anchor.id))
+      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , search.length) }
+      anchor.collidesWithOtherAnchors = (search.length > 0)
+      // if (label) { console.log(`label:${label.text} anchor collidesWithOtherAnchors: ${anchor.collidesWithOtherAnchors}`)}
 
       // TODO the "if it fits" is an approximation
-      // TODO the "move it down by 1/4 of heith is a hack.
+      // TODO the "move it down by 1/4 of height is a hack (and doesn't belong here.
       //  * shouldn't be done here
       //  * don't understand why its not 1/2 of height, not 1/4
       //  * visually it works so leaving it now
-      let matchingLabel = lab.find(e => e.id === a.id)
-      if (matchingLabel && matchingLabel.width < 2 * a.r) {
-        a.labelFitsInside = true
-        matchingLabel.y = a.y + matchingLabel.height / 4
+      anchor.labelFitsInsideBubble = false
+      if (label && isBubble) {
+        if (label.width < 2 * anchor.r) {
+          //TODO:  this observation should be on the point not on the anchor
+          anchor.labelFitsInsideBubble = true
+          label.y = anchor.y + label.height / 4
+        } else {
+          label.y = anchor.minY - 0 // TODO: make padding variable
+        }
       }
+      // if (label) { console.log(`label:${label.text} anchor labelFitsInsideBubble: ${anchor.labelFitsInsideBubble}`)}
+
+      if (label) {
+        const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
+        // TODO: make this a percentage of layout, maybe considering layout density ?
+        const expandedLabelAndAnchorBoundingBox = expandBox({
+          box: labelAndAnchorBoundingBox,
+          up: 20,
+          down: 20,
+          left: 20,
+          right: 20
+        })
+
+        const nearbyThings = collisionTree.search(expandedLabelAndAnchorBoundingBox)
+          .filter(notSameId(anchor.id))
+        point.noInitialCollisionAndNoNearbyNeibhbors = (nearbyThings.length === 0)
+      } else {
+        point.noInitialCollisionAndNoNearbyNeibhbors = false
+      }
+      // if (label) { console.log(`label:${label.text} anchor noInitialCollisionAndNoNearbyNeibhbors: ${point.noInitialCollisionAndNoNearbyNeibhbors}`)}
+
     })
+
+    pointsWithLabels = points.filter(({label}) => label)
   }
 
   labeler.promise = function (resolve) {
@@ -526,3 +602,53 @@ const labeler = function () {
 
 module.exports = labeler
 /* eslint-enable */
+
+const addMinMaxToCircle = (circle) => {
+  circle.minX = circle.x - circle.r
+  circle.maxX = circle.x + circle.r
+  circle.minY = circle.y - circle.r
+  circle.maxY = circle.y + circle.r
+  return circle
+}
+
+const addMinMaxToRectangle = (rect) => {
+  rect.minX = rect.x - rect.width / 2
+  rect.maxX = rect.x + rect.width / 2
+  rect.minY = rect.y - rect.height
+  rect.maxY = rect.y
+  return rect
+}
+
+const addTypeToObject = (obj, type) => {
+  obj.type = type
+  return obj
+}
+
+const isAnchor = ({ type } = {}) => type === 'anchor'
+// const isLabel = ({type} = {}) => type === 'label'
+const notSameId = (id) => (obj) => obj.id !== id
+
+const expandBox = ({ box, up = 0, down = 0, left = 0, right = 0 }) => {
+  return {
+    minX: box.minX - left,
+    maxX: box.minX + right,
+    minY: box.minY - up,
+    maxY: box.maxY + down
+  }
+}
+
+const combinedBoundingBox = (...boxes) => {
+  return _(boxes)
+    .filter(x => !_.isNull(x) && !_.isUndefined(x))
+    .reduce((minMaxes, box) => ({
+      minX: Math.min(minMaxes.minX, box.minX),
+      maxX: Math.max(minMaxes.maxX, box.maxX),
+      minY: Math.min(minMaxes.minY, box.minY),
+      maxY: Math.max(minMaxes.maxY, box.maxY)
+  }), {
+    minX: Infinity,
+    maxX: -Infinity,
+    minY: Infinity,
+    maxY: -Infinity
+  })
+}
