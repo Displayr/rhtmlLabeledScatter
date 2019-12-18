@@ -210,6 +210,9 @@ LabeledScatter <- function(
   xIsDateTime <- isDateTime(X[1])
   yIsDateTime <- isDateTime(Y[1])
 
+  if (any(Z < 0))
+      stop("Parameter Z (bubble size) cannot have negative values.")
+  
   x = list(
     X = jsonlite::toJSON(X),
     Y = jsonlite::toJSON(Y),
