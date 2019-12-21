@@ -35,7 +35,6 @@ const labeler = function () {
   let svg = {}
   let resolveFunc = null
   let pinned = []
-  let minLabWidth = Infinity
   let is_non_blocking_on = false
   let is_placement_algo_on = true
 
@@ -63,35 +62,26 @@ const labeler = function () {
     diagonalOfAnchor: weightLineLength * 15
   }
 
-  // booleans for user defined functions
-  let user_energy = false
-  let user_schedule = false
-
-  let user_defined_energy
-  let user_defined_schedule
-
-  function energy (index, sweep = 'N/A') {
+  labeler.energy = function ({ label, anchor } = {}) {
     // energy function, tailored for label placement
 
-    const currentLabel = lab[index]
-    let currAnchor = anc.find(e => e.id === currentLabel.id) || anc[index]
     let energy = 0
 
     const labelBoundaries = {
-      left: currentLabel.x - currentLabel.width / 2,
-      right: currentLabel.x + currentLabel.width / 2,
-      top: currentLabel.y - currentLabel.height, // TODO account for padding here ?
-      bottom: currentLabel.y,
+      left: label.x - label.width / 2,
+      right: label.x + label.width / 2,
+      top: label.y - label.height, // TODO account for padding here ?
+      bottom: label.y,
     }
 
     // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
 
-    let hdLabelLeftToAnchor = labelBoundaries.left - 4 - currAnchor.x
-    let hdLabelCenterToAnchor = currentLabel.x - currAnchor.x
-    let hdLabelRightToAnchor = labelBoundaries.right + 4 - currAnchor.x
-    let vdLabelBottomToAnchor = labelBoundaries.bottom - (currAnchor.y - 5)
-    let vdLabelCenterToAnchor = (currentLabel.y - currentLabel.height / 2) - currAnchor.y
-    let vdLabelTopToAnchor = labelBoundaries.top + labelTopPadding - currAnchor.y
+    let hdLabelLeftToAnchor = labelBoundaries.left - 4 - anchor.x
+    let hdLabelCenterToAnchor = label.x - anchor.x
+    let hdLabelRightToAnchor = labelBoundaries.right + 4 - anchor.x
+    let vdLabelBottomToAnchor = labelBoundaries.bottom - (anchor.y - 5)
+    let vdLabelCenterToAnchor = (label.y - label.height / 2) - anchor.y
+    let vdLabelTopToAnchor = labelBoundaries.top + labelTopPadding - anchor.y
 
     const hypotenuseDistanceGivenTwoSides = (x,y) => Math.sqrt(Math.pow(x,2) + Math.pow(y,2))
     const centerBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
@@ -104,13 +94,13 @@ const labeler = function () {
     const leftBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
     // Check if label is inside bubble for centering of label inside bubble
-    const labIsInsideBubbleAnc = (labelBoundaries.left < currAnchor.x + currAnchor.r)
-      && (labelBoundaries.right > currAnchor.x - currAnchor.r)
-      && (labelBoundaries.top < currAnchor.y + currAnchor.r)
-      && (labelBoundaries.bottom > currAnchor.y - currAnchor.r)
+    const labIsInsideBubbleAnc = (labelBoundaries.left < anchor.x + anchor.r)
+      && (labelBoundaries.right > anchor.x - anchor.r)
+      && (labelBoundaries.top < anchor.y + anchor.r)
+      && (labelBoundaries.bottom > anchor.y - anchor.r)
   
     if (isBubble && labIsInsideBubbleAnc) {
-      vdLabelBottomToAnchor = (currentLabel.y - currentLabel.height / 4 - currAnchor.y)
+      vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
       energy += hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
     } else {
 
@@ -152,7 +142,7 @@ const labeler = function () {
     // penalty for label-label overlap
     let labelOverlapCount = 0
     _.forEach(potentiallyOverlappingLabels, comparisonLab => {
-      if (comparisonLab.id !== currentLabel.id) {
+      if (comparisonLab.id !== label.id) {
         const comparisonLabelBoundaries = {
           left: comparisonLab.x - comparisonLab.width / 2,
           right: comparisonLab.x + comparisonLab.width / 2,
@@ -184,7 +174,7 @@ const labeler = function () {
       overlap_area = x_overlap * y_overlap
 
       // TODO: why ?
-      if (isBubble && a.id === currentLabel.id) {
+      if (isBubble && a.id === label.id) {
         overlap_area /= 2
       }
       if (LOG_LEVEL >= INNER_LOOP_LOGGING) { if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) } }
@@ -194,37 +184,10 @@ const labeler = function () {
     return energy
   }
 
-  function mcmove (currTemperature, sweep = 'N/A') {
+  labeler.mcmove = function (currTemperature, point) {
     // Monte Carlo translation move
 
-    // select a random label
-    const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
-    const currentPoint = pointsWithLabels[i]
-    const { label, anchor, pinned } = currentPoint
-
-    // Ignore if user moved label
-    if (pinned) { skip++; return }
-
-    // Ignore if the label fits inside the anchor bubble
-    if (!anchor.collidesWithOtherAnchors && anchor.labelFitsInsideBubble) {
-      // console.log('mcrotate skipping a label that fits inside its bubble')
-      skip++
-      return
-    }
-
-    // Ignore if the label is optimal and has no nearby neighbors
-    if (currentPoint.noInitialCollisionAndNoNearbyNeibhbors) {
-      // console.log('mcrotate skipping a optimally placed label with no nearby neighbors')
-      skip++
-      return
-    }
-
-    // save old coordinates
-    const x_old = label.x
-    const y_old = label.y
-
-    // old energy
-    let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
+    const { label } = point
 
     // random translation
     label.x += (random.real(0, 1) - 0.5) * max_move
@@ -235,65 +198,12 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
     if (label.y > h2) label.y = h2
     if (label.y - label.height < h1) label.y = h1 + label.height
-
-    // new energy
-    let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
-
-    // TODO: I think this duplicated code between mcmove and mcrotate should be done at higher callee level
-
-    // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
-    // the more that new energy is less than old energy, the higher this gets
-    // the hotter the temperature (at beginning of sim), higher this value
-    const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
-
-    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-      if (new_energy < old_energy) { console.log(`accepting improvement`) }
-      else { console.log(`worse: old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)}`) }
-    }
-    const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
-
-    if (acceptChange) {
-      acc += 1
-      if (new_energy >= old_energy) { acc_worse += 1}
-    } else {
-      // move back to old coordinates
-      lab[i].x = x_old
-      lab[i].y = y_old
-      rej += 1
-    }
   }
 
-  function mcrotate (currTemperature, sweep = 'N/A') {
+  labeler.mcrotate = function (currTemperature, point) {
     // Monte Carlo rotation move
 
-    // select a random label
-    const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
-    const currentPoint = pointsWithLabels[i]
-    const { label, anchor, pinned } = currentPoint
-
-    // Ignore if user moved label
-    if (pinned) { skip++; return }
-
-    // Ignore if the label fits inside the anchor bubble
-    if (isBubble && !anchor.collidesWithOtherAnchors && anchor.labelFitsInsideBubble) {
-      // console.log('mcrotate skipping a label that fits inside its bubble')
-      skip++
-      return
-    }
-
-    // Ignore if the label is optimal and has no nearby neighbors
-    if (currentPoint.noInitialCollisionAndNoNearbyNeibhbors) {
-      // console.log('mcrotate skipping a optimally placed label with no nearby neighbors')
-      skip++
-      return
-    }
-
-    // save old coordinates
-    const x_old = label.x
-    const y_old = label.y
-
-    // old energy
-    let old_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
+    const { label, anchor } = point
 
     // random angle
     const angle = (random.real(0, 1) - 0.5) * max_angle
@@ -302,14 +212,18 @@ const labeler = function () {
     const c = Math.cos(angle)
 
     // translate label (relative to anchor at origin):
-    label.x -= anchor.x + minLabWidth / 2
+    label.x -= (anchor.x + label.width / 2)
     label.y -= anchor.y
 
     // rotate label
-    let x_new = label.x * c - label.y * s,
-      y_new = label.x * s + label.y * c
+    let x_new = label.x * c - label.y * s
+    let y_new = label.x * s + label.y * c
 
     // translate label back
+    // TODO XXX: feels like this should be
+    //    label.x = x_new + (anchor.x + label.width / 2)
+    // but when I use that I get regressions.
+    // so this works but do not understand why
     label.x = x_new + anchor.x - label.width / 2
     label.y = y_new + anchor.y
 
@@ -318,32 +232,9 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
     if (label.y > h2) label.y = h2
     if (label.y - label.height < h1) label.y = h1 + label.height
-
-    // new energy
-    let new_energy = (user_energy) ? user_defined_energy(i, lab, anc) : energy(i, sweep)
-
-    // TODO: I think this duplicated code between mcmove and mcrotate should be done at higher callee level
-
-    // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
-    // the more that new energy is less than old energy, the higher this gets
-    // the hotter the temperature (at beginning of sim), higher this value
-    const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
-
-    if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`old: ${old_energy}, new: ${new_energy}, temp: ${currTemperature}, oddsOfAcceptingWorseLayout: ${oddsOfAcceptingWorseLayout}`) }
-    const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
-
-    if (acceptChange) {
-      acc += 1
-      if (new_energy >= old_energy) { acc_worse += 1}
-    } else {
-      // move back to old coordinates
-      label.x = x_old
-      label.y = y_old
-      rej += 1
-    }
   }
 
-  function cooling_schedule ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
+  labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
     const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentSweep / maxSweeps)
 
     if (TEMPERATURE_LOGGING) { console.log(`currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
@@ -364,16 +255,7 @@ const labeler = function () {
 
     initLabBoundaries(lab)
     this.buildDataStructures()
-    this.makeInitialObservations()
-
-    // TODO extract out arbitrary 5 px shift ...
-    _.forEach(lab, (l, i) => {
-      if (!_.includes(pinned, l.id)) {
-        if (!isBubble) l.y -= 5
-        // determine min labs width for mcrotate
-        if (l.width < minLabWidth) minLabWidth = l.width
-      }
-    })
+    this.makeInitialObservationsAndAdjustments()
 
     // main simulated annealing function
     let finalTemperature = 1.0
@@ -387,17 +269,78 @@ const labeler = function () {
       resolveFunc()
       
     } else {
-      // Blocking implementation - faster for smaller numbers of labels
-      let currentSweep = 0
+      let currentSweep
       for (currentSweep = 0; currentSweep < maxSweeps; currentSweep++) {
-        for (let j = 0; j < lab.length; j++) {
-          (random.real(0, 1) < 0.8) ? mcmove(currTemperature, currentSweep) : mcrotate(currTemperature, currentSweep)
+        for (let j = 0; j < pointsWithLabels.length; j++) {
+          // select a random label
+          const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
+          const point = pointsWithLabels[i]
+
+          // // iterate labels
+          // const point = pointsWithLabels[j]
+
+          const {
+            label,
+            pinned,
+            observations: {
+              static: staticObservations
+            }
+          } = point
+
+          const reasonsToSkip = [
+            pinned,
+            !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
+            staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+          ]
+
+          // Ignore if user moved label
+          if (_.some(reasonsToSkip)) {
+            if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+              console.log(`${label.text.substr(0, 8).padStart(8)}: skipping`)
+            }
+            skip++
+            continue
+          }
+
+          const x_old = label.x
+          const y_old = label.y
+
+          let old_energy = labeler.energy(point)
+
+          if (random.real(0, 1) < 0.8) {
+            labeler.mcmove(currTemperature, point)
+          } else {
+            labeler.mcrotate(currTemperature, point)
+          }
+
+          let new_energy = labeler.energy(point)
+
+          // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
+          // the more that new energy is less than old energy, the higher this gets
+          // the hotter the temperature (at beginning of sim), higher this value
+          const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
+
+          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+            if (new_energy < old_energy) { console.log(`${label.text.substr(0, 8).padStart(8)}: better: accepting`) }
+            else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)}`) }
+          }
+          const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
+
+          if (acceptChange) {
+            acc += 1
+            if (new_energy >= old_energy) { acc_worse += 1}
+          } else {
+            // move back to old coordinates
+            label.x = x_old
+            label.y = y_old
+            rej += 1
+          }
         }
-        currTemperature = cooling_schedule({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps })
-        //console.log(`sweep ${sweep} complete`)
+        currTemperature = labeler.cooling_schedule({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps })
       }
+
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject/skip: ${acc}/${rej}/${skip}! (accept_worse: ${acc_worse})`)
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
           duration: Date.now() - startTime,
           sweep: currentSweep,
@@ -421,63 +364,58 @@ const labeler = function () {
     _(lab).each(l => addTypeToObject(l, 'label'))
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
 
-    // XXX can merge pinned here too and simplify
+    const pinnedById = _.transform(pinned, (result, id) => { result[id] = { pinned: true } }, {})
+    
     const mergedStructure = _.merge(
       _.keyBy(nestUnderField(lab, 'label'), 'id'),
-      _.keyBy(nestUnderField(anc, 'anchor'), 'id')
+      _.keyBy(nestUnderField(anc, 'anchor'), 'id'),
+      pinnedById
     )
-    points = _(mergedStructure)
-      .map(({ label, anchor, id }) => {
-        if (id !== anchor.id && id !== label.id) {
-          const errorMessage = 'unexpected id mismatch'
-          console.error(errorMessage)
-          throw new Error(errorMessage)
-        }
-        return {
-          id,
-          label,
-          anchor,
-          pinned: (_.includes(pinned, id))
-        }
-      })
-      .values()
-      .value()
+    points = Object.values(mergedStructure)
 
     collisionTree = new RBush()
     collisionTree.load(anc)
     collisionTree.load(lab)
   }
 
-  labeler.makeInitialObservations = function () {
+  labeler.makeInitialObservationsAndAdjustments = function () {
     // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
     // TODO: test each collision more precisely
     points.forEach(point => {
-      const {label, anchor} = point
-      const search = collisionTree.search(anchor)
-        .filter(isAnchor)
-        .filter(notSameId(anchor.id))
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , search.length) }
-      anchor.collidesWithOtherAnchors = (search.length > 0)
-      // if (label) { console.log(`label:${label.text} anchor collidesWithOtherAnchors: ${anchor.collidesWithOtherAnchors}`)}
+      point.observations = {
+        // static observations are made once at beginning of simulation
+        static: {
+          anchorCollidesWithOtherAnchors: false,
+          labelFitsInsideBubble: false,
+          noInitialCollisionsAndNoNearbyNeighbors: false
+        },
+        // dynamic observations are updated through the annealing process
+        dynamic: {
+          
+        },
+      }
+
+      const {label, anchor, pinned, id} = point
 
       // TODO the "if it fits" is an approximation
-      // TODO the "move it down by 1/4 of height is a hack (and doesn't belong here.
+      // TODO the "move it down by 1/4 of height is a hack (and the moves do not belong here).
       //  * shouldn't be done here
       //  * don't understand why its not 1/2 of height, not 1/4
       //  * visually it works so leaving it now
-      anchor.labelFitsInsideBubble = false
-      if (label && isBubble) {
-        if (label.width < 2 * anchor.r) {
-          //TODO:  this observation should be on the point not on the anchor
-          anchor.labelFitsInsideBubble = true
-          label.y = anchor.y + label.height / 4
-        } else {
-          label.y = anchor.minY - 0 // TODO: make padding variable
-        }
-      }
-      // if (label) { console.log(`label:${label.text} anchor labelFitsInsideBubble: ${anchor.labelFitsInsideBubble}`)}
 
-      if (label) {
+      if (label && !pinned) {
+        if (isBubble) {
+          if (label.width < 2 * anchor.r) {
+            //TODO:  this observation should be on the point not on the anchor
+            point.observations.static.labelFitsInsideBubble = true
+            label.y = anchor.y + label.height / 4
+          } else {
+            label.y = anchor.minY - 0 // TODO: make padding variable
+          }
+        } else {
+          label.y -= 5
+        }
+
         const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
         // TODO: make this a percentage of layout, maybe considering layout density ?
         const expandedLabelAndAnchorBoundingBox = expandBox({
@@ -489,14 +427,34 @@ const labeler = function () {
         })
 
         const nearbyThings = collisionTree.search(expandedLabelAndAnchorBoundingBox)
-          .filter(notSameId(anchor.id))
-        point.noInitialCollisionAndNoNearbyNeibhbors = (nearbyThings.length === 0)
-      } else {
-        point.noInitialCollisionAndNoNearbyNeibhbors = false
+          .filter(notSameId(id))
+        point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = (nearbyThings.length === 0)
       }
-      // if (label) { console.log(`label:${label.text} anchor noInitialCollisionAndNoNearbyNeibhbors: ${point.noInitialCollisionAndNoNearbyNeibhbors}`)}
+
+      const search = collisionTree.search(anchor)
+        .filter(isAnchor)
+        .filter(notSameId(id))
+      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , search.length) }
+      point.observations.static.anchorCollidesWithOtherAnchors = (search.length > 0)
 
     })
+
+    if (OBSERVATION_LOGGING) {
+      const stats = _.transform(points, (result, { label, anchor, observations }) => {
+        if (anchor) { result.anchors++ }
+        if (label) { result.labels++ }
+        if (observations.static.anchorCollidesWithOtherAnchors) { result.anchorCollidesWithOtherAnchors++ }
+        if (observations.static.labelFitsInsideBubble) { result.labelFitsInsideBubble++ }
+        if (observations.static.noInitialCollisionsAndNoNearbyNeighbors) { result.noInitialCollisionsAndNoNearbyNeighbors++ }
+      }, {
+        anchors: 0,
+        labels: 0,
+        anchorCollidesWithOtherAnchors: 0,
+        labelFitsInsideBubble: 0,
+        noInitialCollisionsAndNoNearbyNeighbors: 0
+      })
+      console.log("observations on data set", stats)
+    }
 
     pointsWithLabels = points.filter(({label}) => label)
   }
@@ -578,22 +536,6 @@ const labeler = function () {
     max_angle = maxAngle
     is_non_blocking_on = isNonBlockingOn
     is_placement_algo_on = isPlacementAlgoOn
-    return labeler
-  }
-
-  labeler.alt_energy = function (x) {
-    // user defined energy
-    if (!arguments.length) return energy
-    user_defined_energy = x
-    user_energy = true
-    return labeler
-  }
-
-  labeler.alt_schedule = function (x) {
-    // user defined cooling_schedule
-    if (!arguments.length) return cooling_schedule
-    user_defined_schedule = x
-    user_schedule = true
     return labeler
   }
 
