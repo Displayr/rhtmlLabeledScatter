@@ -1,0 +1,53 @@
+# node theSrc/test/bin/compare_two_test_runs.js
+? choose baseline file VIS-513-baseline-dec11.stats.json
+? choose candidate file VIS-513-986b43-dec20.stats.json
+using VIS-513-baseline-dec11 as baseline
+using VIS-513-986b43-dec20 as candidate
+
+                            baseline : candidate
+   min_duration           : 0        : 2
+   max_duration           : 4873     : 4149
+   average_duration       : 267      : 214
+   median_duration        : 24       : 181
+   min_pass_rate          : 0.000    : 0.197
+   max_pass_rate          : 0.260    : 0.647
+   average_pass_rate      : 0.054    : 0.378
+   median_pass_rate       : 0.040    : 0.504
+   min_accept_worse_rate     : N/A      : 0.056
+   max_accept_worse_rate     : N/A      : 0.485
+   average_accept_worse_rate : N/A      : 0.244
+   median_accept_worse_rate  : N/A      : 0.333
+
+duration ratio frequencies (candidate / baseline):
+ 0.2: 19
+ 0.3: 11
+ 0.4: 4
+ 0.5: 6
+ 0.6: 12
+ 0.7: 8
+ 0.8: 24
+ 0.9: 43
+   1: 24
+ 1.1: 7
+ 1.2: 7
+ Infinity: 2
+
+counts:
+ baseline beats checkpoint on duration by more than 10%: 7
+ baseline beats checkpoint on duration by more than 25%: 2
+ baseline beats checkpoint on duration by more than 50%: 2
+ checkpoint beats baseline on duration by more than 10%: 126
+ checkpoint beats baseline on duration by more than 25%: 73
+ checkpoint beats baseline on duration by more than 50%: 39
+ baseline beats checkpoint on pass_rate by more than 10%: 7
+ baseline beats checkpoint on pass_rate by more than 25%: 7
+ baseline beats checkpoint on pass_rate by more than 50%: 7
+ checkpoint beats baseline on pass_rate by more than 10%: 135
+ checkpoint beats baseline on pass_rate by more than 25%: 134
+ checkpoint beats baseline on pass_rate by more than 50%: 131
+ baseline beats checkpoint on accept_worse_rate by more than 10%: 0
+ baseline beats checkpoint on accept_worse_rate by more than 25%: 0
+ baseline beats checkpoint on accept_worse_rate by more than 50%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 10%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 25%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 50%: 0
