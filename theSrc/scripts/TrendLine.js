@@ -68,7 +68,7 @@ class TrendLine {
 
           this.arrowheadLabels[groupName].r = groupPts[1].r
           this.arrowheadLabels[groupName].x = groupPts[1].x
-          this.arrowheadLabels[groupName].y = groupPts[1].y
+          this.arrowheadLabels[groupName].y = groupPts[1].y - groupPts[1].r - 5 // TODO: make this padding configurable
           this.arrowheadLabels[groupName].id = groupPts[1].id
           return
         default:
@@ -99,7 +99,7 @@ class TrendLine {
 
           this.arrowheadLabels[groupName].r = lastLinePt.r
           this.arrowheadLabels[groupName].x = lastLinePt.x
-          this.arrowheadLabels[groupName].y = lastLinePt.y
+          this.arrowheadLabels[groupName].y = lastLinePt.y - lastLinePt.r - 5 // TODO: make this padding configurable
           this.arrowheadLabels[groupName].id = lastLinePt.id
       }
     })

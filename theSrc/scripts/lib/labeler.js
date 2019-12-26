@@ -257,6 +257,7 @@ const labeler = function () {
     this.buildDataStructures()
     this.makeInitialObservationsAndAdjustments()
 
+
     // main simulated annealing function
     let finalTemperature = 1.0
     let initialTemperature = 100.0
@@ -398,22 +399,16 @@ const labeler = function () {
       const {label, anchor, pinned, id} = point
 
       // TODO the "if it fits" is an approximation
-      // TODO the "move it down by 1/4 of height is a hack (and the moves do not belong here).
-      //  * shouldn't be done here
+      // TODO the "move it down by 1/4 of height is a hack (also dont understand why not 1/2
+
       //  * don't understand why its not 1/2 of height, not 1/4
       //  * visually it works so leaving it now
 
       if (label && !pinned) {
-        if (isBubble) {
-          if (label.width < 2 * anchor.r) {
-            //TODO:  this observation should be on the point not on the anchor
-            point.observations.static.labelFitsInsideBubble = true
-            label.y = anchor.y + label.height / 4
-          } else {
-            label.y = anchor.minY - 0 // TODO: make padding variable
-          }
-        } else {
-          label.y -= 5
+        if (isBubble && label.width < 2 * anchor.r) {
+          //TODO:  this observation should be on the point not on the anchor
+          point.observations.static.labelFitsInsideBubble = true
+          label.y = anchor.y + label.height / 4
         }
 
         const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
@@ -436,7 +431,6 @@ const labeler = function () {
         .filter(notSameId(id))
       if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , search.length) }
       point.observations.static.anchorCollidesWithOtherAnchors = (search.length > 0)
-
     })
 
     if (OBSERVATION_LOGGING) {
@@ -447,6 +441,7 @@ const labeler = function () {
         if (observations.static.labelFitsInsideBubble) { result.labelFitsInsideBubble++ }
         if (observations.static.noInitialCollisionsAndNoNearbyNeighbors) { result.noInitialCollisionsAndNoNearbyNeighbors++ }
       }, {
+        isBubble,
         anchors: 0,
         labels: 0,
         anchorCollidesWithOtherAnchors: 0,
