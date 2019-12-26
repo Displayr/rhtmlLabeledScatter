@@ -193,11 +193,12 @@ const labeler = function () {
     label.x += (random.real(0, 1) - 0.5) * max_move
     label.y += (random.real(0, 1) - 0.5) * max_move
 
-    // hard wall boundaries
+    // hard wall boundaries // TODO duplicated / can be extracted
     if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
     if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
     if (label.y > h2) label.y = h2
     if (label.y - label.height < h1) label.y = h1 + label.height
+    addMinMaxToRectangle(label)
   }
 
   labeler.mcrotate = function (currTemperature, point) {
@@ -227,11 +228,12 @@ const labeler = function () {
     label.x = x_new + anchor.x - label.width / 2
     label.y = y_new + anchor.y
 
-    // hard wall boundaries
+    // hard wall boundaries // TODO duplicated / can be extracted
     if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
     if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
     if (label.y > h2) label.y = h2
     if (label.y - label.height < h1) label.y = h1 + label.height
+    addMinMaxToRectangle(label)
   }
 
   labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
@@ -320,12 +322,12 @@ const labeler = function () {
           // the more that new energy is less than old energy, the higher this gets
           // the hotter the temperature (at beginning of sim), higher this value
           const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
+          const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
 
           if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
             if (new_energy < old_energy) { console.log(`${label.text.substr(0, 8).padStart(8)}: better: accepting`) }
-            else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)}`) }
+            else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)} acceptChange: ${acceptChange}`) }
           }
-          const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
 
           if (acceptChange) {
             acc += 1
@@ -334,6 +336,7 @@ const labeler = function () {
             // move back to old coordinates
             label.x = x_old
             label.y = y_old
+            addMinMaxToRectangle(label)
             rej += 1
           }
         }
