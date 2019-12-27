@@ -8,7 +8,10 @@
     "test": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "jest": "^24.9.0",
+    "jest-image-snapshot": "^2.11.1",
+    "puppeteer": "^2.0.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -18,6 +21,7 @@
     "d3-extended": "^1.2.10",
     "d3-scale": "^2.0.0",
     "es6-autobind": "^1.0.7",
+    "inquirer": "^7.0.0",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
