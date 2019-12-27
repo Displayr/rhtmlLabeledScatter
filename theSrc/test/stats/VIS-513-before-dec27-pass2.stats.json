@@ -1,0 +1,957 @@
+{
+  "tests": [
+    {
+      "duration": 36,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set1-bubbles-snapshot"
+    },
+    {
+      "duration": 35,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set1-bubbles_default_size-snapshot"
+    },
+    {
+      "duration": 32,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-dim1and4-snapshot"
+    },
+    {
+      "duration": 31,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-entereddata-snapshot"
+    },
+    {
+      "duration": 34,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set1-fonts-snapshot"
+    },
+    {
+      "duration": 24,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-hiddenLabels-snapshot"
+    },
+    {
+      "duration": 32,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-logos-snapshot"
+    },
+    {
+      "duration": 34,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-mirror_dim1and4-snapshot"
+    },
+    {
+      "duration": 34,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set1-supplementary-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-bubble_chart-snapshot"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-bubble_colors-snapshot"
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-bubble_colors_zero_centered-snapshot"
+    },
+    {
+      "duration": 98,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-bubble_with_tile-snapshot"
+    },
+    {
+      "duration": 91,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-column_principal_scaled-snapshot"
+    },
+    {
+      "duration": 91,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set2-correspondence_analysis1-snapshot"
+    },
+    {
+      "duration": 77,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-correspondence_analysis2-snapshot"
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 8500,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-correspondence_analysis3-snapshot"
+    },
+    {
+      "duration": 94,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-correspondence_analysis4-snapshot"
+    },
+    {
+      "duration": 92,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-correspondence_analysis5-snapshot"
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 9000,
+      "pass_rate": 0.01,
+      "scenario": "displayr_regression_set2-correspondence_analysis8-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.18,
+      "scenario": "displayr_regression_set2-correspondence_analysis_y_narrow_range-snapshot"
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-correspondence_analysis9-snapshot"
+    },
+    {
+      "duration": 103,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set2-correspondence_analysis12-snapshot"
+    },
+    {
+      "duration": 94,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-correspondence_analysis_4-snapshot"
+    },
+    {
+      "duration": 89,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-correspondence_analysis_6-snapshot"
+    },
+    {
+      "duration": 40,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-correspondence_analysis_maxLabels-snapshot"
+    },
+    {
+      "duration": 103,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set2-correspondence_anaysis7-snapshot"
+    },
+    {
+      "duration": 91,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-row_principal_scaled-snapshot"
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.22,
+      "scenario": "displayr_regression_set2-same_titles-snapshot"
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set2-trend_reprint-snapshot"
+    },
+    {
+      "duration": 59,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set2-y_equals_zero-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set2-column_prinicpal-snapshot"
+    },
+    {
+      "duration": 167,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.17,
+      "scenario": "displayr_regression_set2-multiple_tables-snapshot"
+    },
+    {
+      "duration": 89,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-principal-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set2-standard-snapshot"
+    },
+    {
+      "duration": 95,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-symmertrical-snapshot"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set2-logo-snapshot"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-logo_error-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-logo_quote-snapshot"
+    },
+    {
+      "duration": 92,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-logo_smartquote-snapshot"
+    },
+    {
+      "duration": 92,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-logo_typo-snapshot"
+    },
+    {
+      "duration": 98,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-both_mirror-snapshot"
+    },
+    {
+      "duration": 89,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-d1_mirror-snapshot"
+    },
+    {
+      "duration": 98,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-d2_mirror-snapshot"
+    },
+    {
+      "duration": 88,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set2-no_mirror-snapshot"
+    },
+    {
+      "duration": 153,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.16,
+      "scenario": "displayr_regression_set2-multiple_table-snapshot"
+    },
+    {
+      "duration": 48,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-multiple_table_3d-snapshot"
+    },
+    {
+      "duration": 164,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-multiple_table_logo-snapshot"
+    },
+    {
+      "duration": 135,
+      "sweep": 500,
+      "monte_carlo_rounds": 10500,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-multiple_table_logo_transpose-snapshot"
+    },
+    {
+      "duration": 106,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-multiple_table_logotrend-snapshot"
+    },
+    {
+      "duration": 88,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-multiple_table_named-snapshot"
+    },
+    {
+      "duration": 153,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-multiple_table_reprint-snapshot"
+    },
+    {
+      "duration": 164,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.18,
+      "scenario": "displayr_regression_set2-multiple_table_transpose-snapshot"
+    },
+    {
+      "duration": 104,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set2-multiple_table_trend-snapshot"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-multiple_table_unamed-snapshot"
+    },
+    {
+      "duration": 95,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-focus_off_supplementary-snapshot"
+    },
+    {
+      "duration": 87,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-focus_on_supplementary-snapshot"
+    },
+    {
+      "duration": 100,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.11,
+      "scenario": "displayr_regression_set2-long_footer-snapshot"
+    },
+    {
+      "duration": 91,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-one_point-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-two_point-snapshot"
+    },
+    {
+      "duration": 92,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set2-entered_data-snapshot"
+    },
+    {
+      "duration": 95,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set2-entered_data_transpose-snapshot"
+    },
+    {
+      "duration": 93,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set2-no_titles-snapshot"
+    },
+    {
+      "duration": 39,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set3-mca_maxlabels-snapshot"
+    },
+    {
+      "duration": 40,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set3-mca_title-snapshot"
+    },
+    {
+      "duration": 135,
+      "sweep": 500,
+      "monte_carlo_rounds": 10000,
+      "pass_rate": 0.22,
+      "scenario": "displayr_regression_set3-plot_filtered-snapshot"
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.26,
+      "scenario": "displayr_regression_set3-plot_labelnames-snapshot"
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.26,
+      "scenario": "displayr_regression_set3-plot_variablenames-snapshot"
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.25,
+      "scenario": "displayr_regression_set3-plot_weighted-snapshot"
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set4-distance_entered-snapshot"
+    },
+    {
+      "duration": 87,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01,
+      "scenario": "displayr_regression_set4-distance_metric-snapshot"
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set4-distance_non_metric-snapshot"
+    },
+    {
+      "duration": 89,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01,
+      "scenario": "displayr_regression_set4-distance_object-snapshot"
+    },
+    {
+      "duration": 34,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set4-entered_data_non_metric-snapshot"
+    },
+    {
+      "duration": 172,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.24,
+      "scenario": "displayr_regression_set6-equamax_plot-snapshot"
+    },
+    {
+      "duration": 159,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.21,
+      "scenario": "displayr_regression_set6-equamax_reprint-snapshot"
+    },
+    {
+      "duration": 42,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set6-promax_plot-snapshot"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.12,
+      "scenario": "displayr_regression_set6-promax_reprint-snapshot"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set6-varimax_plot-snapshot"
+    },
+    {
+      "duration": 61,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set6-varimax_reprint-snapshot"
+    },
+    {
+      "duration": 185,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set7-column_principal-snapshot"
+    },
+    {
+      "duration": 199,
+      "sweep": 500,
+      "monte_carlo_rounds": 13000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set7-ignore_rows-snapshot"
+    },
+    {
+      "duration": 195,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set7-none-snapshot"
+    },
+    {
+      "duration": 208,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set7-row_col_titles-snapshot"
+    },
+    {
+      "duration": 213,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.16,
+      "scenario": "displayr_regression_set7-row_principal-snapshot"
+    },
+    {
+      "duration": 185,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set7-scatterplot-snapshot"
+    },
+    {
+      "duration": 210,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set7-symmetric-snapshot"
+    },
+    {
+      "duration": 91,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set8-all_labelled-snapshot"
+    },
+    {
+      "duration": 887,
+      "sweep": 500,
+      "monte_carlo_rounds": 31000,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set8-large_transparent_points-snapshot"
+    },
+    {
+      "duration": 981,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set8-list_categories-snapshot"
+    },
+    {
+      "duration": 152,
+      "sweep": 500,
+      "monte_carlo_rounds": 11000,
+      "pass_rate": 0.1,
+      "scenario": "displayr_regression_set8-list_categories_with_filter-snapshot"
+    },
+    {
+      "duration": 167,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set8-mds_metric-snapshot"
+    },
+    {
+      "duration": 176,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set8-mds_nonmetric-snapshot"
+    },
+    {
+      "duration": 247,
+      "sweep": 500,
+      "monte_carlo_rounds": 15500,
+      "pass_rate": 0.09,
+      "scenario": "displayr_regression_set8-pca-snapshot"
+    },
+    {
+      "duration": 1839,
+      "sweep": 500,
+      "monte_carlo_rounds": 40000,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set8-small_opaque_points-snapshot"
+    },
+    {
+      "duration": 417,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set8-tsne_perplexity_7-snapshot"
+    },
+    {
+      "duration": 410,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set8-tsne_perplexity_default-snapshot"
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set9-bubblechart-snapshot"
+    },
+    {
+      "duration": 55,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set9-bubblechart_debug-snapshot"
+    },
+    {
+      "duration": 57,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.05,
+      "scenario": "displayr_regression_set9-bubblechart_fonts-snapshot"
+    },
+    {
+      "duration": 0,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null,
+      "scenario": "displayr_regression_set9-bubblechart_no_autoposition-snapshot"
+    },
+    {
+      "duration": 31,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_1col_entered_with_names-snapshot"
+    },
+    {
+      "duration": 33,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_1col_vector_with_names-snapshot"
+    },
+    {
+      "duration": 57,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_customcolor-snapshot"
+    },
+    {
+      "duration": 50,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_hideaxes_labeled-snapshot"
+    },
+    {
+      "duration": 28,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set9-chart_labeled-snapshot"
+    },
+    {
+      "duration": 33,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set9-chart_labeled_debug-snapshot"
+    },
+    {
+      "duration": 71,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_logos_debug-snapshot"
+    },
+    {
+      "duration": 222,
+      "sweep": 500,
+      "monte_carlo_rounds": 15000,
+      "pass_rate": 0.01,
+      "scenario": "displayr_regression_set9-chart_multiple_tables-snapshot"
+    },
+    {
+      "duration": 74,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.03,
+      "scenario": "displayr_regression_set9-chart_multiple_tables_logos_trendlines-snapshot"
+    },
+    {
+      "duration": 74,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set9-chart_multiple_tables_na-snapshot"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set9-chart_multiple_tables_reordered-snapshot"
+    },
+    {
+      "duration": 77,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set9-chart_multiple_tables_trendlines-snapshot"
+    },
+    {
+      "duration": 54,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_nogrid_labeled-snapshot"
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_points_fontsize-snapshot"
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-chart_pointsonly-snapshot"
+    },
+    {
+      "duration": 27,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set9-chart_titles_fontsize_labeled-snapshot"
+    },
+    {
+      "duration": 35,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "displayr_regression_set9-chart_titles_labeled-snapshot"
+    },
+    {
+      "duration": 26,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set9-chart_unnamed_columns_ds1493-snapshot"
+    },
+    {
+      "duration": 52,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_datalabels-snapshot"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_datalabels_fonts-snapshot"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_datalabels_fonts_debug-snapshot"
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_datalabels_fontsize-snapshot"
+    },
+    {
+      "duration": 49,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_datalabels_fontsize_debug-snapshot"
+    },
+    {
+      "duration": 55,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_pointsonly_debug-snapshot"
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_prefix_suffix-snapshot"
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "displayr_regression_set9-charts_prefix_suffix_debug-snapshot"
+    },
+    {
+      "duration": 460,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02,
+      "scenario": "displayr_regression_set9-vardata_color_date_category_labelled-snapshot"
+    },
+    {
+      "duration": 74,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set9-vardata_color_numeric_more_labeled-snapshot"
+    },
+    {
+      "duration": 77,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04,
+      "scenario": "displayr_regression_set9-vardata_data_categoric_axis_labeled-snapshot"
+    },
+    {
+      "duration": 4331,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set9-vardata_size_and_color_categoric_labeled-snapshot"
+    },
+    {
+      "duration": 4161,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set9-vardata_size_data_labeled-snapshot"
+    },
+    {
+      "duration": 1,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null,
+      "scenario": "displayr_regression_set9-vardata_size_data_labeled_hidebubblelegend-snapshot"
+    },
+    {
+      "duration": 4588,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.1,
+      "scenario": "displayr_regression_set9-vardata_size_data_labeled_marker_size-snapshot"
+    },
+    {
+      "duration": 4239,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "displayr_regression_set9-vardata_size_numeric_labeled-snapshot"
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.06,
+      "scenario": "displayr_regression_set9-vardata_size_numeric_labeled_filtered-snapshot"
+    }
+  ],
+  "batchName": "VIS-513-before-dec27-pass2"
+}
