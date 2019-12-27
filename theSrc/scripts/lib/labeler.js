@@ -83,7 +83,7 @@ const labeler = function () {
     const rightTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelTopToAnchor)
     const leftBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
-    // OLD INCORRECT COMPUTATION
+    // OLD INCORRECT COMPUTATION of labIsInsideBubbleAnc
     // // Check if label is inside bubble for centering of label inside bubble
     // const labIsInsideBubbleAnc = (labelBoundaries.left < anchor.x + anchor.r)
     //   && (labelBoundaries.right > anchor.x - anchor.r)
@@ -125,8 +125,17 @@ const labeler = function () {
       }
     }
 
-    // TODO: can use rbush here
-    const potentiallyOverlappingLabels = lab
+    // TODO: this may need a if numLabels > X then use this ...
+    const potentiallyOverlapping = collisionTree.search(label)
+    const potentiallyOverlappingLabels = potentiallyOverlapping
+      .filter(isLabel)
+      .filter(notSameId(label.id))
+
+    const potentiallyOverlappingAnchors = potentiallyOverlapping
+      .filter(isAnchor)
+
+    // const potentiallyOverlappingLabels = lab
+    // const potentiallyOverlappingAnchors = anc
 
     let x_overlap = null
     let y_overlap = null
@@ -142,18 +151,18 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap
 
         if (overlap_area > 0) {
+          energy += (overlap_area * weightLabelToLabelOverlap)
           labelOverlapCount++
           if (LOG_LEVEL >= HECTIC_LOGGING) { console.log(`label overlap!`) }
         }
-        energy += (overlap_area * weightLabelToLabelOverlap)
       }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`) }
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING && labelOverlapCount > 0) { console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`) }
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
     let anchorOverlapCount = 0
-    _.forEach(anc, anchor => {
+    _.forEach(potentiallyOverlappingAnchors, anchor => {
       x_overlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
       y_overlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
 
@@ -163,10 +172,13 @@ const labeler = function () {
       if (isBubble && anchor.id === label.id) {
         overlap_area /= 2
       }
-      if (LOG_LEVEL >= INNER_LOOP_LOGGING) { if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) } }
-      energy += (overlap_area * weightLabelToAnchorOverlap)
+      if (overlap_area > 0) {
+        energy += (overlap_area * weightLabelToAnchorOverlap)
+        anchorOverlapCount++
+        if (LOG_LEVEL >= HECTIC_LOGGING) { console.log(`anchor overlap!`) }
+      }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING && anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
     return energy
   }
 
@@ -185,6 +197,8 @@ const labeler = function () {
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
     addMinMaxToRectangle(label)
+    collisionTree.remove(label)
+    collisionTree.insert(label)
   }
 
   labeler.mcrotate = function (currTemperature, point) {
@@ -220,6 +234,8 @@ const labeler = function () {
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
     addMinMaxToRectangle(label)
+    collisionTree.remove(label)
+    collisionTree.insert(label)
   }
 
   labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
@@ -323,6 +339,8 @@ const labeler = function () {
             label.x = x_old
             label.y = y_old
             addMinMaxToRectangle(label)
+            collisionTree.remove(label)
+            collisionTree.insert(label)
             rej += 1
           }
         }
@@ -332,6 +350,8 @@ const labeler = function () {
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
         console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
+          labelCount: lab.length,
+          anchorCount: anc.length,
           duration: Date.now() - startTime,
           sweep: currentSweep,
           monte_carlo_rounds: acc + rej,
@@ -415,11 +435,11 @@ const labeler = function () {
         point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = (nearbyThings.length === 0)
       }
 
-      const search = collisionTree.search(anchor)
+      const collidingAnchors = collisionTree.search(anchor)
         .filter(isAnchor)
         .filter(notSameId(id))
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , search.length) }
-      point.observations.static.anchorCollidesWithOtherAnchors = (search.length > 0)
+      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , collidingAnchors.length) }
+      point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchors.length > 0)
     })
 
     if (OBSERVATION_LOGGING) {
@@ -551,7 +571,7 @@ const addTypeToObject = (obj, type) => {
 }
 
 const isAnchor = ({ type } = {}) => type === 'anchor'
-// const isLabel = ({type} = {}) => type === 'label'
+const isLabel = ({ type } = {}) => type === 'label'
 const notSameId = (id) => (obj) => obj.id !== id
 
 const expandBox = ({ box, up = 0, down = 0, left = 0, right = 0 }) => {
@@ -580,10 +600,10 @@ const combinedBoundingBox = (...boxes) => {
 }
 
 const aIsInsideB = (a, b) => {
-  return (a.minX >= b.minX)
-    && (a.maxX <= b.maxX)
-    && (a.minY >= b.minY)
-    && (a.maxY <= b.minY)
+  return (a.minX >= b.minX) &&
+    (a.maxX <= b.maxX) &&
+    (a.minY >= b.minY) &&
+    (a.maxY <= b.minY)
 }
 
-const hypotenuseDistanceGivenTwoSides = (x,y) => Math.sqrt(Math.pow(x,2) + Math.pow(y,2))
+const hypotenuseDistanceGivenTwoSides = (x, y) => Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
