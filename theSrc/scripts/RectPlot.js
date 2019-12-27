@@ -258,7 +258,6 @@ class RectPlot {
 
     const numNonEmptyLabels = (_.filter(this.label, (l) => l !== '')).length
     const labelPlacementAlgoOnToggle = numNonEmptyLabels < 100
-    const labelSorterThreshold = 200 // VIS-390: this is effectively turned off
     this.labelPlacementSettings = {
       distance: labelPlacementDistanceWeight,
       labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
@@ -267,8 +266,6 @@ class RectPlot {
       maxMove: labelPlacementMaxMove,
       maxAngle: labelPlacementMaxAngle,
       seed: labelPlacementSeed,
-      isLabelSorterOn: numNonEmptyLabels > labelSorterThreshold,
-      isNonBlockingOn: numNonEmptyLabels > labelSorterThreshold,
       isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
     }
 
@@ -290,8 +287,6 @@ class RectPlot {
       this.labelPlacementSettings.maxMove,
       this.labelPlacementSettings.maxAngle,
       this.labelPlacementSettings.seed,
-      this.labelPlacementSettings.isLabelSorterOn,
-      this.labelPlacementSettings.isNonBlockingOn,
       this.labelPlacementSettings.isLabelPlacementAlgoOn)
   }
 

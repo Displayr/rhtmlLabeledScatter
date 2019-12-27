@@ -7,7 +7,7 @@ const NO_LOGGING = 0
 const MINIMAL_LOGGING = 1
 const OUTER_LOOP_LOGGING = 2
 const INNER_LOOP_LOGGING = 3
-const HECTIC_LOGGING = 4
+const TRACE_LOGGING = 4
 
 // independent log flags
 const OBSERVATION_LOGGING = false
@@ -27,15 +27,14 @@ const labeler = function () {
   let pointsWithLabels = []
   let collisionTree = null
   let isBubble = false
-  let h1 = 1
-  let h2 = 1
-  let w1 = 1
-  let w2 = 1
+  let h1 = 1 // TODO: better variable names. These are the bounds of the view port
+  let h2 = 1 // TODO: better variable names. These are the bounds of the view port
+  let w1 = 1 // TODO: better variable names. These are the bounds of the view port
+  let w2 = 1 // TODO: better variable names. These are the bounds of the view port
   let labeler = {}
   let svg = {}
   let resolveFunc = null
   let pinned = []
-  let is_non_blocking_on = false
   let is_placement_algo_on = true
 
   const labelTopPadding = 5
@@ -153,7 +152,7 @@ const labeler = function () {
         if (overlap_area > 0) {
           energy += (overlap_area * weightLabelToLabelOverlap)
           labelOverlapCount++
-          if (LOG_LEVEL >= HECTIC_LOGGING) { console.log(`label overlap!`) }
+          if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`label overlap!`) }
         }
       }
     })
@@ -175,7 +174,7 @@ const labeler = function () {
       if (overlap_area > 0) {
         energy += (overlap_area * weightLabelToAnchorOverlap)
         anchorOverlapCount++
-        if (LOG_LEVEL >= HECTIC_LOGGING) { console.log(`anchor overlap!`) }
+        if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`anchor overlap!`) }
       }
     })
     if (LOG_LEVEL >= INNER_LOOP_LOGGING && anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
@@ -533,12 +532,11 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.settings = function (seed, maxMove, maxAngle, isLabelSorterOn, isNonBlockingOn, isPlacementAlgoOn) {
+  labeler.settings = function (seed, maxMove, maxAngle, isPlacementAlgoOn) {
     // Additional exposed settings
     random = new Random(Random.engines.mt19937().seed(seed))
     max_move = maxMove
     max_angle = maxAngle
-    is_non_blocking_on = isNonBlockingOn
     is_placement_algo_on = isPlacementAlgoOn
     return labeler
   }
