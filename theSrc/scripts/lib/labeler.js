@@ -63,27 +63,17 @@ const labeler = function () {
   }
 
   labeler.energy = function ({ label, anchor } = {}) {
-    // energy function, tailored for label placement
-
     let energy = 0
-
-    const labelBoundaries = {
-      left: label.x - label.width / 2,
-      right: label.x + label.width / 2,
-      top: label.y - label.height, // TODO account for padding here ?
-      bottom: label.y,
-    }
 
     // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
 
-    let hdLabelLeftToAnchor = labelBoundaries.left - 4 - anchor.x
+    let hdLabelLeftToAnchor = label.minX - 4 - anchor.x
     let hdLabelCenterToAnchor = label.x - anchor.x
-    let hdLabelRightToAnchor = labelBoundaries.right + 4 - anchor.x
-    let vdLabelBottomToAnchor = labelBoundaries.bottom - (anchor.y - 5)
+    let hdLabelRightToAnchor = label.maxX + 4 - anchor.x
+    let vdLabelBottomToAnchor = label.maxY - (anchor.y - 5)
     let vdLabelCenterToAnchor = (label.y - label.height / 2) - anchor.y
-    let vdLabelTopToAnchor = labelBoundaries.top + labelTopPadding - anchor.y
+    let vdLabelTopToAnchor = label.minY + labelTopPadding - anchor.y
 
-    const hypotenuseDistanceGivenTwoSides = (x,y) => Math.sqrt(Math.pow(x,2) + Math.pow(y,2))
     const centerBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
     const centerTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelTopToAnchor)
     const leftCenterDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelCenterToAnchor)
@@ -93,17 +83,19 @@ const labeler = function () {
     const rightTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelTopToAnchor)
     const leftBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
+    // OLD INCORRECT COMPUTATION
+    // // Check if label is inside bubble for centering of label inside bubble
+    // const labIsInsideBubbleAnc = (labelBoundaries.left < anchor.x + anchor.r)
+    //   && (labelBoundaries.right > anchor.x - anchor.r)
+    //   && (labelBoundaries.top < anchor.y + anchor.r)
+    //   && (labelBoundaries.bottom > anchor.y - anchor.r)
+
     // Check if label is inside bubble for centering of label inside bubble
-    const labIsInsideBubbleAnc = (labelBoundaries.left < anchor.x + anchor.r)
-      && (labelBoundaries.right > anchor.x - anchor.r)
-      && (labelBoundaries.top < anchor.y + anchor.r)
-      && (labelBoundaries.bottom > anchor.y - anchor.r)
-  
+    const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
       vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
       energy += hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
     } else {
-
       // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
       const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
       switch (minDist) {
@@ -133,6 +125,7 @@ const labeler = function () {
       }
     }
 
+    // TODO: can use rbush here
     const potentiallyOverlappingLabels = lab
 
     let x_overlap = null
@@ -142,18 +135,16 @@ const labeler = function () {
     // penalty for label-label overlap
     let labelOverlapCount = 0
     _.forEach(potentiallyOverlappingLabels, comparisonLab => {
+
       if (comparisonLab.id !== label.id) {
-        const comparisonLabelBoundaries = {
-          left: comparisonLab.x - comparisonLab.width / 2,
-          right: comparisonLab.x + comparisonLab.width / 2,
-          top: comparisonLab.y - comparisonLab.height,
-          bottom: comparisonLab.y,
-        }
-        x_overlap = Math.max(0, Math.min(comparisonLabelBoundaries.right, labelBoundaries.right) - Math.max(comparisonLabelBoundaries.left, labelBoundaries.left))
-        y_overlap = Math.max(0, Math.min(comparisonLabelBoundaries.bottom, labelBoundaries.bottom) - Math.max(comparisonLabelBoundaries.top, labelBoundaries.top))
+        x_overlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
+        y_overlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
         overlap_area = x_overlap * y_overlap
 
-        if (LOG_LEVEL >= HECTIC_LOGGING) { if (overlap_area > 0) { labelOverlapCount++; console.log(`label overlap!`) } }
+        if (overlap_area > 0) {
+          labelOverlapCount++
+          if (LOG_LEVEL >= HECTIC_LOGGING) { console.log(`label overlap!`) }
+        }
         energy += (overlap_area * weightLabelToLabelOverlap)
       }
     })
@@ -162,19 +153,14 @@ const labeler = function () {
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
     let anchorOverlapCount = 0
-    _.forEach(anc, a => {
-      const anchorBoundaries = {
-        left: a.x - a.r,
-        right: a.x + a.r,
-        top: a.y - a.r,
-        bottom: a.y + a.r,
-      }
-      x_overlap = Math.max(0, Math.min(anchorBoundaries.right, labelBoundaries.right) - Math.max(anchorBoundaries.left, labelBoundaries.left))
-      y_overlap = Math.max(0, Math.min(anchorBoundaries.bottom, labelBoundaries.bottom) - Math.max(anchorBoundaries.top, labelBoundaries.top))
+    _.forEach(anc, anchor => {
+      x_overlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
+      y_overlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
+
       overlap_area = x_overlap * y_overlap
 
       // TODO: why ?
-      if (isBubble && a.id === label.id) {
+      if (isBubble && anchor.id === label.id) {
         overlap_area /= 2
       }
       if (LOG_LEVEL >= INNER_LOOP_LOGGING) { if (overlap_area > 0) { anchorOverlapCount++; console.log(`anchor overlap!`) } }
@@ -194,10 +180,10 @@ const labeler = function () {
     label.y += (random.real(0, 1) - 0.5) * max_move
 
     // hard wall boundaries // TODO duplicated / can be extracted
-    if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
-    if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
-    if (label.y > h2) label.y = h2
-    if (label.y - label.height < h1) label.y = h1 + label.height
+    if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
+    if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
+    if (label.y > h2) { label.y = h2 }
+    if (label.y - label.height < h1) { label.y = h1 + label.height }
     addMinMaxToRectangle(label)
   }
 
@@ -229,10 +215,10 @@ const labeler = function () {
     label.y = y_new + anchor.y
 
     // hard wall boundaries // TODO duplicated / can be extracted
-    if (label.x + label.width / 2 > w2) label.x = w2 - label.width / 2
-    if (label.x - label.width / 2 < w1) label.x = w1 + label.width / 2
-    if (label.y > h2) label.y = h2
-    if (label.y - label.height < h1) label.y = h1 + label.height
+    if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
+    if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
+    if (label.y > h2) { label.y = h2 }
+    if (label.y - label.height < h1) { label.y = h1 + label.height }
     addMinMaxToRectangle(label)
   }
 
@@ -592,3 +578,12 @@ const combinedBoundingBox = (...boxes) => {
     maxY: -Infinity
   })
 }
+
+const aIsInsideB = (a, b) => {
+  return (a.minX >= b.minX)
+    && (a.maxX <= b.maxX)
+    && (a.minY >= b.minY)
+    && (a.maxY <= b.minY)
+}
+
+const hypotenuseDistanceGivenTwoSides = (x,y) => Math.sqrt(Math.pow(x,2) + Math.pow(y,2))
