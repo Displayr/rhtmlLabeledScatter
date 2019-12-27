@@ -4,1171 +4,1003 @@
       "duration": 254,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.05,
-      "scenario": "bubbleplot_colas.html"
+      "pass_rate": 0.05
     },
     {
       "duration": 404,
       "sweep": 500,
       "monte_carlo_rounds": 20000,
-      "pass_rate": 0.04,
-      "scenario": "bubbleplot_colas.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 129,
       "sweep": 500,
       "monte_carlo_rounds": 7000,
-      "pass_rate": 0.04,
-      "scenario": "bubbleplot_legend.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 77,
       "sweep": 500,
       "monte_carlo_rounds": 4500,
-      "pass_rate": 0.04,
-      "scenario": "bubbleplot_legend.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 314,
       "sweep": 500,
       "monte_carlo_rounds": 16000,
-      "pass_rate": 0.03,
-      "scenario": "bubbleplot_life_expectancy.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 279,
       "sweep": 500,
       "monte_carlo_rounds": 16000,
-      "pass_rate": 0.03,
-      "scenario": "bubbleplot_life_expectancy.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 51,
       "sweep": 500,
       "monte_carlo_rounds": 2000,
-      "pass_rate": 0.02,
-      "scenario": "bubbleplot_simple.html"
+      "pass_rate": 0.02
     },
     {
       "duration": 72,
       "sweep": 500,
       "monte_carlo_rounds": 3000,
-      "pass_rate": 0.01,
-      "scenario": "error_test.html"
+      "pass_rate": 0.01
     },
     {
       "duration": 246,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.04,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 210,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.05,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "pass_rate": 0.05
     },
     {
       "duration": 184,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.03,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 177,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.02,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "pass_rate": 0.02
     },
     {
       "duration": 156,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.01,
-      "scenario": "scatterplot_axis_labels.html"
+      "pass_rate": 0.01
     },
     {
       "duration": 51,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_axis_labels.html"
+      "pass_rate": 0
     },
     {
       "duration": 460,
       "sweep": 500,
       "monte_carlo_rounds": 21000,
-      "pass_rate": 0.02,
-      "scenario": "scatterplot_busy.html"
+      "pass_rate": 0.02
     },
     {
       "duration": 181,
       "sweep": 500,
       "monte_carlo_rounds": 10000,
-      "pass_rate": 0.04,
-      "scenario": "scatterplot_categorical_bubble.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 55,
       "sweep": 500,
       "monte_carlo_rounds": 2000,
-      "pass_rate": 0,
-      "scenario": "scatterplot_categorical_simple.html"
+      "pass_rate": 0
     },
     {
       "duration": 84,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0,
-      "scenario": "scatterplot_datetime.html"
+      "pass_rate": 0
     },
     {
       "duration": 122,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_inverted.html"
+      "pass_rate": 0
     },
     {
       "duration": 95,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.02,
-      "scenario": "scatterplot_inverted.html"
+      "pass_rate": 0.02
     },
     {
       "duration": 130,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.06,
-      "scenario": "scatterplot_logos.html"
+      "pass_rate": 0.06
     },
     {
       "duration": 1076,
       "sweep": 500,
       "monte_carlo_rounds": 6000,
-      "pass_rate": 0.04,
-      "scenario": "scatterplot_mass_points_partial_labels.html"
+      "pass_rate": 0.04
     },
     {
       "duration": 121,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "pass_rate": 0
     },
     {
       "duration": 93,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "pass_rate": 0
     },
     {
       "duration": 61,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "pass_rate": 0
     },
     {
       "duration": 65,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "pass_rate": 0
     },
     {
       "duration": 64,
       "sweep": 500,
       "monte_carlo_rounds": 3000,
-      "pass_rate": 0.01,
-      "scenario": "scatterplot_simple.html"
+      "pass_rate": 0.01
     },
     {
       "duration": 82,
       "sweep": 500,
       "monte_carlo_rounds": 3000,
-      "pass_rate": 0.03,
-      "scenario": "trendline_plot.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 128,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "trendline_plot.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 18,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
-      "pass_rate": 0.06,
-      "scenario": "trendline_plot.html"
+      "pass_rate": 0.06
     },
     {
       "duration": 86,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0.03,
-      "scenario": "VIS-513.html"
+      "pass_rate": 0.03
     },
     {
       "duration": 60,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.07,
-      "scenario": "bubbles"
+      "pass_rate": 0.07
     },
     {
       "duration": 62,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.04,
-      "scenario": "bubbles_default_size"
+      "pass_rate": 0.04
     },
     {
       "duration": 61,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "dim1and4"
+      "pass_rate": 0
     },
     {
       "duration": 60,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "entereddata"
+      "pass_rate": 0
     },
     {
       "duration": 65,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.05,
-      "scenario": "fonts"
+      "pass_rate": 0.05
     },
     {
       "duration": 36,
       "sweep": 500,
       "monte_carlo_rounds": 1000,
-      "pass_rate": 0,
-      "scenario": "hiddenLabels"
+      "pass_rate": 0
     },
     {
       "duration": 56,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "logos"
+      "pass_rate": 0
     },
     {
       "duration": 54,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "mirror_dim1and4"
+      "pass_rate": 0
     },
     {
       "duration": 62,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "supplementary"
+      "pass_rate": 0
     },
     {
       "duration": 149,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "bubble_chart"
+      "pass_rate": 0.06
     },
     {
       "duration": 131,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "bubble_colors"
+      "pass_rate": 0.06
     },
     {
       "duration": 124,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "bubble_colors_zero_centered"
+      "pass_rate": 0.06
     },
     {
       "duration": 140,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "bubble_with_tile"
+      "pass_rate": 0.06
     },
     {
       "duration": 139,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "column_principal_scaled"
+      "pass_rate": 0.04
     },
     {
       "duration": 131,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.05,
-      "scenario": "correspondence_analysis1"
+      "pass_rate": 0.05
     },
     {
       "duration": 123,
       "sweep": 500,
       "monte_carlo_rounds": 7000,
-      "pass_rate": 0.04,
-      "scenario": "correspondence_analysis2"
+      "pass_rate": 0.04
     },
     {
       "duration": 129,
       "sweep": 500,
       "monte_carlo_rounds": 8500,
-      "pass_rate": 0.04,
-      "scenario": "correspondence_analysis3"
+      "pass_rate": 0.04
     },
     {
       "duration": 136,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "correspondence_analysis4"
+      "pass_rate": 0.03
     },
     {
       "duration": 141,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "correspondence_analysis5"
+      "pass_rate": 0.02
     },
     {
       "duration": 178,
       "sweep": 500,
       "monte_carlo_rounds": 9000,
-      "pass_rate": 0.01,
-      "scenario": "correspondence_analysis8"
+      "pass_rate": 0.01
     },
     {
       "duration": 123,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.05,
-      "scenario": "correspondence_analysis_y_narrow_range"
+      "pass_rate": 0.05
     },
     {
       "duration": 137,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "correspondence_analysis9"
+      "pass_rate": 0.03
     },
     {
       "duration": 120,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "correspondence_analysis12"
+      "pass_rate": 0.04
     },
     {
       "duration": 145,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "correspondence_analysis_4"
+      "pass_rate": 0.03
     },
     {
       "duration": 143,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "correspondence_analysis_6"
+      "pass_rate": 0.03
     },
     {
       "duration": 68,
       "sweep": 500,
       "monte_carlo_rounds": 3000,
-      "pass_rate": 0.04,
-      "scenario": "correspondence_analysis_maxLabels"
+      "pass_rate": 0.04
     },
     {
       "duration": 153,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "correspondence_anaysis7"
+      "pass_rate": 0.02
     },
     {
       "duration": 121,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "row_principal_scaled"
+      "pass_rate": 0.02
     },
     {
       "duration": 122,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "same_titles"
+      "pass_rate": 0.06
     },
     {
       "duration": 142,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "trend_reprint"
+      "pass_rate": 0.03
     },
     {
       "duration": 90,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0.02,
-      "scenario": "y_equals_zero"
+      "pass_rate": 0.02
     },
     {
       "duration": 118,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "column_prinicpal"
+      "pass_rate": 0.03
     },
     {
       "duration": 223,
       "sweep": 500,
       "monte_carlo_rounds": 11500,
-      "pass_rate": 0.04,
-      "scenario": "multiple_tables"
+      "pass_rate": 0.04
     },
     {
       "duration": 126,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "principal"
+      "pass_rate": 0.04
     },
     {
       "duration": 131,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "standard"
+      "pass_rate": 0.04
     },
     {
       "duration": 138,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "symmertrical"
+      "pass_rate": 0.03
     },
     {
       "duration": 137,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.05,
-      "scenario": "logo"
+      "pass_rate": 0.05
     },
     {
       "duration": 138,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "logo_error"
+      "pass_rate": 0.03
     },
     {
       "duration": 127,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "logo_quote"
+      "pass_rate": 0.02
     },
     {
       "duration": 127,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "logo_smartquote"
+      "pass_rate": 0.02
     },
     {
       "duration": 126,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.02,
-      "scenario": "logo_typo"
+      "pass_rate": 0.02
     },
     {
       "duration": 126,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "both_mirror"
+      "pass_rate": 0.04
     },
     {
       "duration": 124,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "d1_mirror"
+      "pass_rate": 0.03
     },
     {
       "duration": 149,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "d2_mirror"
+      "pass_rate": 0.04
     },
     {
       "duration": 129,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0,
-      "scenario": "no_mirror"
+      "pass_rate": 0
     },
     {
       "duration": 204,
       "sweep": 500,
       "monte_carlo_rounds": 11500,
-      "pass_rate": 0.05,
-      "scenario": "multiple_table"
+      "pass_rate": 0.05
     },
     {
       "duration": 69,
       "sweep": 500,
       "monte_carlo_rounds": 3000,
-      "pass_rate": 0.04,
-      "scenario": "multiple_table_3d"
+      "pass_rate": 0.04
     },
     {
       "duration": 209,
       "sweep": 500,
       "monte_carlo_rounds": 11500,
-      "pass_rate": 0.05,
-      "scenario": "multiple_table_logo"
+      "pass_rate": 0.05
     },
     {
       "duration": 165,
       "sweep": 500,
       "monte_carlo_rounds": 10500,
-      "pass_rate": 0.05,
-      "scenario": "multiple_table_logo_transpose"
+      "pass_rate": 0.05
     },
     {
       "duration": 145,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.06,
-      "scenario": "multiple_table_logotrend"
+      "pass_rate": 0.06
     },
     {
       "duration": 116,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.04,
-      "scenario": "multiple_table_named"
+      "pass_rate": 0.04
     },
     {
       "duration": 212,
       "sweep": 500,
       "monte_carlo_rounds": 11500,
-      "pass_rate": 0.04,
-      "scenario": "multiple_table_reprint"
+      "pass_rate": 0.04
     },
     {
       "duration": 196,
       "sweep": 500,
       "monte_carlo_rounds": 11500,
-      "pass_rate": 0.05,
-      "scenario": "multiple_table_transpose"
+      "pass_rate": 0.05
     },
     {
       "duration": 138,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "multiple_table_trend"
+      "pass_rate": 0.03
     },
     {
       "duration": 143,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.05,
-      "scenario": "multiple_table_unamed"
+      "pass_rate": 0.05
     },
     {
       "duration": 141,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.05,
-      "scenario": "focus_off_supplementary"
+      "pass_rate": 0.05
     },
     {
       "duration": 134,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "focus_on_supplementary"
+      "pass_rate": 0.03
     },
     {
       "duration": 143,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "long_footer"
+      "pass_rate": 0.03
     },
     {
       "duration": 136,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.04,
-      "scenario": "one_point"
+      "pass_rate": 0.04
     },
     {
       "duration": 137,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "two_point"
+      "pass_rate": 0.03
     },
     {
       "duration": 137,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "entered_data"
+      "pass_rate": 0.03
     },
     {
       "duration": 134,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.03,
-      "scenario": "entered_data_transpose"
+      "pass_rate": 0.03
     },
     {
       "duration": 138,
       "sweep": 500,
       "monte_carlo_rounds": 8000,
-      "pass_rate": 0.05,
-      "scenario": "no_titles"
+      "pass_rate": 0.05
     },
     {
       "duration": 61,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.04,
-      "scenario": "mca_maxlabels"
+      "pass_rate": 0.04
     },
     {
       "duration": 63,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.04,
-      "scenario": "mca_title"
+      "pass_rate": 0.04
     },
     {
       "duration": 173,
       "sweep": 500,
       "monte_carlo_rounds": 10000,
-      "pass_rate": 0.06,
-      "scenario": "plot_filtered"
+      "pass_rate": 0.06
     },
     {
       "duration": 117,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.05,
-      "scenario": "plot_labelnames"
+      "pass_rate": 0.05
     },
     {
       "duration": 113,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.06,
-      "scenario": "plot_variablenames"
+      "pass_rate": 0.06
     },
     {
       "duration": 107,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.1,
-      "scenario": "plot_weighted"
+      "pass_rate": 0.1
     },
     {
       "duration": 129,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.01,
-      "scenario": "distance_entered"
+      "pass_rate": 0.01
     },
     {
       "duration": 118,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.01,
-      "scenario": "distance_metric"
+      "pass_rate": 0.01
     },
     {
       "duration": 114,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0,
-      "scenario": "distance_non_metric"
+      "pass_rate": 0
     },
     {
       "duration": 134,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
-      "pass_rate": 0.01,
-      "scenario": "distance_object"
+      "pass_rate": 0.01
     },
     {
       "duration": 64,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.01,
-      "scenario": "entered_data_non_metric"
+      "pass_rate": 0.01
     },
     {
       "duration": 214,
       "sweep": 500,
       "monte_carlo_rounds": 12000,
-      "pass_rate": 0.06,
-      "scenario": "equamax_plot"
+      "pass_rate": 0.06
     },
     {
       "duration": 201,
       "sweep": 500,
       "monte_carlo_rounds": 12000,
-      "pass_rate": 0.05,
-      "scenario": "equamax_reprint"
+      "pass_rate": 0.05
     },
     {
       "duration": 76,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0.07,
-      "scenario": "promax_plot"
+      "pass_rate": 0.07
     },
     {
       "duration": 80,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0.05,
-      "scenario": "promax_reprint"
+      "pass_rate": 0.05
     },
     {
       "duration": 83,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.03,
-      "scenario": "varimax_plot"
+      "pass_rate": 0.03
     },
     {
       "duration": 110,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.04,
-      "scenario": "varimax_reprint"
+      "pass_rate": 0.04
     },
     {
       "duration": 229,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.01,
-      "scenario": "column_principal"
+      "pass_rate": 0.01
     },
     {
       "duration": 251,
       "sweep": 500,
       "monte_carlo_rounds": 13000,
-      "pass_rate": 0.02,
-      "scenario": "ignore_rows"
+      "pass_rate": 0.02
     },
     {
       "duration": 234,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.02,
-      "scenario": "none"
+      "pass_rate": 0.02
     },
     {
       "duration": 231,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.02,
-      "scenario": "row_col_titles"
+      "pass_rate": 0.02
     },
     {
       "duration": 254,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.02,
-      "scenario": "row_principal"
+      "pass_rate": 0.02
     },
     {
       "duration": 228,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.03,
-      "scenario": "scatterplot"
+      "pass_rate": 0.03
     },
     {
       "duration": 228,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
-      "pass_rate": 0.01,
-      "scenario": "symmetric"
+      "pass_rate": 0.01
     },
     {
       "duration": 122,
       "sweep": 500,
       "monte_carlo_rounds": 7000,
-      "pass_rate": 0.03,
-      "scenario": "all_labelled"
+      "pass_rate": 0.03
     },
     {
       "duration": 941,
       "sweep": 500,
       "monte_carlo_rounds": 31000,
-      "pass_rate": 0.04,
-      "scenario": "large_transparent_points"
+      "pass_rate": 0.04
     },
     {
       "duration": 1060,
       "sweep": 500,
       "monte_carlo_rounds": 25000,
-      "pass_rate": 0.03,
-      "scenario": "list_categories"
+      "pass_rate": 0.03
     },
     {
       "duration": 193,
       "sweep": 500,
       "monte_carlo_rounds": 11000,
-      "pass_rate": 0.05,
-      "scenario": "list_categories_with_filter"
+      "pass_rate": 0.05
     },
     {
       "duration": 222,
       "sweep": 500,
       "monte_carlo_rounds": 12000,
-      "pass_rate": 0.04,
-      "scenario": "mds_metric"
+      "pass_rate": 0.04
     },
     {
       "duration": 210,
       "sweep": 500,
       "monte_carlo_rounds": 12000,
-      "pass_rate": 0.03,
-      "scenario": "mds_nonmetric"
+      "pass_rate": 0.03
     },
     {
       "duration": 297,
       "sweep": 500,
       "monte_carlo_rounds": 15500,
-      "pass_rate": 0.04,
-      "scenario": "pca"
+      "pass_rate": 0.04
     },
     {
       "duration": 1870,
       "sweep": 500,
       "monte_carlo_rounds": 40000,
-      "pass_rate": 0.03,
-      "scenario": "small_opaque_points"
+      "pass_rate": 0.03
     },
     {
       "duration": 429,
       "sweep": 500,
       "monte_carlo_rounds": 20500,
-      "pass_rate": 0.03,
-      "scenario": "tsne_perplexity_7"
+      "pass_rate": 0.03
     },
     {
       "duration": 444,
       "sweep": 500,
       "monte_carlo_rounds": 20500,
-      "pass_rate": 0.03,
-      "scenario": "tsne_perplexity_default"
+      "pass_rate": 0.03
     },
     {
       "duration": 102,
       "sweep": 500,
       "monte_carlo_rounds": 4500,
-      "pass_rate": 0.04,
-      "scenario": "bubblechart"
+      "pass_rate": 0.04
     },
     {
       "duration": 94,
       "sweep": 500,
       "monte_carlo_rounds": 4500,
-      "pass_rate": 0.04,
-      "scenario": "bubblechart_debug"
+      "pass_rate": 0.04
     },
     {
       "duration": 79,
       "sweep": 500,
       "monte_carlo_rounds": 4500,
-      "pass_rate": 0.06,
-      "scenario": "bubblechart_fonts"
+      "pass_rate": 0.06
     },
     {
       "duration": 0,
       "sweep": 0,
       "monte_carlo_rounds": 0,
-      "pass_rate": null,
-      "scenario": "bubblechart_no_autoposition"
+      "pass_rate": null
     },
     {
       "duration": 54,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "chart_1col_entered_with_names"
+      "pass_rate": 0
     },
     {
       "duration": 58,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0,
-      "scenario": "chart_1col_vector_with_names"
+      "pass_rate": 0
     },
     {
       "duration": 91,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "chart_customcolor"
+      "pass_rate": 0
     },
     {
       "duration": 89,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "chart_hideaxes_labeled"
+      "pass_rate": 0
     },
     {
       "duration": 50,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
-      "pass_rate": 0.08,
-      "scenario": "chart_labeled"
+      "pass_rate": 0.08
     },
     {
       "duration": 50,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
-      "pass_rate": 0.08,
-      "scenario": "chart_labeled_debug"
+      "pass_rate": 0.08
     },
     {
       "duration": 95,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0,
-      "scenario": "chart_logos_debug"
+      "pass_rate": 0
     },
     {
       "duration": 291,
       "sweep": 500,
       "monte_carlo_rounds": 15000,
-      "pass_rate": 0.01,
-      "scenario": "chart_multiple_tables"
+      "pass_rate": 0.01
     },
     {
       "duration": 118,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.03,
-      "scenario": "chart_multiple_tables_logos_trendlines"
+      "pass_rate": 0.03
     },
     {
       "duration": 108,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.02,
-      "scenario": "chart_multiple_tables_na"
+      "pass_rate": 0.02
     },
     {
       "duration": 95,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.02,
-      "scenario": "chart_multiple_tables_reordered"
+      "pass_rate": 0.02
     },
     {
       "duration": 107,
       "sweep": 500,
       "monte_carlo_rounds": 5000,
-      "pass_rate": 0.02,
-      "scenario": "chart_multiple_tables_trendlines"
+      "pass_rate": 0.02
     },
     {
       "duration": 88,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "chart_nogrid_labeled"
+      "pass_rate": 0
     },
     {
       "duration": 88,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "chart_points_fontsize"
+      "pass_rate": 0
     },
     {
       "duration": 89,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "chart_pointsonly"
+      "pass_rate": 0
     },
     {
       "duration": 47,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
-      "pass_rate": 0.08,
-      "scenario": "chart_titles_fontsize_labeled"
+      "pass_rate": 0.08
     },
     {
       "duration": 50,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
-      "pass_rate": 0.08,
-      "scenario": "chart_titles_labeled"
+      "pass_rate": 0.08
     },
     {
       "duration": 34,
       "sweep": 500,
       "monte_carlo_rounds": 1000,
-      "pass_rate": 0.07,
-      "scenario": "chart_unnamed_columns_ds1493"
+      "pass_rate": 0.07
     },
     {
       "duration": 88,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_datalabels"
+      "pass_rate": 0
     },
     {
       "duration": 72,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_datalabels_fonts"
+      "pass_rate": 0
     },
     {
       "duration": 76,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_datalabels_fonts_debug"
+      "pass_rate": 0
     },
     {
       "duration": 70,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_datalabels_fontsize"
+      "pass_rate": 0
     },
     {
       "duration": 73,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_datalabels_fontsize_debug"
+      "pass_rate": 0
     },
     {
       "duration": 90,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_pointsonly_debug"
+      "pass_rate": 0
     },
     {
       "duration": 76,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_prefix_suffix"
+      "pass_rate": 0
     },
     {
       "duration": 74,
       "sweep": 500,
       "monte_carlo_rounds": 4000,
-      "pass_rate": 0,
-      "scenario": "charts_prefix_suffix_debug"
+      "pass_rate": 0
     },
     {
       "duration": 417,
       "sweep": 500,
       "monte_carlo_rounds": 2500,
-      "pass_rate": 0.02,
-      "scenario": "vardata_color_date_category_labelled"
+      "pass_rate": 0.02
     },
     {
       "duration": 118,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.01,
-      "scenario": "vardata_color_numeric_more_labeled"
+      "pass_rate": 0.01
     },
     {
       "duration": 121,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.04,
-      "scenario": "vardata_data_categoric_axis_labeled"
+      "pass_rate": 0.04
     },
     {
       "duration": 4280,
       "sweep": 500,
       "monte_carlo_rounds": 25000,
-      "pass_rate": 0.1,
-      "scenario": "vardata_size_and_color_categoric_labeled"
+      "pass_rate": 0.1
     },
     {
       "duration": 4157,
       "sweep": 500,
       "monte_carlo_rounds": 25000,
-      "pass_rate": 0.11,
-      "scenario": "vardata_size_data_labeled"
+      "pass_rate": 0.11
     },
     {
       "duration": 1,
       "sweep": 0,
       "monte_carlo_rounds": 0,
-      "pass_rate": null,
-      "scenario": "vardata_size_data_labeled_hidebubblelegend"
+      "pass_rate": null
     },
     {
       "duration": 4169,
       "sweep": 500,
       "monte_carlo_rounds": 25000,
-      "pass_rate": 0.15,
-      "scenario": "vardata_size_data_labeled_marker_size"
+      "pass_rate": 0.15
     },
     {
       "duration": 4230,
       "sweep": 500,
       "monte_carlo_rounds": 25000,
-      "pass_rate": 0.1,
-      "scenario": "vardata_size_numeric_labeled"
+      "pass_rate": 0.1
     },
     {
       "duration": 120,
       "sweep": 500,
       "monte_carlo_rounds": 6500,
-      "pass_rate": 0.06,
-      "scenario": "vardata_size_numeric_labeled_filtered"
+      "pass_rate": 0.06
     }
-  ],
-  "batchName": "VIS-513-668b8dbf-dec11"
+  ]
 }

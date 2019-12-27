@@ -1,0 +1,816 @@
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-bubbles-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":38,"sweep":500,"monte_carlo_rounds":495,"pass_rate":0.479,"accept_worse_rate":0.297,"skip":2005,"acc":237,"rej":258,"acc_worse":109,"scenario":"displayr_regression_set1-bubbles-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-bubbles_default_size-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":34,"sweep":500,"monte_carlo_rounds":486,"pass_rate":0.374,"accept_worse_rate":0.232,"skip":2014,"acc":182,"rej":304,"acc_worse":92,"scenario":"displayr_regression_set1-bubbles_default_size-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-dim1and4-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":10,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set1-dim1and4-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-entereddata-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":11,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set1-entereddata-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-fonts-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":34,"sweep":500,"monte_carlo_rounds":491,"pass_rate":0.538,"accept_worse_rate":0.364,"skip":2009,"acc":264,"rej":227,"acc_worse":130,"scenario":"displayr_regression_set1-fonts-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-hiddenLabels-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":2,"anchorCount":4,"duration":5,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set1-hiddenLabels-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-logos-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":49,"sweep":500,"monte_carlo_rounds":491,"pass_rate":0.532,"accept_worse_rate":0.356,"skip":2009,"acc":261,"rej":230,"acc_worse":127,"scenario":"displayr_regression_set1-logos-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-mirror_dim1and4-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":11,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set1-mirror_dim1and4-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set1-supplementary-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":9,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set1-supplementary-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-bubble_chart-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":164,"sweep":500,"monte_carlo_rounds":7023,"pass_rate":0.49,"accept_worse_rate":0.317,"skip":977,"acc":3440,"rej":3583,"acc_worse":1663,"scenario":"displayr_regression_set2-bubble_chart-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-bubble_colors-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":260,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.466,"accept_worse_rate":0.296,"skip":0,"acc":3731,"rej":4269,"acc_worse":1793,"scenario":"displayr_regression_set2-bubble_colors-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-bubble_colors_zero_centered-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":209,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.466,"accept_worse_rate":0.296,"skip":0,"acc":3731,"rej":4269,"acc_worse":1793,"scenario":"displayr_regression_set2-bubble_colors_zero_centered-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-bubble_with_tile-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":275,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.465,"accept_worse_rate":0.293,"skip":0,"acc":3720,"rej":4280,"acc_worse":1771,"scenario":"displayr_regression_set2-bubble_with_tile-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-column_principal_scaled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":196,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.507,"accept_worse_rate":0.337,"skip":0,"acc":4058,"rej":3942,"acc_worse":2007,"scenario":"displayr_regression_set2-column_principal_scaled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis1-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":227,"sweep":500,"monte_carlo_rounds":6996,"pass_rate":0.541,"accept_worse_rate":0.363,"skip":1004,"acc":3788,"rej":3208,"acc_worse":1828,"scenario":"displayr_regression_set2-correspondence_analysis1-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis2-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":14,"anchorCount":14,"duration":146,"sweep":500,"monte_carlo_rounds":6484,"pass_rate":0.513,"accept_worse_rate":0.339,"skip":516,"acc":3325,"rej":3159,"acc_worse":1620,"scenario":"displayr_regression_set2-correspondence_analysis2-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis3-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":17,"anchorCount":17,"duration":166,"sweep":500,"monte_carlo_rounds":6515,"pass_rate":0.523,"accept_worse_rate":0.343,"skip":1985,"acc":3405,"rej":3110,"acc_worse":1625,"scenario":"displayr_regression_set2-correspondence_analysis3-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis4-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":197,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.519,"accept_worse_rate":0.348,"skip":0,"acc":4151,"rej":3849,"acc_worse":2053,"scenario":"displayr_regression_set2-correspondence_analysis4-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis5-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":154,"sweep":500,"monte_carlo_rounds":5962,"pass_rate":0.514,"accept_worse_rate":0.339,"skip":2038,"acc":3067,"rej":2895,"acc_worse":1484,"scenario":"displayr_regression_set2-correspondence_analysis5-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis8-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":18,"anchorCount":18,"duration":152,"sweep":500,"monte_carlo_rounds":5055,"pass_rate":0.568,"accept_worse_rate":0.396,"skip":3945,"acc":2870,"rej":2185,"acc_worse":1432,"scenario":"displayr_regression_set2-correspondence_analysis8-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis_y_narrow_range-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":178,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.47,"accept_worse_rate":0.288,"skip":0,"acc":3757,"rej":4243,"acc_worse":1714,"scenario":"displayr_regression_set2-correspondence_analysis_y_narrow_range-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis9-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":192,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.554,"accept_worse_rate":0.379,"skip":0,"acc":4429,"rej":3571,"acc_worse":2177,"scenario":"displayr_regression_set2-correspondence_analysis9-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis12-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":178,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.554,"accept_worse_rate":0.379,"skip":0,"acc":4433,"rej":3567,"acc_worse":2181,"scenario":"displayr_regression_set2-correspondence_analysis12-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis_4-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":245,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.519,"accept_worse_rate":0.348,"skip":0,"acc":4151,"rej":3849,"acc_worse":2053,"scenario":"displayr_regression_set2-correspondence_analysis_4-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis_6-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":249,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.519,"accept_worse_rate":0.348,"skip":0,"acc":4151,"rej":3849,"acc_worse":2053,"scenario":"displayr_regression_set2-correspondence_analysis_6-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_analysis_maxLabels-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":6,"anchorCount":16,"duration":77,"sweep":500,"monte_carlo_rounds":2528,"pass_rate":0.538,"accept_worse_rate":0.35,"skip":472,"acc":1360,"rej":1168,"acc_worse":630,"scenario":"displayr_regression_set2-correspondence_analysis_maxLabels-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-correspondence_anaysis7-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":163,"sweep":500,"monte_carlo_rounds":5498,"pass_rate":0.521,"accept_worse_rate":0.346,"skip":2502,"acc":2862,"rej":2636,"acc_worse":1395,"scenario":"displayr_regression_set2-correspondence_anaysis7-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-row_principal_scaled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":179,"sweep":500,"monte_carlo_rounds":6471,"pass_rate":0.557,"accept_worse_rate":0.377,"skip":1529,"acc":3607,"rej":2864,"acc_worse":1736,"scenario":"displayr_regression_set2-row_principal_scaled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-same_titles-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":187,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.449,"accept_worse_rate":0.278,"skip":0,"acc":3595,"rej":4405,"acc_worse":1697,"scenario":"displayr_regression_set2-same_titles-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-trend_reprint-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":23,"duration":174,"sweep":500,"monte_carlo_rounds":6500,"pass_rate":0.563,"accept_worse_rate":0.38,"skip":1500,"acc":3659,"rej":2841,"acc_worse":1741,"scenario":"displayr_regression_set2-trend_reprint-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-y_equals_zero-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":115,"sweep":500,"monte_carlo_rounds":3028,"pass_rate":0.585,"accept_worse_rate":0.414,"skip":972,"acc":1772,"rej":1256,"acc_worse":886,"scenario":"displayr_regression_set2-y_equals_zero-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-column_prinicpal-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":124,"sweep":500,"monte_carlo_rounds":5055,"pass_rate":0.562,"accept_worse_rate":0.386,"skip":2945,"acc":2839,"rej":2216,"acc_worse":1392,"scenario":"displayr_regression_set2-column_prinicpal-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_tables-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":23,"anchorCount":23,"duration":276,"sweep":500,"monte_carlo_rounds":11500,"pass_rate":0.439,"accept_worse_rate":0.261,"skip":0,"acc":5043,"rej":6457,"acc_worse":2277,"scenario":"displayr_regression_set2-multiple_tables-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-principal-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":172,"sweep":500,"monte_carlo_rounds":7013,"pass_rate":0.531,"accept_worse_rate":0.36,"skip":987,"acc":3726,"rej":3287,"acc_worse":1851,"scenario":"displayr_regression_set2-principal-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-standard-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":154,"sweep":500,"monte_carlo_rounds":7002,"pass_rate":0.515,"accept_worse_rate":0.344,"skip":998,"acc":3607,"rej":3395,"acc_worse":1780,"scenario":"displayr_regression_set2-standard-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-symmertrical-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":191,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.532,"accept_worse_rate":0.357,"skip":0,"acc":4258,"rej":3742,"acc_worse":2076,"scenario":"displayr_regression_set2-symmertrical-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-logo-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":226,"sweep":500,"monte_carlo_rounds":7522,"pass_rate":0.361,"accept_worse_rate":0.208,"skip":478,"acc":2715,"rej":4807,"acc_worse":1261,"scenario":"displayr_regression_set2-logo-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-logo_error-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":207,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.456,"accept_worse_rate":0.284,"skip":0,"acc":3650,"rej":4350,"acc_worse":1729,"scenario":"displayr_regression_set2-logo_error-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-logo_quote-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":218,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.479,"accept_worse_rate":0.309,"skip":0,"acc":3829,"rej":4171,"acc_worse":1866,"scenario":"displayr_regression_set2-logo_quote-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-logo_smartquote-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":194,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.481,"accept_worse_rate":0.314,"skip":0,"acc":3846,"rej":4154,"acc_worse":1903,"scenario":"displayr_regression_set2-logo_smartquote-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-logo_typo-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":331,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.481,"accept_worse_rate":0.314,"skip":0,"acc":3846,"rej":4154,"acc_worse":1903,"scenario":"displayr_regression_set2-logo_typo-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-both_mirror-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":187,"sweep":500,"monte_carlo_rounds":6996,"pass_rate":0.52,"accept_worse_rate":0.339,"skip":1004,"acc":3640,"rej":3356,"acc_worse":1722,"scenario":"displayr_regression_set2-both_mirror-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-d1_mirror-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":178,"sweep":500,"monte_carlo_rounds":7007,"pass_rate":0.552,"accept_worse_rate":0.369,"skip":993,"acc":3870,"rej":3137,"acc_worse":1838,"scenario":"displayr_regression_set2-d1_mirror-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-d2_mirror-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":192,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.512,"accept_worse_rate":0.34,"skip":0,"acc":4098,"rej":3902,"acc_worse":2011,"scenario":"displayr_regression_set2-d2_mirror-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-no_mirror-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":141,"sweep":500,"monte_carlo_rounds":6992,"pass_rate":0.549,"accept_worse_rate":0.371,"skip":1008,"acc":3840,"rej":3152,"acc_worse":1859,"scenario":"displayr_regression_set2-no_mirror-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":23,"anchorCount":23,"duration":228,"sweep":500,"monte_carlo_rounds":10454,"pass_rate":0.501,"accept_worse_rate":0.326,"skip":1046,"acc":5238,"rej":5216,"acc_worse":2520,"scenario":"displayr_regression_set2-multiple_table-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_3d-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":6,"anchorCount":23,"duration":71,"sweep":500,"monte_carlo_rounds":1483,"pass_rate":0.447,"accept_worse_rate":0.291,"skip":1517,"acc":663,"rej":820,"acc_worse":336,"scenario":"displayr_regression_set2-multiple_table_3d-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_logo-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":23,"anchorCount":23,"duration":304,"sweep":500,"monte_carlo_rounds":10516,"pass_rate":0.35,"accept_worse_rate":0.195,"skip":984,"acc":3683,"rej":6833,"acc_worse":1658,"scenario":"displayr_regression_set2-multiple_table_logo-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_logo_transpose-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":21,"anchorCount":21,"duration":285,"sweep":500,"monte_carlo_rounds":9978,"pass_rate":0.38,"accept_worse_rate":0.22,"skip":522,"acc":3788,"rej":6190,"acc_worse":1746,"scenario":"displayr_regression_set2-multiple_table_logo_transpose-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_logotrend-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":23,"duration":215,"sweep":500,"monte_carlo_rounds":7022,"pass_rate":0.386,"accept_worse_rate":0.229,"skip":978,"acc":2714,"rej":4308,"acc_worse":1282,"scenario":"displayr_regression_set2-multiple_table_logotrend-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_named-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":147,"sweep":500,"monte_carlo_rounds":5972,"pass_rate":0.454,"accept_worse_rate":0.284,"skip":1528,"acc":2709,"rej":3263,"acc_worse":1292,"scenario":"displayr_regression_set2-multiple_table_named-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_reprint-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":23,"anchorCount":23,"duration":234,"sweep":500,"monte_carlo_rounds":9945,"pass_rate":0.525,"accept_worse_rate":0.351,"skip":1555,"acc":5223,"rej":4722,"acc_worse":2549,"scenario":"displayr_regression_set2-multiple_table_reprint-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_transpose-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":23,"anchorCount":23,"duration":252,"sweep":500,"monte_carlo_rounds":10016,"pass_rate":0.371,"accept_worse_rate":0.215,"skip":1484,"acc":3712,"rej":6304,"acc_worse":1731,"scenario":"displayr_regression_set2-multiple_table_transpose-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_trend-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":23,"duration":169,"sweep":500,"monte_carlo_rounds":6998,"pass_rate":0.51,"accept_worse_rate":0.334,"skip":1002,"acc":3567,"rej":3431,"acc_worse":1722,"scenario":"displayr_regression_set2-multiple_table_trend-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-multiple_table_unamed-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":117,"sweep":500,"monte_carlo_rounds":5447,"pass_rate":0.43,"accept_worse_rate":0.267,"skip":2053,"acc":2340,"rej":3107,"acc_worse":1129,"scenario":"displayr_regression_set2-multiple_table_unamed-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-focus_off_supplementary-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":157,"sweep":500,"monte_carlo_rounds":7503,"pass_rate":0.517,"accept_worse_rate":0.348,"skip":497,"acc":3878,"rej":3625,"acc_worse":1935,"scenario":"displayr_regression_set2-focus_off_supplementary-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-focus_on_supplementary-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":160,"sweep":500,"monte_carlo_rounds":7006,"pass_rate":0.515,"accept_worse_rate":0.338,"skip":994,"acc":3608,"rej":3398,"acc_worse":1738,"scenario":"displayr_regression_set2-focus_on_supplementary-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-long_footer-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":225,"sweep":500,"monte_carlo_rounds":7496,"pass_rate":0.528,"accept_worse_rate":0.356,"skip":504,"acc":3961,"rej":3535,"acc_worse":1956,"scenario":"displayr_regression_set2-long_footer-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-one_point-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":198,"sweep":500,"monte_carlo_rounds":6952,"pass_rate":0.457,"accept_worse_rate":0.288,"skip":1048,"acc":3178,"rej":3774,"acc_worse":1529,"scenario":"displayr_regression_set2-one_point-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-two_point-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":167,"sweep":500,"monte_carlo_rounds":6024,"pass_rate":0.525,"accept_worse_rate":0.352,"skip":1976,"acc":3160,"rej":2864,"acc_worse":1556,"scenario":"displayr_regression_set2-two_point-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-entered_data-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":221,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.526,"accept_worse_rate":0.351,"skip":0,"acc":4206,"rej":3794,"acc_worse":2053,"scenario":"displayr_regression_set2-entered_data-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-entered_data_transpose-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":183,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.529,"accept_worse_rate":0.354,"skip":0,"acc":4231,"rej":3769,"acc_worse":2068,"scenario":"displayr_regression_set2-entered_data_transpose-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set2-no_titles-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":16,"anchorCount":16,"duration":189,"sweep":500,"monte_carlo_rounds":8000,"pass_rate":0.509,"accept_worse_rate":0.327,"skip":0,"acc":4073,"rej":3927,"acc_worse":1908,"scenario":"displayr_regression_set2-no_titles-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-mca_maxlabels-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":19,"duration":75,"sweep":500,"monte_carlo_rounds":1464,"pass_rate":0.646,"accept_worse_rate":0.475,"skip":1036,"acc":946,"rej":518,"acc_worse":468,"scenario":"displayr_regression_set3-mca_maxlabels-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-mca_title-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":19,"duration":58,"sweep":500,"monte_carlo_rounds":1464,"pass_rate":0.646,"accept_worse_rate":0.475,"skip":1036,"acc":946,"rej":518,"acc_worse":468,"scenario":"displayr_regression_set3-mca_title-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-plot_filtered-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":20,"anchorCount":24,"duration":244,"sweep":500,"monte_carlo_rounds":8497,"pass_rate":0.424,"accept_worse_rate":0.255,"skip":1503,"acc":3605,"rej":4892,"acc_worse":1673,"scenario":"displayr_regression_set3-plot_filtered-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-plot_labelnames-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":169,"sweep":500,"monte_carlo_rounds":5503,"pass_rate":0.331,"accept_worse_rate":0.187,"skip":997,"acc":1823,"rej":3680,"acc_worse":846,"scenario":"displayr_regression_set3-plot_labelnames-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-plot_variablenames-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":182,"sweep":500,"monte_carlo_rounds":5478,"pass_rate":0.262,"accept_worse_rate":0.135,"skip":1022,"acc":1433,"rej":4045,"acc_worse":629,"scenario":"displayr_regression_set3-plot_variablenames-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set3-plot_weighted-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":189,"sweep":500,"monte_carlo_rounds":5948,"pass_rate":0.289,"accept_worse_rate":0.156,"skip":552,"acc":1718,"rej":4230,"acc_worse":780,"scenario":"displayr_regression_set3-plot_weighted-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set4-distance_entered-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":186,"sweep":500,"monte_carlo_rounds":6998,"pass_rate":0.537,"accept_worse_rate":0.36,"skip":502,"acc":3757,"rej":3241,"acc_worse":1823,"scenario":"displayr_regression_set4-distance_entered-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set4-distance_metric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":130,"sweep":500,"monte_carlo_rounds":4086,"pass_rate":0.573,"accept_worse_rate":0.395,"skip":3414,"acc":2340,"rej":1746,"acc_worse":1140,"scenario":"displayr_regression_set4-distance_metric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set4-distance_non_metric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":116,"sweep":500,"monte_carlo_rounds":3495,"pass_rate":0.563,"accept_worse_rate":0.392,"skip":4005,"acc":1966,"rej":1529,"acc_worse":984,"scenario":"displayr_regression_set4-distance_non_metric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set4-distance_object-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":15,"anchorCount":15,"duration":144,"sweep":500,"monte_carlo_rounds":6068,"pass_rate":0.532,"accept_worse_rate":0.355,"skip":1432,"acc":3226,"rej":2842,"acc_worse":1564,"scenario":"displayr_regression_set4-distance_object-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set4-entered_data_non_metric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":46,"sweep":500,"monte_carlo_rounds":1004,"pass_rate":0.509,"accept_worse_rate":0.331,"skip":1496,"acc":511,"rej":493,"acc_worse":244,"scenario":"displayr_regression_set4-entered_data_non_metric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-equamax_plot-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":24,"anchorCount":24,"duration":369,"sweep":500,"monte_carlo_rounds":11499,"pass_rate":0.252,"accept_worse_rate":0.129,"skip":501,"acc":2896,"rej":8603,"acc_worse":1277,"scenario":"displayr_regression_set6-equamax_plot-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-equamax_reprint-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":24,"anchorCount":24,"duration":382,"sweep":500,"monte_carlo_rounds":10511,"pass_rate":0.344,"accept_worse_rate":0.192,"skip":1489,"acc":3617,"rej":6894,"acc_worse":1633,"scenario":"displayr_regression_set6-equamax_reprint-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-promax_plot-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":65,"sweep":500,"monte_carlo_rounds":1457,"pass_rate":0.618,"accept_worse_rate":0.446,"skip":2543,"acc":900,"rej":557,"acc_worse":448,"scenario":"displayr_regression_set6-promax_plot-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-promax_reprint-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":54,"sweep":500,"monte_carlo_rounds":998,"pass_rate":0.616,"accept_worse_rate":0.44,"skip":3002,"acc":615,"rej":383,"acc_worse":301,"scenario":"displayr_regression_set6-promax_reprint-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-varimax_plot-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":10,"duration":140,"sweep":500,"monte_carlo_rounds":4496,"pass_rate":0.474,"accept_worse_rate":0.301,"skip":504,"acc":2133,"rej":2363,"acc_worse":1019,"scenario":"displayr_regression_set6-varimax_plot-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set6-varimax_reprint-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":10,"duration":100,"sweep":500,"monte_carlo_rounds":3014,"pass_rate":0.495,"accept_worse_rate":0.334,"skip":1986,"acc":1492,"rej":1522,"acc_worse":762,"scenario":"displayr_regression_set6-varimax_reprint-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-column_principal-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":224,"sweep":500,"monte_carlo_rounds":9545,"pass_rate":0.58,"accept_worse_rate":0.405,"skip":3955,"acc":5539,"rej":4006,"acc_worse":2723,"scenario":"displayr_regression_set7-column_principal-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-ignore_rows-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":26,"anchorCount":26,"duration":337,"sweep":500,"monte_carlo_rounds":11516,"pass_rate":0.407,"accept_worse_rate":0.251,"skip":1484,"acc":4688,"rej":6828,"acc_worse":2286,"scenario":"displayr_regression_set7-ignore_rows-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-none-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":280,"sweep":500,"monte_carlo_rounds":11514,"pass_rate":0.484,"accept_worse_rate":0.316,"skip":1986,"acc":5568,"rej":5946,"acc_worse":2743,"scenario":"displayr_regression_set7-none-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-row_col_titles-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":253,"sweep":500,"monte_carlo_rounds":11469,"pass_rate":0.458,"accept_worse_rate":0.295,"skip":2031,"acc":5251,"rej":6218,"acc_worse":2604,"scenario":"displayr_regression_set7-row_col_titles-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-row_principal-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":290,"sweep":500,"monte_carlo_rounds":11953,"pass_rate":0.456,"accept_worse_rate":0.286,"skip":1547,"acc":5454,"rej":6499,"acc_worse":2603,"scenario":"displayr_regression_set7-row_principal-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-scatterplot-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":258,"sweep":500,"monte_carlo_rounds":10998,"pass_rate":0.551,"accept_worse_rate":0.375,"skip":2502,"acc":6062,"rej":4936,"acc_worse":2962,"scenario":"displayr_regression_set7-scatterplot-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set7-symmetric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":27,"anchorCount":27,"duration":255,"sweep":500,"monte_carlo_rounds":11035,"pass_rate":0.547,"accept_worse_rate":0.369,"skip":2465,"acc":6034,"rej":5001,"acc_worse":2929,"scenario":"displayr_regression_set7-symmetric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-all_labelled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":14,"anchorCount":14,"duration":80,"sweep":500,"monte_carlo_rounds":2534,"pass_rate":0.497,"accept_worse_rate":0.332,"skip":4466,"acc":1260,"rej":1274,"acc_worse":634,"scenario":"displayr_regression_set8-all_labelled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-large_transparent_points-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":62,"anchorCount":62,"duration":896,"sweep":500,"monte_carlo_rounds":28929,"pass_rate":0.231,"accept_worse_rate":0.12,"skip":2071,"acc":6695,"rej":22234,"acc_worse":3020,"scenario":"displayr_regression_set8-large_transparent_points-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-list_categories-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":140,"duration":538,"sweep":500,"monte_carlo_rounds":23992,"pass_rate":0.375,"accept_worse_rate":0.223,"skip":1008,"acc":9005,"rej":14987,"acc_worse":4301,"scenario":"displayr_regression_set8-list_categories-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-list_categories_with_filter-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":22,"anchorCount":22,"duration":244,"sweep":500,"monte_carlo_rounds":8502,"pass_rate":0.296,"accept_worse_rate":0.16,"skip":2498,"acc":2517,"rej":5985,"acc_worse":1139,"scenario":"displayr_regression_set8-list_categories_with_filter-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-mds_metric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":24,"anchorCount":24,"duration":232,"sweep":500,"monte_carlo_rounds":11513,"pass_rate":0.337,"accept_worse_rate":0.198,"skip":487,"acc":3875,"rej":7638,"acc_worse":1882,"scenario":"displayr_regression_set8-mds_metric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-mds_nonmetric-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":24,"anchorCount":24,"duration":160,"sweep":500,"monte_carlo_rounds":6504,"pass_rate":0.481,"accept_worse_rate":0.311,"skip":5496,"acc":3128,"rej":3376,"acc_worse":1524,"scenario":"displayr_regression_set8-mds_nonmetric-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-pca-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":31,"anchorCount":31,"duration":366,"sweep":500,"monte_carlo_rounds":13943,"pass_rate":0.29,"accept_worse_rate":0.159,"skip":1557,"acc":4043,"rej":9900,"acc_worse":1867,"scenario":"displayr_regression_set8-pca-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-small_opaque_points-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":80,"anchorCount":135,"duration":700,"sweep":500,"monte_carlo_rounds":39440,"pass_rate":0.478,"accept_worse_rate":0.307,"skip":560,"acc":18835,"rej":20605,"acc_worse":9128,"scenario":"displayr_regression_set8-small_opaque_points-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-tsne_perplexity_7-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":41,"anchorCount":41,"duration":341,"sweep":500,"monte_carlo_rounds":17481,"pass_rate":0.522,"accept_worse_rate":0.346,"skip":3019,"acc":9119,"rej":8362,"acc_worse":4433,"scenario":"displayr_regression_set8-tsne_perplexity_7-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set8-tsne_perplexity_default-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":41,"anchorCount":41,"duration":254,"sweep":500,"monte_carlo_rounds":14973,"pass_rate":0.514,"accept_worse_rate":0.34,"skip":5527,"acc":7697,"rej":7276,"acc_worse":3751,"scenario":"displayr_regression_set8-tsne_perplexity_default-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-bubblechart-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":9,"anchorCount":9,"duration":62,"sweep":500,"monte_carlo_rounds":1443,"pass_rate":0.501,"accept_worse_rate":0.33,"skip":3057,"acc":723,"rej":720,"acc_worse":354,"scenario":"displayr_regression_set9-bubblechart-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-bubblechart_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":9,"anchorCount":9,"duration":58,"sweep":500,"monte_carlo_rounds":1443,"pass_rate":0.496,"accept_worse_rate":0.322,"skip":3057,"acc":716,"rej":727,"acc_worse":346,"scenario":"displayr_regression_set9-bubblechart_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-bubblechart_fonts-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":9,"anchorCount":9,"duration":71,"sweep":500,"monte_carlo_rounds":3025,"pass_rate":0.552,"accept_worse_rate":0.375,"skip":1475,"acc":1669,"rej":1356,"acc_worse":812,"scenario":"displayr_regression_set9-bubblechart_fonts-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-bubblechart_no_autoposition-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":9,"anchorCount":9,"duration":3,"sweep":0,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":0,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-bubblechart_no_autoposition-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_1col_entered_with_names-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":10,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_1col_entered_with_names-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_1col_vector_with_names-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":5,"duration":10,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":2500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_1col_vector_with_names-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_customcolor-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":15,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_customcolor-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_hideaxes_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":23,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_hideaxes_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":3,"anchorCount":3,"duration":10,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_labeled_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":3,"anchorCount":3,"duration":7,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_labeled_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_logos_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":10,"duration":58,"sweep":500,"monte_carlo_rounds":1481,"pass_rate":0.591,"accept_worse_rate":0.413,"skip":3519,"acc":876,"rej":605,"acc_worse":425,"scenario":"displayr_regression_set9-chart_logos_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_multiple_tables-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":30,"anchorCount":30,"duration":108,"sweep":500,"monte_carlo_rounds":3922,"pass_rate":0.45,"accept_worse_rate":0.288,"skip":11078,"acc":1764,"rej":2158,"acc_worse":872,"scenario":"displayr_regression_set9-chart_multiple_tables-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_multiple_tables_logos_trendlines-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":30,"duration":111,"sweep":500,"monte_carlo_rounds":1973,"pass_rate":0.394,"accept_worse_rate":0.246,"skip":3027,"acc":778,"rej":1195,"acc_worse":390,"scenario":"displayr_regression_set9-chart_multiple_tables_logos_trendlines-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_multiple_tables_na-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":29,"duration":79,"sweep":500,"monte_carlo_rounds":1470,"pass_rate":0.534,"accept_worse_rate":0.357,"skip":3530,"acc":785,"rej":685,"acc_worse":380,"scenario":"displayr_regression_set9-chart_multiple_tables_na-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_multiple_tables_reordered-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":20,"duration":62,"sweep":500,"monte_carlo_rounds":1010,"pass_rate":0.527,"accept_worse_rate":0.358,"skip":3990,"acc":532,"rej":478,"acc_worse":266,"scenario":"displayr_regression_set9-chart_multiple_tables_reordered-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_multiple_tables_trendlines-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":10,"anchorCount":30,"duration":67,"sweep":500,"monte_carlo_rounds":1470,"pass_rate":0.534,"accept_worse_rate":0.357,"skip":3530,"acc":785,"rej":685,"acc_worse":380,"scenario":"displayr_regression_set9-chart_multiple_tables_trendlines-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_nogrid_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":15,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_nogrid_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_points_fontsize-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":12,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_points_fontsize-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_pointsonly-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":16,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_pointsonly-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_titles_fontsize_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":3,"anchorCount":3,"duration":9,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_titles_fontsize_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_titles_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":3,"anchorCount":3,"duration":7,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1500,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_titles_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-chart_unnamed_columns_ds1493-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":2,"anchorCount":2,"duration":5,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":1000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-chart_unnamed_columns_ds1493-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_datalabels-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":13,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_datalabels-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_datalabels_fonts-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":13,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_datalabels_fonts-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_datalabels_fonts_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":12,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_datalabels_fonts_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_datalabels_fontsize-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":17,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_datalabels_fontsize-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_datalabels_fontsize_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":14,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_datalabels_fontsize_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_pointsonly_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":13,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_pointsonly_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_prefix_suffix-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":13,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_prefix_suffix-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-charts_prefix_suffix_debug-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":8,"anchorCount":8,"duration":15,"sweep":500,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":4000,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-charts_prefix_suffix_debug-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_color_date_category_labelled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":5,"anchorCount":800,"duration":166,"sweep":500,"monte_carlo_rounds":2500,"pass_rate":0.219,"accept_worse_rate":0.119,"skip":0,"acc":548,"rej":1952,"acc_worse":263,"scenario":"displayr_regression_set9-vardata_color_date_category_labelled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_color_numeric_more_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":103,"sweep":500,"monte_carlo_rounds":3541,"pass_rate":0.483,"accept_worse_rate":0.314,"skip":2959,"acc":1709,"rej":1832,"acc_worse":838,"scenario":"displayr_regression_set9-vardata_color_numeric_more_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_data_categoric_axis_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":71,"sweep":500,"monte_carlo_rounds":2014,"pass_rate":0.464,"accept_worse_rate":0.284,"skip":4486,"acc":935,"rej":1079,"acc_worse":429,"scenario":"displayr_regression_set9-vardata_data_categoric_axis_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_and_color_categoric_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":800,"duration":1169,"sweep":500,"monte_carlo_rounds":25000,"pass_rate":0.163,"accept_worse_rate":0.046,"skip":0,"acc":4073,"rej":20927,"acc_worse":1004,"scenario":"displayr_regression_set9-vardata_size_and_color_categoric_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_data_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":800,"duration":1229,"sweep":500,"monte_carlo_rounds":25000,"pass_rate":0.161,"accept_worse_rate":0.045,"skip":0,"acc":4016,"rej":20984,"acc_worse":992,"scenario":"displayr_regression_set9-vardata_size_data_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_data_labeled_hidebubblelegend-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":800,"duration":63,"sweep":0,"monte_carlo_rounds":0,"pass_rate":null,"accept_worse_rate":null,"skip":0,"acc":0,"rej":0,"acc_worse":0,"scenario":"displayr_regression_set9-vardata_size_data_labeled_hidebubblelegend-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_data_labeled_marker_size-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":800,"duration":1433,"sweep":500,"monte_carlo_rounds":25000,"pass_rate":0.191,"accept_worse_rate":0.044,"skip":0,"acc":4767,"rej":20233,"acc_worse":931,"scenario":"displayr_regression_set9-vardata_size_data_labeled_marker_size-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_numeric_labeled-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":50,"anchorCount":800,"duration":1103,"sweep":500,"monte_carlo_rounds":25000,"pass_rate":0.147,"accept_worse_rate":0.041,"skip":0,"acc":3687,"rej":21313,"acc_worse":905,"scenario":"displayr_regression_set9-vardata_size_numeric_labeled-snapshot"}
+
+  console.log theSrc/jestTest/go.test.js:42
+    displayr_regression_set9-vardata_size_numeric_labeled_filtered-snapshot
+
+  console.log theSrc/jestTest/go.test.js:55
+    {"labelCount":13,"anchorCount":13,"duration":118,"sweep":500,"monte_carlo_rounds":5003,"pass_rate":0.32,"accept_worse_rate":0.182,"skip":1497,"acc":1600,"rej":3403,"acc_worse":759,"scenario":"displayr_regression_set9-vardata_size_numeric_labeled_filtered-snapshot"}
+

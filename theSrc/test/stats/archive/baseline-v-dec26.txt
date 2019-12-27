@@ -1,0 +1,176 @@
+# node theSrc/test/bin/compare_two_test_runs.js
+? choose baseline file VIS-513-baseline-dec11.stats.json
+? choose candidate file VIS-513-138db349-dec26.stats.json
+using VIS-513-baseline-dec11 as baseline
+using VIS-513-138db349-dec26 as candidate
+
+                            baseline : candidate
+   min_duration           : 0        : 1
+   max_duration           : 4873     : 4029
+   average_duration       : 267      : 206
+   median_duration        : 24       : 24
+   min_pass_rate          : 0.000    : 0.204
+   max_pass_rate          : 0.260    : 0.659
+   average_pass_rate      : 0.054    : 0.397
+   median_pass_rate       : 0.040    : 0.530
+   min_accept_worse_rate     : N/A      : 0.056
+   max_accept_worse_rate     : N/A      : 0.487
+   average_accept_worse_rate : N/A      : 0.260
+   median_accept_worse_rate  : N/A      : 0.356
+
+duration ratio frequencies (candidate / baseline):
+ 0.1: 2
+ 0.2: 25
+ 0.3: 4
+ 0.4: 4
+ 0.5: 7
+ 0.6: 12
+ 0.7: 14
+ 0.8: 28
+ 0.9: 43
+   1: 17
+ 1.1: 9
+ Infinity: 2
+
+pass rate delta frequencies (candidate - baseline):
+ -0.080: 4
+ -0.070: 1
+ -0.060: 1
+ -0.020: 1
+ 0.000: 24
+ 0.027: 1
+ 0.055: 1
+ 0.067: 1
+ 0.115: 1
+ 0.134: 1
+ 0.139: 1
+ 0.140: 1
+ 0.142: 1
+ 0.148: 1
+ 0.164: 1
+ 0.185: 1
+ 0.191: 1
+ 0.207: 1
+ 0.209: 1
+ 0.216: 1
+ 0.233: 2
+ 0.239: 1
+ 0.253: 1
+ 0.258: 1
+ 0.264: 1
+ 0.285: 1
+ 0.289: 1
+ 0.293: 1
+ 0.295: 1
+ 0.310: 1
+ 0.319: 1
+ 0.342: 1
+ 0.345: 1
+ 0.350: 1
+ 0.353: 1
+ 0.355: 2
+ 0.360: 1
+ 0.361: 1
+ 0.365: 2
+ 0.366: 1
+ 0.367: 1
+ 0.375: 1
+ 0.376: 1
+ 0.383: 1
+ 0.386: 1
+ 0.389: 1
+ 0.395: 1
+ 0.402: 2
+ 0.404: 1
+ 0.411: 1
+ 0.417: 1
+ 0.418: 2
+ 0.431: 1
+ 0.437: 3
+ 0.438: 1
+ 0.440: 1
+ 0.441: 1
+ 0.443: 1
+ 0.444: 3
+ 0.449: 1
+ 0.450: 1
+ 0.451: 2
+ 0.462: 1
+ 0.466: 1
+ 0.467: 1
+ 0.468: 1
+ 0.471: 1
+ 0.472: 2
+ 0.473: 1
+ 0.474: 1
+ 0.478: 2
+ 0.479: 2
+ 0.480: 1
+ 0.481: 3
+ 0.485: 1
+ 0.490: 2
+ 0.491: 1
+ 0.493: 2
+ 0.494: 1
+ 0.496: 1
+ 0.497: 1
+ 0.498: 1
+ 0.500: 1
+ 0.501: 1
+ 0.507: 2
+ 0.508: 1
+ 0.510: 1
+ 0.511: 1
+ 0.514: 4
+ 0.515: 1
+ 0.517: 1
+ 0.519: 1
+ 0.523: 1
+ 0.525: 1
+ 0.529: 2
+ 0.530: 1
+ 0.532: 1
+ 0.536: 1
+ 0.537: 1
+ 0.544: 1
+ 0.545: 1
+ 0.549: 1
+ 0.550: 1
+ 0.551: 1
+ 0.557: 1
+ 0.563: 1
+ 0.566: 1
+ 0.575: 1
+ 0.590: 1
+ 0.605: 2
+ 0.612: 1
+ 0.626: 1
+ 0.631: 1
+ 0.632: 1
+ 0.636: 1
+ 0.646: 1
+ 0.653: 1
+ 0.659: 1
+
+accept worse rate delta frequencies (candidate - baseline):
+ NaN: 167
+
+counts:
+ baseline beats checkpoint on duration by more than 10%: 2
+ baseline beats checkpoint on duration by more than 25%: 2
+ baseline beats checkpoint on duration by more than 50%: 2
+ checkpoint beats baseline on duration by more than 10%: 138
+ checkpoint beats baseline on duration by more than 25%: 76
+ checkpoint beats baseline on duration by more than 50%: 41
+ baseline beats checkpoint on pass_rate by more than 10%: 7
+ baseline beats checkpoint on pass_rate by more than 25%: 7
+ baseline beats checkpoint on pass_rate by more than 50%: 7
+ checkpoint beats baseline on pass_rate by more than 10%: 136
+ checkpoint beats baseline on pass_rate by more than 25%: 135
+ checkpoint beats baseline on pass_rate by more than 50%: 133
+ baseline beats checkpoint on accept_worse_rate by more than 10%: 0
+ baseline beats checkpoint on accept_worse_rate by more than 25%: 0
+ baseline beats checkpoint on accept_worse_rate by more than 50%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 10%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 25%: 0
+ checkpoint beats baseline on accept_worse_rate by more than 50%: 0

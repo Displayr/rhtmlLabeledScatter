@@ -12,7 +12,7 @@
       "sweep": 500,
       "monte_carlo_rounds": 20000,
       "pass_rate": 0.06,
-      "scenario": "bubbleplot_colas.html"
+      "scenario": "bubbleplot_colas.html-2"
     },
     {
       "duration": 109,
@@ -26,7 +26,7 @@
       "sweep": 500,
       "monte_carlo_rounds": 4500,
       "pass_rate": 0.05,
-      "scenario": "bubbleplot_legend.html"
+      "scenario": "bubbleplot_legend.html-2"
     },
     {
       "duration": 310,
@@ -40,7 +40,7 @@
       "sweep": 500,
       "monte_carlo_rounds": 16000,
       "pass_rate": 0.03,
-      "scenario": "bubbleplot_life_expectancy.html"
+      "scenario": "bubbleplot_life_expectancy.html-2"
     },
     {
       "duration": 44,
@@ -68,21 +68,21 @@
       "sweep": 500,
       "monte_carlo_rounds": 13500,
       "pass_rate": 0.21,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "scenario": "scatterplot_aspect_ratio.html-2"
     },
     {
       "duration": 199,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
       "pass_rate": 0.11,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "scenario": "scatterplot_aspect_ratio.html-3"
     },
     {
       "duration": 186,
       "sweep": 500,
       "monte_carlo_rounds": 13500,
       "pass_rate": 0.07,
-      "scenario": "scatterplot_aspect_ratio.html"
+      "scenario": "scatterplot_aspect_ratio.html-4"
     },
     {
       "duration": 128,
@@ -96,7 +96,7 @@
       "sweep": 500,
       "monte_carlo_rounds": 2500,
       "pass_rate": 0,
-      "scenario": "scatterplot_axis_labels.html"
+      "scenario": "scatterplot_axis_labels.html-2"
     },
     {
       "duration": 491,
@@ -138,7 +138,7 @@
       "sweep": 500,
       "monte_carlo_rounds": 7500,
       "pass_rate": 0.02,
-      "scenario": "scatterplot_inverted.html"
+      "scenario": "scatterplot_inverted.html-2"
     },
     {
       "duration": 111,
@@ -166,21 +166,21 @@
       "sweep": 500,
       "monte_carlo_rounds": 7500,
       "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "scenario": "scatterplot_quads.html-2"
     },
     {
       "duration": 60,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
       "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "scenario": "scatterplot_quads.html-3"
     },
     {
       "duration": 66,
       "sweep": 500,
       "monte_carlo_rounds": 7500,
       "pass_rate": 0,
-      "scenario": "scatterplot_quads.html"
+      "scenario": "scatterplot_quads.html-4"
     },
     {
       "duration": 50,
@@ -201,14 +201,14 @@
       "sweep": 500,
       "monte_carlo_rounds": 8000,
       "pass_rate": 0.04,
-      "scenario": "trendline_plot.html"
+      "scenario": "trendline_plot.html-2"
     },
     {
       "duration": 15,
       "sweep": 500,
       "monte_carlo_rounds": 1500,
       "pass_rate": 0.06,
-      "scenario": "trendline_plot.html"
+      "scenario": "trendline_plot.html-3"
     },
     {
       "duration": 57,
@@ -1170,5 +1170,5 @@
       "scenario": "vardata_size_numeric_labeled_filtered"
     }
   ],
-  "batchName": "VIS-513-before-dec11"
+  "batchName": "VIS-513-baseline-dec11"
 }

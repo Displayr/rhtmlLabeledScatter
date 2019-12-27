@@ -1,0 +1,1006 @@
+{
+  "tests": [
+    {
+      "duration": 251,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 412,
+      "sweep": 500,
+      "monte_carlo_rounds": 20000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 53,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 310,
+      "sweep": 500,
+      "monte_carlo_rounds": 16000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 281,
+      "sweep": 500,
+      "monte_carlo_rounds": 16000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 61,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 254,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 214,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.21
+    },
+    {
+      "duration": 199,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.11
+    },
+    {
+      "duration": 186,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01
+    },
+    {
+      "duration": 39,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 491,
+      "sweep": 500,
+      "monte_carlo_rounds": 21000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 169,
+      "sweep": 500,
+      "monte_carlo_rounds": 10000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 38,
+      "sweep": 500,
+      "monte_carlo_rounds": 2000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 71,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 111,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 1171,
+      "sweep": 500,
+      "monte_carlo_rounds": 6000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 50,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 71,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 130,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 15,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 57,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 48,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 24,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 43,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 74,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 129,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 129,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 113,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 126,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 9000,
+      "pass_rate": 0.01
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.18
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 117,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.26
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 117,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 204,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.15
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 118,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 135,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 116,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 110,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 192,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.14
+    },
+    {
+      "duration": 64,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 194,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 165,
+      "sweep": 500,
+      "monte_carlo_rounds": 10500,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 134,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 191,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 198,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.18
+    },
+    {
+      "duration": 130,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 113,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 116,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.1
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 123,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.16
+    },
+    {
+      "duration": 53,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 54,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 175,
+      "sweep": 500,
+      "monte_carlo_rounds": 10000,
+      "pass_rate": 0.24
+    },
+    {
+      "duration": 100,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.23
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.24
+    },
+    {
+      "duration": 102,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.26
+    },
+    {
+      "duration": 107,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01
+    },
+    {
+      "duration": 102,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 198,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.23
+    },
+    {
+      "duration": 197,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.21
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.09
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 85,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 227,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 250,
+      "sweep": 500,
+      "monte_carlo_rounds": 13000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 249,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 254,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 261,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.15
+    },
+    {
+      "duration": 227,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 248,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 998,
+      "sweep": 500,
+      "monte_carlo_rounds": 31000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 1156,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 196,
+      "sweep": 500,
+      "monte_carlo_rounds": 11000,
+      "pass_rate": 0.11
+    },
+    {
+      "duration": 214,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 211,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 309,
+      "sweep": 500,
+      "monte_carlo_rounds": 15500,
+      "pass_rate": 0.11
+    },
+    {
+      "duration": 2019,
+      "sweep": 500,
+      "monte_carlo_rounds": 40000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 460,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 455,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 82,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 86,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 81,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.05
+    },
+    {
+      "duration": 0,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null
+    },
+    {
+      "duration": 42,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0
+    },
+    {
+      "duration": 78,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 40,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 276,
+      "sweep": 500,
+      "monte_carlo_rounds": 15000,
+      "pass_rate": 0.01
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.03
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 86,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 76,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08
+    },
+    {
+      "duration": 24,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 77,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 76,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 67,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0
+    },
+    {
+      "duration": 476,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 110,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04
+    },
+    {
+      "duration": 4853,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 4867,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 0,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null
+    },
+    {
+      "duration": 4873,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.11
+    },
+    {
+      "duration": 4771,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.06
+    }
+  ]
+}
