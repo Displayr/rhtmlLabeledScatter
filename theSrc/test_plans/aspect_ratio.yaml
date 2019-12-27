@@ -1,0 +1,14 @@
+type: multi_widget_single_page
+widgets:
+  - config: data.aspect_ratio.testData14
+    width: 1000
+    height: 600
+  - config: data.aspect_ratio.testData14
+    width: 600
+    height: 1000
+  - config: data.aspect_ratio.testData15
+    width: 1000
+    height: 600
+  - config: data.aspect_ratio.testData15
+    width: 600
+    height: 1000
