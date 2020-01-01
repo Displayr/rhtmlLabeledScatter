@@ -51,7 +51,7 @@ module.exports = function () {
   this.When(/^I drag legend label (.+) to the canvas$/, function (labelId) {
     return wrapInPromiseAndLogErrors(() => {
       return browser.actions()
-        .mouseMove(this.context.scatterPlot.legendLabel(labelId))
+        .mouseMove(this.context.scatterPlot.label(labelId))
         .mouseDown()
         .mouseMove({ x: -300, y: 0 })
         .mouseUp()
@@ -77,7 +77,7 @@ module.exports = function () {
         this.context.legendLocation = legendLocation
       })
 
-      return this.context.scatterPlot.legendLabel(labelId).getLocation().then((labelLocation) => {
+      return this.context.scatterPlot.label(labelId).getLocation().then((labelLocation) => {
         this.expect(labelLocation.x, 'Incorrect new x coordinate').to.be.closeTo(this.context.legendLocation.x, 100)
         this.expect(labelLocation.y, 'Incorrect new y coordinate').to.be.closeTo(this.context.legendLocation.y, 100)
       })

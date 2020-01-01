@@ -11,7 +11,7 @@ const _ = require('lodash')
 jest.setTimeout(20000)
 
 const toMatchImageSnapshot = configureToMatchImageSnapshot({
-  customDiffConfig: { threshold: 0.1 }, // smaller values -> more sensitive : https://github.com/mapbox/pixelmatch#pixelmatchimg1-img2-output-width-height-options
+  customDiffConfig: { threshold: 0.3 }, // smaller values -> more sensitive : https://github.com/mapbox/pixelmatch#pixelmatchimg1-img2-output-width-height-options
   failureThreshold: 0.01,
   failureThresholdType: 'percent' // pixel or percent
 })
