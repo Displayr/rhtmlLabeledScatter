@@ -11,10 +11,25 @@ const TRACE_LOGGING = 4
 
 // independent log flags
 const OBSERVATION_LOGGING = false
-const TEMPERATURE_LOGGING = false
+const TEMPERATURE_LOGGING = true
 const INITIALISATION_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
+
+// behaviour controls
+const debugForceMaxRounds = null // leave this at NULL unless you want to force the number of sweeps
+
+const LABEL_ITERATION_RANDOM = 'RANDOM'
+const LABEL_ITERATION_ENUMERATE = 'ENUMERATE'
+const labelIterationTechnique = [LABEL_ITERATION_RANDOM, LABEL_ITERATION_ENUMERATE][0]
+
+const COOLING_PERIOD_PER_SWEEP = 'PER_SWEEP'
+const COOLING_PERIOD_PER_MOVE = 'PER_MOVE'
+const coolingPeriodTechnique = [COOLING_PERIOD_PER_SWEEP, COOLING_PERIOD_PER_MOVE][0]
+
+const SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS = 'ALL_LABELS'
+const SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS = 'DYNAMIC_LABELS'
+const SWEEP_TO_ROUND_MULTIPLIER = [SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS, SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS][1]
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
@@ -237,10 +252,13 @@ const labeler = function () {
     collisionTree.insert(label)
   }
 
-  labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps }) {
-    const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentSweep / maxSweeps)
+  let coolCount = 0
 
-    if (TEMPERATURE_LOGGING) { console.log(`currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
+  labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds }) {
+    const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentRound / maxRounds)
+
+    if (TEMPERATURE_LOGGING) { console.log(`coolCount: ${coolCount}. currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
+    coolCount++
     return newTemperature
   }
   
@@ -273,86 +291,124 @@ const labeler = function () {
       resolveFunc()
       
     } else {
-      let currentSweep
-      for (currentSweep = 0; currentSweep < maxSweeps; currentSweep++) {
-        for (let j = 0; j < pointsWithLabels.length; j++) {
-          // select a random label
-          const i = Math.floor(random.real(0, 1) * pointsWithLabels.length)
-          const point = pointsWithLabels[i]
 
-          // // iterate labels
-          // const point = pointsWithLabels[j]
-
-          const {
-            label,
-            pinned,
-            observations: {
-              static: staticObservations
-            }
-          } = point
-
-          const reasonsToSkip = [
-            pinned,
-            !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
-            staticObservations.noInitialCollisionsAndNoNearbyNeighbors
-          ]
-
-          // Ignore if user moved label
-          if (_.some(reasonsToSkip)) {
-            if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-              console.log(`${label.text.substr(0, 8).padStart(8)}: skipping`)
-            }
-            skip++
-            continue
+      const pointsWithDynamicLabels = pointsWithLabels.filter(point => {
+        const {
+          label,
+          pinned,
+          observations: {
+            static: staticObservations
           }
+        } = point
 
-          const x_old = label.x
-          const y_old = label.y
+        const reasonsToSkip = [
+          pinned,
+          !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
+          staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+        ]
 
-          let old_energy = labeler.energy(point)
+        return !_.some(reasonsToSkip)
+      })
+      console.log({ pointsWithDynamicLabels, pointsWithLabels })
 
-          if (random.real(0, 1) < 0.8) {
-            labeler.mcmove(currTemperature, point)
-          } else {
-            labeler.mcrotate(currTemperature, point)
+      const labelPool = (SWEEP_TO_ROUND_MULTIPLIER === SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS)
+        ? pointsWithLabels
+        : pointsWithDynamicLabels
+
+      const maxRounds = (debugForceMaxRounds || maxSweeps) * labelPool.length
+
+      let currentRound
+      for (currentRound = 0; currentRound < maxRounds; currentRound++) {
+
+        const point = (labelIterationTechnique === LABEL_ITERATION_RANDOM)
+          ?  labelPool[Math.floor(random.real(0, 1) * labelPool.length)]
+          :  labelPool[currentRound % labelPool.length]
+
+        const {
+          label,
+          pinned,
+          observations: {
+            static: staticObservations
           }
+        } = point
 
-          let new_energy = labeler.energy(point)
 
-          // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
-          // the more that new energy is less than old energy, the higher this gets
-          // the hotter the temperature (at beginning of sim), higher this value
-          const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
-          const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
+        // TODO: the skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
+        const reasonsToSkip = [
+          pinned,
+          !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
+          staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+        ]
 
+        // Ignore if user moved label
+        if (_.some(reasonsToSkip)) {
           if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-            if (new_energy < old_energy) { console.log(`${label.text.substr(0, 8).padStart(8)}: better: accepting`) }
-            else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)} acceptChange: ${acceptChange}`) }
+            console.log(`${label.text.substr(0, 8).padStart(8)}: skipping`)
           }
-
-          if (acceptChange) {
-            acc += 1
-            if (new_energy >= old_energy) { acc_worse += 1}
-          } else {
-            // move back to old coordinates
-            label.x = x_old
-            label.y = y_old
-            addMinMaxToRectangle(label)
-            collisionTree.remove(label)
-            collisionTree.insert(label)
-            rej += 1
-          }
+          skip++
+          continue
         }
-        currTemperature = labeler.cooling_schedule({ currTemperature, initialTemperature, finalTemperature, currentSweep, maxSweeps })
+
+        const x_old = label.x
+        const y_old = label.y
+
+        let old_energy = labeler.energy(point)
+
+        if (random.real(0, 1) < 0.8) {
+          labeler.mcmove(currTemperature, point)
+        } else {
+          labeler.mcrotate(currTemperature, point)
+        }
+
+        let new_energy = labeler.energy(point)
+
+        // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
+        // the more that new energy is less than old energy, the higher this gets
+        // the hotter the temperature (at beginning of sim), higher this value
+        const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
+        const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
+
+        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+          if (new_energy < old_energy) { console.log(`${label.text.substr(0, 8).padStart(8)}: better: accepting`) }
+          else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)} acceptChange: ${acceptChange}`) }
+        }
+
+        if (acceptChange) {
+          acc += 1
+          if (new_energy >= old_energy) { acc_worse += 1}
+        } else {
+          // move back to old coordinates
+          label.x = x_old
+          label.y = y_old
+          addMinMaxToRectangle(label)
+          collisionTree.remove(label)
+          collisionTree.insert(label)
+          rej += 1
+        }
+
+        if (coolingPeriodTechnique === COOLING_PERIOD_PER_MOVE) {
+          currTemperature = labeler.cooling_schedule({currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds})
+        }
+        if (coolingPeriodTechnique === COOLING_PERIOD_PER_SWEEP && currentRound > 0 && currentRound % labelPool.length === 0) {
+          const currentSweep = Math.floor(currentRound / labelPool.length)
+          currTemperature = labeler.cooling_schedule({
+            currTemperature,
+            initialTemperature,
+            finalTemperature,
+            currentRound: currentSweep,
+            maxRounds: maxSweeps
+          })
+        }
       }
 
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentSweep} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
+        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
           labelCount: lab.length,
           anchorCount: anc.length,
           duration: Date.now() - startTime,
-          sweep: currentSweep,
+          maxSweeps,
+          maxRounds,
           monte_carlo_rounds: acc + rej,
           pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
           accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
