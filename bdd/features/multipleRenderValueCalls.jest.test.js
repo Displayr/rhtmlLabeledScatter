@@ -1,12 +1,9 @@
 
 /* global jest */
 /* global expect */
-/* global beforeAll */
-/* global afterAll */
 
 const puppeteer = require('puppeteer')
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot')
-const _ = require('lodash')
 
 jest.setTimeout(20000)
 
@@ -28,7 +25,7 @@ describe('multiple render tests', () => {
       // slowMo: 50,
       defaultViewport: {
         width: 1600,
-        height: 1600,
+        height: 1600
       }
     })
   })
@@ -54,7 +51,7 @@ test('rerender works', async function () {
     let image1 = await page.screenshot({ fullPage: true })
     expect(image1).toMatchImageSnapshot({ customSnapshotIdentifier: 'initial' })
 
-    await page.evaluate( () => document.querySelector('.example-0 .rerender-config').value = "")
+    await page.evaluate(() => { document.querySelector('.example-0 .rerender-config').value = '' })
     await page.type('.example-0 .rerender-config', newConfig, { delay: 0 })
     await page.click('.rerender-button')
 
@@ -73,8 +70,7 @@ test('rerender works', async function () {
   })
 })
 
-
-const getExampleUrl= function ({ configName, stateName, width = 1000, height = 1000, rerenderControls = false, border = false }) {
+const getExampleUrl = function ({ configName, stateName, width = 1000, height = 1000, rerenderControls = false, border = false }) {
   const config = {
     height,
     width,

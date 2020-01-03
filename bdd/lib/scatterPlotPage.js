@@ -68,7 +68,7 @@ class ScatterPlotPage {
       y: unmovedLabelBox.y + unmovedLabelBox.height / 2
     }
 
-    return await this.page.mouse.move(initialMousePosition.x, initialMousePosition.y)
+    return this.page.mouse.move(initialMousePosition.x, initialMousePosition.y)
   }
 
   async plotLabel ({ id }) {

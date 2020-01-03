@@ -4,7 +4,6 @@
 /* global beforeAll */
 /* global afterAll */
 
-
 const puppeteer = require('puppeteer')
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot')
 
@@ -40,7 +39,7 @@ describe('multiple render tests', () => {
       // slowMo: 200,
       defaultViewport: {
         width: 1600,
-        height: 1600,
+        height: 1600
       }
     })
   })
@@ -64,9 +63,9 @@ describe('multiple render tests', () => {
   })
 
   test(`${++testId}: Load saved state and see a user positioned label`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50',
+      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50'
     })
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_on_canvas' })
@@ -88,7 +87,7 @@ describe('multiple render tests', () => {
   })
 
   test(`${++testId}: Load saved state and see a user positioned label on the legend`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
     })
@@ -127,9 +126,9 @@ describe('multiple render tests', () => {
   })
 
   test(`${++testId}: Load saved state and see a user positioned image label`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100',
+      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100'
     })
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_on_canvas' })
@@ -151,7 +150,7 @@ describe('multiple render tests', () => {
   })
 
   test(`${++testId}: Load saved state and see a user positioned image label on the legend`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
     })
@@ -196,7 +195,7 @@ describe('multiple render tests', () => {
 
   // NB XXX this shows an issue where I move -> state, then reload with state and image is slightly diff
   test(`${++testId}: Load saved state and see a user positioned bubble label`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
       stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100',
@@ -229,7 +228,7 @@ describe('multiple render tests', () => {
   })
 
   test(`${++testId}: Load saved state and see a user positioned bubble label on the legend`, async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
       stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend',
@@ -287,7 +286,6 @@ describe('multiple render tests', () => {
 
     await page.close()
   })
-
 })
 
 const loadWidget = async ({
@@ -298,7 +296,7 @@ const loadWidget = async ({
   height = 600
 }) => {
   const page = await browser.newPage()
-  const threePointUrl = getExampleUrl({configName, stateName, width, height})
+  const threePointUrl = getExampleUrl({ configName, stateName, width, height })
   const scatterPlot = new ScatterPlotPage(page)
 
   await page.goto(threePointUrl)
