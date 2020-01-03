@@ -61,5 +61,6 @@
   "trendLinesPointSize":2,
   "plotBorderShow":true,
   "plotBorderColor":"Black",
-  "plotBorderWidth":1
+  "plotBorderWidth":1,
+  "showResetButton": false
 }

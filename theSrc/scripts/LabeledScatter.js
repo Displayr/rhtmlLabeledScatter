@@ -180,7 +180,8 @@ class LabeledScatter {
                         this.data.labelPlacementMaxMove,
                         this.data.labelPlacementMaxAngle,
                         this.data.tooltipText,
-                        this.data.debugMode
+                        this.data.debugMode,
+                        this.data.showResetButton
     )
     this.plot.draw()
     return this

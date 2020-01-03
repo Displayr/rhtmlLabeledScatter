@@ -121,7 +121,8 @@ class RectPlot {
     labelPlacementMaxMove = 5.0,
     labelPlacementMaxAngle = 2 * 3.1415,
     tooltipText = [],
-    debugMode = false
+    debugMode = false,
+    showResetButton = true
   ) {
     autoBind(this)
     this.pltUniqueId = md5((new Date()).getTime())
@@ -275,6 +276,7 @@ class RectPlot {
     this.tooltipText = tooltipText
 
     this.debugMode = debugMode
+    this.showResetButton = showResetButton
 
     this.setDim(this.svg, this.width, this.height)
 
@@ -455,8 +457,10 @@ class RectPlot {
   }
 
   drawResetButton () {
-    this.resetButton = new ResetButton(this)
-    this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state)
+    if (this.showResetButton) {
+      this.resetButton = new ResetButton(this)
+      this.resetButton.drawWith(this.svg, this.width, this.height, this.title, this.state)
+    }
   }
 
   drawDimensionMarkers () {
