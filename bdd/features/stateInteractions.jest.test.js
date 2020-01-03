@@ -27,7 +27,8 @@ expect.extend({ toMatchImageSnapshot })
 
 // does not need to be persistent over time.
 // Used to isolate tests via jest -t
-let testId = 1
+let testId = 0
+let snapshotDelay = 100
 
 describe('multiple render tests', () => {
   let browser
@@ -35,8 +36,8 @@ describe('multiple render tests', () => {
   beforeAll(async () => {
     // TODO: larger viewport ?
     browser = await puppeteer.launch({
-      headless: false,
-      slowMo: 200,
+      // headless: false,
+      // slowMo: 200,
       defaultViewport: {
         width: 1600,
         height: 1600,
@@ -49,13 +50,12 @@ describe('multiple render tests', () => {
   })
 
   // label actions 1-5
-  test(`${testId++}: Drag a label`, async function () {
+  test(`${++testId}: Drag a label`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50' })
@@ -63,25 +63,23 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see a user positioned label`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned label`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50',
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_on_canvas' })
 
     await page.close()
   })
 
-  test(`${testId++}: Drag a label to the legend`, async function () {
+  test(`${++testId}: Drag a label to the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 0 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend' })
@@ -89,26 +87,24 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see a user positioned label on the legend`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned label on the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_to_legend' })
 
     await page.close()
   })
 
-  test(`${testId++}: Drag label from legend and snap to original position`, async function () {
+  test(`${++testId}: Drag label from legend and snap to original position`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 0 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 0.02 })
@@ -117,13 +113,12 @@ describe('multiple render tests', () => {
   })
 
   // image label actions 1-5
-  test(`${testId++}: Drag a image label`, async function () {
+  test(`${++testId}: Drag a image label`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabel({ id: 2, x: 200, y: 100 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100' })
@@ -131,25 +126,23 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see a user positioned image label`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned image label`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100',
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_on_canvas' })
 
     await page.close()
   })
 
-  test(`${testId++}: Drag a image label to the legend`, async function () {
+  test(`${++testId}: Drag a image label to the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend' })
@@ -157,26 +150,24 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see a user positioned image label on the legend`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned image label on the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_to_legend' })
 
     await page.close()
   })
 
-  test(`${testId++}: Drag image label from legend and snap to original position`, async function () {
+  test(`${++testId}: Drag image label from legend and snap to original position`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 0.02 })
@@ -185,7 +176,7 @@ describe('multiple render tests', () => {
   })
 
   // bubble label actions 1-5
-  test(`${testId++}: Drag a bubble label`, async function () {
+  test(`${++testId}: Drag a bubble label`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
@@ -196,7 +187,6 @@ describe('multiple render tests', () => {
     await testSnapshot({ page, snapshotName: 'initial_bubble' })
 
     await scatterPlot.movePlotLabel({ id: 2, x: 100, y: 100 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100' })
@@ -205,7 +195,7 @@ describe('multiple render tests', () => {
   })
 
   // NB XXX this shows an issue where I move -> state, then reload with state and image is slightly diff
-  test(`${testId++}: Load saved state and see a user positioned bubble label`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned bubble label`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
@@ -213,7 +203,6 @@ describe('multiple render tests', () => {
       width: 600,
       height: 600
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     // await testSnapshot({ page, snapshotName: 'after_bubble_drag_on_canvas' }) // this is ideal behaviour (equality)
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_on_canvas-reload' }) // this is current behaviour (small diff)
@@ -221,7 +210,7 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Drag a bubble label to the legend`, async function () {
+  test(`${++testId}: Drag a bubble label to the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
@@ -232,7 +221,6 @@ describe('multiple render tests', () => {
     await testSnapshot({ page, snapshotName: 'initial_bubble' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend' })
@@ -240,7 +228,7 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see a user positioned bubble label on the legend`, async function () {
+  test(`${++testId}: Load saved state and see a user positioned bubble label on the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
@@ -248,14 +236,13 @@ describe('multiple render tests', () => {
       width: 600,
       height: 600
     })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_to_legend' })
 
     await page.close()
   })
 
-  test(`${testId++}: Drag bubble label from legend and snap to original position`, async function () {
+  test(`${++testId}: Drag bubble label from legend and snap to original position`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.bdd.bubbleplot_simple',
@@ -265,7 +252,6 @@ describe('multiple render tests', () => {
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
-    await scatterPlot.moveMouseOntoPlot()
 
     await testSnapshot({ page, snapshotName: 'initial_bubble' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.back_to_original', tolerance: 0.02 })
@@ -274,7 +260,7 @@ describe('multiple render tests', () => {
   })
 
   // unrelated truncated plot
-  test(`${testId++}: Load saved state and see truncated scatterplot with 2 columns`, async function () {
+  test(`${++testId}: Load saved state and see truncated scatterplot with 2 columns`, async function () {
     const { page } = await loadWidget({
       browser,
       configName: 'data.bdd.scatterplot_yaxis_not_visible',
@@ -288,7 +274,7 @@ describe('multiple render tests', () => {
     await page.close()
   })
 
-  test(`${testId++}: Load saved state and see truncated scatterplot with 3 columns`, async function () {
+  test(`${++testId}: Load saved state and see truncated scatterplot with 3 columns`, async function () {
     const { page } = await loadWidget({
       browser,
       configName: 'data.bdd.scatterplot_yaxis_not_visible',
@@ -324,7 +310,9 @@ const loadWidget = async ({
 }
 
 const testSnapshot = async ({ page, snapshotName }) => {
-  let image = await page.screenshot({ fullPage: true })
+  await page.waitFor(snapshotDelay)
+  let widget = await page.$('svg.rhtmlwidget-outer-svg')
+  let image = await widget.screenshot({})
   expect(image).toMatchImageSnapshot({ customSnapshotIdentifier: snapshotName })
 }
 
