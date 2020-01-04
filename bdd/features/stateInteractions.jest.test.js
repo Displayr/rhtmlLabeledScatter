@@ -308,6 +308,7 @@ const loadWidget = async ({
 }
 
 const testSnapshot = async ({ page, snapshotName }) => {
+  console.log(`taking snapshot ${snapshotName}`)
   await page.waitFor(snapshotDelay)
   let widget = await page.$('svg.rhtmlwidget-outer-svg')
   let image = await widget.screenshot({})

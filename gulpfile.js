@@ -1,3 +1,4 @@
+const path = require('path')
 const gulp = require('gulp')
 const rhtmlBuildUtils = require('rhtmlBuildUtils')
 
@@ -6,20 +7,27 @@ rhtmlBuildUtils.registerGulpTasks({ gulp, exclusions: dontRegisterTheseTasks })
 
 const taskSequences = {
   interaction: [ 'core', 'compileInternal', 'connect', 'interactionTestSuite' ],
-  interactionStandAlone: [ 'interactionTestSuite' ],
+  interactionStandAlone: [ 'interactionTestSuite' ]
 }
 
-
 const shell = require('shelljs')
-const interactionTestSuite = (gulp) => {
+const interactionTestSuite = () => {
   return function (done) {
-    const exitCode = shell.exec('jest /Users/kyle/projects/numbers/scatter/bdd/features/stateInteractions.jest.test.js').code
-    const error = (exitCode === 0) ? null : new Error(`make docs failed with code ${exitCode}`)
-    done(error)
+    const testPath = path.join(__dirname, '/bdd/features/stateInteractions.jest.test.js')
+    return shell.exec(`jest ${testPath}`, { async: true }, (exitCode) => {
+      const error = (exitCode === 0) ? null : new Error(`stateInteractions.jest.test.js failed with code ${exitCode}`)
+      done(error)
+
+      // connect is leaving the server running, so gulp will not exit. This is a hacky way of getting gulp to exit and maintaining the test exit code
+      // Main issue I can see with this approach is that now interactionTestSuite MUST be the last task to run
+      // Note that runProtractor.js (in rhtmlBuildUtils) handled this by properly using gulp streams and then piping to gulpExit
+      setTimeout(() => {
+        process.exit(exitCode)
+      }, 200)
+    })
   }
 }
 
 gulp.task('interactionTestSuite', interactionTestSuite(gulp))
 gulp.task('interactionStandAlone', gulp.series(...taskSequences.interactionStandAlone))
 gulp.task('interaction', gulp.series(...taskSequences.interaction))
-
