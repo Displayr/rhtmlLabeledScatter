@@ -5,6 +5,10 @@ sudo: required
 dist: trusty
 addons:
   chrome: stable
+  artifacts:
+    debug: true
+    paths:
+      - bdd/features/__image_snapshots__/__diff_output__
 before_install:
   - sudo apt-get update
 before_script:
