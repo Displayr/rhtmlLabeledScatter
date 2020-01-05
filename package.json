@@ -1,11 +1,11 @@
 {
   "private": true,
   "engines": {
-    "node": ">=8.12.0"
+    "node": ">=12.9.0"
   },
   "scripts": {
-    "prepush": "node ./bin/prepush",
-    "test": "gulp testSpecs && gulp testVisual"
+    "prepush": "node ./build/bin/prepush",
+    "test": "gulp testSpecs && gulp testTnteraction"
   },
   "devDependencies": {
     "gulp": "^4.0.2",

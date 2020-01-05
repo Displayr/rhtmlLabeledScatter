@@ -5,11 +5,6 @@ const rhtmlBuildUtils = require('rhtmlBuildUtils')
 const dontRegisterTheseTasks = ['testVisual', 'testVisual_s']
 rhtmlBuildUtils.registerGulpTasks({ gulp, exclusions: dontRegisterTheseTasks })
 
-const taskSequences = {
-  interaction: [ 'core', 'compileInternal', 'connect', 'interactionTestSuite' ],
-  interactionStandAlone: [ 'interactionTestSuite' ]
-}
-
 const shell = require('shelljs')
 const interactionTestSuite = () => {
   return function (done) {
@@ -29,5 +24,5 @@ const interactionTestSuite = () => {
 }
 
 gulp.task('interactionTestSuite', interactionTestSuite(gulp))
-gulp.task('interactionStandAlone', gulp.series(...taskSequences.interactionStandAlone))
-gulp.task('interaction', gulp.series(...taskSequences.interaction))
+gulp.task('testInteraction', gulp.series('core', 'compileInternal', 'connect', 'interactionTestSuite'))
+gulp.task('testInteractionStandAlone', gulp.series('interactionTestSuite'))
