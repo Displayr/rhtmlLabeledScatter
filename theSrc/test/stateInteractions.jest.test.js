@@ -35,7 +35,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_on_canvas' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50' })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50', tolerance: 1 })
 
     await page.close()
   })
@@ -59,7 +59,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabelToLegend({ id: 0 })
 
     await testSnapshot({ page, snapshotName: 'after_porche_drag_to_legend' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend' })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend', tolerance: 1 })
 
     await page.close()
   })
@@ -84,7 +84,7 @@ describe('multiple render tests', () => {
     await scatterPlot.moveLegendLabelToPlot({ id: 0 })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 0.02 })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 1 })
 
     await page.close()
   })
@@ -98,7 +98,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabel({ id: 2, x: 200, y: 100 })
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_on_canvas' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100' })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100', tolerance: 1 })
 
     await page.close()
   })
@@ -122,7 +122,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
 
     await testSnapshot({ page, snapshotName: 'after_apple_drag_to_legend' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend' })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend', tolerance: 1 })
 
     await page.close()
   })
@@ -147,7 +147,7 @@ describe('multiple render tests', () => {
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
 
     await testSnapshot({ page, snapshotName: 'initial_three_point' })
-    await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 0.02 })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 1 })
 
     await page.close()
   })
@@ -166,7 +166,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabel({ id: 2, x: 100, y: 100 })
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_on_canvas' })
-    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100' })
+    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100', tolerance: 1 })
 
     await page.close()
   })
@@ -200,7 +200,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_to_legend' })
-    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend' })
+    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend', tolerance: 1 })
 
     await page.close()
   })
@@ -231,7 +231,7 @@ describe('multiple render tests', () => {
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
 
     await testSnapshot({ page, snapshotName: 'initial_bubble' })
-    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.back_to_original', tolerance: 0.02 })
+    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.back_to_original', tolerance: 1 })
 
     await page.close()
   })
