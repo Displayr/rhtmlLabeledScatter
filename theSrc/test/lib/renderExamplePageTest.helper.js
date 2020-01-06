@@ -13,7 +13,7 @@ const configureImageSnapshotMatcher = (snapshotCollectionName) => {
   // TODO this long path will get cleaned up when we extract to rhtmlBuildUtils
   const snapshotDirectory = path.join(
     __dirname,
-    '../../../../',
+    '../../../',
     widgetConfig.snapshotTesting.snapshotDirectory,
     widgetConfig.snapshotTesting.testEnv,
     widgetConfig.snapshotTesting.branch,
