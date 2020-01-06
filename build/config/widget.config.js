@@ -53,7 +53,4 @@ const mergedConfig = _.merge(config, commandLineOverides)
 if (process.env.ENV) { mergedConfig.snapshotTesting.testEnv = process.env.ENV }
 if (process.env.BRANCH) { mergedConfig.snapshotTesting.branch = process.env.BRANCH }
 
-console.log('mergedConfig')
-console.log(JSON.stringify(mergedConfig, {}, 2))
-
 module.exports = mergedConfig
