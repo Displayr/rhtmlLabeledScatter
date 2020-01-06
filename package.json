@@ -6,7 +6,7 @@
   "scripts": {
     "prepush": "node ./build/bin/prepush",
     "test": "gulp testSpecs && gulp testVisual",
-    "travisTest": "gulp testSpecs && gulp testVisual --snapshotTesting.testEnv=travis --snapshotTesting.branch=`git rev-parse --abbrev-ref HEAD`"
+    "travisTest": "gulp testSpecs && gulp testVisual --snapshotTesting.testEnv=travis --snapshotTesting.branch=$BRANCH"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
