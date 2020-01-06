@@ -1,12 +1,4 @@
-// TODO move these to eslintrc
-/* global jest */
-/* global expect */
-/* global beforeEach */
-/* global afterEach */
-
-const path = require('path')
 const puppeteer = require('puppeteer')
-const { mkdirp } = require('fs-extra')
 
 const {
   configureImageSnapshotMatcher,

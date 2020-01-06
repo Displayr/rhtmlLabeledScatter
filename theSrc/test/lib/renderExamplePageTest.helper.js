@@ -4,7 +4,7 @@ const { mkdirp } = require('fs-extra')
 const path = require('path')
 const request = require('request-promise')
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot')
-const widgetConfig = require('../../../../build/config/widget.config')
+const widgetConfig = require('../../../build/config/widget.config')
 
 // TODO move these to eslintrc
 /* global expect */
@@ -15,6 +15,8 @@ const configureImageSnapshotMatcher = (snapshotCollectionName) => {
     __dirname,
     '../../../../',
     widgetConfig.snapshotTesting.snapshotDirectory,
+    widgetConfig.snapshotTesting.testEnv,
+    widgetConfig.snapshotTesting.branch,
     snapshotCollectionName
   )
   console.log('snapshotDirectory', snapshotDirectory)
@@ -107,7 +109,7 @@ const testSnapshot = async ({ page, snapshotName }) => {
   let widgets = await page.$$(widgetConfig.internalWebSettings.singleWidgetSnapshotSelector)
   console.log(`taking ${widgets.length} snapshot(s) for ${snapshotName}`)
 
-  async function asyncForEach(array, callback) {
+  async function asyncForEach (array, callback) {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array)
     }
@@ -115,9 +117,9 @@ const testSnapshot = async ({ page, snapshotName }) => {
 
   await asyncForEach(widgets, async (widget, index) => {
     let image = await widget.screenshot({})
-    const snapshotNameWithIndex = (widgets.length === 1 ) ? snapshotName : `${snapshotName}-${index+1}`
+    const snapshotNameWithIndex = (widgets.length === 1) ? snapshotName : `${snapshotName}-${index + 1}`
     expect(image).toMatchImageSnapshot({ customSnapshotIdentifier: snapshotNameWithIndex })
-  });
+  })
 }
 
 module.exports = {

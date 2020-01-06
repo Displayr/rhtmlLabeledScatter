@@ -1,5 +1,10 @@
 {
   "globals": {
-    "expect": true
+    "afterAll": true,
+    "afterEach": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "expect": true,
+    "jest": true
   }
 }

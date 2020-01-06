@@ -5,7 +5,8 @@
   },
   "scripts": {
     "prepush": "node ./build/bin/prepush",
-    "test": "gulp testSpecs && gulp testTnteraction"
+    "test": "gulp testSpecs && gulp testVisual",
+    "travisTest": "gulp testSpecs && gulp testVisual --snapshotTesting.testEnv=travis --snapshotTesting.branch=`git rev-parse --abbrev-ref HEAD`"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
@@ -29,7 +30,7 @@
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.5"
-    "rbush": "^3.0.1"
+    "rbush": "^3.0.1",
+    "yargs": "^15.1.0"
   }
 }

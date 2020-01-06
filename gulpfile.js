@@ -6,15 +6,15 @@ const dontRegisterTheseTasks = ['testVisual', 'testVisual_s']
 rhtmlBuildUtils.registerGulpTasks({ gulp, exclusions: dontRegisterTheseTasks })
 
 const shell = require('shelljs')
-const interactionTestSuite = () => {
+const jestSnapshotTests = () => {
   return function (done) {
-    const testPath = path.join(__dirname, '/bdd/features/stateInteractions.jest.test.js')
+    const testPath = path.join(__dirname, '/theSrc/test/')
     return shell.exec(`jest ${testPath}`, { async: true }, (exitCode) => {
       const error = (exitCode === 0) ? null : new Error(`stateInteractions.jest.test.js failed with code ${exitCode}`)
       done(error)
 
       // connect is leaving the server running, so gulp will not exit. This is a hacky way of getting gulp to exit and maintaining the test exit code
-      // Main issue I can see with this approach is that now interactionTestSuite MUST be the last task to run
+      // Main issue I can see with this approach is that now jestSnapshotTests MUST be the last task to run
       // Note that runProtractor.js (in rhtmlBuildUtils) handled this by properly using gulp streams and then piping to gulpExit
       setTimeout(() => {
         process.exit(exitCode)
@@ -23,6 +23,6 @@ const interactionTestSuite = () => {
   }
 }
 
-gulp.task('interactionTestSuite', interactionTestSuite(gulp))
-gulp.task('testInteraction', gulp.series('core', 'compileInternal', 'connect', 'interactionTestSuite'))
-gulp.task('testInteractionStandAlone', gulp.series('interactionTestSuite'))
+gulp.task('jestSnapshotTests', jestSnapshotTests(gulp))
+gulp.task('testVisual', gulp.series('core', 'compileInternal', 'connect', 'jestSnapshotTests'))
+gulp.task('testVisual_s', gulp.series('jestSnapshotTests'))

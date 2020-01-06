@@ -1,11 +1,6 @@
-/* global jest */
-/* global expect */
-/* global beforeAll */
-/* global afterAll */
-
 const _ = require('lodash')
 const puppeteer = require('puppeteer')
-const testPlan = require('../../../.tmp/test_plan')
+const testPlan = require('../../.tmp/test_plan')
 
 const {
   configureImageSnapshotMatcher,
@@ -14,7 +9,6 @@ const {
   testSnapshot,
   waitForWidgetToLoad
 } = require('./lib/renderExamplePageTest.helper')
-const loadWidget = require('./lib/loadWidget.helper')
 
 jest.setTimeout(jestTimeout)
 configureImageSnapshotMatcher('testPlans')
@@ -26,9 +20,6 @@ const arrayOfTests = _(testPlan)
   .flatten()
   .map(testConfig => [`${testConfig.groupName}-${testConfig.testname}`, testConfig])
   .value()
-
-// NB these do not need to be persistent over time. The Ids are a convenience used to isolate tests via jest -t '11:'
-let testId = 1
 
 describe('snapshots', () => {
   let browser

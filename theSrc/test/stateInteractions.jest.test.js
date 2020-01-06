@@ -1,14 +1,7 @@
-// TODO move these to eslintrc
-/* global jest */
-/* global expect */
-/* global beforeAll */
-/* global afterAll */
-
 const puppeteer = require('puppeteer')
 
 const {
   configureImageSnapshotMatcher,
-  getImageSnapshotMatcher,
   puppeteerSettings,
   jestTimeout,
   testSnapshot,
