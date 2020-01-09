@@ -6,6 +6,7 @@
   "scripts": {
     "prepush": "node ./build/bin/prepush",
     "test": "gulp testSpecs && gulp testVisual",
+    "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp testSpecs && gulp testVisual",
     "travisTest": "gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
