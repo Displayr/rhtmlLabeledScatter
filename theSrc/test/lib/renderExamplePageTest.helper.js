@@ -9,7 +9,7 @@ const widgetConfig = require('../../../build/config/widget.config')
 // TODO move these to eslintrc
 /* global expect */
 
-const configureImageSnapshotMatcher = (snapshotCollectionName) => {
+const configureImageSnapshotMatcher = (...snapshotCollectionName) => {
   // TODO this long path will get cleaned up when we extract to rhtmlBuildUtils
   const snapshotDirectory = path.join(
     __dirname,
@@ -17,7 +17,7 @@ const configureImageSnapshotMatcher = (snapshotCollectionName) => {
     widgetConfig.snapshotTesting.snapshotDirectory,
     widgetConfig.snapshotTesting.testEnv,
     widgetConfig.snapshotTesting.branch,
-    snapshotCollectionName
+    ...snapshotCollectionName
   )
   console.log('snapshotDirectory', snapshotDirectory)
 

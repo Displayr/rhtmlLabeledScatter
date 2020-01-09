@@ -11,7 +11,6 @@ const {
 } = require('./lib/renderExamplePageTest.helper')
 
 jest.setTimeout(jestTimeout)
-configureImageSnapshotMatcher('testPlans')
 
 const arrayOfTests = _(testPlan)
   .map(({ tests, groupName }) => {
@@ -20,6 +19,10 @@ const arrayOfTests = _(testPlan)
   .flatten()
   .map(testConfig => [`${testConfig.groupName}-${testConfig.testname}`, testConfig])
   .value()
+
+// on test naming
+// jest test name = group + testname <-- allows us to filter by group or by name
+// snapshot name = testname <-- the group name is in the directory so group does not need to be repeated in the snapshot name
 
 describe('snapshots', () => {
   let browser
@@ -35,9 +38,10 @@ describe('snapshots', () => {
   test.each(arrayOfTests)(`%#: %s`, async (testName, testConfig) => {
     console.log(testName)
 
+    configureImageSnapshotMatcher('testPlans', testConfig.groupName)
+
     const page = await browser.newPage()
 
-    // TODO add this later
     const consoleLogHandler = msg => {
       const statsLineString = _(msg.args())
         .map(arg => `${arg}`)
@@ -56,7 +60,7 @@ describe('snapshots', () => {
     page.on('console', consoleLogHandler)
     await page.goto(`http://localhost:9000${testConfig.renderExampleUrl}`)
     await waitForWidgetToLoad({ page })
-    await testSnapshot({ page, snapshotName: testName })
+    await testSnapshot({ page, snapshotName: testConfig.testname })
 
     await page.close()
   })
