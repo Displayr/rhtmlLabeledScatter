@@ -2,6 +2,7 @@
 import Random from 'random-js'
 import _ from 'lodash'
 import RBush from 'rbush'
+import circleIntersection from '../utils/circleIntersection'
 
 const NO_LOGGING = 0
 const MINIMAL_LOGGING = 1
@@ -11,7 +12,7 @@ const TRACE_LOGGING = 4
 
 // independent log flags
 const OBSERVATION_LOGGING = false
-const TEMPERATURE_LOGGING = true
+const TEMPERATURE_LOGGING = false
 const INITIALISATION_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
@@ -88,14 +89,14 @@ const labeler = function () {
     let vdLabelCenterToAnchor = (label.y - label.height / 2) - anchor.y
     let vdLabelTopToAnchor = label.minY + labelTopPadding - anchor.y
 
-    const centerBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
-    const centerTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelTopToAnchor)
-    const leftCenterDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelCenterToAnchor)
-    const rightCenterDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelCenterToAnchor)
-    const leftTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelTopToAnchor)
-    const rightBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelBottomToAnchor)
-    const rightTopDistance = hypotenuseDistanceGivenTwoSides(hdLabelRightToAnchor, vdLabelTopToAnchor)
-    const leftBottomDistance = hypotenuseDistanceGivenTwoSides(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
+    const centerBottomDistance = Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
+    const centerTopDistance = Math.hypot(hdLabelCenterToAnchor, vdLabelTopToAnchor)
+    const leftCenterDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchor)
+    const rightCenterDistance = Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchor)
+    const leftTopDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchor)
+    const rightBottomDistance = Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchor)
+    const rightTopDistance = Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor)
+    const leftBottomDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
     // OLD INCORRECT COMPUTATION of labIsInsideBubbleAnc
     // // Check if label is inside bubble for centering of label inside bubble
@@ -108,7 +109,7 @@ const labeler = function () {
     const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
       vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
-      energy += hypotenuseDistanceGivenTwoSides(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
+      energy += Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
     } else {
       // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
       const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
@@ -210,7 +211,7 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
-    addMinMaxToRectangle(label)
+    addMinMaxAreaToRectangle(label)
     collisionTree.remove(label)
     collisionTree.insert(label)
   }
@@ -247,7 +248,7 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
-    addMinMaxToRectangle(label)
+    addMinMaxAreaToRectangle(label)
     collisionTree.remove(label)
     collisionTree.insert(label)
   }
@@ -303,7 +304,7 @@ const labeler = function () {
 
         const reasonsToSkip = [
           pinned,
-          !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
+          staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
           staticObservations.noInitialCollisionsAndNoNearbyNeighbors
         ]
 
@@ -336,7 +337,7 @@ const labeler = function () {
         // TODO: the skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
         const reasonsToSkip = [
           pinned,
-          !staticObservations.anchorCollidesWithOtherAnchors && staticObservations.labelFitsInsideBubble,
+          staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
           staticObservations.noInitialCollisionsAndNoNearbyNeighbors
         ]
 
@@ -380,7 +381,7 @@ const labeler = function () {
           // move back to old coordinates
           label.x = x_old
           label.y = y_old
-          addMinMaxToRectangle(label)
+          addMinMaxAreaToRectangle(label)
           collisionTree.remove(label)
           collisionTree.insert(label)
           rej += 1
@@ -423,9 +424,9 @@ const labeler = function () {
   }
 
   labeler.buildDataStructures = function () {
-    _(anc).each(addMinMaxToCircle)
+    _(anc).each(addMinMaxAreaToCircle)
     _(anc).each(a => addTypeToObject(a, 'anchor'))
-    _(lab).each(addMinMaxToRectangle)
+    _(lab).each(addMinMaxAreaToRectangle)
     _(lab).each(l => addTypeToObject(l, 'label'))
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
 
@@ -451,6 +452,7 @@ const labeler = function () {
         // static observations are made once at beginning of simulation
         static: {
           anchorCollidesWithOtherAnchors: false,
+          anchorOverlapProportion: 0,
           labelFitsInsideBubble: false,
           noInitialCollisionsAndNoNearbyNeighbors: false
         },
@@ -463,14 +465,13 @@ const labeler = function () {
       const {label, anchor, pinned, id} = point
 
       // TODO the "if it fits" is an approximation
-      // TODO the "move it down by 1/4 of height is a hack (also dont understand why not 1/2
+      // TODO the "move it down by 1/4 of height is a hack (also dont understand why not 1/2)
 
       //  * don't understand why its not 1/2 of height, not 1/4
       //  * visually it works so leaving it now
 
       if (label && !pinned) {
         if (isBubble && label.width < 2 * anchor.r) {
-          //TODO:  this observation should be on the point not on the anchor
           point.observations.static.labelFitsInsideBubble = true
           label.y = anchor.y + label.height / 4
         }
@@ -490,11 +491,28 @@ const labeler = function () {
         point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = (nearbyThings.length === 0)
       }
 
-      const collidingAnchors = collisionTree.search(anchor)
+      const potentiallyCollidingAnchors = collisionTree.search(anchor)
         .filter(isAnchor)
         .filter(notSameId(id))
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.id} collision count:` , collidingAnchors.length) }
-      point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchors.length > 0)
+
+      const collidingAnchorsWithOverlap = potentiallyCollidingAnchors
+        .map(potentiallyCollidingAnchor => {
+          const overlap = circleIntersection(anchor, potentiallyCollidingAnchor)
+          return { anchor: potentiallyCollidingAnchor, overlap }
+        })
+        .filter(({ anchor, overlap }) => overlap > 0)
+
+
+      if (collidingAnchorsWithOverlap.length > 0) {
+        // NB anchorOverlapProportion is inaccurate in that we double count overlap proportion
+        point.observations.static.anchorOverlapProportion = _(collidingAnchorsWithOverlap)
+          .map('overlap')
+          .sum() / anchor.area
+      }
+
+      point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchorsWithOverlap.length > 0)
+
+      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
     if (OBSERVATION_LOGGING) {
@@ -603,19 +621,21 @@ const labeler = function () {
 module.exports = labeler
 /* eslint-enable */
 
-const addMinMaxToCircle = (circle) => {
+const addMinMaxAreaToCircle = (circle) => {
   circle.minX = circle.x - circle.r
   circle.maxX = circle.x + circle.r
   circle.minY = circle.y - circle.r
   circle.maxY = circle.y + circle.r
+  circle.area = Math.PI * Math.pow(circle.r, 2)
   return circle
 }
 
-const addMinMaxToRectangle = (rect) => {
+const addMinMaxAreaToRectangle = (rect) => {
   rect.minX = rect.x - rect.width / 2
   rect.maxX = rect.x + rect.width / 2
   rect.minY = rect.y - rect.height
   rect.maxY = rect.y
+  rect.area = rect.width * rect.height
   return rect
 }
 
@@ -659,5 +679,3 @@ const aIsInsideB = (a, b) => {
     (a.minY >= b.minY) &&
     (a.maxY <= b.minY)
 }
-
-const hypotenuseDistanceGivenTwoSides = (x, y) => Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
