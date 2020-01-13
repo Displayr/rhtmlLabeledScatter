@@ -6,7 +6,6 @@ configs:
     width: 730
     height: 489
   - config: data.displayr_regression.set2.bubble_colors
-  - config: data.displayr_regression.set2.bubble_with_tile
   - config: data.displayr_regression.set2.column_principal_scaled
   - config: data.displayr_regression.set2.correspondence_analysis1
     width: 967
