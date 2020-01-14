@@ -12,3 +12,4 @@ browser
 node_modules
 s3sync
 docs/oneoff
+docs/experiments
