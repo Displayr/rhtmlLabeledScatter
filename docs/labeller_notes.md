@@ -18,7 +18,104 @@ The decision is based on:
 * not currently accounting for "leader line-label intersection" in energy fn
 * looks like temperature implementation goes from less likely to more likely to accept, but it should be going from more likely to less likely to accept
 
-### Some example oddsOfAcceptingWorseLayout values 
+
+### New Behaviour
+
+let finalTemperature = 1.0
+let initialTemperature = 100.0
+
+// NB accept if new_energy < old_energy
+const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
+    
+// energy considers:
+//   * distance from label to anchor
+//   * label to label overlap
+//   * label to anchor overlap
+
+// worst energy possible:
+//   * maxPenalty * Math.hypot(width, height)
+//   * numLabels * labelArea * labelLabelWeight
+//   * numAnchors * labelArea * labelAnchorWeight  
+
+
+// todo:
+// compute max distance
+// compute area
+// for each label compute worst energy (only once)
+
+
+
+(new_energy - old_energy) * temp / worst_possible_energy
+
+example:
+new_energy = 100
+old_energy = 4
+worst_possible_energy = 1200
+
+
+Should be very unlikely to be accepted
+(1000 - 4) / 1200 = 0.83
+    beg: 0.83 * 1 = 0.83 
+    mid: 0.83 * 0.1 = 0.083
+    end: 0.83 * 0.01 = 0.0083
+
+
+Should be medium likely to be accepted
+(100 - 4) / 1200 = 0.08
+
+three stages:
+    beg: 0.08 * 1 = 0.08 
+    mid: 0.08 * 0.1 = 0.008
+    end: 0.08 * 0.01 = 0.0008
+
+
+Should be most likely to be accepted
+(8 - 4) / 1200 = 0.003
+
+three stages:
+    beg: 0.003 * 1 = 0.003 
+    mid: 0.003 * 0.1 = 0.0003
+    end: 0.003 * 0.01 = 0.00003
+
+
+```js    
+       
+    // beginning of sim we should accept more change
+    Math.exp((10000 - 1) / 100) = 2.6613699293533403e+43
+    Math.exp((1000 - 1) / 100) = 21807.29879823013
+    Math.exp((100 - 1) / 100) = 2.6912344723492625
+    Math.exp((10 - 1) / 100) = 1.0941742837052104
+    Math.exp((5 - 1) / 100) = 1.0408107741923882
+    Math.exp((2- 1) / 100) = 1.010050167084168
+    Math.exp(0 / 100) = 1
+    Math.exp((1 - 2) / 100) = 0.9900498337491681
+    Math.exp((1 - 5) / 100) = 0.9607894391523232
+    Math.exp((1 - 10) / 100) = 0.9139311852712282
+    Math.exp((1 - 100) / 100) = 0.3715766910220457
+    Math.exp((12- 1000) / 100) = 0.00005118827786912642
+    Math.exp((1 - 10000) / 100) = 3.757463361145664e-44       
+       
+    // end of sim we should accept more change
+    Math.exp((10000 - 1) / 1) = Infinity
+    Math.exp((1000 - 1) / 1) = Infinity
+    Math.exp((100 - 1) / 1) = 9.88e+42
+    Math.exp((10 - 1) / 1) = 8103.083927575384
+    Math.exp((5 - 1) / 1) = 54.598150033144236
+    Math.exp((2- 1) / 1) = 2.718281828459045
+    Math.exp(0 / 1) = 1
+    Math.exp((1 - 2) / 1) = 0.36787944117144233
+    Math.exp((1 - 5) / 1) = 0.01831563888873418
+    Math.exp((1 - 10) / 1) = 0.00012340980408667956
+    Math.exp((1 - 100) / 1) = 1.0112214926104486e-43
+    Math.exp((12- 1000) / 1) = 0
+    Math.exp((1 - 10000) / 1) = 0
+       
+    
+```
+
+
+
+### Old Notes 
  
 ```js
 
@@ -52,11 +149,11 @@ Math.exp((10000 - 1) / 0.01) = Infinity
 Math.exp((1000 - 1) / 0.01) = Infinity
 Math.exp((100 - 1) / 0.01) = Infinity
 Math.exp((10 - 1) / 0.01) = Infinity
-Math.exp((5 - 1) / 0.01) = 5.221469689764144e+173
-Math.exp((2 - 1) / 0.01) = 2.6881171418161356e+43
+Math.exp((5 - 1) / 0.01) = 5.22e+173
+Math.exp((2 - 1) / 0.01) = 2.68e+43
 Math.exp(0 / 0.01) = 1
-Math.exp((1 - 2) / 0.01) = 3.720075976020836e-44
-Math.exp((1 - 5) / 0.01) = 1.9151695967140057e-174
+Math.exp((1 - 2) / 0.01) = 3.72e-44
+Math.exp((1 - 5) / 0.01) = 1.91e-174
 Math.exp((1 - 10) / 0.01) = 0
 Math.exp((1 - 100) / 0.01) = 0
 Math.exp((12- 1000) / 0.01) = 0
@@ -65,7 +162,7 @@ Math.exp((1 - 10000) / 0.01) = 0
 // (current: beginning of sim) ranging from best to worst
 Math.exp((10000 - 1) / 1) = Infinity
 Math.exp((1000 - 1) / 1) = Infinity
-Math.exp((100 - 1) / 1) = 9.889030319346946e+42
+Math.exp((100 - 1) / 1) = 9.88e+42
 Math.exp((10 - 1) / 1) = 8103.083927575384
 Math.exp((5 - 1) / 1) = 54.598150033144236
 Math.exp((2- 1) / 1) = 2.718281828459045

@@ -188,6 +188,8 @@ class RectPlot {
       maxMove: config.labelPlacementMaxMove,
       maxAngle: config.labelPlacementMaxAngle,
       seed: config.labelPlacementSeed,
+      initialTemperature: config.labelPlacementTemperatureInitial,
+      finalTemperature: config.labelPlacementTemperatureFinal,
       isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
     }
 
@@ -210,6 +212,8 @@ class RectPlot {
       this.labelPlacementSettings.maxMove,
       this.labelPlacementSettings.maxAngle,
       this.labelPlacementSettings.seed,
+      this.labelPlacementSettings.initialTemperature,
+      this.labelPlacementSettings.finalTemperature,
       this.labelPlacementSettings.isLabelPlacementAlgoOn
     )
   }

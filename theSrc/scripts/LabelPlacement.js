@@ -6,6 +6,7 @@ import _ from 'lodash'
 class LabelPlacement {
   constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
+               initialTemperature, finalTemperature,
                isLabelPlacementAlgoOn) {
     this.pltId = pltId
     this.svg = svg
@@ -17,6 +18,8 @@ class LabelPlacement {
     this.maxMove = maxMove
     this.maxAngle = maxAngle
     this.seed = seed
+    this.initialTemperature = initialTemperature
+    this.finalTemperature = finalTemperature
     this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
@@ -37,6 +40,7 @@ class LabelPlacement {
       .pinned(pinnedLabels)
       .promise(resolve)
       .anchorType(this.isBubble)
+      .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
       .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)

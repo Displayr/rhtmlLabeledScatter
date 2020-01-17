@@ -22,6 +22,8 @@ const defaultConfig = {
   labelPlacementMaxAngle: 2 * Math.PI,
   labelPlacementMaxMove: 5,
   labelPlacementNumSweeps: 500,
+  labelPlacementTemperatureInitial: 0.01,
+  labelPlacementTemperatureFinal: 0.0001,
   labelPlacementSeed: 1,
   labelsFontColor: '#2C2C2C',
   labelsFontFamily: 'Arial',

@@ -98,6 +98,8 @@
 #' @param label.placement.maxMove Label placement algorithm setting to determine how far in pixels a move is made (Default is 5).
 #' @param label.placement.maxAngle Label placement algorithm setting to determine the domain of angles chosen for mcrotate (Default is 2*Pi).
 #' @param label.placement.seed Label placement algorithm setting for the randomiser seed (Default is 1).
+#' @param label.placement.temperature.initial Label placement algorithm initial temperature (Default is 0.01).
+#' @param label.placement.temperature.final Label placement algorithm final temperature (Default is 0.0001).
 #' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
@@ -130,6 +132,8 @@ LabeledScatter <- function(
   label.placement.maxMove = 5.0,
   label.placement.numSweeps = 500,
   label.placement.seed = 1,
+  label.placement.temperature.initial = 0.01,
+  label.placement.temperature.final = 0.0001,
   label.placement.weight.distance = 10.0,
   label.placement.weight.labelAncOverlap = 8.0,
   label.placement.weight.labelLabelOverlap = 12.0,
@@ -300,6 +304,8 @@ LabeledScatter <- function(
     labelPlacementLabelAncOverlapWeight = label.placement.weight.labelAncOverlap,
     labelPlacementNumSweeps = label.placement.numSweeps,
     labelPlacementSeed = label.placement.seed,
+    labelPlacementTemperatureInitial = label.placement.temperature.initial,
+    labelPlacementTemperatureFinal = label.placement.temperature.final,
     labelPlacementMaxMove = label.placement.maxMove,
     labelPlacementMaxAngle = label.placement.maxAngle,
     debugMode = debug.mode,

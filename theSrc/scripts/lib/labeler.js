@@ -16,6 +16,7 @@ const TEMPERATURE_LOGGING = false
 const INITIALISATION_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
+// const LOG_LEVEL = OUTER_LOOP_LOGGING
 
 // behaviour controls
 const debugForceMaxRounds = null // leave this at NULL unless you want to force the number of sweeps
@@ -47,6 +48,9 @@ const labeler = function () {
   let h2 = 1 // TODO: better variable names. These are the bounds of the view port
   let w1 = 1 // TODO: better variable names. These are the bounds of the view port
   let w2 = 1 // TODO: better variable names. These are the bounds of the view port
+  let maxDistance = null
+  let plotArea = null
+  let worstCaseEnergy = null
   let labeler = {}
   let svg = {}
   let resolveFunc = null
@@ -60,7 +64,10 @@ const labeler = function () {
   let acc = 0
   let acc_worse = 0
   let rej = 0
-    
+
+  let initialTemperature = null
+  let finalTemperature = null
+
   // default weights
   let weightLineLength = 10.0 // leader line length
   let weightLabelToLabelOverlap = 12.0 // label-label overlap
@@ -76,6 +83,17 @@ const labeler = function () {
     rightOfAnchor: weightLineLength * 8,
     diagonalOfAnchor: weightLineLength * 15
   }
+
+
+  // energy considers:
+  //   * distance from label to anchor
+  //   * label to label overlap
+  //   * label to anchor overlap
+
+  // worst energy possible:
+  //   * maxPenalty * Math.hypot(width, height)
+  //   * numLabels * labelArea * labelLabelWeight
+  //   * numAnchors * labelArea * labelAnchorWeight
 
   labeler.energy = function ({ label, anchor } = {}) {
     let energy = 0
@@ -98,45 +116,38 @@ const labeler = function () {
     const rightTopDistance = Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor)
     const leftBottomDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
 
-    // OLD INCORRECT COMPUTATION of labIsInsideBubbleAnc
-    // // Check if label is inside bubble for centering of label inside bubble
-    // const labIsInsideBubbleAnc = (labelBoundaries.left < anchor.x + anchor.r)
-    //   && (labelBoundaries.right > anchor.x - anchor.r)
-    //   && (labelBoundaries.top < anchor.y + anchor.r)
-    //   && (labelBoundaries.bottom > anchor.y - anchor.r)
-
     // Check if label is inside bubble for centering of label inside bubble
     const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
       vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
-      energy += Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) * weightLineLength
+      energy += (Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) / maxDistance ) * weightLineLength
     } else {
       // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
       const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
       switch (minDist) {
         case centerBottomDistance:
-          energy += centerBottomDistance * placementPenaltyMultipliers.centeredAboveAnchor
+          energy += (centerBottomDistance / maxDistance) * placementPenaltyMultipliers.centeredAboveAnchor
           break
         case centerTopDistance:
-          energy += centerTopDistance * placementPenaltyMultipliers.centeredUnderneathAnchor
+          energy += (centerTopDistance / maxDistance) * placementPenaltyMultipliers.centeredUnderneathAnchor
           break
         case leftCenterDistance:
-          energy += leftCenterDistance * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
+          energy += (leftCenterDistance / maxDistance) * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
           break
         case rightCenterDistance:
-          energy += rightCenterDistance * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
+          energy += (rightCenterDistance / maxDistance) * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
           break
         case leftTopDistance:
-          energy += leftTopDistance * placementPenaltyMultipliers.diagonalOfAnchor
+          energy += (leftTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
           break
         case rightBottomDistance:
-          energy += rightBottomDistance * placementPenaltyMultipliers.diagonalOfAnchor
+          energy += (rightBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
           break
         case rightTopDistance:
-          energy += rightTopDistance * placementPenaltyMultipliers.diagonalOfAnchor
+          energy += (rightTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
           break
         case leftBottomDistance:
-          energy += leftBottomDistance * placementPenaltyMultipliers.diagonalOfAnchor
+          energy += (leftBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
       }
     }
 
@@ -166,7 +177,7 @@ const labeler = function () {
         overlap_area = x_overlap * y_overlap
 
         if (overlap_area > 0) {
-          energy += (overlap_area * weightLabelToLabelOverlap)
+          energy += (overlap_area / label.area * weightLabelToLabelOverlap)
           labelOverlapCount++
           if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`label overlap!`) }
         }
@@ -183,12 +194,12 @@ const labeler = function () {
 
       overlap_area = x_overlap * y_overlap
 
-      // TODO: why ?
+      // less penalty if the label is overlapping its own anchor
       if (isBubble && anchor.id === label.id) {
         overlap_area /= 2
       }
       if (overlap_area > 0) {
-        energy += (overlap_area * weightLabelToAnchorOverlap)
+        energy += (overlap_area / label.area * weightLabelToAnchorOverlap)
         anchorOverlapCount++
         if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`anchor overlap!`) }
       }
@@ -197,7 +208,7 @@ const labeler = function () {
     return energy
   }
 
-  labeler.mcmove = function (currTemperature, point) {
+  labeler.mcmove = function (point) {
     // Monte Carlo translation move
 
     const { label } = point
@@ -216,7 +227,7 @@ const labeler = function () {
     collisionTree.insert(label)
   }
 
-  labeler.mcrotate = function (currTemperature, point) {
+  labeler.mcrotate = function (point) {
     // Monte Carlo rotation move
 
     const { label, anchor } = point
@@ -254,7 +265,6 @@ const labeler = function () {
   }
 
   let coolCount = 0
-
   labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds }) {
     const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentRound / maxRounds)
 
@@ -264,6 +274,7 @@ const labeler = function () {
   }
   
   function initLabBoundaries (lab) {
+    // TODO duplicated in mcrotate and mcmove
     _.forEach(lab, l => {
       if (l.x + l.width / 2 > w2) l.x = w2 - l.width / 2
       if (l.x - l.width / 2 < w1) l.x = w1 + l.width / 2
@@ -275,14 +286,21 @@ const labeler = function () {
   labeler.start = function (maxSweeps) {
     const startTime = Date.now()
 
+    maxDistance = Math.hypot(w2 - w1, h2 - h1)
+    plotArea = (w2 - w1) * (h2 - h1)
+
+    const highestDistancePenalty = _(placementPenaltyMultipliers).values().max()
+    worstCaseEnergy =
+      highestDistancePenalty
+      + weightLabelToLabelOverlap * (lab.length - 1)
+      + weightLabelToAnchorOverlap * (anc.length - 1)
+
+    console.log(`worstCaseEnergy: ${worstCaseEnergy}`)
+
     initLabBoundaries(lab)
     this.buildDataStructures()
     this.makeInitialObservationsAndAdjustments()
 
-
-    // main simulated annealing function
-    let finalTemperature = 1.0
-    let initialTemperature = 100.0
     let currTemperature = initialTemperature
 
     // TODO: this is no longer accurate as we still do _some_ stuff before this point
@@ -344,7 +362,7 @@ const labeler = function () {
         // Ignore if user moved label
         if (_.some(reasonsToSkip)) {
           if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-            console.log(`${label.text.substr(0, 8).padStart(8)}: skipping`)
+            console.log(`${label.shortText}: skipping`)
           }
           skip++
           continue
@@ -356,22 +374,34 @@ const labeler = function () {
         let old_energy = labeler.energy(point)
 
         if (random.real(0, 1) < 0.8) {
-          labeler.mcmove(currTemperature, point)
+          labeler.mcmove(point)
         } else {
-          labeler.mcrotate(currTemperature, point)
+          labeler.mcrotate(point)
         }
 
         let new_energy = labeler.energy(point)
 
-        // the closer this is to 1 the more likely we are to accept (above 1 accept 100%, below 0 accept 0%)
-        // the more that new energy is less than old energy, the higher this gets
-        // the hotter the temperature (at beginning of sim), higher this value
-        const oddsOfAcceptingWorseLayout = Math.exp((old_energy - new_energy) / currTemperature)
-        const acceptChange = (new_energy < old_energy) || random.real(0, 1) < oddsOfAcceptingWorseLayout
+        // TODO document final solution once it is ready
 
-        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-          if (new_energy < old_energy) { console.log(`${label.text.substr(0, 8).padStart(8)}: better: accepting`) }
-          else { console.log(`${label.text.substr(0, 8).padStart(8)}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds of accepting: ${oddsOfAcceptingWorseLayout.toFixed(5)} acceptChange: ${acceptChange}`) }
+        const better = (new_energy < old_energy)
+        let acceptChange = null
+        if (better) {
+          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: better: accepting`) }
+          acceptChange = true
+        } else {
+          const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
+          const odds = oddsPreTemp * currTemperature
+
+          if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
+          if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
+          if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
+          if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
+          if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
+          if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
+
+          acceptChange = random.real(0, 1) < odds
+
+          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
         }
 
         if (acceptChange) {
@@ -406,7 +436,9 @@ const labeler = function () {
         console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
           labelCount: lab.length,
+          dynamicLabelCount: pointsWithDynamicLabels.length,
           anchorCount: anc.length,
+          worstCaseEnergy,
           duration: Date.now() - startTime,
           maxSweeps,
           maxRounds,
@@ -426,8 +458,10 @@ const labeler = function () {
   labeler.buildDataStructures = function () {
     _(anc).each(addMinMaxAreaToCircle)
     _(anc).each(a => addTypeToObject(a, 'anchor'))
+    _(anc).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
     _(lab).each(addMinMaxAreaToRectangle)
     _(lab).each(l => addTypeToObject(l, 'label'))
+    _(lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
 
     const pinnedById = _.transform(pinned, (result, id) => { result[id] = { pinned: true } }, {})
@@ -612,6 +646,12 @@ const labeler = function () {
     max_move = maxMove
     max_angle = maxAngle
     is_placement_algo_on = isPlacementAlgoOn
+    return labeler
+  }
+
+  labeler.setTemperatureBounds = function (newInitialTemperature, newFinalTemperature) {
+    initialTemperature = newInitialTemperature
+    finalTemperature = newFinalTemperature
     return labeler
   }
 
