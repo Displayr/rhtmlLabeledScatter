@@ -17,7 +17,9 @@ LabeledScatter(axis.font.color = "Black", axis.font.family = "Arial",
   grid = TRUE, group = NULL, height = NULL, label = NULL,
   label.alt = NULL, label.placement.maxAngle = 2 * 3.1415,
   label.placement.maxMove = 5, label.placement.numSweeps = 500,
-  label.placement.seed = 1, label.placement.weight.distance = 10,
+  label.placement.seed = 1, label.placement.temperature.initial = 0.01,
+  label.placement.temperature.final = 1e-04,
+  label.placement.weight.distance = 10,
   label.placement.weight.labelAncOverlap = 8,
   label.placement.weight.labelLabelOverlap = 12,
   labels.font.color = NULL, labels.font.family = "Arial",
@@ -95,6 +97,10 @@ LabeledScatter(axis.font.color = "Black", axis.font.family = "Arial",
 \item{label.placement.numSweeps}{Label placement algorithm number of sweeps through the dataset (Default is 500).}
 
 \item{label.placement.seed}{Label placement algorithm setting for the randomiser seed (Default is 1).}
+
+\item{label.placement.temperature.initial}{Label placement algorithm initial temperature (Default is 0.01).}
+
+\item{label.placement.temperature.final}{Label placement algorithm final temperature (Default is 0.0001).}
 
 \item{label.placement.weight.distance}{Label placement algorithm weight for the distance between the label and the point (Default is 10.0)}
 
