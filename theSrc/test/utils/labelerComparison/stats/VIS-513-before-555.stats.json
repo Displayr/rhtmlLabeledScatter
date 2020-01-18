@@ -1,0 +1,1174 @@
+{
+  "tests": [
+    {
+      "duration": 251,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.07,
+      "scenario": "bubbleplot_colas.html"
+    },
+    {
+      "duration": 412,
+      "sweep": 500,
+      "monte_carlo_rounds": 20000,
+      "pass_rate": 0.06,
+      "scenario": "bubbleplot_colas.html-2"
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.04,
+      "scenario": "bubbleplot_legend.html"
+    },
+    {
+      "duration": 53,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.05,
+      "scenario": "bubbleplot_legend.html-2"
+    },
+    {
+      "duration": 310,
+      "sweep": 500,
+      "monte_carlo_rounds": 16000,
+      "pass_rate": 0.03,
+      "scenario": "bubbleplot_life_expectancy.html"
+    },
+    {
+      "duration": 281,
+      "sweep": 500,
+      "monte_carlo_rounds": 16000,
+      "pass_rate": 0.03,
+      "scenario": "bubbleplot_life_expectancy.html-2"
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2000,
+      "pass_rate": 0.02,
+      "scenario": "bubbleplot_simple.html"
+    },
+    {
+      "duration": 61,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.02,
+      "scenario": "error_test.html"
+    },
+    {
+      "duration": 254,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.05,
+      "scenario": "scatterplot_aspect_ratio.html"
+    },
+    {
+      "duration": 214,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.21,
+      "scenario": "scatterplot_aspect_ratio.html-2"
+    },
+    {
+      "duration": 199,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.11,
+      "scenario": "scatterplot_aspect_ratio.html-3"
+    },
+    {
+      "duration": 186,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.07,
+      "scenario": "scatterplot_aspect_ratio.html-4"
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01,
+      "scenario": "scatterplot_axis_labels.html"
+    },
+    {
+      "duration": 39,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_axis_labels.html-2"
+    },
+    {
+      "duration": 491,
+      "sweep": 500,
+      "monte_carlo_rounds": 21000,
+      "pass_rate": 0.02,
+      "scenario": "scatterplot_busy.html"
+    },
+    {
+      "duration": 169,
+      "sweep": 500,
+      "monte_carlo_rounds": 10000,
+      "pass_rate": 0.05,
+      "scenario": "scatterplot_categorical_bubble.html"
+    },
+    {
+      "duration": 38,
+      "sweep": 500,
+      "monte_carlo_rounds": 2000,
+      "pass_rate": 0,
+      "scenario": "scatterplot_categorical_simple.html"
+    },
+    {
+      "duration": 71,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0,
+      "scenario": "scatterplot_datetime.html"
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_inverted.html"
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.02,
+      "scenario": "scatterplot_inverted.html-2"
+    },
+    {
+      "duration": 111,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.06,
+      "scenario": "scatterplot_logos.html"
+    },
+    {
+      "duration": 1171,
+      "sweep": 500,
+      "monte_carlo_rounds": 6000,
+      "pass_rate": 0.04,
+      "scenario": "scatterplot_mass_points_partial_labels.html"
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_quads.html"
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_quads.html-2"
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_quads.html-3"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "scatterplot_quads.html-4"
+    },
+    {
+      "duration": 50,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0,
+      "scenario": "scatterplot_simple.html"
+    },
+    {
+      "duration": 71,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.04,
+      "scenario": "trendline_plot.html"
+    },
+    {
+      "duration": 130,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "trendline_plot.html-2"
+    },
+    {
+      "duration": 15,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.06,
+      "scenario": "trendline_plot.html-3"
+    },
+    {
+      "duration": 57,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.03,
+      "scenario": "VIS-513.html"
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.08,
+      "scenario": "bubbles"
+    },
+    {
+      "duration": 48,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04,
+      "scenario": "bubbles_default_size"
+    },
+    {
+      "duration": 51,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "dim1and4"
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "entereddata"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.04,
+      "scenario": "fonts"
+    },
+    {
+      "duration": 24,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0,
+      "scenario": "hiddenLabels"
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "logos"
+    },
+    {
+      "duration": 43,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "mirror_dim1and4"
+    },
+    {
+      "duration": 74,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "supplementary"
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "bubble_chart"
+    },
+    {
+      "duration": 129,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "bubble_colors"
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "bubble_colors_zero_centered"
+    },
+    {
+      "duration": 129,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "bubble_with_tile"
+    },
+    {
+      "duration": 113,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "column_principal_scaled"
+    },
+    {
+      "duration": 126,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "correspondence_analysis1"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.08,
+      "scenario": "correspondence_analysis2"
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8500,
+      "pass_rate": 0.04,
+      "scenario": "correspondence_analysis3"
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "correspondence_analysis4"
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "correspondence_analysis5"
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 9000,
+      "pass_rate": 0.01,
+      "scenario": "correspondence_analysis8"
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.18,
+      "scenario": "correspondence_analysis_y_narrow_range"
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "correspondence_analysis9"
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "correspondence_analysis12"
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "correspondence_analysis_4"
+    },
+    {
+      "duration": 117,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "correspondence_analysis_6"
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05,
+      "scenario": "correspondence_analysis_maxLabels"
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "correspondence_anaysis7"
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "row_principal_scaled"
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.26,
+      "scenario": "same_titles"
+    },
+    {
+      "duration": 128,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.03,
+      "scenario": "trend_reprint"
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.03,
+      "scenario": "y_equals_zero"
+    },
+    {
+      "duration": 117,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "column_prinicpal"
+    },
+    {
+      "duration": 204,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.15,
+      "scenario": "multiple_tables"
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "principal"
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "standard"
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "symmertrical"
+    },
+    {
+      "duration": 125,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.08,
+      "scenario": "logo"
+    },
+    {
+      "duration": 127,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "logo_error"
+    },
+    {
+      "duration": 118,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "logo_quote"
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "logo_smartquote"
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "logo_typo"
+    },
+    {
+      "duration": 135,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.07,
+      "scenario": "both_mirror"
+    },
+    {
+      "duration": 116,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "d1_mirror"
+    },
+    {
+      "duration": 109,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "d2_mirror"
+    },
+    {
+      "duration": 110,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0,
+      "scenario": "no_mirror"
+    },
+    {
+      "duration": 192,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.14,
+      "scenario": "multiple_table"
+    },
+    {
+      "duration": 64,
+      "sweep": 500,
+      "monte_carlo_rounds": 3000,
+      "pass_rate": 0.05,
+      "scenario": "multiple_table_3d"
+    },
+    {
+      "duration": 194,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.09,
+      "scenario": "multiple_table_logo"
+    },
+    {
+      "duration": 165,
+      "sweep": 500,
+      "monte_carlo_rounds": 10500,
+      "pass_rate": 0.06,
+      "scenario": "multiple_table_logo_transpose"
+    },
+    {
+      "duration": 134,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "multiple_table_logotrend"
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.08,
+      "scenario": "multiple_table_named"
+    },
+    {
+      "duration": 191,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.03,
+      "scenario": "multiple_table_reprint"
+    },
+    {
+      "duration": 198,
+      "sweep": 500,
+      "monte_carlo_rounds": 11500,
+      "pass_rate": 0.18,
+      "scenario": "multiple_table_transpose"
+    },
+    {
+      "duration": 130,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.04,
+      "scenario": "multiple_table_trend"
+    },
+    {
+      "duration": 113,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.05,
+      "scenario": "multiple_table_unamed"
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "focus_off_supplementary"
+    },
+    {
+      "duration": 116,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "focus_on_supplementary"
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.1,
+      "scenario": "long_footer"
+    },
+    {
+      "duration": 115,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.09,
+      "scenario": "one_point"
+    },
+    {
+      "duration": 136,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.05,
+      "scenario": "two_point"
+    },
+    {
+      "duration": 114,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "entered_data"
+    },
+    {
+      "duration": 123,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.06,
+      "scenario": "entered_data_transpose"
+    },
+    {
+      "duration": 124,
+      "sweep": 500,
+      "monte_carlo_rounds": 8000,
+      "pass_rate": 0.16,
+      "scenario": "no_titles"
+    },
+    {
+      "duration": 53,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05,
+      "scenario": "mca_maxlabels"
+    },
+    {
+      "duration": 54,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.05,
+      "scenario": "mca_title"
+    },
+    {
+      "duration": 175,
+      "sweep": 500,
+      "monte_carlo_rounds": 10000,
+      "pass_rate": 0.24,
+      "scenario": "plot_filtered"
+    },
+    {
+      "duration": 100,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.23,
+      "scenario": "plot_labelnames"
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.24,
+      "scenario": "plot_variablenames"
+    },
+    {
+      "duration": 102,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.26,
+      "scenario": "plot_weighted"
+    },
+    {
+      "duration": 107,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.02,
+      "scenario": "distance_entered"
+    },
+    {
+      "duration": 105,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01,
+      "scenario": "distance_metric"
+    },
+    {
+      "duration": 102,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0,
+      "scenario": "distance_non_metric"
+    },
+    {
+      "duration": 119,
+      "sweep": 500,
+      "monte_carlo_rounds": 7500,
+      "pass_rate": 0.01,
+      "scenario": "distance_object"
+    },
+    {
+      "duration": 44,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02,
+      "scenario": "entered_data_non_metric"
+    },
+    {
+      "duration": 198,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.23,
+      "scenario": "equamax_plot"
+    },
+    {
+      "duration": 197,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.21,
+      "scenario": "equamax_reprint"
+    },
+    {
+      "duration": 60,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.09,
+      "scenario": "promax_plot"
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0.09,
+      "scenario": "promax_reprint"
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.04,
+      "scenario": "varimax_plot"
+    },
+    {
+      "duration": 85,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.05,
+      "scenario": "varimax_reprint"
+    },
+    {
+      "duration": 227,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0,
+      "scenario": "column_principal"
+    },
+    {
+      "duration": 250,
+      "sweep": 500,
+      "monte_carlo_rounds": 13000,
+      "pass_rate": 0.07,
+      "scenario": "ignore_rows"
+    },
+    {
+      "duration": 249,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04,
+      "scenario": "none"
+    },
+    {
+      "duration": 254,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.04,
+      "scenario": "row_col_titles"
+    },
+    {
+      "duration": 261,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.15,
+      "scenario": "row_principal"
+    },
+    {
+      "duration": 227,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.05,
+      "scenario": "scatterplot"
+    },
+    {
+      "duration": 248,
+      "sweep": 500,
+      "monte_carlo_rounds": 13500,
+      "pass_rate": 0.02,
+      "scenario": "symmetric"
+    },
+    {
+      "duration": 97,
+      "sweep": 500,
+      "monte_carlo_rounds": 7000,
+      "pass_rate": 0.04,
+      "scenario": "all_labelled"
+    },
+    {
+      "duration": 998,
+      "sweep": 500,
+      "monte_carlo_rounds": 31000,
+      "pass_rate": 0.08,
+      "scenario": "large_transparent_points"
+    },
+    {
+      "duration": 1156,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.05,
+      "scenario": "list_categories"
+    },
+    {
+      "duration": 196,
+      "sweep": 500,
+      "monte_carlo_rounds": 11000,
+      "pass_rate": 0.11,
+      "scenario": "list_categories_with_filter"
+    },
+    {
+      "duration": 214,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.08,
+      "scenario": "mds_metric"
+    },
+    {
+      "duration": 211,
+      "sweep": 500,
+      "monte_carlo_rounds": 12000,
+      "pass_rate": 0.04,
+      "scenario": "mds_nonmetric"
+    },
+    {
+      "duration": 309,
+      "sweep": 500,
+      "monte_carlo_rounds": 15500,
+      "pass_rate": 0.11,
+      "scenario": "pca"
+    },
+    {
+      "duration": 2019,
+      "sweep": 500,
+      "monte_carlo_rounds": 40000,
+      "pass_rate": 0.03,
+      "scenario": "small_opaque_points"
+    },
+    {
+      "duration": 460,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03,
+      "scenario": "tsne_perplexity_7"
+    },
+    {
+      "duration": 455,
+      "sweep": 500,
+      "monte_carlo_rounds": 20500,
+      "pass_rate": 0.03,
+      "scenario": "tsne_perplexity_default"
+    },
+    {
+      "duration": 82,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04,
+      "scenario": "bubblechart"
+    },
+    {
+      "duration": 86,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.04,
+      "scenario": "bubblechart_debug"
+    },
+    {
+      "duration": 81,
+      "sweep": 500,
+      "monte_carlo_rounds": 4500,
+      "pass_rate": 0.05,
+      "scenario": "bubblechart_fonts"
+    },
+    {
+      "duration": 0,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null,
+      "scenario": "bubblechart_no_autoposition"
+    },
+    {
+      "duration": 42,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "chart_1col_entered_with_names"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0,
+      "scenario": "chart_1col_vector_with_names"
+    },
+    {
+      "duration": 78,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "chart_customcolor"
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "chart_hideaxes_labeled"
+    },
+    {
+      "duration": 40,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "chart_labeled"
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "chart_labeled_debug"
+    },
+    {
+      "duration": 90,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0,
+      "scenario": "chart_logos_debug"
+    },
+    {
+      "duration": 276,
+      "sweep": 500,
+      "monte_carlo_rounds": 15000,
+      "pass_rate": 0.01,
+      "scenario": "chart_multiple_tables"
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.03,
+      "scenario": "chart_multiple_tables_logos_trendlines"
+    },
+    {
+      "duration": 96,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "chart_multiple_tables_na"
+    },
+    {
+      "duration": 86,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "chart_multiple_tables_reordered"
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 5000,
+      "pass_rate": 0.02,
+      "scenario": "chart_multiple_tables_trendlines"
+    },
+    {
+      "duration": 75,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "chart_nogrid_labeled"
+    },
+    {
+      "duration": 73,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "chart_points_fontsize"
+    },
+    {
+      "duration": 76,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "chart_pointsonly"
+    },
+    {
+      "duration": 46,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "chart_titles_fontsize_labeled"
+    },
+    {
+      "duration": 45,
+      "sweep": 500,
+      "monte_carlo_rounds": 1500,
+      "pass_rate": 0.08,
+      "scenario": "chart_titles_labeled"
+    },
+    {
+      "duration": 24,
+      "sweep": 500,
+      "monte_carlo_rounds": 1000,
+      "pass_rate": 0.07,
+      "scenario": "chart_unnamed_columns_ds1493"
+    },
+    {
+      "duration": 77,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_datalabels"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_datalabels_fonts"
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_datalabels_fonts_debug"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_datalabels_fontsize"
+    },
+    {
+      "duration": 66,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_datalabels_fontsize_debug"
+    },
+    {
+      "duration": 76,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_pointsonly_debug"
+    },
+    {
+      "duration": 67,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_prefix_suffix"
+    },
+    {
+      "duration": 65,
+      "sweep": 500,
+      "monte_carlo_rounds": 4000,
+      "pass_rate": 0,
+      "scenario": "charts_prefix_suffix_debug"
+    },
+    {
+      "duration": 476,
+      "sweep": 500,
+      "monte_carlo_rounds": 2500,
+      "pass_rate": 0.02,
+      "scenario": "vardata_color_date_category_labelled"
+    },
+    {
+      "duration": 99,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04,
+      "scenario": "vardata_color_numeric_more_labeled"
+    },
+    {
+      "duration": 110,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.04,
+      "scenario": "vardata_data_categoric_axis_labeled"
+    },
+    {
+      "duration": 4853,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "vardata_size_and_color_categoric_labeled"
+    },
+    {
+      "duration": 4867,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "vardata_size_data_labeled"
+    },
+    {
+      "duration": 0,
+      "sweep": 0,
+      "monte_carlo_rounds": 0,
+      "pass_rate": null,
+      "scenario": "vardata_size_data_labeled_hidebubblelegend"
+    },
+    {
+      "duration": 4873,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.11,
+      "scenario": "vardata_size_data_labeled_marker_size"
+    },
+    {
+      "duration": 4771,
+      "sweep": 500,
+      "monte_carlo_rounds": 25000,
+      "pass_rate": 0.07,
+      "scenario": "vardata_size_numeric_labeled"
+    },
+    {
+      "duration": 112,
+      "sweep": 500,
+      "monte_carlo_rounds": 6500,
+      "pass_rate": 0.06,
+      "scenario": "vardata_size_numeric_labeled_filtered"
+    }
+  ],
+  "batchName": "VIS-513-before-555"
+}
