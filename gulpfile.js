@@ -2,7 +2,7 @@ const path = require('path')
 const gulp = require('gulp')
 const rhtmlBuildUtils = require('rhtmlBuildUtils')
 
-const dontRegisterTheseTasks = ['testVisual', 'testVisual_s']
+const dontRegisterTheseTasks = ['testVisual', 'testVisual_s', 'serve']
 rhtmlBuildUtils.registerGulpTasks({ gulp, exclusions: dontRegisterTheseTasks })
 
 const shell = require('shelljs')
@@ -30,6 +30,51 @@ const jestSnapshotTests = () => {
   }
 }
 
+const copyExperimentSnapshots = (gulp) => {
+  return function (done) {
+    let finishedCount = 0
+    const requiredCount = 2
+    const incrementFinishedCount = () => finishedCount++
+
+    gulp.src([
+      'theSrc/test/experiments/**/*'
+    ], {})
+      .pipe(gulp.dest('browser/experiments'))
+      .on('finish', incrementFinishedCount)
+
+    gulp.src([
+      'theSrc/test/experiments/ui/**/*'
+    ], {})
+      .pipe(gulp.dest('browser/experiments/ui'))
+      .on('finish', incrementFinishedCount)
+
+    const intervalHandle = setInterval(() => {
+      if (finishedCount >= requiredCount) {
+        clearInterval(intervalHandle)
+        done()
+      }
+    }, 20)
+  }
+}
+
+gulp.task('compileExperimentList', require('./build/tasks/compileExperimentList')(gulp))
+gulp.task('compileSnapshotList', require('./build/tasks/compileSnapshotList')(gulp))
+gulp.task('compileSnapshotComparison', require('./build/tasks/compileSnapshotComparison')(gulp))
+gulp.task('compileCrossExperimentSnapshotComparison', require('./build/tasks/compileCrossExperimentSnapshotComparison')(gulp))
+gulp.task('compileCrossExperimentSnapshotList', require('./build/tasks/compileCrossExperimentSnapshotList')(gulp))
+gulp.task('copyExperimentSnapshots', copyExperimentSnapshots(gulp))
 gulp.task('jestSnapshotTests', jestSnapshotTests(gulp))
 gulp.task('testVisual', gulp.series('core', 'compileInternal', 'connect', 'jestSnapshotTests'))
 gulp.task('testVisual_s', gulp.series('jestSnapshotTests'))
+
+const newServeSequence = [
+  'copyExperimentSnapshots',
+  'compileExperimentList',
+  'compileSnapshotList',
+  'compileSnapshotComparison',
+  'compileCrossExperimentSnapshotComparison',
+  'compileCrossExperimentSnapshotList',
+  ...rhtmlBuildUtils.taskSequences.serve
+]
+
+gulp.task('serve', gulp.series(...newServeSequence))

@@ -18,7 +18,7 @@ const config = {
     'branch': 'master', // git branch (you dont need to change it; is overridden auto when npm run travisTest is run)
     'testplanDirectory': 'theSrc/test/snapshotTestDefinitions',
     'snapshotDirectory': 'theSrc/test/snapshots',
-    'timeout': 10000,
+    'timeout': 30000,
     'snapshotDelay': 100,
     'puppeteer': {
       'headless': 1, // 0 | 1 | true | false

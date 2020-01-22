@@ -2477,7 +2477,7 @@ Time:        220.57s
 Ran all test suites matching /\/home\/travis\/build\/Displayr\/rhtmlLabeledScatter\/theSrc\/test\//i.
 [07:51:00] 'jestSnapshotTests' errored after 3.68 min
 [07:51:00] Error: exited with error code: 1
-    at ChildProcess.onexit (/home/travis/build/Displayr/rhtmlLabeledScatter/node_modules/end-of-stream/index.js:40:36)
+    at ChildProcess.onexit (/home/travis/build/Displayr/rhtmlLabeledScatter/node_modules/end-of-stream/index.html:40:36)
     at emitTwo (events.js:126:13)
     at ChildProcess.emit (events.js:214:7)
     at Process.ChildProcess._handle.onexit (internal/child_process.js:198:12)
