@@ -307,8 +307,7 @@ const labeler = function () {
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
-      resolveFunc()
-      
+      return resolveFunc()
     } else {
 
       const pointsWithDynamicLabels = pointsWithLabels.filter(point => {
@@ -347,7 +346,8 @@ const labeler = function () {
           label,
           pinned,
           observations: {
-            static: staticObservations
+            static: staticObservations,
+            dynamic: dynamicObservations
           }
         } = point
 
@@ -404,9 +404,14 @@ const labeler = function () {
           if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
         }
 
+        dynamicObservations.adjustments.attempts++
         if (acceptChange) {
           acc += 1
           if (new_energy >= old_energy) { acc_worse += 1}
+          dynamicObservations.energy.current = new_energy
+          dynamicObservations.adjustments.success++
+          if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
+          if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
         } else {
           // move back to old coordinates
           label.x = x_old
@@ -431,7 +436,7 @@ const labeler = function () {
           })
         }
       }
-
+      
       if (LOG_LEVEL >= MINIMAL_LOGGING) {
         console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
         console.log(JSON.stringify({
@@ -451,7 +456,7 @@ const labeler = function () {
           acc_worse
         }))
       }
-      resolveFunc()
+      return resolveFunc()
     }
   }
 
@@ -492,7 +497,11 @@ const labeler = function () {
         },
         // dynamic observations are updated through the annealing process
         dynamic: {
-          
+          adjustments: {
+            attempts: 0,
+            success: 0
+          },
+          energy: {}
         },
       }
 
