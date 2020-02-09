@@ -1,4 +1,4 @@
-/* eslint-disable */
+ /* eslint-disable */
 import Random from 'random-js'
 import _ from 'lodash'
 import RBush from 'rbush'
@@ -32,6 +32,10 @@ const coolingPeriodTechnique = [COOLING_PERIOD_PER_SWEEP, COOLING_PERIOD_PER_MOV
 const SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS = 'ALL_LABELS'
 const SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS = 'DYNAMIC_LABELS'
 const SWEEP_TO_ROUND_MULTIPLIER = [SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS, SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS][1]
+
+const POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM = 'RANDOM'
+const POST_SWEEP_ADJUSTMENT_STRATEGY_CARDINAL = 'CARDINAL'
+const POST_SWEEP_ADJUSTMENT_STRATEGY = [POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM, POST_SWEEP_ADJUSTMENT_STRATEGY_CARDINAL][1]
 
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
@@ -96,7 +100,19 @@ const labeler = function () {
   //   * numAnchors * labelArea * labelAnchorWeight
 
   labeler.energy = function ({ label, anchor } = {}) {
-    let energy = 0
+    return labeler.detailedEnergy({ label, anchor }).energy
+  }
+
+  labeler.detailedEnergy = function ({ label, anchor } = {}) {
+    let energyParts = {
+      distance: 0,
+      distanceType: 'N/A',
+      labelOverlap: 0,
+      labelOverlapCount: 0,
+      labelOverlapList: [],
+      anchorOverlap: 0,
+      anchorOverlapCount: 0
+    }
 
     // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
 
@@ -120,34 +136,43 @@ const labeler = function () {
     const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
       vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
-      energy += (Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) / maxDistance ) * weightLineLength
+      energyParts.distance = (Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) / maxDistance ) * weightLineLength
+      energyParts.distanceType = 'labInsideBubble'
     } else {
       // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
       const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
       switch (minDist) {
         case centerBottomDistance:
-          energy += (centerBottomDistance / maxDistance) * placementPenaltyMultipliers.centeredAboveAnchor
+          energyParts.distance = (centerBottomDistance / maxDistance) * placementPenaltyMultipliers.centeredAboveAnchor
+          energyParts.distanceType = 'centerBottomDistance'
           break
         case centerTopDistance:
-          energy += (centerTopDistance / maxDistance) * placementPenaltyMultipliers.centeredUnderneathAnchor
+          energyParts.distance = (centerTopDistance / maxDistance) * placementPenaltyMultipliers.centeredUnderneathAnchor
+          energyParts.distanceType = 'centerTopDistance'
           break
         case leftCenterDistance:
-          energy += (leftCenterDistance / maxDistance) * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
+          energyParts.distance = (leftCenterDistance / maxDistance) * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
+          energyParts.distanceType = 'leftCenterDistance'
           break
         case rightCenterDistance:
-          energy += (rightCenterDistance / maxDistance) * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
+          energyParts.distance = (rightCenterDistance / maxDistance) * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
+          energyParts.distanceType = 'rightCenterDistance'
           break
         case leftTopDistance:
-          energy += (leftTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distance = (leftTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distanceType = 'leftTopDistance'
           break
         case rightBottomDistance:
-          energy += (rightBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distance = (rightBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distanceType = 'rightBottomDistance'
           break
         case rightTopDistance:
-          energy += (rightTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distance = (rightTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distanceType = 'rightTopDistance'
           break
         case leftBottomDistance:
-          energy += (leftBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distance = (leftBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
+          energyParts.distanceType = 'leftBottomDistance'
       }
     }
 
@@ -156,56 +181,53 @@ const labeler = function () {
     const potentiallyOverlappingLabels = potentiallyOverlapping
       .filter(isLabel)
       .filter(notSameId(label.id))
+      // .filter(label => !_.get(label, 'tempIgnore', false))
 
     const potentiallyOverlappingAnchors = potentiallyOverlapping
       .filter(isAnchor)
 
-    // const potentiallyOverlappingLabels = lab
-    // const potentiallyOverlappingAnchors = anc
-
-    let x_overlap = null
-    let y_overlap = null
-    let overlap_area = null
+    let xOverlap = null
+    let yOverlap = null
+    let overlapArea = null
 
     // penalty for label-label overlap
-    let labelOverlapCount = 0
     _.forEach(potentiallyOverlappingLabels, comparisonLab => {
-
       if (comparisonLab.id !== label.id) {
-        x_overlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
-        y_overlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
-        overlap_area = x_overlap * y_overlap
+        xOverlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
+        yOverlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
+        overlapArea = xOverlap * yOverlap
 
-        if (overlap_area > 0) {
-          energy += (overlap_area / label.area * weightLabelToLabelOverlap)
-          labelOverlapCount++
+        if (overlapArea > 0) {
+          energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
+          energyParts.labelOverlapCount++
+          energyParts.labelOverlapList.push({ shortText: comparisonLab.shortText, overlapArea, comparisonLab })
           if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`label overlap!`) }
         }
       }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING && labelOverlapCount > 0) { console.log(`label overlap percentage: ${(100 * labelOverlapCount / lab.length).toFixed(2)}%`) }
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING && energyParts.labelOverlapCount > 0) { console.log(`label overlap percentage: ${(100 * energyParts.labelOverlapCount / lab.length).toFixed(2)}%`) }
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
-    let anchorOverlapCount = 0
     _.forEach(potentiallyOverlappingAnchors, anchor => {
-      x_overlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
-      y_overlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
+      xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
+      yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
 
-      overlap_area = x_overlap * y_overlap
+      overlapArea = xOverlap * yOverlap
 
       // less penalty if the label is overlapping its own anchor
       if (isBubble && anchor.id === label.id) {
-        overlap_area /= 2
+        overlapArea /= 2
       }
-      if (overlap_area > 0) {
-        energy += (overlap_area / label.area * weightLabelToAnchorOverlap)
-        anchorOverlapCount++
+      if (overlapArea > 0) {
+        energyParts.anchorOverlap += (overlapArea / label.area * weightLabelToAnchorOverlap)
+        energyParts.anchorOverlapCount++
         if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`anchor overlap!`) }
       }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING && anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * anchorOverlapCount / anc.length).toFixed(2)}%`) }
-    return energy
+    if (LOG_LEVEL >= INNER_LOOP_LOGGING && energyParts.anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * energyParts.anchorOverlapCount / anc.length).toFixed(2)}%`) }
+    let energy = energyParts.distance + energyParts.labelOverlap + energyParts.anchorOverlap
+    return { energy, energyParts }
   }
 
   labeler.mcmove = function (point) {
@@ -222,6 +244,7 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
+    // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
     addMinMaxAreaToRectangle(label)
     collisionTree.remove(label)
     collisionTree.insert(label)
@@ -259,6 +282,7 @@ const labeler = function () {
     if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
+    // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
     addMinMaxAreaToRectangle(label)
     collisionTree.remove(label)
     collisionTree.insert(label)
@@ -284,8 +308,6 @@ const labeler = function () {
   }
   
   labeler.start = function (maxSweeps) {
-    const startTime = Date.now()
-
     maxDistance = Math.hypot(w2 - w1, h2 - h1)
     plotArea = (w2 - w1) * (h2 - h1)
 
@@ -295,13 +317,31 @@ const labeler = function () {
       + weightLabelToLabelOverlap * (lab.length - 1)
       + weightLabelToAnchorOverlap * (anc.length - 1)
 
-    console.log(`worstCaseEnergy: ${worstCaseEnergy}`)
-
     initLabBoundaries(lab)
     this.buildDataStructures()
     this.makeInitialObservationsAndAdjustments()
 
-    let currTemperature = initialTemperature
+    const pointsWithDynamicLabels = pointsWithLabels.filter(point => {
+      const {
+        label,
+        pinned,
+        observations: {
+          static: staticObservations
+        }
+      } = point
+
+      const reasonsToSkip = [
+        pinned,
+        staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
+        staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+      ]
+
+      return !_.some(reasonsToSkip)
+    })
+
+    const activePoints = (SWEEP_TO_ROUND_MULTIPLIER === SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS)
+      ? pointsWithLabels
+      : pointsWithDynamicLabels
 
     // TODO: this is no longer accurate as we still do _some_ stuff before this point
     if (!is_placement_algo_on) {
@@ -309,155 +349,327 @@ const labeler = function () {
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
       return resolveFunc()
     } else {
-
-      const pointsWithDynamicLabels = pointsWithLabels.filter(point => {
-        const {
-          label,
-          pinned,
-          observations: {
-            static: staticObservations
-          }
-        } = point
-
-        const reasonsToSkip = [
-          pinned,
-          staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
-          staticObservations.noInitialCollisionsAndNoNearbyNeighbors
-        ]
-
-        return !_.some(reasonsToSkip)
-      })
-      console.log({ pointsWithDynamicLabels, pointsWithLabels })
-
-      const labelPool = (SWEEP_TO_ROUND_MULTIPLIER === SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS)
-        ? pointsWithLabels
-        : pointsWithDynamicLabels
-
-      const maxRounds = (debugForceMaxRounds || maxSweeps) * labelPool.length
-
-      let currentRound
-      for (currentRound = 0; currentRound < maxRounds; currentRound++) {
-
-        const point = (labelIterationTechnique === LABEL_ITERATION_RANDOM)
-          ?  labelPool[Math.floor(random.real(0, 1) * labelPool.length)]
-          :  labelPool[currentRound % labelPool.length]
-
-        const {
-          label,
-          pinned,
-          observations: {
-            static: staticObservations,
-            dynamic: dynamicObservations
-          }
-        } = point
-
-
-        // TODO: the skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
-        const reasonsToSkip = [
-          pinned,
-          staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
-          staticObservations.noInitialCollisionsAndNoNearbyNeighbors
-        ]
-
-        // Ignore if user moved label
-        if (_.some(reasonsToSkip)) {
-          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
-            console.log(`${label.shortText}: skipping`)
-          }
-          skip++
-          continue
-        }
-
-        const x_old = label.x
-        const y_old = label.y
-
-        let old_energy = labeler.energy(point)
-
-        if (random.real(0, 1) < 0.8) {
-          labeler.mcmove(point)
-        } else {
-          labeler.mcrotate(point)
-        }
-
-        let new_energy = labeler.energy(point)
-
-        // TODO document final solution once it is ready
-
-        const better = (new_energy < old_energy)
-        let acceptChange = null
-        if (better) {
-          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: better: accepting`) }
-          acceptChange = true
-        } else {
-          const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
-          const odds = oddsPreTemp * currTemperature
-
-          if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
-          if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
-          if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
-          if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
-          if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
-          if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
-
-          acceptChange = random.real(0, 1) < odds
-
-          if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
-        }
-
-        dynamicObservations.adjustments.attempts++
-        if (acceptChange) {
-          acc += 1
-          if (new_energy >= old_energy) { acc_worse += 1}
-          dynamicObservations.energy.current = new_energy
-          dynamicObservations.adjustments.success++
-          if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
-          if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
-        } else {
-          // move back to old coordinates
-          label.x = x_old
-          label.y = y_old
-          addMinMaxAreaToRectangle(label)
-          collisionTree.remove(label)
-          collisionTree.insert(label)
-          rej += 1
-        }
-
-        if (coolingPeriodTechnique === COOLING_PERIOD_PER_MOVE) {
-          currTemperature = labeler.cooling_schedule({currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds})
-        }
-        if (coolingPeriodTechnique === COOLING_PERIOD_PER_SWEEP && currentRound > 0 && currentRound % labelPool.length === 0) {
-          const currentSweep = Math.floor(currentRound / labelPool.length)
-          currTemperature = labeler.cooling_schedule({
-            currTemperature,
-            initialTemperature,
-            finalTemperature,
-            currentRound: currentSweep,
-            maxRounds: maxSweeps
-          })
-        }
-      }
-      
-      if (LOG_LEVEL >= MINIMAL_LOGGING) {
-        console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
-        console.log(JSON.stringify({
-          labelCount: lab.length,
-          dynamicLabelCount: pointsWithDynamicLabels.length,
-          anchorCount: anc.length,
-          worstCaseEnergy,
-          duration: Date.now() - startTime,
-          maxSweeps,
-          maxRounds,
-          monte_carlo_rounds: acc + rej,
-          pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
-          accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
-          skip,
-          acc,
-          rej,
-          acc_worse
-        }))
-      }
+      labeler.generalSweep({ maxSweeps, activePoints, pointsWithDynamicLabels })
+      labeler.postSweep({ activePoints })
       return resolveFunc()
     }
+  }
+
+  labeler.generalSweep = function ({ maxSweeps, activePoints, pointsWithDynamicLabels }) {
+    const startTime = Date.now()
+    let currTemperature = initialTemperature
+    const maxRounds = (debugForceMaxRounds || maxSweeps) * activePoints.length
+    let currentRound
+    for (currentRound = 0; currentRound < maxRounds; currentRound++) {
+
+      const point = (labelIterationTechnique === LABEL_ITERATION_RANDOM)
+        ?  activePoints[Math.floor(random.real(0, 1) * activePoints.length)]
+        :  activePoints[currentRound % activePoints.length]
+
+      const {
+        label,
+        pinned,
+        observations: {
+          static: staticObservations,
+          dynamic: dynamicObservations
+        }
+      } = point
+
+
+      // TODO: the skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
+      const reasonsToSkip = [
+        pinned,
+        staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
+        staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+      ]
+
+      // Ignore if user moved label
+      if (_.some(reasonsToSkip)) {
+        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+          console.log(`${label.shortText}: skipping`)
+        }
+        skip++
+        continue
+      }
+
+      const x_old = label.x
+      const y_old = label.y
+
+      let old_energy = labeler.energy(point)
+
+      if (random.real(0, 1) < 0.8) {
+        labeler.mcmove(point)
+      } else {
+        labeler.mcrotate(point)
+      }
+
+      let new_energy = labeler.energy(point)
+
+      // TODO document final solution once it is ready
+
+      const better = (new_energy < old_energy)
+      let acceptChange = null
+      if (better) {
+        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: better: accepting`) }
+        acceptChange = true
+      } else {
+        const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
+        const odds = oddsPreTemp * currTemperature
+
+        if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
+        if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
+        if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
+        if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
+        if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
+        if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
+
+        acceptChange = random.real(0, 1) < odds
+
+        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
+      }
+
+      dynamicObservations.adjustments.attempts++
+      if (acceptChange) {
+        acc += 1
+        if (new_energy >= old_energy) { acc_worse += 1}
+        dynamicObservations.energy.current = new_energy
+        dynamicObservations.adjustments.success++
+        if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
+        if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
+      } else {
+        // move back to old coordinates
+        label.x = x_old
+        label.y = y_old
+        addMinMaxAreaToRectangle(label)
+        collisionTree.remove(label)
+        collisionTree.insert(label)
+        rej += 1
+      }
+
+      if (coolingPeriodTechnique === COOLING_PERIOD_PER_MOVE) {
+        currTemperature = labeler.cooling_schedule({currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds})
+      }
+      if (coolingPeriodTechnique === COOLING_PERIOD_PER_SWEEP && currentRound > 0 && currentRound % activePoints.length === 0) {
+        const currentSweep = Math.floor(currentRound / activePoints.length)
+        currTemperature = labeler.cooling_schedule({
+          currTemperature,
+          initialTemperature,
+          finalTemperature,
+          currentRound: currentSweep,
+          maxRounds: maxSweeps
+        })
+      }
+    }
+
+    if (LOG_LEVEL >= MINIMAL_LOGGING) {
+      console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
+      console.log(JSON.stringify({
+        labelCount: lab.length,
+        dynamicLabelCount: pointsWithDynamicLabels.length,
+        anchorCount: anc.length,
+        worstCaseEnergy,
+        duration: Date.now() - startTime,
+        maxSweeps: debugForceMaxRounds | maxSweeps,
+        maxRounds,
+        monte_carlo_rounds: acc + rej,
+        pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
+        accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
+        skip,
+        acc,
+        rej,
+        acc_worse
+      }))
+    }
+  }
+
+  labeler.postSweep = function ({ activePoints }) {
+    const proportionOfLabelsToAdjust = 0.4
+
+    const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${point.observations.dynamic.energy.current.toFixed(2)}`).value()
+    console.log('currentEnergies')
+    console.log(JSON.stringify(currentEnergies, {}, 2))
+
+    const sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
+    // console.log('sortedEnergies')
+    // console.log(JSON.stringify(sortedEnergies, {}, 2))
+
+    const boundaryEnergy = sortedEnergies[Math.floor(sortedEnergies.length * (1 - proportionOfLabelsToAdjust ))]
+    console.log('boundaryEnergy', boundaryEnergy)
+
+    const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
+    console.log('worstLabels length', worstPoints.length)
+
+    // reset so that they done interfere with each others placement :
+    // _(worstPoints).map(point => { point.label.tempIgnore = true })
+
+    _(worstPoints).each(point => {
+      if (POST_SWEEP_ADJUSTMENT_STRATEGY === POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM) {
+        labeler.targetedRandomAdjustment({ point })
+      } else {
+        labeler.targetedCardinalAdjustment({ point })
+      }
+      // point.label.tempIgnore = false
+    })
+  }
+
+  labeler.targetedRandomAdjustment = function ({ point }) {
+    const {
+      label,
+      anchor,
+      observations: {
+        static: staticObservations,
+        dynamic: dynamicObservations
+      }
+    } = point
+
+    // reset label to original position
+    // TODO logic taken from PlotData.getPtsAndLabs
+    label.x = anchor.x
+    label.y = anchor.y - anchor.r - 5
+    addMinMaxAreaToRectangle(label)
+    collisionTree.remove(label)
+    collisionTree.insert(label)
+
+    const energyBefore = dynamicObservations.energy.current
+
+    // TODO address duplication in general sweep
+    let currTemperature = 0 // do not accept worse moves during this phase
+    let currentRound
+    let lastEnergy = null
+    for (currentRound = 0; currentRound < 100; currentRound++) {
+      const x_old = label.x
+      const y_old = label.y
+
+      let old_energy = labeler.energy(point)
+
+      if (random.real(0, 1) < 0.8) {
+        labeler.mcmove(point)
+      } else {
+        labeler.mcrotate(point)
+      }
+
+      let new_energy = labeler.energy(point)
+      lastEnergy = new_energy
+
+      const better = (new_energy < old_energy)
+      let acceptChange = better
+
+      dynamicObservations.adjustments.attempts++
+      if (acceptChange) {
+        dynamicObservations.energy.current = new_energy
+        dynamicObservations.adjustments.success++
+        if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
+        if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
+      } else {
+        // move back to old coordinates
+        label.x = x_old
+        label.y = y_old
+        addMinMaxAreaToRectangle(label)
+        collisionTree.remove(label)
+        collisionTree.insert(label)
+      }
+    }
+
+    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
+  }
+
+  labeler.targetedCardinalAdjustment = function ({ point }) {
+    const {
+      label,
+      anchor,
+      observations: {
+        static: staticObservations,
+        dynamic: dynamicObservations
+      }
+    } = point
+
+    // // reset label to original position
+    // // TODO logic taken from PlotData.getPtsAndLabs
+    // label.x = anchor.x
+    // label.y = anchor.y - anchor.r - 5
+    // addMinMaxAreaToRectangle(label)
+    // collisionTree.remove(label)
+    // collisionTree.insert(label)
+
+    const energyBefore = dynamicObservations.energy.current
+
+    const movesPerDirection = 10
+    const widthIncrement = 0.5 * (w2 - w1) / movesPerDirection
+    const heightIncrement = 0.5 * (h2 - h1) / movesPerDirection
+
+    const verticalOptions = _.range(label.y - heightIncrement * movesPerDirection, label.y + heightIncrement * movesPerDirection, heightIncrement)
+      .map((newHeight, i) => ({ nickname: `vertical_${i}`, x: label.x, y: newHeight }))
+    const horizontalOptions = _.range(label.x - widthIncrement * movesPerDirection, label.x + widthIncrement * movesPerDirection, widthIncrement)
+      .map((newWidth, i) => ({ nickname: `horizontal_${i}`, x: newWidth, y: label.y }))
+    const northEasterlyDiagonal = _.range(verticalOptions.length - 1)
+      .map(i => ({ nickname: `NEly_${i}`, x: horizontalOptions[i].x, y: verticalOptions[verticalOptions.length - i - 1].y }))
+    const southEasterlyDiagonal = _.range(verticalOptions.length - 1)
+      .map(i => ({ nickname: `SEly_${i}`, x: horizontalOptions[i].x, y: verticalOptions[i].y }))
+
+    const options = [
+      {  nickname: 'last', x: label.x, y: label.y },
+      {  nickname: 'reset', x: anchor.x, y: anchor.y - anchor.r - 5 }, // TODO logic for reset positioning duplicated from PlotData.getPtsAndLabs
+      ...verticalOptions,
+      ...horizontalOptions,
+      ...northEasterlyDiagonal,
+      ...southEasterlyDiagonal
+    ]
+
+    // console.log('options')
+    // console.log(JSON.stringify(options, {}, 2))
+
+    // const x_old = label.x
+    // const y_old = label.y
+
+    // // TODO address duplication in general sweep
+    let currTemperature = 0 // do not accept worse moves during this phase
+    _(options).each(option => {
+      label.x = option.x
+      label.y = option.y
+
+      // TODO not necessary in this case becasue we did it above
+      // hard wall boundaries // TODO duplicated / can be extracted
+      if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
+      if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
+      if (label.y > h2) { label.y = h2 }
+      if (label.y - label.height < h1) { label.y = h1 + label.height }
+
+      // NB note the hard wall boundaries
+      option.x = label.x
+      option.y = label.y
+
+      // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
+      addMinMaxAreaToRectangle(label)
+      collisionTree.remove(label)
+      collisionTree.insert(label)
+
+      const { energy, energyParts } = labeler.detailedEnergy(point)
+      option.energy = energy
+      option.energyParts = energyParts
+    })
+
+    console.log(`${label.shortText}: anchor x:${point.anchor.x}, y:${point.anchor.y}`)
+
+    console.log('options')
+    console.log(options)
+
+    const bestOption = _(options)
+      .sortBy('energy')
+      .first()
+
+    console.log('bestOption')
+    console.log(JSON.stringify(bestOption, {}, 2))
+
+    label.x = bestOption.x
+    label.y = bestOption.y
+    addMinMaxAreaToRectangle(label)
+    collisionTree.remove(label)
+    collisionTree.insert(label)
+
+    dynamicObservations.energy.current = bestOption.energy
+    dynamicObservations.energy.best = bestOption.energy
+    
+    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
   }
 
   labeler.buildDataStructures = function () {
@@ -517,6 +729,9 @@ const labeler = function () {
         if (isBubble && label.width < 2 * anchor.r) {
           point.observations.static.labelFitsInsideBubble = true
           label.y = anchor.y + label.height / 4
+          addMinMaxAreaToRectangle(label)
+          collisionTree.remove(label)
+          collisionTree.insert(label)
         }
 
         const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
