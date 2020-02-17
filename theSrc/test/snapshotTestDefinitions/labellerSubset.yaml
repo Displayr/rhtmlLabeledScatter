@@ -20,7 +20,6 @@ configs:
   - config: data.displayr_regression.set2_mirror.both_mirror
   - config: data.displayr_regression.set2_mirror.d1_mirror
   - config: data.displayr_regression.set2_mirror.d2_mirror
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_named
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_reprint
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_transpose
