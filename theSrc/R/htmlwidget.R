@@ -112,6 +112,9 @@
 #'
 
 LabeledScatter <- function(
+  X = NULL,
+  Y = NULL,
+  Z = NULL,
   axis.font.color = 'Black',
   axis.font.family = 'Arial',
   axis.font.size = 12,
@@ -175,7 +178,6 @@ LabeledScatter <- function(
   trend.lines.point.size=2,
   trend.lines.show = FALSE,
   width = NULL,
-  X = NULL,
   x.axis.show = TRUE,
   x.bounds.maximum = NULL,
   x.bounds.minimum = NULL,
@@ -189,7 +191,6 @@ LabeledScatter <- function(
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   x.title.font.family = "Arial",
   x.title.font.size = 12,
-  Y = NULL,
   y.axis.show = TRUE,
   y.bounds.maximum = NULL,
   y.bounds.minimum = NULL,
@@ -203,7 +204,6 @@ LabeledScatter <- function(
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   y.title.font.family = "Arial",
   y.title.font.size = 12,
-  Z = NULL,
   z.decimals = NULL,
   z.prefix = "",
   z.suffix = "",
