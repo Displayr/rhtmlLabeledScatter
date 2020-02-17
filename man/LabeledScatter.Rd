@@ -7,7 +7,8 @@
 https://github.com/Displayr/rhtmlLabeledScatter
 }
 \usage{
-LabeledScatter(axis.font.color = "Black", axis.font.family = "Arial",
+LabeledScatter(X = NULL, Y = NULL, Z = NULL,
+  axis.font.color = "Black", axis.font.family = "Arial",
   axis.font.size = 12, color.transparency = NULL,
   colors = c("#5B9BD5", "#ED7D31", "#A5A5A5", "#1EC000", "#4472C4",
   "#70AD47", "#255E91", "#9E480E", "#636363", "#997300", "#264478",
@@ -43,21 +44,27 @@ LabeledScatter(axis.font.color = "Black", axis.font.family = "Arial",
   tooltip.font.family = "Arial", tooltip.font.size = 10,
   tooltip.text = NULL, trend.lines.line.thickness = 1,
   trend.lines.point.size = 2, trend.lines.show = FALSE, width = NULL,
-  X = NULL, x.axis.show = TRUE, x.bounds.maximum = NULL,
+  x.axis.show = TRUE, x.bounds.maximum = NULL,
   x.bounds.minimum = NULL, x.bounds.units.major = NULL,
   x.decimals = NULL, x.format = NULL, x.levels = NULL,
   x.prefix = "", x.suffix = "", x.title = "",
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.title.font.family = "Arial", x.title.font.size = 12, Y = NULL,
+  x.title.font.family = "Arial", x.title.font.size = 12,
   y.axis.show = TRUE, y.bounds.maximum = NULL,
   y.bounds.minimum = NULL, y.bounds.units.major = NULL,
   y.decimals = NULL, y.format = NULL, y.levels = NULL,
   y.prefix = "", y.suffix = "", y.title = "",
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12, Z = NULL,
+  y.title.font.family = "Arial", y.title.font.size = 12,
   z.decimals = NULL, z.prefix = "", z.suffix = "", z.title = "")
 }
 \arguments{
+\item{X}{is array of x coordinates of data set}
+
+\item{Y}{is array of y coordinates of data set}
+
+\item{Z}{is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional}
+
 \item{axis.font.color}{Font color of the axis labels}
 
 \item{axis.font.family}{Font Family of the axis labels}
@@ -184,8 +191,6 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 
 \item{width}{is the width of the plot. Defaults to max of window}
 
-\item{X}{is array of x coordinates of data set}
-
 \item{x.axis.show}{Boolean toggle to show the x axis tick markers (Default is TRUE).}
 
 \item{x.bounds.maximum}{Integer or NULL; set minimum of range for plotting on the x axis}
@@ -212,8 +217,6 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 
 \item{x.title.font.size}{is the font size of the x axis title}
 
-\item{Y}{is array of y coordinates of data set}
-
 \item{y.axis.show}{Boolean toggle to show the y axis tick markers (Default is TRUE).}
 
 \item{y.bounds.maximum}{Integer or NULL; set minimum of range for plotting on the y axis}
@@ -239,8 +242,6 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 \item{y.title.font.family}{is the font family of the y axis title}
 
 \item{y.title.font.size}{is the font size of the y axis title}
-
-\item{Z}{is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional}
 
 \item{z.decimals}{the number of decimals in the bubble size axis}
 
