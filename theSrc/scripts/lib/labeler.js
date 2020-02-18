@@ -231,6 +231,8 @@ const labeler = function () {
   }
 
   labeler.moveLabel = function ({ label, x, y }) {
+    // TODO : abort if x==x and y==y
+
     label.x = x
     label.y = y
     labeler.enforceBoundaries(label)
@@ -508,6 +510,10 @@ const labeler = function () {
       }
       // point.label.tempIgnore = false
     })
+
+    _(activePoints).each(point => {
+      labeler.alignLabelIfBetter({ point })
+    })
   }
 
   labeler.targetedRandomAdjustment = function ({ point }) {
@@ -612,7 +618,42 @@ const labeler = function () {
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
     
-    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
+    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+  }
+
+  labeler.alignLabelIfBetter = function ({ point }) {
+    const {
+      label,
+      anchor,
+      observations: {
+        static: staticObservations,
+        dynamic: dynamicObservations
+      }
+    } = point
+
+    const energyBefore = dynamicObservations.energy.current
+
+    const options = [
+      {  nickname: 'last', x: label.x, y: label.y },
+      {  nickname: 'horizontal_aligned', x: anchor.x, y: label.y },
+      // {  nickname: 'vertical_aligned', x: label.x, y: anchor.y + label.height / 4 }, // NB disabled as visual inspection of snapshots showed this was not worth it
+    ]
+
+    // console.log('options')
+    // console.log(JSON.stringify(options, {}, 2))
+
+    const chosenOption = labeler.chooseBestLabelPosition({ point, options })
+
+    // console.log(`${label.shortText}: anchor x:${point.anchor.x}, y:${point.anchor.y}`)
+    // console.log('options')
+    // console.log(options)
+    // console.log('chosenOption')
+    // console.log(JSON.stringify(chosenOption, {}, 2))
+
+    dynamicObservations.energy.current = chosenOption.energy
+    dynamicObservations.energy.best = chosenOption.energy
+
+    console.log(`${anchor.shortText}: done straighten point. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
   }
 
   labeler.chooseBestLabelPosition = function ({ point, options }) {
