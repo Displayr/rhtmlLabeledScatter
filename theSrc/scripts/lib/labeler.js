@@ -530,7 +530,6 @@ const labeler = function () {
     const energyBefore = dynamicObservations.energy.current
 
     // TODO address duplication in general sweep
-    let currTemperature = 0 // do not accept worse moves during this phase
     let currentRound
     let lastEnergy = null
     for (currentRound = 0; currentRound < 100; currentRound++) {
@@ -602,11 +601,22 @@ const labeler = function () {
     // console.log('options')
     // console.log(JSON.stringify(options, {}, 2))
 
-    // const x_old = label.x
-    // const y_old = label.y
+    const chosenOption = labeler.chooseBestLabelPosition({ point, options })
 
-    // // TODO address duplication in general sweep
-    let currTemperature = 0 // do not accept worse moves during this phase
+    // console.log(`${label.shortText}: anchor x:${point.anchor.x}, y:${point.anchor.y}`)
+    // console.log('options')
+    // console.log(options)
+    // console.log('chosenOption')
+    // console.log(JSON.stringify(chosenOption, {}, 2))
+
+    dynamicObservations.energy.current = chosenOption.energy
+    dynamicObservations.energy.best = chosenOption.energy
+    
+    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
+  }
+
+  labeler.chooseBestLabelPosition = function ({ point, options }) {
+    const { label } = point
     _(options).each(option => {
       labeler.moveLabel({ label, x: option.x, y: option.y })
       // NB note the adjusted coords (moveLabel may not accept input due to hard wall boundaries)
@@ -618,24 +628,13 @@ const labeler = function () {
       option.energyParts = energyParts
     })
 
-    console.log(`${label.shortText}: anchor x:${point.anchor.x}, y:${point.anchor.y}`)
-
-    console.log('options')
-    console.log(options)
-
     const bestOption = _(options)
       .sortBy('energy')
       .first()
 
-    console.log('bestOption')
-    console.log(JSON.stringify(bestOption, {}, 2))
-
     labeler.moveLabel({ label, x: bestOption.x, y: bestOption.y })
 
-    dynamicObservations.energy.current = bestOption.energy
-    dynamicObservations.energy.best = bestOption.energy
-    
-    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
+    return bestOption
   }
 
   labeler.buildDataStructures = function () {
