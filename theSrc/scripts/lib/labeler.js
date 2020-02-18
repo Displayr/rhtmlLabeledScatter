@@ -485,7 +485,7 @@ const labeler = function () {
   labeler.postSweep = function ({ activePoints }) {
     const proportionOfLabelsToAdjust = 0.4
 
-    const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${point.observations.dynamic.energy.current.toFixed(2)}`).value()
+    const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${_.get(point, 'observations.dynamic.energy.current', -1).toFixed(2)}`).value()
     console.log('currentEnergies')
     console.log(JSON.stringify(currentEnergies, {}, 2))
 
