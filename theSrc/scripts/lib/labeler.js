@@ -111,7 +111,8 @@ const labeler = function () {
       labelOverlapCount: 0,
       labelOverlapList: [],
       anchorOverlap: 0,
-      anchorOverlapCount: 0
+      anchorOverlapCount: 0,
+      anchorOverlapList: [],
     }
 
     // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
@@ -181,7 +182,6 @@ const labeler = function () {
     const potentiallyOverlappingLabels = potentiallyOverlapping
       .filter(isLabel)
       .filter(notSameId(label.id))
-      // .filter(label => !_.get(label, 'tempIgnore', false))
 
     const potentiallyOverlappingAnchors = potentiallyOverlapping
       .filter(isAnchor)
@@ -192,7 +192,7 @@ const labeler = function () {
 
     // penalty for label-label overlap
     _.forEach(potentiallyOverlappingLabels, comparisonLab => {
-      if (comparisonLab.id !== label.id) {
+      if (comparisonLab.id !== label.id) { // TODO this if appears unecessary given filter above notSameId
         xOverlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
         yOverlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
         overlapArea = xOverlap * yOverlap
@@ -215,13 +215,20 @@ const labeler = function () {
 
       overlapArea = xOverlap * yOverlap
 
+
       // less penalty if the label is overlapping its own anchor
       if (isBubble && anchor.id === label.id) {
         overlapArea /= 2
       }
       if (overlapArea > 0) {
+
+        // console.log(`label '${label.shortText}' and anchor '${anchor.shortText}' overlap ${overlapArea}`)
+        // console.log(`anchor X ${anchor.minX} - ${anchor.maxX}, anchor Y ${anchor.minY} - ${anchor.maxY} anchor R: ${anchor.r}`)
+        // console.log(`label X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}, height: ${label.height}`)
+
         energyParts.anchorOverlap += (overlapArea / label.area * weightLabelToAnchorOverlap)
         energyParts.anchorOverlapCount++
+        energyParts.anchorOverlapList.push({ shortText: anchor.shortText, overlapArea, anchor })
         if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`anchor overlap!`) }
       }
     })
@@ -499,16 +506,12 @@ const labeler = function () {
     const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
     console.log('worstLabels length', worstPoints.length)
 
-    // reset so that they done interfere with each others placement :
-    // _(worstPoints).map(point => { point.label.tempIgnore = true })
-
     _(worstPoints).each(point => {
       if (POST_SWEEP_ADJUSTMENT_STRATEGY === POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM) {
         labeler.targetedRandomAdjustment({ point })
       } else {
         labeler.targetedCardinalAdjustment({ point })
       }
-      // point.label.tempIgnore = false
     })
 
     _(activePoints).each(point => {
@@ -922,7 +925,7 @@ const notSameId = (id) => (obj) => obj.id !== id
 const expandBox = ({ box, up = 0, down = 0, left = 0, right = 0 }) => {
   return {
     minX: box.minX - left,
-    maxX: box.minX + right,
+    maxX: box.maxX + right,
     minY: box.minY - up,
     maxY: box.maxY + down
   }
