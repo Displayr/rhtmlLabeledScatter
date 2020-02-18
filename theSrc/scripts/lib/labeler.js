@@ -230,25 +230,32 @@ const labeler = function () {
     return { energy, energyParts }
   }
 
-  labeler.mcmove = function (point) {
-    // Monte Carlo translation move
+  labeler.moveLabel = function ({ label, x, y }) {
+    label.x = x
+    label.y = y
+    labeler.enforceBoundaries(label)
+    addMinMaxAreaToRectangle(label)
+    collisionTree.remove(label)
+    collisionTree.insert(label)
 
-    const { label } = point
+    // enforceBoundaries modified label.x and label.y so final x,y may not equal the requested x,y
+    return { x: label.x, y: label.y }
+  }
 
-    // random translation
-    label.x += (random.real(0, 1) - 0.5) * max_move
-    label.y += (random.real(0, 1) - 0.5) * max_move
-
-    // hard wall boundaries // TODO duplicated / can be extracted
+  labeler.enforceBoundaries = function (label) {
     if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
     if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
     if (label.y > h2) { label.y = h2 }
     if (label.y - label.height < h1) { label.y = h1 + label.height }
-    // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
-    addMinMaxAreaToRectangle(label)
-    collisionTree.remove(label)
-    collisionTree.insert(label)
   }
+
+  labeler.mcmove = function ({ label }) {
+    const x = label.x + (random.real(0, 1) - 0.5) * max_move
+    const y = label.y + (random.real(0, 1) - 0.5) * max_move
+
+    labeler.moveLabel({ label, x, y })
+  }
+
 
   labeler.mcrotate = function (point) {
     // Monte Carlo rotation move
@@ -257,35 +264,30 @@ const labeler = function () {
 
     // random angle
     const angle = (random.real(0, 1) - 0.5) * max_angle
-
     const s = Math.sin(angle)
     const c = Math.cos(angle)
 
     // translate label (relative to anchor at origin):
-    label.x -= (anchor.x + label.width / 2)
-    label.y -= anchor.y
+    const translated = {
+      x: label.x - (anchor.x + label.width / 2),
+      y: label.y - anchor.y,
+    }
 
     // rotate label
-    let x_new = label.x * c - label.y * s
-    let y_new = label.x * s + label.y * c
+    const rotated = {
+      x: translated.x * c - translated.y * s,
+      y: translated.x * s + translated.y * c,
+    }
 
     // translate label back
     // TODO XXX: feels like this should be
-    //    label.x = x_new + (anchor.x + label.width / 2)
-    // but when I use that I get regressions.
-    // so this works but do not understand why
-    label.x = x_new + anchor.x - label.width / 2
-    label.y = y_new + anchor.y
+    //   label.x = x_new + (anchor.x + label.width / 2)
+    //   but when I use that I get regressions.
+    //   so this works but do not understand why
+    const x = rotated.x + anchor.x - label.width / 2
+    const y = rotated.y + anchor.y
 
-    // hard wall boundaries // TODO duplicated / can be extracted
-    if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
-    if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
-    if (label.y > h2) { label.y = h2 }
-    if (label.y - label.height < h1) { label.y = h1 + label.height }
-    // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
-    addMinMaxAreaToRectangle(label)
-    collisionTree.remove(label)
-    collisionTree.insert(label)
+    labeler.moveLabel({ label, x, y })
   }
 
   let coolCount = 0
@@ -438,11 +440,7 @@ const labeler = function () {
         if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
       } else {
         // move back to old coordinates
-        label.x = x_old
-        label.y = y_old
-        addMinMaxAreaToRectangle(label)
-        collisionTree.remove(label)
-        collisionTree.insert(label)
+        labeler.moveLabel({ label, x: x_old, y: y_old })
         rej += 1
       }
 
@@ -522,13 +520,12 @@ const labeler = function () {
       }
     } = point
 
-    // reset label to original position
-    // TODO logic taken from PlotData.getPtsAndLabs
-    label.x = anchor.x
-    label.y = anchor.y - anchor.r - initialLabelVerticalPadding
-    addMinMaxAreaToRectangle(label)
-    collisionTree.remove(label)
-    collisionTree.insert(label)
+    // reset label to original position (original position logic duplicated from PlotData.js)
+    labeler.moveLabel({
+      label,
+      x: anchor.x,
+      y: anchor.y - anchor.r - initialLabelVerticalPadding
+    })
 
     const energyBefore = dynamicObservations.energy.current
 
@@ -561,12 +558,7 @@ const labeler = function () {
         if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
         if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
       } else {
-        // move back to old coordinates
-        label.x = x_old
-        label.y = y_old
-        addMinMaxAreaToRectangle(label)
-        collisionTree.remove(label)
-        collisionTree.insert(label)
+        labeler.moveLabel({ label, x: x_old, y: y_old })
       }
     }
 
@@ -582,14 +574,6 @@ const labeler = function () {
         dynamic: dynamicObservations
       }
     } = point
-
-    // // reset label to original position
-    // // TODO logic taken from PlotData.getPtsAndLabs
-    // label.x = anchor.x
-    // label.y = anchor.y - anchor.r - labelTopPadding
-    // addMinMaxAreaToRectangle(label)
-    // collisionTree.remove(label)
-    // collisionTree.insert(label)
 
     const energyBefore = dynamicObservations.energy.current
 
@@ -624,24 +608,10 @@ const labeler = function () {
     // // TODO address duplication in general sweep
     let currTemperature = 0 // do not accept worse moves during this phase
     _(options).each(option => {
-      label.x = option.x
-      label.y = option.y
-
-      // TODO not necessary in this case becasue we did it above
-      // hard wall boundaries // TODO duplicated / can be extracted
-      if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
-      if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
-      if (label.y > h2) { label.y = h2 }
-      if (label.y - label.height < h1) { label.y = h1 + label.height }
-
-      // NB note the hard wall boundaries
+      labeler.moveLabel({ label, x: option.x, y: option.y })
+      // NB note the adjusted coords (moveLabel may not accept input due to hard wall boundaries)
       option.x = label.x
       option.y = label.y
-
-      // TODO this is done in the mcmove/mcrotate but also in the calling function when not accepting change. Do in one place
-      addMinMaxAreaToRectangle(label)
-      collisionTree.remove(label)
-      collisionTree.insert(label)
 
       const { energy, energyParts } = labeler.detailedEnergy(point)
       option.energy = energy
@@ -660,11 +630,7 @@ const labeler = function () {
     console.log('bestOption')
     console.log(JSON.stringify(bestOption, {}, 2))
 
-    label.x = bestOption.x
-    label.y = bestOption.y
-    addMinMaxAreaToRectangle(label)
-    collisionTree.remove(label)
-    collisionTree.insert(label)
+    labeler.moveLabel({ label, x: bestOption.x, y: bestOption.y })
 
     dynamicObservations.energy.current = bestOption.energy
     dynamicObservations.energy.best = bestOption.energy
@@ -728,10 +694,11 @@ const labeler = function () {
       if (label && !pinned) {
         if (isBubble && label.width < 2 * anchor.r) {
           point.observations.static.labelFitsInsideBubble = true
-          label.y = anchor.y + label.height / 4
-          addMinMaxAreaToRectangle(label)
-          collisionTree.remove(label)
-          collisionTree.insert(label)
+          labeler.moveLabel({
+            label,
+            x: label.x,
+            y: anchor.y + label.height / 4
+          })
         }
 
         const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
