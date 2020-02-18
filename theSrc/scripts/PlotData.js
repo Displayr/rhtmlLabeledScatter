@@ -335,7 +335,7 @@ class PlotData {
 
           let { label, width, height, url } = resolvedLabels[i]
           const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
-          const labelY = y - r - 5 // TODO: make this padding configurable
+          const labelY = y - r - 1 // TODO: make this padding configurable
 
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
           let fontSize = this.vb.labelFontSize

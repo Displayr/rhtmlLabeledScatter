@@ -61,7 +61,7 @@ const labeler = function () {
   let pinned = []
   let is_placement_algo_on = true
 
-  const labelTopPadding = 5
+  const labelTopPadding = 1
   let max_move = 5.0
   let max_angle = 2 * 3.1415
   let skip = 0
@@ -525,7 +525,7 @@ const labeler = function () {
     // reset label to original position
     // TODO logic taken from PlotData.getPtsAndLabs
     label.x = anchor.x
-    label.y = anchor.y - anchor.r - 5
+    label.y = anchor.y - anchor.r - initialLabelVerticalPadding
     addMinMaxAreaToRectangle(label)
     collisionTree.remove(label)
     collisionTree.insert(label)
@@ -586,7 +586,7 @@ const labeler = function () {
     // // reset label to original position
     // // TODO logic taken from PlotData.getPtsAndLabs
     // label.x = anchor.x
-    // label.y = anchor.y - anchor.r - 5
+    // label.y = anchor.y - anchor.r - labelTopPadding
     // addMinMaxAreaToRectangle(label)
     // collisionTree.remove(label)
     // collisionTree.insert(label)
@@ -608,7 +608,7 @@ const labeler = function () {
 
     const options = [
       {  nickname: 'last', x: label.x, y: label.y },
-      {  nickname: 'reset', x: anchor.x, y: anchor.y - anchor.r - 5 }, // TODO logic for reset positioning duplicated from PlotData.getPtsAndLabs
+      {  nickname: 'reset', x: anchor.x, y: anchor.y - anchor.r - labelTopPadding }, // TODO logic for reset positioning duplicated from PlotData.getPtsAndLabs
       ...verticalOptions,
       ...horizontalOptions,
       ...northEasterlyDiagonal,
