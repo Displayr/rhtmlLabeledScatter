@@ -166,7 +166,7 @@ describe('multiple render tests', () => {
     await scatterPlot.movePlotLabel({ id: 2, x: 100, y: 100 })
 
     await testSnapshot({ page, snapshotName: 'after_bubble_drag_on_canvas' })
-    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100', tolerance: 1 })
+    await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100', tolerance: 2 })
 
     await page.close()
   })
