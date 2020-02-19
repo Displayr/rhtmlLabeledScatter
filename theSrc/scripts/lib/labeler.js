@@ -414,12 +414,12 @@ const labeler = function () {
         const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
         const odds = oddsPreTemp * currTemperature
 
-        if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
-        if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
-        if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
         if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
-        if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
-        if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
+        if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
+        // if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
+        // if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
+        // if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
+        // if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
 
         acceptChange = random.real(0, 1) < odds
 
