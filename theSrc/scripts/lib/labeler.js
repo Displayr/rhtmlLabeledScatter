@@ -14,6 +14,7 @@ const TRACE_LOGGING = 4
 const OBSERVATION_LOGGING = false
 const TEMPERATURE_LOGGING = false
 const INITIALISATION_LOGGING = false
+const POST_SWEEP_OPTION_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
 // const LOG_LEVEL = OUTER_LOOP_LOGGING
@@ -64,10 +65,6 @@ const labeler = function () {
   const labelTopPadding = 1
   let max_move = 5.0
   let max_angle = 2 * 3.1415
-  let skip = 0
-  let acc = 0
-  let acc_worse = 0
-  let rej = 0
 
   let initialTemperature = null
   let finalTemperature = null
@@ -360,14 +357,30 @@ const labeler = function () {
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
       return resolveFunc()
     } else {
-      labeler.generalSweep({ maxSweeps, activePoints, pointsWithDynamicLabels })
+      const startTime = Date.now()
+      const generalSweepStats = labeler.generalSweep({ maxSweeps, activePoints, pointsWithDynamicLabels })
       labeler.postSweep({ activePoints })
+
+      console.log(JSON.stringify(_.merge({}, generalSweepStats, {
+        labelCount: lab.length,
+        dynamicLabelCount: pointsWithDynamicLabels.length,
+        anchorCount: anc.length,
+        duration: Date.now() - startTime,
+      })))
+
       return resolveFunc()
     }
   }
 
   labeler.generalSweep = function ({ maxSweeps, activePoints, pointsWithDynamicLabels }) {
-    const startTime = Date.now()
+    let stats = {
+      duration: 0,
+      skip: 0,
+      acc: 0,
+      acc_worse: 0,
+      rej: 0,
+    }
+
     let currTemperature = initialTemperature
     const maxRounds = (debugForceMaxRounds || maxSweeps) * activePoints.length
     let currentRound
@@ -387,7 +400,7 @@ const labeler = function () {
       } = point
 
 
-      // TODO: the skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
+      // TODO: the stats.skip check is not needed when we run with SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS
       const reasonsToSkip = [
         pinned,
         staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
@@ -399,7 +412,7 @@ const labeler = function () {
         if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
           console.log(`${label.shortText}: skipping`)
         }
-        skip++
+        stats.skip++
         continue
       }
 
@@ -441,8 +454,8 @@ const labeler = function () {
 
       dynamicObservations.adjustments.attempts++
       if (acceptChange) {
-        acc += 1
-        if (new_energy >= old_energy) { acc_worse += 1}
+        stats.acc += 1
+        if (new_energy >= old_energy) { stats.acc_worse += 1}
         dynamicObservations.energy.current = new_energy
         dynamicObservations.adjustments.success++
         if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
@@ -450,7 +463,7 @@ const labeler = function () {
       } else {
         // move back to old coordinates
         labeler.moveLabel({ label, x: x_old, y: y_old })
-        rej += 1
+        stats.rej += 1
       }
 
       if (coolingPeriodTechnique === COOLING_PERIOD_PER_MOVE) {
@@ -468,43 +481,26 @@ const labeler = function () {
       }
     }
 
+    stats.maxSweeps = debugForceMaxRounds | maxSweeps
+    stats.maxRounds = maxRounds
+    stats.monte_carlo_rounds = stats.acc + stats.rej
+    stats.pass_rate = Math.round((stats.acc / (stats.acc + stats.rej)) * 1000) / 1000
+    stats.accept_worse_rate = Math.round((stats.acc_worse / (stats.acc_worse + stats.rej)) * 1000) / 1000
+
     if (LOG_LEVEL >= MINIMAL_LOGGING) {
-      console.log(`rhtmlLabeledScatter: Label placement complete after ${currentRound} sweeps. accept/reject/skip: ${acc}/${rej}/${skip} (accept_worse: ${acc_worse})`)
-      console.log(JSON.stringify({
-        labelCount: lab.length,
-        dynamicLabelCount: pointsWithDynamicLabels.length,
-        anchorCount: anc.length,
-        worstCaseEnergy,
-        duration: Date.now() - startTime,
-        maxSweeps: debugForceMaxRounds | maxSweeps,
-        maxRounds,
-        monte_carlo_rounds: acc + rej,
-        pass_rate: Math.round((acc / (acc + rej)) * 1000) / 1000,
-        accept_worse_rate: Math.round((acc_worse / (acc_worse + rej)) * 1000) / 1000,
-        skip,
-        acc,
-        rej,
-        acc_worse
-      }))
+      console.log(`rhtmlLabeledScatter: Label placement general sweep complete after ${currentRound} sweeps. accept/reject/skip: ${stats.acc}/${stats.rej}/${stats.skip} (accept_worse: ${stats.acc_worse})`)
     }
+
+    return stats
   }
 
   labeler.postSweep = function ({ activePoints }) {
     const proportionOfLabelsToAdjust = 0.4
 
     const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${_.get(point, 'observations.dynamic.energy.current', -1).toFixed(2)}`).value()
-    console.log('currentEnergies')
-    console.log(JSON.stringify(currentEnergies, {}, 2))
-
     const sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
-    // console.log('sortedEnergies')
-    // console.log(JSON.stringify(sortedEnergies, {}, 2))
-
     const boundaryEnergy = sortedEnergies[Math.floor(sortedEnergies.length * (1 - proportionOfLabelsToAdjust ))]
-    console.log('boundaryEnergy', boundaryEnergy)
-
     const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
-    console.log('worstLabels length', worstPoints.length)
 
     _(worstPoints).each(point => {
       if (POST_SWEEP_ADJUSTMENT_STRATEGY === POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM) {
@@ -607,21 +603,18 @@ const labeler = function () {
       ...southEasterlyDiagonal
     ]
 
-    // console.log('options')
-    // console.log(JSON.stringify(options, {}, 2))
-
     const chosenOption = labeler.chooseBestLabelPosition({ point, options })
 
-    // console.log(`${label.shortText}: anchor x:${point.anchor.x}, y:${point.anchor.y}`)
-    // console.log('options')
-    // console.log(options)
-    // console.log('chosenOption')
-    // console.log(JSON.stringify(chosenOption, {}, 2))
+    if (POST_SWEEP_OPTION_LOGGING) {
+      console.log(`${label.shortText} done target adjustment. Energy before: ${energyBefore} Energy after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+      console.log(`${label.shortText}: options`)
+      console.log(options)
+      console.log('chosenOption')
+      console.log(JSON.stringify(chosenOption, {}, 2))
+    }
 
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
-    
-    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
   }
 
   labeler.alignLabelIfBetter = function ({ point }) {
@@ -656,7 +649,9 @@ const labeler = function () {
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
 
-    console.log(`${anchor.shortText}: done straighten point. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+    if (POST_SWEEP_OPTION_LOGGING) {
+      console.log(`${anchor.shortText}: done straighten point. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+    }
   }
 
   labeler.chooseBestLabelPosition = function ({ point, options }) {
