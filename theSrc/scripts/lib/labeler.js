@@ -34,10 +34,6 @@ const SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS = 'ALL_LABELS'
 const SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS = 'DYNAMIC_LABELS'
 const SWEEP_TO_ROUND_MULTIPLIER = [SWEEP_TO_ROUND_MULTIPLIER_ALL_LABELS, SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS][1]
 
-const POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM = 'RANDOM'
-const POST_SWEEP_ADJUSTMENT_STRATEGY_CARDINAL = 'CARDINAL'
-const POST_SWEEP_ADJUSTMENT_STRATEGY = [POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM, POST_SWEEP_ADJUSTMENT_STRATEGY_CARDINAL][1]
-
 const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
@@ -503,70 +499,12 @@ const labeler = function () {
     const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
 
     _(worstPoints).each(point => {
-      if (POST_SWEEP_ADJUSTMENT_STRATEGY === POST_SWEEP_ADJUSTMENT_STRATEGY_RANDOM) {
-        labeler.targetedRandomAdjustment({ point })
-      } else {
-        labeler.targetedCardinalAdjustment({ point })
-      }
+      labeler.targetedCardinalAdjustment({ point })
     })
 
     _(activePoints).each(point => {
       labeler.alignLabelIfBetter({ point })
     })
-  }
-
-  labeler.targetedRandomAdjustment = function ({ point }) {
-    const {
-      label,
-      anchor,
-      observations: {
-        static: staticObservations,
-        dynamic: dynamicObservations
-      }
-    } = point
-
-    // reset label to original position (original position logic duplicated from PlotData.js)
-    labeler.moveLabel({
-      label,
-      x: anchor.x,
-      y: anchor.y - anchor.r - initialLabelVerticalPadding
-    })
-
-    const energyBefore = dynamicObservations.energy.current
-
-    // TODO address duplication in general sweep
-    let currentRound
-    let lastEnergy = null
-    for (currentRound = 0; currentRound < 100; currentRound++) {
-      const x_old = label.x
-      const y_old = label.y
-
-      let old_energy = labeler.energy(point)
-
-      if (random.real(0, 1) < 0.8) {
-        labeler.mcmove(point)
-      } else {
-        labeler.mcrotate(point)
-      }
-
-      let new_energy = labeler.energy(point)
-      lastEnergy = new_energy
-
-      const better = (new_energy < old_energy)
-      let acceptChange = better
-
-      dynamicObservations.adjustments.attempts++
-      if (acceptChange) {
-        dynamicObservations.energy.current = new_energy
-        dynamicObservations.adjustments.success++
-        if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
-        if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
-      } else {
-        labeler.moveLabel({ label, x: x_old, y: y_old })
-      }
-    }
-
-    console.log(`${anchor.shortText}: done target adjustment. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}`)
   }
 
   labeler.targetedCardinalAdjustment = function ({ point }) {
