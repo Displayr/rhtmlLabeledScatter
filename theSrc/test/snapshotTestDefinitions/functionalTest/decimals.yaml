@@ -1,0 +1,16 @@
+type: multi_widget_single_page
+title: "test decimals configurations"
+width: 400
+height: 400
+rowSize: 3
+comments:
+  - location: zDecimals_0
+    status: red
+    comment: zDecimals is not respected
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.xDecimals_0|config.yDecimals_0|{"title":"x and y decimals=0"}
+  - config: data.functionalTest.scatterplot_simple|config.xDecimals_1|config.yDecimals_1|{"title":"x and y decimals=1"}
+  - config: data.functionalTest.scatterplot_simple|config.xDecimals_2|config.yDecimals_2|{"title":"x and y decimals=2"}
+  - config: data.functionalTest.bubbleplot_simple|config.zDecimals_0|{"title":"z decimals 0"}
+  - config: data.functionalTest.bubbleplot_simple|config.zDecimals_1|{"title":"z decimals 1"}
+  - config: data.functionalTest.bubbleplot_simple|config.zDecimals_2|{"title":"z decimals 2"}

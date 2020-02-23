@@ -1,0 +1,16 @@
+type: multi_widget_single_page
+title: "test point radius configurations"
+width: 400
+height: 400
+rowSize: 3
+comments:
+  - location: pointRadius_30
+    status: red
+    comment: bubble goes outside plot
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_0|{"title":"point radius = 0"}
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_1|{"title":"point radius = 1"}
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_5|{"title":"point radius = 5"}
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_10|{"title":"point radius = 10"}
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_20|{"title":"point radius = 20"}
+  - config: data.functionalTest.scatterplot_simple|config.pointRadius_30|{"title":"point radius = 30"}

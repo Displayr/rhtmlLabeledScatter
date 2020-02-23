@@ -1,0 +1,11 @@
+type: multi_widget_single_page
+title: "test bubbleplot w/ labels configurations"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.bubbleplot_simple|{"title":"default config"}
+  - config: data.functionalTest.bubbleplot_simple|config.hideLabels|{"title":"hide labels"}
+  - config: data.functionalTest.bubbleplot_simple|config.label_24_red_fantasy|{"title":"labels font configured"}
+  - config: data.functionalTest.bubbleplot_simple_no_label_field|{"title":"no label field in data"}
+
