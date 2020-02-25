@@ -1,0 +1,13 @@
+type: multi_widget_single_page
+title: "test levels specification"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.fruit_levels.fruit_data|{"title":"no levels spec"}
+  - config: data.functionalTest.fruit_levels.fruit_data|data.functionalTest.fruit_levels.fruit_data_x_levels|{"title":"x levels spec"}
+  - config: data.functionalTest.fruit_levels.fruit_data|data.functionalTest.fruit_levels.fruit_data_y_levels|{"title":"y levels spec"}
+  - config: data.functionalTest.fruit_levels.fruit_data|data.functionalTest.fruit_levels.fruit_data_x_levels|data.functionalTest.fruit_levels.fruit_data_y_levels|{"title":"x and y levels spec"}
+  - config: data.functionalTest.scatterplot_xlevels|{"title":"x levels"}
+  - config: data.functionalTest.scatterplot_ylevels|{"title":"y levels"}
+  - config: data.functionalTest.scatterplot_x_and_y_levels|{"title":"x and y levels"}

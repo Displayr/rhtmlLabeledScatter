@@ -1,0 +1,25 @@
+{
+  "label": [
+    "banana,4",
+    "orange,6",
+    "banana,2",
+    "apple,3"
+  ],
+  "Y": [
+    "banana",
+    "orange",
+    "banana",
+    "apple"
+  ],
+  "X": [
+    4,
+    6,
+    2,
+    3
+  ],
+  "yLevels": [
+    "orange",
+    "banana",
+    "apple"
+  ]
+}
