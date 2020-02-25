@@ -1,0 +1,12 @@
+type: multi_widget_single_page
+title: "title subtitle and footer configurations"
+width: 400
+height: 400
+rowSize: 3
+comments:
+  - location: title_font_32_red_fantasy
+    status: red
+    comment: title and subtitle are overlapping
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.title_enabled|config.subtitle_enabled|config.footer_enabled
+  - config: data.functionalTest.scatterplot_simple|config.title_enabled|config.title_font_32_red_fantasy|config.subtitle_enabled|config.subtitle_font_32_red_fantasy|config.footer_enabled|config.footer_font_32_red_fantasy
