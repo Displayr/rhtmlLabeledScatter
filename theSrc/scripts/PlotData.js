@@ -11,6 +11,8 @@ import d3 from 'd3'
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
 //
 
+const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
+
 class PlotData {
   constructor (X,
     Y,
@@ -335,7 +337,7 @@ class PlotData {
 
           let { label, width, height, url } = resolvedLabels[i]
           const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
-          const labelY = y - r - 1 // TODO: make this padding configurable
+          const labelY = y - r - labelTopPadding
 
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
           let fontSize = this.vb.labelFontSize

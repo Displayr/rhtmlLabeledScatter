@@ -54,7 +54,7 @@ const labeler = function () {
   let pinned = []
   let is_placement_algo_on = true
 
-  const labelTopPadding = 1
+  const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
   let max_move = 5.0
   let max_angle = 2 * 3.1415
 
