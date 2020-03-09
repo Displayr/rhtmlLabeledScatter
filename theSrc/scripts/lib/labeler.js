@@ -176,74 +176,74 @@ const labeler = function () {
     return { energy, energyParts }
   }
 
+  // NB TODO there are some fundamental issues with how we assign a energy weight to represent the leader line length and relative position
+  //  * the logic to actually decide which line to use is in Links.js
+  //  * we do not optimally weight the default position of the label (labelTopPadding px above the anchor
+  //  * in some cases we do not account for the radius of the anchor
+  //  * this fn could pick a "best line" and use that for the energy, but the Links.js will actually draw a different line
+  //
+  // I have not addressed this because of time, and because initial attempts to start to address this actually made
+  // labelling worse, so more investigation is needed
   labeler.chooseBestLeaderLine = function (label, anchor) {
-
-    const labelIsFullyBelowAnchor = label.minY > (anchor.y + anchor.r)
-    const labelIsFullyAboveAnchor = label.maxY < (anchor.y - anchor.r)
-    const labelIsFullyLeftOfAnchor = label.maxX < (anchor.x - anchor.r)
-    const labelIsFullyRightOfAnchor = label.minX > (anchor.x + anchor.r)
-
     // negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
     let hdLabelRightToAnchor = label.maxX - anchor.minX
     let hdLabelCenterToAnchor = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account label radius
-    let vdLabelTopToAnchor = label.minY - labelTopPadding - anchor.maxY
-    let vdLabelBottomToAnchor = label.maxY + labelTopPadding - anchor.minY
+
     let vdLabelCenterToAnchor = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account label radius
 
+    // new implemenation : what I think is correct. Results in perf deterioration : see both_mirror in regression set example
+    // let vdLabelTopToAnchor = label.minY - labelTopPadding - anchor.maxY
+    // let vdLabelBottomToAnchor = label.maxY + labelTopPadding - anchor.minY
+
+    // old implemenation : is arbitrary and doesn't factor anchor size or variable padding : works better than the "correct impl does"
+    let vdLabelTopToAnchor = label.minY + 1 - anchor.maxY
+    let vdLabelBottomToAnchor = label.maxY - (anchor.y - 5)
+    
     const leaderLinePositionOptions = [
       {
         name: 'centerBottomDistance',
         distance: Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor),
         energyMultiplier: placementPenaltyMultipliers.centeredAboveAnchor,
-        enabled: labelIsFullyAboveAnchor
       },
       {
         name: 'centerTopDistance',
         distance: Math.hypot(hdLabelCenterToAnchor, vdLabelTopToAnchor),
         energyMultiplier: placementPenaltyMultipliers.centeredUnderneathAnchor,
-        enabled: labelIsFullyBelowAnchor
       },
       {
         name: 'leftCenterDistance',
         distance: Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchor),
         energyMultiplier: placementPenaltyMultipliers.besideAnchor,
-        enabled: labelIsFullyRightOfAnchor
       },
       {
         name: 'rightCenterDistance',
         distance: Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchor),
         energyMultiplier: placementPenaltyMultipliers.besideAnchor,
-        enabled: labelIsFullyLeftOfAnchor
       },
       {
         name: 'leftTopDistance',
         distance: Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchor),
         energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
-        enabled: true
       },
       {
         name: 'rightBottomDistance',
         distance: Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchor),
         energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
-        enabled: true
       },
       {
         name: 'rightTopDistance',
         distance: Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor),
         energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
-        enabled: true
       },
       {
         name: 'leftBottomDistance',
         distance: Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor),
         energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
-        enabled: true
       },
     ]
 
     const bestLeaderLineOption = _(leaderLinePositionOptions)
-      .filter('enabled')
       .sortBy('distance')
       .first()
 
