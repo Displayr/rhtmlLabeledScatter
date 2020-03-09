@@ -72,8 +72,7 @@ const labeler = function () {
   const placementPenaltyMultipliers = {
     centeredAboveAnchor: weightLineLength * 1,
     centeredUnderneathAnchor: weightLineLength * 1.5,
-    leftOfAnchor: weightLineLength * 8,
-    rightOfAnchor: weightLineLength * 8,
+    besideAnchor: weightLineLength * 8,
     diagonalOfAnchor: weightLineLength * 15
   }
 
@@ -104,66 +103,17 @@ const labeler = function () {
       anchorOverlapList: [],
     }
 
-    // TODO surely I dont have to compute all 8 distances. It should be obvious to determine which is shortest distance ?
-
-    let hdLabelLeftToAnchor = label.minX - 4 - anchor.x
-    let hdLabelCenterToAnchor = label.x - anchor.x
-    let hdLabelRightToAnchor = label.maxX + 4 - anchor.x
-    let vdLabelBottomToAnchor = label.maxY - (anchor.y - 5)
-    let vdLabelCenterToAnchor = (label.y - label.height / 2) - anchor.y
-    let vdLabelTopToAnchor = label.minY + labelTopPadding - anchor.y
-
-    const centerBottomDistance = Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor)
-    const centerTopDistance = Math.hypot(hdLabelCenterToAnchor, vdLabelTopToAnchor)
-    const leftCenterDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchor)
-    const rightCenterDistance = Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchor)
-    const leftTopDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchor)
-    const rightBottomDistance = Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchor)
-    const rightTopDistance = Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor)
-    const leftBottomDistance = Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor)
-
     // Check if label is inside bubble for centering of label inside bubble
     const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
-      vdLabelBottomToAnchor = (label.y - label.height / 4 - anchor.y)
-      energyParts.distance = (Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor) / maxDistance ) * weightLineLength
+      energyParts.distance = 0
       energyParts.distanceType = 'labInsideBubble'
+      label.leaderLineType = 'labInsideBubble'
     } else {
-      // TODO is it better to compute energy offset with the distance, then choose smallest distance and then we have the energy, rather than this switch ?
-      const minDist = Math.min(centerBottomDistance, centerTopDistance, leftCenterDistance, rightCenterDistance, leftTopDistance, rightBottomDistance, rightTopDistance, leftBottomDistance)
-      switch (minDist) {
-        case centerBottomDistance:
-          energyParts.distance = (centerBottomDistance / maxDistance) * placementPenaltyMultipliers.centeredAboveAnchor
-          energyParts.distanceType = 'centerBottomDistance'
-          break
-        case centerTopDistance:
-          energyParts.distance = (centerTopDistance / maxDistance) * placementPenaltyMultipliers.centeredUnderneathAnchor
-          energyParts.distanceType = 'centerTopDistance'
-          break
-        case leftCenterDistance:
-          energyParts.distance = (leftCenterDistance / maxDistance) * placementPenaltyMultipliers.rightOfAnchor // NB left<->right swap is deliberate
-          energyParts.distanceType = 'leftCenterDistance'
-          break
-        case rightCenterDistance:
-          energyParts.distance = (rightCenterDistance / maxDistance) * placementPenaltyMultipliers.leftOfAnchor // NB left<->right swap is deliberate
-          energyParts.distanceType = 'rightCenterDistance'
-          break
-        case leftTopDistance:
-          energyParts.distance = (leftTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
-          energyParts.distanceType = 'leftTopDistance'
-          break
-        case rightBottomDistance:
-          energyParts.distance = (rightBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
-          energyParts.distanceType = 'rightBottomDistance'
-          break
-        case rightTopDistance:
-          energyParts.distance = (rightTopDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
-          energyParts.distanceType = 'rightTopDistance'
-          break
-        case leftBottomDistance:
-          energyParts.distance = (leftBottomDistance / maxDistance) * placementPenaltyMultipliers.diagonalOfAnchor
-          energyParts.distanceType = 'leftBottomDistance'
-      }
+      const bestLeaderLineOption = labeler.chooseBestLeaderLine(label, anchor)
+      energyParts.distance = (bestLeaderLineOption.distance / maxDistance) * bestLeaderLineOption.energyMultiplier
+      energyParts.distanceType = bestLeaderLineOption.name
+      label.leaderLineType = bestLeaderLineOption.name
     }
 
     // TODO: this may need a if numLabels > X then use this ...
@@ -224,6 +174,84 @@ const labeler = function () {
     if (LOG_LEVEL >= INNER_LOOP_LOGGING && energyParts.anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * energyParts.anchorOverlapCount / anc.length).toFixed(2)}%`) }
     let energy = energyParts.distance + energyParts.labelOverlap + energyParts.anchorOverlap
     return { energy, energyParts }
+  }
+
+  labeler.chooseBestLeaderLine = function (label, anchor) {
+
+    const labelIsFullyBelowAnchor = label.minY > (anchor.y + anchor.r)
+    const labelIsFullyAboveAnchor = label.maxY < (anchor.y - anchor.r)
+    const labelIsFullyLeftOfAnchor = label.maxX < (anchor.x - anchor.r)
+    const labelIsFullyRightOfAnchor = label.minX > (anchor.x + anchor.r)
+
+    // negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
+    let hdLabelLeftToAnchor = label.minX - anchor.maxX
+    let hdLabelRightToAnchor = label.maxX - anchor.minX
+    let hdLabelCenterToAnchor = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account label radius
+    let vdLabelTopToAnchor = label.minY - labelTopPadding - anchor.maxY
+    let vdLabelBottomToAnchor = label.maxY + labelTopPadding - anchor.minY
+    let vdLabelCenterToAnchor = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account label radius
+
+    const leaderLinePositionOptions = [
+      {
+        name: 'centerBottomDistance',
+        distance: Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.centeredAboveAnchor,
+        enabled: labelIsFullyAboveAnchor
+      },
+      {
+        name: 'centerTopDistance',
+        distance: Math.hypot(hdLabelCenterToAnchor, vdLabelTopToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.centeredUnderneathAnchor,
+        enabled: labelIsFullyBelowAnchor
+      },
+      {
+        name: 'leftCenterDistance',
+        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.besideAnchor,
+        enabled: labelIsFullyRightOfAnchor
+      },
+      {
+        name: 'rightCenterDistance',
+        distance: Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.besideAnchor,
+        enabled: labelIsFullyLeftOfAnchor
+      },
+      {
+        name: 'leftTopDistance',
+        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        enabled: true
+      },
+      {
+        name: 'rightBottomDistance',
+        distance: Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        enabled: true
+      },
+      {
+        name: 'rightTopDistance',
+        distance: Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        enabled: true
+      },
+      {
+        name: 'leftBottomDistance',
+        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor),
+        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        enabled: true
+      },
+    ]
+
+    const bestLeaderLineOption = _(leaderLinePositionOptions)
+      .filter('enabled')
+      .sortBy('distance')
+      .first()
+
+    if (!bestLeaderLineOption.length < 1) {
+      throw new Error('There were no leaderLine placement options available')
+    }
+
+    return bestLeaderLineOption
   }
 
   labeler.moveLabel = function ({ label, x, y }) {
