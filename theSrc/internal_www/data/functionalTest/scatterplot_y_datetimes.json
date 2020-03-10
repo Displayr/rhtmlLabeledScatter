@@ -1,5 +1,5 @@
 {
-  "X": [
+  "Y": [
     "2012-01-01",
     "2012-01-01",
     "2012-01-01",
@@ -14,7 +14,7 @@
     "2012-10-01",
     "2012-10-01"
   ],
-  "Y": [
+  "X": [
     "55 to 64",
     "55 to 64",
     "25 to 29",
@@ -44,8 +44,8 @@
     3087,
     3150
   ],
-  "xIsDateTime": true,
-  "yIsDateTime": false,
+  "yIsDateTime": true,
+  "xIsDateTime": false,
   "label": [
     "63",
     "126",
@@ -61,7 +61,7 @@
     "3087",
     "3150"
   ],
-  "yLevels": [
+  "xLevels": [
     "65 or more",
     "55 to 64",
     "40 to 44",
@@ -70,6 +70,5 @@
     "25 to 29",
     "18 to 24"
   ],
-  "xFormat": "%b %d %Y",
-  "pointRadius": 3
+  "yFormat": "%b %d %Y"
 }
