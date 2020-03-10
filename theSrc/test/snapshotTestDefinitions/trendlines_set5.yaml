@@ -1,9 +1,0 @@
-type: multi_widget_single_page
-width: 576
-height: 512
-rowSize: 2
-widgets:
-  - config: data.trendlines.set5_no_trendlines
-  - config: data.trendlines.set5_logos_trendlines
-  - config: data.trendlines.set5_trendlines
-  - config: data.trendlines.set5_trendlines_2point
