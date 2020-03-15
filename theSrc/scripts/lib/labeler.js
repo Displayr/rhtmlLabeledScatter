@@ -14,7 +14,10 @@ const TRACE_LOGGING = 4
 const OBSERVATION_LOGGING = false
 const TEMPERATURE_LOGGING = false
 const INITIALISATION_LOGGING = false
-const POST_SWEEP_OPTION_LOGGING = false
+const POST_SWEEP_LOGGING = 0 // [0,1,2] 2 is most logging
+const ENERGY_DETAIL_LOGGING = false
+const OVERLAP_LOGGING = 0 // [0,1,2] 2 is most logging
+const FINAL_DUMP_LOGGING = false
 
 const LOG_LEVEL = MINIMAL_LOGGING
 // const LOG_LEVEL = OUTER_LOOP_LOGGING
@@ -87,11 +90,11 @@ const labeler = function () {
   //   * numLabels * labelArea * labelLabelWeight
   //   * numAnchors * labelArea * labelAnchorWeight
 
-  labeler.energy = function ({ label, anchor } = {}) {
-    return labeler.detailedEnergy({ label, anchor }).energy
+  labeler.energy = function ({ label, anchor } = {}, phaseName = '') {
+    return labeler.detailedEnergy({ label, anchor }, phaseName).energy
   }
 
-  labeler.detailedEnergy = function ({ label, anchor } = {}) {
+  labeler.detailedEnergy = function ({ label, anchor } = {}, phaseName = '') {
     let energyParts = {
       distance: 0,
       distanceType: 'N/A',
@@ -137,14 +140,21 @@ const labeler = function () {
         overlapArea = xOverlap * yOverlap
 
         if (overlapArea > 0) {
+
+          if (OVERLAP_LOGGING) {
+            console.log(`L->L OVERLAP: label '${label.shortText}' and comparisonLab '${comparisonLab.shortText}' overlap ${overlapArea}`)
+            if (OVERLAP_LOGGING > 1) {
+              console.log(`label '${comparisonLab.shortText}: X ${comparisonLab.minX} - ${comparisonLab.maxX}, comparisonLab Y ${comparisonLab.minY} - ${comparisonLab.maxY}`)
+              console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
+            }
+          }
+
           energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
           energyParts.labelOverlapCount++
-          energyParts.labelOverlapList.push({ shortText: comparisonLab.shortText, overlapArea, comparisonLab })
-          if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`label overlap!`) }
+          energyParts.labelOverlapList.push({ shortText: comparisonLab.shortText, overlapArea })
         }
       }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING && energyParts.labelOverlapCount > 0) { console.log(`label overlap percentage: ${(100 * energyParts.labelOverlapCount / lab.length).toFixed(2)}%`) }
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
@@ -154,25 +164,34 @@ const labeler = function () {
 
       overlapArea = xOverlap * yOverlap
 
-
-      // less penalty if the label is overlapping its own anchor
+      // less penalty if the label is overlapping its own bubble
       if (isBubble && anchor.id === label.id) {
         overlapArea /= 2
       }
       if (overlapArea > 0) {
 
-        // console.log(`label '${label.shortText}' and anchor '${anchor.shortText}' overlap ${overlapArea}`)
-        // console.log(`anchor X ${anchor.minX} - ${anchor.maxX}, anchor Y ${anchor.minY} - ${anchor.maxY} anchor R: ${anchor.r}`)
-        // console.log(`label X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}, height: ${label.height}`)
+        if (OVERLAP_LOGGING) {
+          console.log(`L->A OVERLAP: label '${label.shortText}' and anchor '${anchor.shortText}' overlap ${overlapArea}`)
+          if (OVERLAP_LOGGING > 1) {
+            console.log(`anchor '${anchor.shortText}: X ${anchor.minX} - ${anchor.maxX}, anchor Y ${anchor.minY} - ${anchor.maxY} anchor R: ${anchor.r}`)
+            console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
+          }
+        }
 
-        energyParts.anchorOverlap += (overlapArea / label.area * weightLabelToAnchorOverlap)
+        // NB using percentage of anchor "circle" (i.e. anchor.area) to compute totalPercentageOverlap, but the overlapArea was calculated using the anchor "rectangle".
+        // Will be innacurate but less expensive this way. Add the Math.min to ensure we do not get a proportion over 1.
+        energyParts.anchorOverlap += (Math.min(1, overlapArea / anchor.area) * weightLabelToAnchorOverlap)
         energyParts.anchorOverlapCount++
-        energyParts.anchorOverlapList.push({ shortText: anchor.shortText, overlapArea, anchor })
-        if (LOG_LEVEL >= TRACE_LOGGING) { console.log(`anchor overlap!`) }
+        energyParts.anchorOverlapList.push({ shortText: anchor.shortText, overlapArea })
       }
     })
-    if (LOG_LEVEL >= INNER_LOOP_LOGGING && energyParts.anchorOverlapCount > 0) { console.log(`anchor overlap percentage: ${(100 * energyParts.anchorOverlapCount / anc.length).toFixed(2)}%`) }
     let energy = energyParts.distance + energyParts.labelOverlap + energyParts.anchorOverlap
+
+    if (ENERGY_DETAIL_LOGGING) {
+      console.log(`${phaseName}:energy '${label.shortText}: ${energy}`)
+      console.log(energyParts)
+    }
+
     return { energy, energyParts }
   }
 
@@ -359,13 +378,17 @@ const labeler = function () {
     } else {
       const startTime = Date.now()
       const generalSweepStats = labeler.generalSweep({ maxSweeps, activePoints })
+      const generalSweepCompleteTime = Date.now()
       const postSweepStats = labeler.postSweep({ activePoints })
+      const postSweepCompleteTime = Date.now()
 
       console.log(JSON.stringify(_.merge({}, generalSweepStats, postSweepStats, {
         labelCount: lab.length,
         activePointCount: activePoints.length,
         anchorCount: anc.length,
-        duration: Date.now() - startTime,
+        duration: postSweepCompleteTime - startTime,
+        postSweepDuration: postSweepCompleteTime - generalSweepCompleteTime,
+        generalSweepDuration: generalSweepCompleteTime - startTime,
       })))
 
       return resolveFunc()
@@ -418,10 +441,14 @@ const labeler = function () {
         }
       } = point
 
+      if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+        console.log(`CONSIDERING '${label.shortText}'`)
+      }
+
       const x_old = label.x
       const y_old = label.y
 
-      let old_energy = labeler.energy(point)
+      let old_energy = labeler.energy(point, `general:${currentRound}:old`)
 
       if (random.real(0, 1) < 0.8) {
         labeler.mcmove(point)
@@ -429,7 +456,7 @@ const labeler = function () {
         labeler.mcrotate(point)
       }
 
-      let new_energy = labeler.energy(point)
+      let new_energy = labeler.energy(point, `general:${currentRound}:new`)
 
       // TODO document final solution once it is ready
 
@@ -493,14 +520,24 @@ const labeler = function () {
       console.log(`rhtmlLabeledScatter: Label placement general sweep complete after ${currentRound} sweeps. accept/reject: ${stats.acc}/${stats.rej} (accept_worse: ${stats.acc_worse})`)
     }
 
+    if (FINAL_DUMP_LOGGING) {
+      console.log('dump state after general sweep')
+      console.log(lab)
+      console.log(anc)
+
+      _(activePoints).each(point => {
+        labeler.detailedEnergy(point,'debug-final-dump')
+      })
+    }
+
     return stats
   }
 
   labeler.postSweep = function ({ activePoints }) {
-    const proportionOfLabelsToAdjust = 0.4 // TODO expose as config variable
+    const proportionOfLabelsToAdjust = 0.5 // TODO expose as config variable
     const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${_.get(point, 'observations.dynamic.energy.current', -1).toFixed(2)}`).value()
     const sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
-    const boundaryEnergy = sortedEnergies[Math.floor(sortedEnergies.length * (1 - proportionOfLabelsToAdjust ))]
+    const boundaryEnergy = sortedEnergies[Math.floor(Math.max(0,sortedEnergies.length * (1 - proportionOfLabelsToAdjust ) - 1))]
     const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
 
     const stats = {
@@ -556,14 +593,16 @@ const labeler = function () {
       ...southEasterlyDiagonal
     ]
 
-    const chosenOption = labeler.chooseBestLabelPosition({ point, options })
+    const chosenOption = labeler.chooseBestLabelPosition({ point, options, phaseName: 'targetedCardinalAdjustment' })
 
-    if (POST_SWEEP_OPTION_LOGGING) {
+    if (POST_SWEEP_LOGGING) {
       console.log(`${label.shortText} done target adjustment. Energy before: ${energyBefore} Energy after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
-      console.log(`${label.shortText}: options`)
-      console.log(options)
-      console.log('chosenOption')
-      console.log(JSON.stringify(chosenOption, {}, 2))
+      if (POST_SWEEP_LOGGING > 1) {
+        console.log(`${label.shortText}: options`)
+        console.log(options)
+        console.log('chosenOption')
+        console.log(JSON.stringify(chosenOption, {}, 2))
+      }
     }
 
     dynamicObservations.energy.current = chosenOption.energy
@@ -590,19 +629,25 @@ const labeler = function () {
       // {  nickname: 'vertical_aligned', x: label.x, y: anchor.y + label.height / 4 }, // NB disabled as visual inspection of snapshots showed this was not worth it
     ]
 
-    const chosenOption = labeler.chooseBestLabelPosition({ point, options })
+    const chosenOption = labeler.chooseBestLabelPosition({ point, options, phaseName: 'alignLabelIfBetter' })
 
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
 
-    if (POST_SWEEP_OPTION_LOGGING) {
-      console.log(`${anchor.shortText}: done straighten point. energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+    if (POST_SWEEP_LOGGING) {
+      console.log(`${anchor.shortText}: done straighten point. Energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
+      if (POST_SWEEP_LOGGING > 1) {
+        console.log(`${label.shortText}: options`)
+        console.log(options)
+        console.log('chosenOption')
+        console.log(JSON.stringify(chosenOption, {}, 2))
+      }
     }
 
     return chosenOption.nickname !== 'last'
   }
 
-  labeler.chooseBestLabelPosition = function ({ point, options }) {
+  labeler.chooseBestLabelPosition = function ({ point, options, phaseName }) {
     const { label } = point
     _(options).each(option => {
       labeler.moveLabel({ label, x: option.x, y: option.y })
@@ -610,7 +655,7 @@ const labeler = function () {
       option.x = label.x
       option.y = label.y
 
-      const { energy, energyParts } = labeler.detailedEnergy(point)
+      const { energy, energyParts } = labeler.detailedEnergy(point, `${phaseName}:${option.nickname}`)
       option.energy = energy
       option.energyParts = energyParts
     })
