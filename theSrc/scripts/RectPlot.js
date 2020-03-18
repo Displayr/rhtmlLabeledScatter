@@ -27,108 +27,14 @@ import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
 
 class RectPlot {
-  constructor (state,
-    width,
-    height,
-    X,
-    Y,
-    Z,
-    xIsDateTime,
-    yIsDateTime,
-    group,
-    label,
-    labelAlt = [],
-    svg,
-    xLevels = null,
-    yLevels = null,
-    fixedRatio,
-    title = '',
-    titleFontFamily,
-    titleFontSize = 16,
-    titleFontColor,
-    subtitle = '',
-    subtitleFontFamily = 'Arial',
-    subtitleFontSize = 12,
-    subtitleFontColor = 'black',
-    footer = '',
-    footerFontFamily = 'Arial',
-    footerFontSize = 8,
-    footerFontColor = 'black',
-    xTitle,
-    xTitleFontFamily,
-    xTitleFontSize,
-    xTitleFontColor,
-    yTitle,
-    yTitleFontFamily,
-    yTitleFontSize,
-    yTitleFontColor,
-    zTitle = '',
-    colors,
-    transparency,
-    grid,
-    origin,
-    originAlign,
-    showLabels = true,
-    labelsFontFamily,
-    labelsFontSize,
-    labelsFontColor,
-    labelsLogoScale = [],
-    xDecimals = null,
-    yDecimals = null,
-    zDecimals = null,
-    xPrefix = '',
-    yPrefix = '',
-    zPrefix = '',
-    xSuffix = '',
-    ySuffix = '',
-    zSuffix = '',
-    xFormat = null,
-    yFormat = null,
-    legendShow = true,
-    legendBubblesShow = true,
-    legendFontFamily,
-    legendFontSize,
-    legendFontColor,
-    legendBubbleFontFamily,
-    legendBubbleFontSize,
-    legendBubbleFontColor,
-    legendBubbleTitleFontFamily,
-    legendBubbleTitleFontSize,
-    legendBubbleTitleFontColor,
-    showXAxis = true,
-    showYAxis = true,
-    axisFontFamily,
-    axisFontColor = 'black',
-    axisFontSize = 12,
-    pointRadius = 2,
-    xBoundsMinimum = null,
-    xBoundsMaximum = null,
-    yBoundsMinimum = null,
-    yBoundsMaximum = null,
-    xBoundsUnitsMajor = null,
-    yBoundsUnitsMajor = null,
-    trendLines = false,
-    trendLinesLineThickness = 1,
-    trendLinesPointSize = 2,
-    plotBorderShow = true,
-    plotBorderColor = 'black',
-    plotBorderWidth = 1,
-    labelPlacementDistanceWeight = 10.0,
-    labelPlacementLabelLabelOverlapWeight = 12.0,
-    labelPlacementLabelAncOverlapWeight = 8.0,
-    labelPlacementNumSweeps = 500,
-    labelPlacementSeed = 1,
-    labelPlacementMaxMove = 5.0,
-    labelPlacementMaxAngle = 2 * 3.1415,
-    tooltipText = [],
-    debugMode = false,
-    showResetButton = true
-  ) {
+  constructor ({ config, stateObj, svg } = {}) {
     autoBind(this)
     this.pltUniqueId = md5((new Date()).getTime())
-    this.state = state
-    this.width = width
-    this.height = height
+    this.state = stateObj
+    this.width = config.width
+    this.height = config.height
+
+    const { X, xLevels, xIsDateTime } = config
     if (xIsDateTime) {
       this.X = _.map(X, (d) => new Date(d))
       this.xLevels = null
@@ -142,6 +48,8 @@ class RectPlot {
       this.xLevels = _.isNull(xLevels) ? _.uniq(X) : xLevels
       this.xDataType = DataTypeEnum.ordinal
     }
+
+    const { Y, yLevels, yIsDateTime } = config
     if (yIsDateTime) {
       this.Y = _.map(Y, (d) => new Date(d))
       this.yLevels = null
@@ -155,30 +63,32 @@ class RectPlot {
       this.yLevels = _.isNull(yLevels) ? _(Y).uniq().reverse().value() : yLevels
       this.yDataType = DataTypeEnum.ordinal
     }
-    this.Z = Z
-    this.group = group
-    this.label = _.isEmpty(label) ? null : label
-    this.labelAlt = labelAlt
+
+    this.Z = config.Z
+    this.group = config.group
+    this.label = config.label
+    this.labelAlt = config.labelAlt
     this.svg = svg
-    this.zTitle = zTitle
-    this.colors = colors
-    this.transparency = transparency
-    this.originAlign = originAlign
-    this.showLabels = showLabels
-    this.pointRadius = pointRadius
+    this.zTitle = config.zTitle
+    this.colors = config.colors
+    this.transparency = config.transparency
+    this.originAlign = config.originAlign
+    this.showLabels = config.showLabels
+    this.pointRadius = config.pointRadius
+
     this.plotBorder = {
-      show: plotBorderShow,
-      color: plotBorderColor,
-      width: parseInt(plotBorderWidth) + 'px'
+      show: config.plotBorderShow,
+      color: config.plotBorderColor,
+      width: `${parseInt(config.plotBorderWidth)}px`
     }
-    this.maxDrawFailureCount = 200
+    this.maxDrawFailureCount = 200 // TODO configure
 
     this.axisSettings = {
-      fontFamily: axisFontFamily,
-      fontSize: axisFontSize,
-      fontColor: axisFontColor,
-      showX: showXAxis,
-      showY: showYAxis,
+      fontFamily: config.axisFontFamily,
+      fontSize: config.axisFontSize,
+      fontColor: config.axisFontColor,
+      showX: config.showXAxis,
+      showY: config.showYAxis,
       textDimensions: {
         rowMaxWidth: 0,
         rowMaxHeight: 0,
@@ -188,97 +98,109 @@ class RectPlot {
       },
       leaderLineLength: 5,
       x: {
-        format: xFormat,
-        boundsUnitsMajor: xBoundsUnitsMajor,
-        prefix: xPrefix,
-        suffix: xSuffix,
-        decimals: xDecimals
+        format: config.xFormat,
+        boundsUnitsMajor: config.xBoundsUnitsMajor,
+        prefix: config.xPrefix,
+        suffix: config.xSuffix,
+        decimals: config.xDecimals
       },
       y: {
-        format: yFormat,
-        boundsUnitsMajor: yBoundsUnitsMajor,
-        prefix: yPrefix,
-        suffix: ySuffix,
-        decimals: yDecimals
+        format: config.yFormat,
+        boundsUnitsMajor: config.yBoundsUnitsMajor,
+        prefix: config.yPrefix,
+        suffix: config.ySuffix,
+        decimals: config.yDecimals
       },
       z: {
-        prefix: zPrefix,
-        suffix: zSuffix,
-        decimals: zDecimals
+        prefix: config.zPrefix,
+        suffix: config.zSuffix,
+        decimals: config.zDecimals
       },
       strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
     }
 
     this.labelsFont = {
-      size: labelsFontSize,
-      color: labelsFontColor,
-      family: labelsFontFamily,
-      logoScale: labelsLogoScale
+      size: config.labelsFontSize,
+      color: config.labelsFontColor,
+      family: config.labelsFontFamily,
+      logoScale: config.labelsLogoScale
     }
 
-    this.xTitle = new AxisTitle(xTitle, xTitleFontColor, xTitleFontSize, xTitleFontFamily, 5, 1)
-    this.yTitle = new AxisTitle(yTitle, yTitleFontColor, yTitleFontSize, yTitleFontFamily, 0, 2)
+    this.xTitle = new AxisTitle(config.xTitle, config.xTitleFontColor, config.xTitleFontSize, config.xTitleFontFamily, 5, 1)
+    this.yTitle = new AxisTitle(config.yTitle, config.yTitleFontColor, config.yTitleFontSize, config.yTitleFontFamily, 0, 2)
 
-    this.legendSettings = new LegendSettings(legendShow, legendBubblesShow,
-      legendFontFamily, legendFontSize, legendFontColor,
-      legendBubbleFontFamily, legendBubbleFontSize, legendBubbleFontColor,
-      legendBubbleTitleFontFamily, legendBubbleTitleFontSize, legendBubbleTitleFontColor, this.zTitle)
+    // TODO convert to object signature
+    this.legendSettings = new LegendSettings(
+      config.legendShow,
+      config.legendBubblesShow,
+      config.legendFontFamily,
+      config.legendFontSize,
+      config.legendFontColor,
+      config.legendBubbleFontFamily,
+      config.legendBubbleFontSize,
+      config.legendBubbleFontColor,
+      config.legendBubbleTitleFontFamily,
+      config.legendBubbleTitleFontSize,
+      config.legendBubbleTitleFontColor,
+      this.zTitle
+    )
 
     this.trendLines = {
-      show: trendLines,
-      lineThickness: trendLinesLineThickness,
-      pointSize: trendLinesPointSize
+      show: config.trendLines,
+      lineThickness: config.trendLinesLineThickness,
+      pointSize: config.trendLinesPointSize
     }
 
+    // TODO configure
     this.padding = {
       vertical: 5,
       horizontal: 10
     }
 
     this.bounds = {
-      xmin: xBoundsMinimum,
-      xmax: xBoundsMaximum,
-      ymin: yBoundsMinimum,
-      ymax: yBoundsMaximum
+      xmin: config.xBoundsMinimum,
+      xmax: config.xBoundsMaximum,
+      ymin: config.yBoundsMinimum,
+      ymax: config.yBoundsMaximum
     }
 
-    this.title = new Title(title, titleFontColor, titleFontSize, titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
-    this.subtitle = new Subtitle(subtitle, subtitleFontColor, subtitleFontSize, subtitleFontFamily, this.title.text)
+    this.title = new Title(config.title, config.titleFontColor, config.titleFontSize, config.titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
+    this.subtitle = new Subtitle(config.subtitle, config.subtitleFontColor, config.subtitleFontSize, config.subtitleFontFamily, this.title.text)
     this.subtitle.setY(this.title.getSubtitleY())
-    this.footer = new Footer(footer, footerFontColor, footerFontSize, footerFontFamily, this.height)
+    this.footer = new Footer(config.footer, config.footerFontColor, config.footerFontSize, config.footerFontFamily, this.height)
 
-    this.grid = !(_.isNull(grid)) ? grid : true
-    this.origin = !(_.isNull(origin)) ? origin : true
-    this.fixedRatio = !(_.isNull(fixedRatio)) ? fixedRatio : true
+    this.grid = config.grid
+    this.origin = config.origin
+    this.fixedRatio = config.fixedAspectRatio // TODO rename for consistency
 
     if (_.isNull(this.label)) {
-      this.label = _.map(X, () => { return '' })
+      this.label = _.map(config.X, () => { return '' })
       this.showLabels = false
     }
 
     const numNonEmptyLabels = (_.filter(this.label, (l) => l !== '')).length
     const labelPlacementAlgoOnToggle = numNonEmptyLabels < 100
-    const labelSorterThreshold = 200 // VIS-390: this is effectively turned off
     this.labelPlacementSettings = {
-      distance: labelPlacementDistanceWeight,
-      labelLabelOverlap: labelPlacementLabelLabelOverlapWeight,
-      labelAncOverlap: labelPlacementLabelAncOverlapWeight,
-      numSweeps: labelPlacementNumSweeps,
-      maxMove: labelPlacementMaxMove,
-      maxAngle: labelPlacementMaxAngle,
-      seed: labelPlacementSeed,
-      isLabelSorterOn: numNonEmptyLabels > labelSorterThreshold,
-      isNonBlockingOn: numNonEmptyLabels > labelSorterThreshold,
+      distance: config.labelPlacementDistanceWeight,
+      labelLabelOverlap: config.labelPlacementLabelLabelOverlapWeight,
+      labelAncOverlap: config.labelPlacementLabelAncOverlapWeight,
+      numSweeps: config.labelPlacementNumSweeps,
+      maxMove: config.labelPlacementMaxMove,
+      maxAngle: config.labelPlacementMaxAngle,
+      seed: config.labelPlacementSeed,
+      initialTemperature: config.labelPlacementTemperatureInitial,
+      finalTemperature: config.labelPlacementTemperatureFinal,
       isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
     }
 
-    this.tooltipText = tooltipText
+    this.tooltipText = config.tooltipText
 
-    this.debugMode = debugMode
-    this.showResetButton = showResetButton
+    this.debugMode = config.debugMode
+    this.showResetButton = config.showResetButton
 
     this.setDim(this.svg, this.width, this.height)
 
+    // TODO make an object then get rid of double handling via this.labelPlacementSettings
     this.labelPlacement = new LabelPlacement(
       this.pltUniqueId,
       this.svg,
@@ -290,9 +212,10 @@ class RectPlot {
       this.labelPlacementSettings.maxMove,
       this.labelPlacementSettings.maxAngle,
       this.labelPlacementSettings.seed,
-      this.labelPlacementSettings.isLabelSorterOn,
-      this.labelPlacementSettings.isNonBlockingOn,
-      this.labelPlacementSettings.isLabelPlacementAlgoOn)
+      this.labelPlacementSettings.initialTemperature,
+      this.labelPlacementSettings.finalTemperature,
+      this.labelPlacementSettings.isLabelPlacementAlgoOn
+    )
   }
 
   setDim (svg, width, height) {

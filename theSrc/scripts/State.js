@@ -162,7 +162,7 @@ class State {
 
   getPositionedLabIds (currentvb) {
     if (_.isEmpty(this.vb)) {
-      console.log(this.getUserPositionedLabIds())
+      // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
       return this.getUserPositionedLabIds()
     } else {

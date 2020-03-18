@@ -6,7 +6,8 @@ import _ from 'lodash'
 class LabelPlacement {
   constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
-               isLabelSorterOn, isNonBlockingOn, isLabelPlacementAlgoOn) {
+               initialTemperature, finalTemperature,
+               isLabelPlacementAlgoOn) {
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -16,9 +17,9 @@ class LabelPlacement {
     this.numSweeps = numSweeps
     this.maxMove = maxMove
     this.maxAngle = maxAngle
-    this.isLabelSorterOn = isLabelSorterOn
-    this.isNonBlockingOn = isNonBlockingOn
     this.seed = seed
+    this.initialTemperature = initialTemperature
+    this.finalTemperature = finalTemperature
     this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
@@ -39,10 +40,9 @@ class LabelPlacement {
       .pinned(pinnedLabels)
       .promise(resolve)
       .anchorType(this.isBubble)
+      .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-      // TODO need to readd logic for enable / disable label sorter
-      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
-      // .settings(this.seed, this.maxMove, this.maxAngle, true, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
+      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)
   }
 
