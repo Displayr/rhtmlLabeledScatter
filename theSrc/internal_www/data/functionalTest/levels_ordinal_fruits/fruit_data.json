@@ -1,0 +1,38 @@
+{
+  "label": [
+    "fake",
+    "real",
+    "fake",
+    "real",
+    "real",
+    "fake",
+    "fake",
+    "real",
+    "real",
+    "fake"
+  ],
+  "Y": [
+    "vine",
+    "tree",
+    "vine",
+    "tree",
+    "vine",
+    "tree",
+    "vine",
+    "tree",
+    "vine",
+    "tree"
+  ],
+  "X": [
+    "banana",
+    "banana",
+    "orange",
+    "orange",
+    "grape",
+    "grape",
+    "apple",
+    "apple",
+    "tomato",
+    "tomato"
+  ]
+}

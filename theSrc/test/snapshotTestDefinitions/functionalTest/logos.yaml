@@ -1,0 +1,7 @@
+type: multi_widget_single_page
+title: "test logo configurations"
+width: 600
+height: 600
+rowSize: 4
+widgets:
+  - config: data.functionalTest.softdrink_logos

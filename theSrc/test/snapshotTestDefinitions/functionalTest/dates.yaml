@@ -1,0 +1,10 @@
+type: multi_widget_single_page
+title: "test dates on axis configurations"
+width: 600
+height: 600
+rowSize: 2
+widgets:
+  - config: data.functionalTest.scatterplot_x_datetimes|{"title":"dates on x axis"}
+  - config: data.functionalTest.scatterplot_x_datetimes|config.xFormat_month_only|{"title":"xFormat = month only"}
+  - config: data.functionalTest.scatterplot_y_datetimes|{"title":"dates on y axis"}
+  - config: data.functionalTest.scatterplot_y_datetimes|config.yFormat_month_only|{"title":"yFormat = month only"}

@@ -6,8 +6,6 @@ configs:
     width: 730
     height: 489
   - config: data.displayr_regression.set2.bubble_colors
-  - config: data.displayr_regression.set2.bubble_colors_zero_centered
-  - config: data.displayr_regression.set2.bubble_with_tile
   - config: data.displayr_regression.set2.column_principal_scaled
   - config: data.displayr_regression.set2.correspondence_analysis1
     width: 967
@@ -19,43 +17,28 @@ configs:
   - config: data.displayr_regression.set2.correspondence_analysis8
     width: 975
     height: 452
-  - config: data.displayr_regression.set2.correspondence_analysis_y_narrow_range
   - config: data.displayr_regression.set2.correspondence_analysis9
   - config: data.displayr_regression.set2.correspondence_analysis12
   - config: data.displayr_regression.set2.correspondence_analysis_4
-  - config: data.displayr_regression.set2.correspondence_analysis_6
-  - config: data.displayr_regression.set2.correspondence_analysis_maxLabels
-  - config: data.displayr_regression.set2.correspondence_anaysis7
+  - config: data.displayr_regression.set2.correspondence_analysis7
   - config: data.displayr_regression.set2.row_principal_scaled
   - config: data.displayr_regression.set2.same_titles
-  - config: data.displayr_regression.set2.trend_reprint
   - config: data.displayr_regression.set2.y_equals_zero
     width: 988
     height: 675
   - config: data.displayr_regression.set2_focus.column_prinicpal
   - config: data.displayr_regression.set2_focus.multiple_tables
-  - config: data.displayr_regression.set2_focus.principal
   - config: data.displayr_regression.set2_focus.standard
   - config: data.displayr_regression.set2_focus.symmertrical
   - config: data.displayr_regression.set2_logo.logo
-  - config: data.displayr_regression.set2_logo.logo_error
-  - config: data.displayr_regression.set2_logo.logo_quote
-  - config: data.displayr_regression.set2_logo.logo_smartquote
-  - config: data.displayr_regression.set2_logo.logo_typo
+  - config: data.displayr_regression.set2_logo.logo_small_ratio
   - config: data.displayr_regression.set2_mirror.both_mirror
   - config: data.displayr_regression.set2_mirror.d1_mirror
   - config: data.displayr_regression.set2_mirror.d2_mirror
   - config: data.displayr_regression.set2_mirror.no_mirror
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_3d
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_logo
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_logo_transpose
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_logotrend
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_named
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_reprint
   - config: data.displayr_regression.set2_multiple_tables.multiple_table_transpose
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_trend
-  - config: data.displayr_regression.set2_multiple_tables.multiple_table_unamed
   - config: data.displayr_regression.set2_supplementary.focus_off_supplementary
   - config: data.displayr_regression.set2_supplementary.focus_on_supplementary
   - config: data.displayr_regression.set2_supplementary.long_footer

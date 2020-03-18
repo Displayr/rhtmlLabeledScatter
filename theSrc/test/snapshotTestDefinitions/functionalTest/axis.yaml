@@ -1,0 +1,13 @@
+type: multi_widget_single_page
+title: "test axis configurations"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.xaxis_disabled|{"title":"xaxis disabled"}
+  - config: data.functionalTest.scatterplot_simple|config.yaxis_disabled|{"title":"yaxis disabled"}
+  - config: data.functionalTest.scatterplot_simple|config.xaxis_disabled|config.yaxis_disabled|{"title":"x and y axis disabled"}
+  - config: data.functionalTest.scatterplot_simple|config.axis_24_red_fantasy|{"title":"axis font configured"}
+  - config: data.functionalTest.scatterplot_simple|config.xTitle|{"title":"has an x title"}
+  - config: data.functionalTest.scatterplot_simple|config.yTitle|{"title":"has an y title"}
+  - config: data.functionalTest.scatterplot_simple|config.xTitle|config.yTitle|config.axis_title_24_red_fantasy|{"title":"axis title font configured "}

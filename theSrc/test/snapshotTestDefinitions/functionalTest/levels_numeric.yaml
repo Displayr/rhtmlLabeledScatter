@@ -1,0 +1,10 @@
+type: multi_widget_single_page
+title: "test numeric levels specification - numeric levels are ignored"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.levels_numeric.base|{"title":"no levels spec"}
+  - config: data.functionalTest.levels_numeric.base|data.functionalTest.levels_numeric.xLevels|{"title":"x levels spec (numeric)"}
+  - config: data.functionalTest.levels_numeric.base|data.functionalTest.levels_numeric.yLevels|{"title":"y levels spec (numeric)"}
+  - config: data.functionalTest.levels_numeric.base|data.functionalTest.levels_numeric.xLevels|data.functionalTest.levels_numeric.yLevels|{"title":"x and y levels spec (numeric)"}

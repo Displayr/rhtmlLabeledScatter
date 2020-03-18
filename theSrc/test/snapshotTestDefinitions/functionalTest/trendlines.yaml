@@ -1,0 +1,19 @@
+type: multi_widget_single_page
+width: 400
+height: 400
+rowSize: 2
+comments:
+  - location: logos_trendlines
+    status: red
+    comment: the arrow heads are using the wrong color
+  - location: trendlines_2point
+    status: red
+    comment: the arrow heads are using the wrong color
+widgets:
+  - config: data.functionalTest.trendlines.no_trendlines
+  - config: data.functionalTest.trendlines.logos_trendlines
+  - config: data.functionalTest.trendlines.trendlines
+  - config: data.functionalTest.trendlines.trendlines_2point
+  - config: data.functionalTest.trendlines.logos_tech_trends
+    width: 800
+    height: 400
