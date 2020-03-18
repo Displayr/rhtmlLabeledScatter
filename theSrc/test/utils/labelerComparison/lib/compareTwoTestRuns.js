@@ -85,16 +85,20 @@ function getMergedTests ({ baseline, candidate }) {
 }
 
 function computeComparison (mergedTests) {
+  const mergedTestsWithBothRecords = _(mergedTests)
+    .filter(({ baseline, checkpoint }) => baseline && checkpoint)
+    .value()
+
   const makeDurationStatements = (dimension, thresholds) => {
     _(thresholds).each(threshold => {
-      const baselineBetterCount = _(mergedTests)
+      const baselineBetterCount = _(mergedTestsWithBothRecords)
         .filter(({ baseline, checkpoint }) => baseline[dimension] < (1 - threshold) * checkpoint[dimension])
         .size()
       console.log(` baseline beats checkpoint on ${dimension} by more than ${100 - 100 * (1 - threshold)}%: ${baselineBetterCount}`)
     })
 
     _(thresholds).each(threshold => {
-      const checkpointBetterCount = _(mergedTests)
+      const checkpointBetterCount = _(mergedTestsWithBothRecords)
         .filter(({ baseline, checkpoint }) => checkpoint[dimension] < (1 - threshold) * baseline[dimension])
         .size()
       console.log(` checkpoint beats baseline on ${dimension} by more than ${100 - 100 * (1 - threshold)}%: ${checkpointBetterCount}`)
@@ -103,14 +107,14 @@ function computeComparison (mergedTests) {
 
   const makePassrateStatements = (dimension, thresholds) => {
     _(thresholds).each(threshold => {
-      const baselineBetterCount = _(mergedTests)
+      const baselineBetterCount = _(mergedTestsWithBothRecords)
         .filter(({ baseline, checkpoint }) => baseline[dimension] > (1 + threshold) * checkpoint[dimension])
         .size()
       console.log(` baseline beats checkpoint on ${dimension} by more than ${100 - 100 * (1 - threshold)}%: ${baselineBetterCount}`)
     })
 
     _(thresholds).each(threshold => {
-      const checkpointBetterCount = _(mergedTests)
+      const checkpointBetterCount = _(mergedTestsWithBothRecords)
         .filter(({ baseline, checkpoint }) => checkpoint[dimension] > (1 + threshold) * baseline[dimension])
         .size()
       console.log(` checkpoint beats baseline on ${dimension} by more than ${100 - 100 * (1 - threshold)}%: ${checkpointBetterCount}`)
@@ -129,24 +133,26 @@ function computeDistributions (mergedTests) {
   const acceptWorseRateDeltaBuckets = {}
 
   _(mergedTests).each(test => {
-    test.durationRatio = test.checkpoint.duration / test.baseline.duration
-    test.passRateDelta = test.checkpoint.pass_rate - test.baseline.pass_rate
-    test.acceptWorseRateDelta = test.checkpoint.accept_worse_rate - test.baseline.accept_worse_rate
+    if (_.has(test, 'checkpoint') && _.has(test, 'baseline')) {
+      test.durationRatio = test.checkpoint.duration / test.baseline.duration
+      test.passRateDelta = test.checkpoint.pass_rate - test.baseline.pass_rate
+      test.acceptWorseRateDelta = test.checkpoint.accept_worse_rate - test.baseline.accept_worse_rate
 
-    const durationRatioBucket = Math.ceil(test.durationRatio * 10) / 10
-    test.durationRatioBucket = durationRatioBucket
-    if (!_.has(durationRatioBuckets, durationRatioBucket)) { durationRatioBuckets[durationRatioBucket] = 0 }
-    durationRatioBuckets[durationRatioBucket]++
+      const durationRatioBucket = Math.ceil(test.durationRatio * 10) / 10
+      test.durationRatioBucket = durationRatioBucket
+      if (!_.has(durationRatioBuckets, durationRatioBucket)) { durationRatioBuckets[durationRatioBucket] = 0 }
+      durationRatioBuckets[durationRatioBucket]++
 
-    const passRateDeltaBucket = test.passRateDelta.toFixed(3)
-    test.passRateDeltaBucket = passRateDeltaBucket
-    if (!_.has(passRateDeltaBuckets, passRateDeltaBucket)) { passRateDeltaBuckets[passRateDeltaBucket] = 0 }
-    passRateDeltaBuckets[passRateDeltaBucket]++
+      const passRateDeltaBucket = test.passRateDelta.toFixed(3)
+      test.passRateDeltaBucket = passRateDeltaBucket
+      if (!_.has(passRateDeltaBuckets, passRateDeltaBucket)) { passRateDeltaBuckets[passRateDeltaBucket] = 0 }
+      passRateDeltaBuckets[passRateDeltaBucket]++
 
-    const acceptWorseRateDeltaBucket = test.acceptWorseRateDelta.toFixed(3)
-    test.acceptWorseRateDeltaBucket = acceptWorseRateDeltaBucket
-    if (!_.has(acceptWorseRateDeltaBuckets, acceptWorseRateDeltaBucket)) { acceptWorseRateDeltaBuckets[acceptWorseRateDeltaBucket] = 0 }
-    acceptWorseRateDeltaBuckets[acceptWorseRateDeltaBucket]++
+      const acceptWorseRateDeltaBucket = test.acceptWorseRateDelta.toFixed(3)
+      test.acceptWorseRateDeltaBucket = acceptWorseRateDeltaBucket
+      if (!_.has(acceptWorseRateDeltaBuckets, acceptWorseRateDeltaBucket)) { acceptWorseRateDeltaBuckets[acceptWorseRateDeltaBucket] = 0 }
+      acceptWorseRateDeltaBuckets[acceptWorseRateDeltaBucket]++
+    }
   })
 
   const printDistribution = (buckets) => {

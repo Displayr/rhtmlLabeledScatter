@@ -22,9 +22,15 @@ function parseLogContents (fileContents, batchName) {
 
     if (extractStatRegex.test(line)) {
       snapshotsInScenarioCount++
+
       const justTheJsonMatch = line.match(/^[^"]+"(.*)"$/)
-      const formattedJson = justTheJsonMatch[1]
-      const json = formattedJson.replace(/\\"/g, '"')
+      let json
+      if (justTheJsonMatch) {
+        const formattedJson = justTheJsonMatch[1]
+        json = formattedJson.replace(/\\"/g, '"')
+      } else {
+        json = line
+      }
       const stats = JSON.parse(json)
       tests.push(_.assign(stats, {
         scenario: (snapshotsInScenarioCount === 1) ? currentScenarioName : `${currentScenarioName}-${snapshotsInScenarioCount}`
