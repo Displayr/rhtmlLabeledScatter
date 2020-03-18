@@ -1,3 +1,9 @@
+# Saga Branch
+
+I would like to save this branch for the record to show the process that went into VIS-513-rc4.
+The commit history in VIS-512-rc4 has been drastically altered to be more clean and appropriate for the master branch.
+VIS-513-saga-dont-delete captures a more complete view of the history of work, although even this branch had several rounds of interactive rebase to keep things clean.
+
 # rhtmlLabeledScatter
 An HTML widget that creates a labeled scatter plot
 
