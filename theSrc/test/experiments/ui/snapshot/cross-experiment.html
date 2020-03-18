@@ -1,0 +1,55 @@
+<html>
+<head>
+  <style>
+    body {
+      background-color: powderblue;
+    }
+
+    .row {
+      display: flex;
+      width: 100%;
+    }
+
+    .experiment-image {
+      flex-grow: 1;
+      margin: 1px 1px;
+      width: calc(((100% - 100px) / 4) - 2px);
+    }
+
+    .column-header {
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .row-header {
+      flex-grow: 0;
+      width: 100px;
+      text-align: center;
+    }
+
+    .status-red {
+      color: red;
+    }
+
+    .status-yellow {
+      color: yellow;
+    }
+
+    .status-green {
+      color: green;
+    }
+
+    .status-expected {
+      color: blueviolet;
+    }
+
+    .status-incomplete {
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <a class="back" href="/experiments/ui/">back to list of snapshots</a>
+  <script type="text/javascript" src="/js/renderCrossExperimentSnapshotComparison.js"></script>
+</body>
+</html>

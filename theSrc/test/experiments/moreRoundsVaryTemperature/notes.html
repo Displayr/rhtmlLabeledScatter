@@ -1,0 +1,35 @@
+<h3>Summary</h3>
+<ul>
+  <li>Shows that the new linear temp fn does improve over time - as in it is stable.</li>
+  <li>We need to improve the algo, but the linear temp cooling and weighting normalisation that were added appear to work well.</li>
+  <li>They changes definitely appear to be better than the previous exponential + absolute weight based algo.</li>
+</ul>
+
+<h3>Notable</h3>
+<ul>
+  <li>This was run using the new linear temp fn.</li>
+</ul>
+
+<h3>New Temp Algo</h3>
+<ul>
+  <li>The new temp fn is linear</li>
+  <li>the min max temp exposed as a param</li>
+  <li>te min max temp can be used to control how conservatively we accept energy increases</li>
+</ul>
+
+
+<h3>Current Settings</h3>
+<ul>
+  <li>LABEL_ITERATION_RANDOM</li>
+  <li>COOLING_PERIOD_PER_SWEEP</li>
+  <li>SWEEP_TO_ROUND_MULTIPLIER_DYNAMIC_LABELS</li>
+</ul>
+
+<h3>Status Notes:</h3>
+<ul>
+  <li><span class="status-expected">Expected</span> : I observe that the 0.01-0.0001 at 8x performs best and I still expect some misplacement at the end</li>
+  <li><span class="status-green">Green</span> : I observe that the 0.01-0.0001 at 8x performs best and I am happy with the label placement</li>
+  <li><span class="status-yellow">Yellow</span> : like expected but there are some clusters where a different config outperformed the 0.01-0.0001 at 8x</li>
+  <li><span class="status-red">Red</span> : demonstrates major issue discovered during experiment</li>
+  <li><span class="status-incomplete">Incomplete</span> : some experiments were not completed, likely due to timeouts</li>
+</ul>
