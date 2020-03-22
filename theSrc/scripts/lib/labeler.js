@@ -133,32 +133,31 @@ const labeler = function () {
     let overlapArea = null
 
     // penalty for label-label overlap
-    _.forEach(potentiallyOverlappingLabels, comparisonLab => {
-      if (comparisonLab.id !== label.id) { // TODO this if appears unecessary given filter above notSameId
-        xOverlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
-        yOverlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
-        overlapArea = xOverlap * yOverlap
+    potentiallyOverlappingLabels.forEach(comparisonLab => {
+      xOverlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
+      yOverlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
+      overlapArea = xOverlap * yOverlap
 
-        if (overlapArea > 0) {
-
-          if (OVERLAP_LOGGING) {
-            console.log(`L->L OVERLAP: label '${label.shortText}' and comparisonLab '${comparisonLab.shortText}' overlap ${overlapArea}`)
-            if (OVERLAP_LOGGING > 1) {
-              console.log(`label '${comparisonLab.shortText}: X ${comparisonLab.minX} - ${comparisonLab.maxX}, comparisonLab Y ${comparisonLab.minY} - ${comparisonLab.maxY}`)
-              console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
-            }
+      if (overlapArea > 0) {
+        if (OVERLAP_LOGGING) {
+          console.log(`L->L OVERLAP: label '${label.shortText}' and comparisonLab '${comparisonLab.shortText}' overlap ${overlapArea}`)
+          if (OVERLAP_LOGGING > 1) {
+            console.log(`label '${comparisonLab.shortText}: X ${comparisonLab.minX} - ${comparisonLab.maxX}, comparisonLab Y ${comparisonLab.minY} - ${comparisonLab.maxY}`)
+            console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
           }
+        }
 
-          energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
+        energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
+        if (ENERGY_DETAIL_LOGGING) {
           energyParts.labelOverlapCount++
-          energyParts.labelOverlapList.push({ shortText: comparisonLab.shortText, overlapArea })
+          energyParts.labelOverlapList.push({shortText: comparisonLab.shortText, overlapArea})
         }
       }
     })
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
-    _.forEach(potentiallyOverlappingAnchors, anchor => {
+    potentiallyOverlappingAnchors.forEach(anchor => {
       xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
       yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
 
@@ -181,8 +180,10 @@ const labeler = function () {
         // NB using percentage of anchor "circle" (i.e. anchor.area) to compute totalPercentageOverlap, but the overlapArea was calculated using the anchor "rectangle".
         // Will be innacurate but less expensive this way. Add the Math.min to ensure we do not get a proportion over 1.
         energyParts.anchorOverlap += (Math.min(1, overlapArea / anchor.area) * weightLabelToAnchorOverlap)
-        energyParts.anchorOverlapCount++
-        energyParts.anchorOverlapList.push({ shortText: anchor.shortText, overlapArea })
+        if (ENERGY_DETAIL_LOGGING) {
+          energyParts.anchorOverlapCount++
+          energyParts.anchorOverlapList.push({shortText: anchor.shortText, overlapArea})
+        }
       }
     })
     let energy = energyParts.distance + energyParts.labelOverlap + energyParts.anchorOverlap
