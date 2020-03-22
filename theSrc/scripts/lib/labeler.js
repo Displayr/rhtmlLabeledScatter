@@ -207,9 +207,9 @@ const labeler = function () {
     // negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
     let hdLabelRightToAnchor = label.maxX - anchor.minX
-    let hdLabelCenterToAnchor = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account label radius
+    let hdLabelCenterToAnchor = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account anchor radius
 
-    let vdLabelCenterToAnchor = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account label radius
+    let vdLabelCenterToAnchor = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account anchor radius
 
     // new implemenation : what I think is correct. Results in perf deterioration : see both_mirror in regression set example
     // let vdLabelTopToAnchor = label.minY - labelTopPadding - anchor.maxY
