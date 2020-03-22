@@ -1,6 +1,6 @@
 const fs = require('fs')
 const _ = require('lodash')
-const { defaultConfig } = require('../../scripts/buildConfig')
+const { defaultConfig } = require('../../../scripts/buildConfig')
 
 const paths = require('./paths')
 
