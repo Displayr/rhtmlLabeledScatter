@@ -4,7 +4,7 @@ width: 400
 height: 400
 rowSize: 3
 comments:
-  - location: zPrefix
+  - location: z
     status: red
     comment: zPrefix and zSuffix are not respected
 widgets:
