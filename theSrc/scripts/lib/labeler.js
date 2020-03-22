@@ -203,6 +203,9 @@ const labeler = function () {
   //
   // I have not addressed this because of time, and because initial attempts to start to address this actually made
   // labelling worse, so more investigation is needed
+
+  // Perf note: this fn runs many many times
+  // Avoid lodash in this fn
   labeler.chooseBestLeaderLine = function (label, anchor) {
     // negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
@@ -218,7 +221,7 @@ const labeler = function () {
     // old implemenation : is arbitrary and doesn't factor anchor size or variable padding : works better than the "correct impl does"
     let vdLabelTopToAnchor = label.minY + 1 - anchor.maxY
     let vdLabelBottomToAnchor = label.maxY - (anchor.y - 5)
-    
+
     const leaderLinePositionOptions = [
       {
         name: 'centerBottomDistance',
@@ -262,11 +265,13 @@ const labeler = function () {
       },
     ]
 
-    const bestLeaderLineOption = _(leaderLinePositionOptions)
-      .sortBy('distance')
-      .first()
+    const bestLeaderLineOption = leaderLinePositionOptions
+      .reduce((acc,cur,idx,src) => {
+        return (!acc.name || cur.distance < acc.distance)
+          ? cur : acc
+      },{ name: null })
 
-    if (!bestLeaderLineOption.length < 1) {
+    if (!bestLeaderLineOption.name) {
       throw new Error('There were no leaderLine placement options available')
     }
 
