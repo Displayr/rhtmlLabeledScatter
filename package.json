@@ -6,10 +6,12 @@
   "scripts": {
     "prepush": "node ./build/bin/prepush",
     "test": "gulp testSpecs && gulp testVisual",
-    "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp testSpecs && gulp testVisual",
-    "travisTest": "gulp testSpecs && gulp testVisual"
+    "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp jestSpecTests && gulp testSpecs && gulp testVisual",
+    "travisTest": "gulp jestSpecTests && gulp testSpecs && gulp testVisual"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.9.0",
+    "babel-jest": "^25.1.0",
     "gulp": "^4.0.2",
     "jest": "^24.9.0",
     "jest-image-snapshot": "^2.11.1",
