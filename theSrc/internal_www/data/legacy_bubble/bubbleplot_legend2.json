@@ -1,0 +1,74 @@
+{
+  "X": [
+    22,
+    18,
+    15,
+    16,
+    19,
+    13,
+    18,
+    27,
+    12
+  ],
+  "Y": [
+    22,
+    21,
+    18,
+    20,
+    16,
+    14,
+    22,
+    24,
+    10
+  ],
+  "Z": [
+    44,
+    39,
+    33,
+    36,
+    35,
+    27,
+    40,
+    51,
+    22
+  ],
+  "label": [
+    "18 to 24",
+    "25 to 29",
+    "30 to 34",
+    "35 to 39",
+    "40 to 44",
+    "45 to 49",
+    "50 to 54",
+    "55 to 64",
+    "65 or more"
+  ],
+  "labelAlt": [
+    "18 to 24",
+    "25 to 29",
+    "30 to 34",
+    "35 to 39",
+    "40 to 44",
+    "45 to 49",
+    "50 to 54",
+    "55 to 64",
+    "65 or more"
+  ],
+  "group": {},
+  "colors": [
+    "#5C9AD3"
+  ],
+  "origin": false,
+  "xTitle": "Male",
+  "yTitle": "Female",
+  "xDecimals": 1,
+  "yDecimals": 1,
+  "zDecimals": 2,
+  "labelsLogoScale": null,
+  "legendShow": false,
+  "legendFontSize": 10,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "pointRadius": 3,
+  "plotBorderShow": false
+}

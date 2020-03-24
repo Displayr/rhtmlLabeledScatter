@@ -1,0 +1,6 @@
+version: 1
+data_directory: "data/functionalTest"
+width: 600
+height: 600
+type: for_each_data_in_directory
+use_config_as_title: true

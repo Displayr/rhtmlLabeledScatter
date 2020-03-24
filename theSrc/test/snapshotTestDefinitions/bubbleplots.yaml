@@ -1,0 +1,25 @@
+type: multi_widget_multi_page
+width: 576
+height:  512
+configs:
+  - config: data.legacy_bubble.bubbleplot_colas
+    width: 650
+    height: 570
+  - config: data.legacy_bubble.bubbleplot_colas_characteristics
+    width: 800
+    height: 570
+  - config: data.legacy_bubble.bubbleplot_legend1
+    width: 775
+    height: 450
+  - config: data.legacy_bubble.bubbleplot_legend2
+    width: 775
+    height: 550
+  - config: data.legacy_bubble.bubbleplot_life_expectancy
+    width: 1800
+    height: 900
+  - config: data.legacy_bubble.bubbleplot_overlap
+    width: 400
+    height: 350
+  - config: data.legacy_bubble.bubbleplot_labels_inside
+    width: 385
+    height: 300

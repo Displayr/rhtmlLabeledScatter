@@ -1,0 +1,59 @@
+{
+  "label": [
+    "5",
+    "3",
+    "3",
+    "4",
+    "4",
+    "1"
+  ],
+  "X": [
+    5,
+    3,
+    3,
+    4,
+    4,
+    1.2
+  ],
+  "Y": [
+    6,
+    3,
+    4,
+    3,
+    4,
+    1.2
+  ],
+  "group": [
+    "G1",
+    "G1",
+    "G2",
+    "G1",
+    "G2",
+    "G2"
+  ],
+  "titleFontSize": 40,
+  "yTitleFontSize": 16,
+  "xTitleFontSize": 20,
+  "xBoundsMinimum": 0,
+  "xBoundsMaximum": 12,
+  "yBoundsMaximum": 12,
+  "yBoundsMinimum": 0,
+  "xDecimals": 0,
+  "yDecimals": 0,
+  "zDecimals": 0,
+  "labelsFontSize": 16,
+  "labelsFontColor": null,
+  "legendFontSize": 16,
+  "colors": [
+    "#5B9BD5",
+    "#ED7D31"
+  ],
+  "title": "Example Title",
+  "subtitle": "Example Subtitle<br>Example Subtitle Second Line<br>Example Third Subtitle",
+  "subtitleFontColor": "red",
+  "subtitleFontSize": 10,
+  "footer": "Example Footer<br>Example Footer Second Line",
+  "footerFontColor": "green",
+  "xTitle": "X Title<br>X Title 2",
+  "yTitle": "Y Title<br>Y Title 2"
+}

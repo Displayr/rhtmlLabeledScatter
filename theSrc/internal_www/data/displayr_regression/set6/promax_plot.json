@@ -1,0 +1,73 @@
+{
+  "X": [
+    -0.2033,
+    0.041,
+    0.1994,
+    0.0956,
+    0.5321,
+    0.8112,
+    0.724,
+    -0.0772
+  ],
+  "Y": [
+    0.5539,
+    0.6885,
+    0.471,
+    0.3681,
+    0.2844,
+    -0.1482,
+    -0.0048,
+    0.5558
+  ],
+  "Z": {},
+  "label": [
+    "q23: Allows to keep in touch",
+    "q23: Surprised by bill size",
+    "q23: Stops other people monitoring",
+    "q23: Difficult to determine best deal",
+    "q23: Spent a lot of time shopping for best deal",
+    "q23: Closely monitors time on phone",
+    "q23: Cost is a factor when deciding to SMS or phone",
+    "q23: All friends have mobiles"
+  ],
+  "labelAlt": {},
+  "group": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "fixedAspectRatio": true,
+  "colors": [
+    "#5B9BD5",
+    "#ED7D31",
+    "#A5A5A5",
+    "#1EC000",
+    "#4472C4",
+    "#70AD47",
+    "#255E91",
+    "#9E480E",
+    "#636363",
+    "#997300",
+    "#264478",
+    "#43682B",
+    "#FF2323"
+  ],
+  "xTitle": "Component 1",
+  "yTitle": "Component 2",
+  "title": "Component Plot",
+  "titleFontSize": 20,
+  "labelsFontColor": null,
+  "labelsFontSize": 12,
+  "labelsLogoScale": null,
+  "legendShow": false,
+  "yTitleFontSize": 16,
+  "xTitleFontSize": 16,
+  "axisFontSize": 10,
+  "tooltipText": null,
+  "pointRadius": 2
+}

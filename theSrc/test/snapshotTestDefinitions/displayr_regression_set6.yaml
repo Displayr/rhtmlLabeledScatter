@@ -1,0 +1,18 @@
+type: multi_widget_multi_page
+width: 576
+height: 512
+configs:
+  - config: data.displayr_regression.set6.equamax_plot
+  - config: data.displayr_regression.set6.equamax_reprint
+  - config: data.displayr_regression.set6.promax_plot
+    width: 600
+    height: 429
+  - config: data.displayr_regression.set6.promax_reprint
+    width: 610
+    height: 421
+  - config: data.displayr_regression.set6.varimax_plot
+    width: 649
+    height: 440
+  - config: data.displayr_regression.set6.varimax_reprint
+    width: 640
+    height: 485

@@ -1,0 +1,10 @@
+type: multi_widget_single_page
+title: "test ordinal levels specification"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.levels_ordinal_fruits.fruit_data|{"title":"no levels spec"}
+  - config: data.functionalTest.levels_ordinal_fruits.fruit_data|data.functionalTest.levels_ordinal_fruits.fruit_data_x_levels|{"title":"x levels spec (ordinal)"}
+  - config: data.functionalTest.levels_ordinal_fruits.fruit_data|data.functionalTest.levels_ordinal_fruits.fruit_data_y_levels|{"title":"y levels spec (ordinal)"}
+  - config: data.functionalTest.levels_ordinal_fruits.fruit_data|data.functionalTest.levels_ordinal_fruits.fruit_data_x_levels|data.functionalTest.levels_ordinal_fruits.fruit_data_y_levels|{"title":"x and y levels spec (ordinal)"}

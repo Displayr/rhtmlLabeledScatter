@@ -1,0 +1,18 @@
+type: multi_widget_single_page
+title: "test labels configurations"
+width: 400
+height: 400
+rowSize: 4
+comments:
+  - location: label_24_red_fantasy
+    status: yellow
+    comment: the top two labels are not optimally positioned, looks like the collision detection is not working ?
+  - location: scatterplot_simple_no_label_field
+    status: yellow
+    comment: renders correctly but throws error (see console.error)
+widgets:
+  - config: data.functionalTest.scatterplot_simple|{"title":"default config"}
+  - config: data.functionalTest.scatterplot_simple|config.hideLabels|{"title":"hide labels"}
+  - config: data.functionalTest.scatterplot_simple|config.label_24_red_fantasy|{"title":"labels font configured"}
+  - config: data.functionalTest.scatterplot_simple_no_label_field|{"title":"no label field in data"}
+

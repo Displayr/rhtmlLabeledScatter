@@ -1,0 +1,55 @@
+{
+  "X": [
+    -0.3301,
+    -0.4771,
+    0.897,
+    -0.4947
+  ],
+  "Y": [
+    0.4484,
+    0.3997,
+    -0.0622,
+    -0.6073
+  ],
+  "Z": {},
+  "label": [
+    "Optus",
+    "Orange",
+    "",
+    ""
+  ],
+  "labelAlt": [
+    "Optus",
+    "Orange",
+    "Telstra",
+    "Vodafone"
+  ],
+  "group": [
+    "Rows",
+    "Rows",
+    "Rows",
+    "Rows"
+  ],
+  "fixedAspectRatio": true,
+  "colors": [
+    "#5B9BD5",
+    "4"
+  ],
+  "xTitle": "Dimension 1 (60.6%)",
+  "yTitle": "Dimension 2 (29.9%)",
+  "zTitle": null,
+  "title": "Square matrix",
+  "titleFontSize": 20,
+  "footer": "Normalization: Principal",
+  "footerFontSize": 10,
+  "labelsFontColor": null,
+  "labelsFontSize": 14,
+  "labelsLogoScale": null,
+  "legendShow": false,
+  "legendFontSize": 15,
+  "yTitleFontSize": 16,
+  "xTitleFontSize": 16,
+  "axisFontSize": 10,
+  "tooltipText": null,
+  "pointRadius": 2
+}

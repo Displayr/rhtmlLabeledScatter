@@ -1,0 +1,15 @@
+type: multi_widget_multi_page
+width: 739
+height: 414
+configs:
+  - config: data.displayr_regression.set7.column_principal
+    width: 774
+    height: 471
+  - config: data.displayr_regression.set7.ignore_rows
+  - config: data.displayr_regression.set7.none
+  - config: data.displayr_regression.set7.row_col_titles
+  - config: data.displayr_regression.set7.row_principal
+  - config: data.displayr_regression.set7.scatterplot
+    width: 710
+    height: 537
+  - config: data.displayr_regression.set7.symmetric

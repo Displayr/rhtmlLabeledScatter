@@ -1,0 +1,28 @@
+type: multi_widget_multi_page
+width: 1800
+height: 900
+configs:
+  - config: data.legacy_misc_scatterplot.scatterplot_big_x_axis_labels
+  - config: data.legacy_misc_scatterplot.scatterplot_busy
+  - config: data.legacy_misc_scatterplot.scatterplot_mass_points
+  - config: data.legacy_misc_scatterplot.scatterplot_mass_points_few_labels
+  - config: data.bdd.three_point_brand
+  - config: data.legacy_misc_scatterplot.testData3
+  - config: data.legacy_misc_scatterplot.testData7
+  - config: data.legacy_misc_scatterplot.testData8
+  - config: data.legacy_misc_scatterplot.testData9
+  - config: data.legacy_misc_scatterplot.scatterplot_categorical_bubble
+    width: 800
+    height: 400
+  - config: data.legacy_misc_scatterplot.scatterplot_categorical_simple
+    width: 800
+    height: 400
+  - config: data.legacy_misc_scatterplot.scatterplot_datetime
+    width: 800
+    height: 400
+  - config: data.legacy_misc_scatterplot.scatterplot_logos2
+    width: 900
+    height: 600
+  - config: data.legacy_misc_scatterplot.scatterplot_simple
+    width: 800
+    height: 500

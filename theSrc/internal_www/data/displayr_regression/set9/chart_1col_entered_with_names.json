@@ -1,0 +1,79 @@
+{
+  "X": [
+    1,
+    4,
+    3,
+    6,
+    2
+  ],
+  "Y": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Z": {},
+  "xIsDateTime": false,
+  "yIsDateTime": false,
+  "label": [
+    "Alpha",
+    "Beta",
+    "Gamma",
+    "Delta",
+    "Epsilon"
+  ],
+  "labelAlt": [
+    "Alpha",
+    "Beta",
+    "Gamma",
+    "Delta",
+    "Epsilon"
+  ],
+  "group": [
+    " ",
+    " ",
+    " ",
+    " ",
+    " "
+  ],
+  "colors": [
+    "#5C9AD3",
+    "#ED7D31",
+    "#A5A5A5",
+    "#FFC000",
+    "#4473C5"
+  ],
+  "transparency": 1,
+  "origin": false,
+  "xTitle": "Etc",
+  "zTitle": null,
+  "xFormat": "",
+  "yFormat": "",
+  "labelsFontColor": null,
+  "labelsLogoScale": [
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5
+  ],
+  "legendShow": false,
+  "legendBubblesShow": false,
+  "legendFontSize": 10,
+  "legendBubbleTitleFontSize": 10,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "tooltipText": [
+    "Alpha (1.00, 0.00)",
+    "Beta (4.00, 0.00)",
+    "Gamma (3.00, 0.00)",
+    "Delta (6.00, 0.00)",
+    "Epsilon (2.00, 0.00)"
+  ],
+  "tooltipFontSize": 11,
+  "pointRadius": 3,
+  "yBoundsMinimum": -0.25,
+  "yBoundsMaximum": 0.25,
+  "plotBorderShow": false
+}

@@ -1,0 +1,51 @@
+{
+  "X": [
+    -2.5543,
+    -2.6057,
+    -2.7729,
+    0.7232,
+    7.2097
+  ],
+  "Y": [
+    1.2618,
+    1.2565,
+    1.2378,
+    -5.7919,
+    2.0358
+  ],
+  "Z": {},
+  "label": [
+    "cat",
+    "dog",
+    "kangaroo",
+    "fish",
+    "spider"
+  ],
+  "labelAlt": {},
+  "group": {},
+  "fixedAspectRatio": true,
+  "colors": [
+    "#5B9BD5",
+    "#ED7D31",
+    "#A5A5A5",
+    "#1EC000",
+    "#4472C4",
+    "#70AD47",
+    "#255E91",
+    "#9E480E",
+    "#636363",
+    "#997300",
+    "#264478",
+    "#43682B",
+    "#FF2323"
+  ],
+  "xTitle": "Dimension 1",
+  "yTitle": "Dimension 2",
+  "title": "MDS (Non-metric)",
+  "labelsFontColor": null,
+  "labelsFontSize": 14,
+  "labelsLogoScale": null,
+  "yTitleFontSize": 14,
+  "xTitleFontSize": 14,
+  "pointRadius": 4
+}

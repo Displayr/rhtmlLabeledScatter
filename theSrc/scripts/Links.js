@@ -155,6 +155,7 @@ class Links {
       const padT = labelBorder.topL[1] - ambiguityFactor
       const padB = labelBorder.botR[1] + ambiguityFactor
       let ancNearby = 0
+      // TODO could use collision tree here
       _(anchorArray).each((a) => {
         if (((a.x > padL) && (a.x < padR)) && ((a.y > padT) && (a.y < padB))) {
           ancNearby++

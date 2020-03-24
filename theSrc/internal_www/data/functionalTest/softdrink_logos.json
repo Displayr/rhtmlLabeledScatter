@@ -1,0 +1,91 @@
+{
+  "X": [
+    4.0943,
+    0.8755,
+    0.6523,
+    -0.0387,
+    1.9755,
+    1.9755,
+    2.3979,
+    1.9066
+  ],
+  "Y": [
+    2.7726,
+    3.2958,
+    2.6391,
+    2.6391,
+    0.7467,
+    0.0488,
+    0.7467,
+    1.1506
+  ],
+  "Z": {},
+  "xIsDateTime": false,
+  "yIsDateTime": false,
+  "label": [
+    "/images/cans/Coke.png",
+    "/images/cans/V.jpg",
+    "/images/cans/RedBull.jpg",
+    "/images/cans/LifePlus.jpg",
+    "/images/cans/DietCoke.png",
+    "/images/cans/Fanta.jpg",
+    "/images/cans/Lift.png",
+    "/images/cans/Pepsi.jpg"
+  ],
+  "labelAlt": [
+    "Coca.Cola",
+    "V",
+    "Red.Bull",
+    "Lift.Plus",
+    "Diet.Coke",
+    "Fanta",
+    "Lift",
+    "Pepsi"
+  ],
+  "group": [
+    "Coca.Cola",
+    "V",
+    "Red.Bull",
+    "Lift.Plus",
+    "Diet.Coke",
+    "Fanta",
+    "Lift",
+    "Pepsi"
+  ],
+  "colors": [
+    "#5C9AD3",
+    "#ED7D31",
+    "#A5A5A5",
+    "#FFC000",
+    "#4473C5",
+    "#70AD46",
+    "#255F91",
+    "#9E480D"
+  ],
+  "origin": false,
+  "xTitle": "Restaurants",
+  "yTitle": "Exercising",
+  "xDecimals": 1,
+  "yDecimals": 1,
+  "zDecimals": 2,
+  "labelsLogoScale": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "legendBubblesShow": false,
+  "legendFontSize": 10,
+  "legendBubbleTitleFontSize": 10,
+  "yTitleFontSize": 18,
+  "xTitleFontSize": 18,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "tooltipText": null,
+  "pointRadius": 3,
+  "plotBorderShow": false
+}

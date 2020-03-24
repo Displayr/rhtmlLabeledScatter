@@ -11,6 +11,8 @@ import d3 from 'd3'
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
 //
 
+const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
+
 class PlotData {
   constructor (X,
     Y,
@@ -298,16 +300,17 @@ class PlotData {
   getPtsAndLabs (calleeName) {
     console.log(`getPtsAndLabs(${calleeName})`)
     return Promise.all(this.labelNew.getLabels()).then((resolvedLabels) => {
-     // console.log("resolvedLabels for getPtsandLabs callee name #{calleeName}")
-     // console.log(resolvedLabels)
+      // resolvedLabels is array of { height, width, label, url }
+      // console.log(`resolvedLabels for getPtsandLabs callee name ${calleeName}`)
+      // console.log(resolvedLabels)
 
       this.pts = []
       this.lab = []
 
       let i = 0
       while (i < this.origLen) {
-        if ((!_.includes(this.outsidePlotPtsId, i)) ||
-           _.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
+        // TODO this assumes the IDs are the indexes
+        if ((!_.includes(this.outsidePlotPtsId, i)) || _.includes((_.map(this.outsidePlotCondensedPts, 'dataId')), i)) {
           let ptColor
           let x = 0
           let y = 0
@@ -332,11 +335,9 @@ class PlotData {
           }
           const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
 
-          let { label } = resolvedLabels[i]
+          let { label, width, height, url } = resolvedLabels[i]
           const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
-          let { width } = resolvedLabels[i]
-          let { height } = resolvedLabels[i]
-          let { url } = resolvedLabels[i]
+          const labelY = y - r - labelTopPadding
 
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
           let fontSize = this.vb.labelFontSize
@@ -354,32 +355,8 @@ class PlotData {
           let fontColor = (ptColor = this.plotColors.getColor(i))
           if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
           const group = (this.group != null) ? this.group[i] : ''
-          this.pts.push({
-            x,
-            y,
-            r,
-            label,
-            labelAlt,
-            labelX: this.origX[i].toString(),
-            labelY: this.origY[i].toString(),
-            labelZ,
-            group,
-            color: ptColor,
-            id: i,
-            fillOpacity
-          })
-          this.lab.push({
-            x,
-            y,
-            color: fontColor,
-            id: i,
-            fontSize,
-            fontFamily: this.vb.labelFontFamily,
-            text: label,
-            width,
-            height,
-            url
-          })
+          this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
+          this.lab.push({ x, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
         }
         i++
       }

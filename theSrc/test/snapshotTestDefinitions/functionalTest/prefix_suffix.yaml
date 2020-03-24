@@ -1,0 +1,19 @@
+type: multi_widget_single_page
+title: "test prefix and suffix configurations"
+width: 400
+height: 400
+rowSize: 3
+comments:
+  - location: z
+    status: red
+    comment: zPrefix and zSuffix are not respected
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.xPrefix|{"title":"x prefix"}
+  - config: data.functionalTest.scatterplot_simple|config.xSuffix|{"title":"x suffix"}
+  - config: data.functionalTest.scatterplot_simple|config.xPrefix|config.xSuffix|{"title":"x prefix and suffix"}
+  - config: data.functionalTest.scatterplot_simple|config.yPrefix|{"title":"y prefix"}
+  - config: data.functionalTest.scatterplot_simple|config.ySuffix|{"title":"y suffix"}
+  - config: data.functionalTest.scatterplot_simple|config.yPrefix|config.ySuffix|{"title":"y prefix and suffix"}
+  - config: data.functionalTest.bubbleplot_simple|config.zPrefix|{"title":"z prefix"}
+  - config: data.functionalTest.bubbleplot_simple|config.zSuffix|{"title":"z suffix"}
+  - config: data.functionalTest.bubbleplot_simple|config.zPrefix|config.zSuffix|{"title":"z prefix and suffix"}

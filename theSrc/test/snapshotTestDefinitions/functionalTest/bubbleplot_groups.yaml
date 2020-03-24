@@ -1,0 +1,9 @@
+type: multi_widget_single_page
+title: "with legend and group interactions"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.bubbleplot_simple|config.zTitle|config.six_element_three_groups|{"title":"legend and group interactions"}
+  - config: data.functionalTest.bubbleplot_12_points|config.zTitle|config.twelve_element_twelve_groups|{"title":"group legend must wrap"}
+

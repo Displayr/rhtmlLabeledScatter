@@ -1,0 +1,74 @@
+{
+  "X": [
+    -0.1997,
+    0.1039,
+    0.0147,
+    0.2014,
+    -0.0088,
+    -0.2492,
+    -0.6605,
+    -0.0638
+  ],
+  "Y": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "Z": {},
+  "label": [
+    "'out and about'",
+    "'at home'",
+    "Coca-Cola",
+    "Diet Coke",
+    "Coke Zero",
+    "Pepsi",
+    "Diet Pepsi",
+    "Pepsi Max"
+  ],
+  "labelAlt": [
+    "'out and about'",
+    "'at home'",
+    "Coca-Cola",
+    "Diet Coke",
+    "Coke Zero",
+    "Pepsi",
+    "Diet Pepsi",
+    "Pepsi Max"
+  ],
+  "group": [
+    "Rows",
+    "Rows",
+    "Columns",
+    "Columns",
+    "Columns",
+    "Columns",
+    "Columns",
+    "Columns"
+  ],
+  "fixedAspectRatio": true,
+  "colors": [
+    "#5B9BD5",
+    "#ED7D31"
+  ],
+  "xTitle": "Dimension 1 (100.0%)",
+  "yTitle": "Dimension 2 (0.0%)",
+  "zTitle": null,
+  "title": "Correspondence analysis",
+  "titleFontSize": 20,
+  "footer": "Normalization: Principal",
+  "footerFontSize": 10,
+  "labelsFontColor": null,
+  "labelsFontSize": 14,
+  "labelsLogoScale": null,
+  "legendFontSize": 15,
+  "yTitleFontSize": 16,
+  "xTitleFontSize": 16,
+  "axisFontSize": 10,
+  "tooltipText": null,
+  "pointRadius": 2
+}

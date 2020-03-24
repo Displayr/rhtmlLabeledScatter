@@ -1,0 +1,11 @@
+type: multi_widget_single_page
+title: "test bubbleplot"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.bubbleplot_simple|{"title":"default config"}
+  - config: data.functionalTest.bubbleplot_simple|config.zTitle|{"title":"with z title"}
+  - config: data.functionalTest.bubbleplot_simple|config.legendBubbleDisabled|{"title":"no legend"}
+  - config: data.functionalTest.bubbleplot_simple|config.legendBubbleFont_24_red_fantasy|config.legendBubbleTitleFont_24_red_fantasy|config.zTitle|{"title":"legend fonts configured"}
+

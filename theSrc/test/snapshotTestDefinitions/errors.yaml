@@ -1,0 +1,7 @@
+type: multi_widget_single_page
+width: 400
+height: 280
+widgets:
+  - config: data.errors.error_xy
+  - config: data.errors.error_z
+  - config: data.errors.error_message

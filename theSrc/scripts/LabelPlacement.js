@@ -6,7 +6,8 @@ import _ from 'lodash'
 class LabelPlacement {
   constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
                isBubble, numSweeps, maxMove, maxAngle, seed,
-               isLabelSorterOn, isNonBlockingOn, isLabelPlacementAlgoOn) {
+               initialTemperature, finalTemperature,
+               isLabelPlacementAlgoOn) {
     this.pltId = pltId
     this.svg = svg
     this.wDistance = wDistance
@@ -16,9 +17,9 @@ class LabelPlacement {
     this.numSweeps = numSweeps
     this.maxMove = maxMove
     this.maxAngle = maxAngle
-    this.isLabelSorterOn = isLabelSorterOn
-    this.isNonBlockingOn = isNonBlockingOn
     this.seed = seed
+    this.initialTemperature = initialTemperature
+    this.finalTemperature = finalTemperature
     this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
@@ -26,7 +27,7 @@ class LabelPlacement {
     this.svg = svg
   }
 
-  place (vb, anchors, labels, pinnedLabels, labelsSvg, state, resolve) {
+  place (vb, anchors, labels, pinnedLabels, state, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
     labeler()
       .svg(this.svg)
@@ -39,15 +40,16 @@ class LabelPlacement {
       .pinned(pinnedLabels)
       .promise(resolve)
       .anchorType(this.isBubble)
+      .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
-      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelSorterOn, this.isNonBlockingOn, this.isLabelPlacementAlgoOn)
+      .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)
   }
 
   placeTrendLabels (vb, anchors, labels, state, resolve) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), state, resolve)
 
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
@@ -60,7 +62,7 @@ class LabelPlacement {
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
-    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), labelsSvg, state, resolve)
+    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), state, resolve)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)

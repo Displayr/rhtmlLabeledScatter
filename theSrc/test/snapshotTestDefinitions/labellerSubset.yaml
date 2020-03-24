@@ -1,0 +1,73 @@
+type: multi_widget_multi_page
+width: 576
+height: 512
+configs:
+
+# set2
+  - config: data.displayr_regression.set2.bubble_colors
+  - config: data.displayr_regression.set2.column_principal_scaled
+  - config: data.displayr_regression.set2.correspondence_analysis1
+    width: 967
+    height: 298
+  - config: data.displayr_regression.set2.correspondence_analysis2
+  - config: data.displayr_regression.set2.correspondence_analysis3
+  - config: data.displayr_regression.set2.correspondence_analysis9
+  - config: data.displayr_regression.set2.correspondence_analysis7
+  - config: data.displayr_regression.set2.same_titles
+  - config: data.displayr_regression.set2_focus.multiple_tables
+  - config: data.displayr_regression.set2_logo.logo
+  - config: data.displayr_regression.set2_logo.logo_small_ratio
+  - config: data.displayr_regression.set2_mirror.both_mirror
+  - config: data.displayr_regression.set2_mirror.d1_mirror
+  - config: data.displayr_regression.set2_mirror.d2_mirror
+  - config: data.displayr_regression.set2_multiple_tables.multiple_table_named
+  - config: data.displayr_regression.set2_multiple_tables.multiple_table_reprint
+  - config: data.displayr_regression.set2_multiple_tables.multiple_table_transpose
+  - config: data.displayr_regression.set2_title.no_titles
+
+# set3
+  - config: data.displayr_regression.set3.plot_filtered
+  - config: data.displayr_regression.set3.plot_labelnames
+  - config: data.displayr_regression.set3.plot_variablenames
+
+# legacy_bubble
+  - config: data.legacy_bubble.bubbleplot_colas_characteristics
+    width: 800
+    height: 570
+  - config: data.legacy_bubble.bubbleplot_legend1
+    width: 775
+    height: 450
+
+# set4
+  - config: data.displayr_regression.set4.distance_entered
+
+# set8
+  - config: data.displayr_regression.set8.mds_metric
+  - config: data.displayr_regression.set8.pca
+  - config: data.displayr_regression.set8.small_opaque_points
+  - config: data.displayr_regression.set8.tsne_perplexity_7
+
+# set9
+  - config: data.displayr_regression.set9.bubblechart
+  - config: data.displayr_regression.set9.vardata_size_numeric_labeled_filtered
+
+# set6
+  - config: data.displayr_regression.set6.equamax_plot
+  - config: data.displayr_regression.set6.equamax_reprint
+  - config: data.displayr_regression.set6.promax_reprint
+    width: 610
+    height: 421
+
+# set7
+  - config: data.displayr_regression.set7.ignore_rows
+
+# legacy_misc_scatterplot
+  - config: data.legacy_misc_scatterplot.scatterplot_mass_points
+    width: 1800
+    height: 900
+  - config: data.legacy_misc_scatterplot.scatterplot_categorical_bubble
+    width: 800
+    height: 400
+  - config: data.legacy_misc_scatterplot.scatterplot_logos2
+    width: 900
+    height: 600

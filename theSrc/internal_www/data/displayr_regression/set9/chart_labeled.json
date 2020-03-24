@@ -1,0 +1,62 @@
+{
+  "X": [
+    3.2631,
+    0.8663,
+    4.5294
+  ],
+  "Y": [
+    3.5868,
+    0.7467,
+    3.8017
+  ],
+  "Z": {},
+  "xIsDateTime": false,
+  "yIsDateTime": false,
+  "label": [
+    "Colas (e.g., Coca Cola, Pepsi Max)?",
+    "Sparkling mineral water",
+    "Coffee"
+  ],
+  "labelAlt": [
+    "Colas (e.g., Coca Cola, Pepsi Max)?",
+    "Sparkling mineral water",
+    "Coffee"
+  ],
+  "group": [
+    " ",
+    " ",
+    " "
+  ],
+  "colors": [
+    "#5C9AD3",
+    "#ED7D31",
+    "#A5A5A5"
+  ],
+  "transparency": 1,
+  "origin": false,
+  "xTitle": "Male",
+  "yTitle": "Female",
+  "zTitle": null,
+  "xFormat": "",
+  "yFormat": "",
+  "labelsFontColor": null,
+  "labelsLogoScale": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "legendShow": false,
+  "legendBubblesShow": false,
+  "legendFontSize": 10,
+  "legendBubbleTitleFontSize": 10,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "tooltipText": [
+    "Colas (e.g., Coca Cola, Pepsi Max)? (3.26, 3.59)",
+    "Sparkling mineral water (0.87, 0.75)",
+    "Coffee (4.53, 3.80)"
+  ],
+  "tooltipFontSize": 11,
+  "pointRadius": 3,
+  "plotBorderShow": false
+}

@@ -1,0 +1,11 @@
+type: multi_widget_single_page
+title: "test group config"
+width: 400
+height: 400
+rowSize: 3
+widgets:
+  - config: data.functionalTest.scatterplot_simple|config.four_element_two_groups|{"title":"two groups"}
+  - config: data.functionalTest.scatterplot_simple|config.four_element_two_groups|config.two_colors|{"title":"two groups with custom color"}
+  - config: data.functionalTest.scatterplot_simple|config.four_element_two_groups|config.legendDisabled|{"title":"two groups with no legend"}
+  - config: data.functionalTest.scatterplot_simple|config.four_element_two_groups|config.legend_24_red_fantasy|{"title":"two groups with legend font configured"}
+  - config: data.functionalTest.scatterplot_simple|config.three_element_three_groups|config.two_colors|{"title":"how do we handle s(labels)=4 s(group)=3 s(color)=2"}

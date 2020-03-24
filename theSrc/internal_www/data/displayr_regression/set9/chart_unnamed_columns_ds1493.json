@@ -1,0 +1,54 @@
+{
+  "X": [
+    0.0642,
+    0.3554
+  ],
+  "Y": [
+    0.0511,
+    0.5254
+  ],
+  "Z": [
+    0.0669,
+    0.0896
+  ],
+  "xIsDateTime": false,
+  "yIsDateTime": false,
+  "label": [
+    "QLIKELY",
+    "Average"
+  ],
+  "labelAlt": [
+    "QLIKELY",
+    "Average"
+  ],
+  "group": [
+    1,
+    2
+  ],
+  "colors": [
+    "#ED7D31",
+    "#5C9AD3"
+  ],
+  "transparency": 0.4,
+  "origin": false,
+  "zTitle": null,
+  "xFormat": "",
+  "yFormat": "",
+  "labelsFontColor": null,
+  "labelsLogoScale": [
+    0.5,
+    0.5
+  ],
+  "legendShow": false,
+  "legendFontSize": 10,
+  "legendBubbleTitleFontSize": 10,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "tooltipText": [
+    "QLIKELY (0.06, 0.05)",
+    "Average (0.36, 0.53)"
+  ],
+  "tooltipFontSize": 11,
+  "pointRadius": 3,
+  "plotBorderShow": false
+}

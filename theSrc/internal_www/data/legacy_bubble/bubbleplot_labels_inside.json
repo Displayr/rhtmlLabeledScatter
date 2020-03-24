@@ -1,0 +1,51 @@
+{
+  "X": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "Y": [
+    6,
+    2,
+    5,
+    4
+  ],
+  "Z": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "label": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "labelAlt": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "group": {},
+  "colors": [
+    "#5C9AD3"
+  ],
+  "origin": false,
+  "xTitle": "X coordinate",
+  "yTitle": "Y coordinate",
+  "zTitle": "Z Variable",
+  "xDecimals": 1,
+  "yDecimals": 1,
+  "zDecimals": 2,
+  "labelsLogoScale": 0.5,
+  "legendShow": false,
+  "legendFontSize": 10,
+  "legendBubbleTitleFontSize": 10,
+  "axisFontColor": "#2C2C2C",
+  "axisFontSize": 10,
+  "pointRadius": 3,
+  "plotBorderShow": false
+}
