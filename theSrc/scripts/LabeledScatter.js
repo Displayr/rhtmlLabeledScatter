@@ -48,11 +48,13 @@ class LabeledScatter {
   }
 
   resize (el, width, height) {
+    // NB this is where you should sanitise user input. Not in scope for this repo
     this.resizeStack.push([el, width, height])
     return this.getResizeDelayPromise()
   }
 
   setConfig (data) {
+    // NB this is where you should sanitise user input. Not in scope for this repo
     // Reset widget if previous data present but not equal in params - see VIS-278
     if (!(_.isUndefined(this.data)) && !(_.isUndefined(this.plot)) && !(this.plot.isEqual(data))) {
       delete this.plot
@@ -62,7 +64,16 @@ class LabeledScatter {
     }
   }
 
-  setUserState (userState) {
+  setUserState (userStateInput) {
+    // NB this is where you should sanitise user input. Not in scope for this repo
+    let userState = null
+    try {
+      userState = (_.isString(userStateInput)) ? JSON.parse(userStateInput) : userStateInput
+    } catch (error) {
+      console.log(error)
+      // NB it is (currently) ok to initialise with userState = null, so allow it as we deliberately choose to let this widget fail open (i.e. ignore state and continue rendering)
+    }
+
     this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label)
   }
 
