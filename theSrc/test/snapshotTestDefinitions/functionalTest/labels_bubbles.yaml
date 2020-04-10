@@ -1,0 +1,67 @@
+type: multi_widget_single_page
+title: "test label placement inside bubbles"
+width: 0
+height: 0
+rowSize: 3
+comments: []
+widgets:
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_2char_labels
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_2char_labels
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_2char_labels|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_3char_labels
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_3char_labels
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_3char_labels|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_4char_labels
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_4char_labels
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_4char_labels|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_5char_labels
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_5char_labels
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_5char_labels|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_6char_labels
+    width: 1000
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_6char_labels
+    width: 600
+    height: 200
+  - config: data.functionalTest.labeler.label_in_bubble_tiebreaks.data|data.functionalTest.labeler.label_in_bubble_tiebreaks.20_6char_labels|data.functionalTest.labeler.label_in_bubble_tiebreaks.reverse_z
+    width: 600
+    height: 200
+
