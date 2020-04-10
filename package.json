@@ -7,7 +7,9 @@
     "prepush": "node ./build/bin/prepush",
     "test": "gulp testSpecs && gulp testVisual",
     "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp jestSpecTests && gulp testSpecs && gulp testVisual",
-    "travisTest": "gulp jestSpecTests && gulp testSpecs && gulp testVisual"
+    "travisTest": "gulp jestSpecTests && gulp testSpecs && gulp testVisual",
+    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/VIS-554 -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "deleteDiffs": "find theSrc/test/snapshots -iname '__diff_output__' | xargs rm -rf"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.9.0",
