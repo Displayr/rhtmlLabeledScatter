@@ -26,6 +26,8 @@ import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
 
+const DEBUG_ADD_BBOX_TO_IMG = false
+
 class RectPlot {
   constructor ({ config, stateObj, svg } = {}) {
     autoBind(this)
@@ -599,6 +601,20 @@ class RectPlot {
                    .attr('y', d => d.y)
           labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                       .attr('y', d => d.y - d.height)
+
+          if (DEBUG_ADD_BBOX_TO_IMG) {
+            this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img-debug-bbox`)
+              .data(this.data.getImgLabels())
+              .enter()
+              .append('rect')
+              .attr('class', `plt-${this.pltUniqueId}-lab-img-debug-bbox`)
+              .attr('x', d => d.x - (d.width / 2))
+              .attr('y', d => d.y - d.height)
+              .attr('width', d => d.width)
+              .attr('height', d => d.height)
+              .attr('fill', 'none')
+              .attr('stroke', 'black')
+          }
 
           this.drawLinks()
         })
