@@ -4,4 +4,16 @@ width: 600
 height: 600
 rowSize: 4
 widgets:
-  - config: data.functionalTest.softdrink_logos
+#  - config: data.functionalTest.softdrink_logos
+  - config: data.functionalTest.logos_simple
+    width: 300
+    height: 300
+  - config: data.functionalTest.logos_simple|{"xBoundsMinimum":1,"xBoundsMaximum":4,"yBoundsMinimum":1,"yBoundsMaximum":4}
+    width: 300
+    height: 300
+  - config: data.functionalTest.logos_simple|{"xBoundsMinimum":1,"xBoundsMaximum":6,"yBoundsMinimum":1,"yBoundsMaximum":6}
+    width: 300
+    height: 300
+  - config: data.functionalTest.logos_simple|{"xBoundsMinimum":1,"xBoundsMaximum":6,"yBoundsMinimum":1,"yBoundsMaximum":6}|{"labelsLogoScale":[0.125,0.125,0.125,0.125]}
+    width: 300
+    height: 300

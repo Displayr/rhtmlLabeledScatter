@@ -18,6 +18,8 @@ const POST_SWEEP_LOGGING = 0 // [0,1,2] 2 is most logging
 const ENERGY_DETAIL_LOGGING = false
 const OVERLAP_LOGGING = 0 // [0,1,2] 2 is most logging
 const FINAL_DUMP_LOGGING = false
+const LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING = false
+const disabledMessage = 'enable ENERGY_DETAIL_LOGGING to track this field'
 
 const LOG_LEVEL = MINIMAL_LOGGING
 // const LOG_LEVEL = OUTER_LOOP_LOGGING
@@ -58,6 +60,13 @@ const labeler = function () {
   let is_placement_algo_on = true
 
   const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
+  // These two fns are here because they are coupled to labelTopPadding, which is a unconfigured global hard code
+  const getResetCoordsForLabelUsingAnchor = ({ anchor, label }) => ({ x: anchor.x, y: anchor.y - anchor.r - labelTopPadding })
+  const resetlabelUsingAnchor = ({ anchor, label }) => {
+    const { x, y } = getResetCoordsForLabelUsingAnchor({ anchor, label })
+    labeler.moveLabel({ label, x, y })
+  }
+
   let max_move = 5.0
   let max_angle = 2 * 3.1415
 
@@ -75,7 +84,7 @@ const labeler = function () {
   const placementPenaltyMultipliers = {
     centeredAboveAnchor: weightLineLength * 1,
     centeredUnderneathAnchor: weightLineLength * 1.5,
-    besideAnchor: weightLineLength * 8,
+    besideAnchor: weightLineLength * 4,
     diagonalOfAnchor: weightLineLength * 15
   }
 
@@ -96,26 +105,29 @@ const labeler = function () {
 
   labeler.detailedEnergy = function ({ label, anchor } = {}, phaseName = '') {
     let energyParts = {
-      distance: 0,
-      distanceType: 'N/A',
+      distanceScore: 0,
+      distanceMultiplier: 0,
+      distanceMagnitude: 0,
+      distanceName: 'N/A',
       labelOverlap: 0,
-      labelOverlapCount: 0,
-      labelOverlapList: [],
+      labelOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
+      labelOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage,
       anchorOverlap: 0,
-      anchorOverlapCount: 0,
-      anchorOverlapList: [],
+      anchorOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
+      anchorOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage
     }
 
     // Check if label is inside bubble for centering of label inside bubble
     const labIsInsideBubbleAnc = aIsInsideB(label, anchor)
     if (isBubble && labIsInsideBubbleAnc) {
-      energyParts.distance = 0
-      energyParts.distanceType = 'labInsideBubble'
+      energyParts.distanceName = 'labInsideBubble'
       label.leaderLineType = 'labInsideBubble'
     } else {
       const bestLeaderLineOption = labeler.chooseBestLeaderLine(label, anchor)
-      energyParts.distance = (bestLeaderLineOption.distance / maxDistance) * bestLeaderLineOption.energyMultiplier
-      energyParts.distanceType = bestLeaderLineOption.name
+      energyParts.distanceScore = (bestLeaderLineOption.magnitude / maxDistance) * bestLeaderLineOption.multiplier
+      energyParts.distanceMagnitude = bestLeaderLineOption.magnitude
+      energyParts.distanceName = bestLeaderLineOption.name
+      energyParts.distanceMultiplier = bestLeaderLineOption.multiplier
       label.leaderLineType = bestLeaderLineOption.name
     }
 
@@ -127,12 +139,14 @@ const labeler = function () {
 
     const potentiallyOverlappingAnchors = potentiallyOverlapping
       .filter(isAnchor)
+      // NB do not filter on notSameId as it is legit to detect the overlap of an anchor and label of the same point
 
     let xOverlap = null
     let yOverlap = null
     let overlapArea = null
 
     // penalty for label-label overlap
+    // TODO 2D overlap computation is duplicated in a few places
     potentiallyOverlappingLabels.forEach(comparisonLab => {
       xOverlap = Math.max(0, Math.min(comparisonLab.maxX, label.maxX) - Math.max(comparisonLab.minX, label.minX))
       yOverlap = Math.max(0, Math.min(comparisonLab.maxY, label.maxY) - Math.max(comparisonLab.minY, label.minY))
@@ -157,10 +171,10 @@ const labeler = function () {
 
     // penalty for label-anchor overlap
     // VIS-291 - this is separate because there could be different number of anc to lab
+    // TODO 2D overlap computation is duplicated in a few places
     potentiallyOverlappingAnchors.forEach(anchor => {
       xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
       yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
-
       overlapArea = xOverlap * yOverlap
 
       // less penalty if the label is overlapping its own bubble
@@ -186,7 +200,7 @@ const labeler = function () {
         }
       }
     })
-    let energy = energyParts.distance + energyParts.labelOverlap + energyParts.anchorOverlap
+    let energy = energyParts.distanceScore + energyParts.labelOverlap + energyParts.anchorOverlap
 
     if (ENERGY_DETAIL_LOGGING) {
       console.log(`${phaseName}:energy '${label.shortText}: ${energy}`)
@@ -208,67 +222,60 @@ const labeler = function () {
   // Perf note: this fn runs many many times
   // Avoid lodash in this fn
   labeler.chooseBestLeaderLine = function (label, anchor) {
-    // negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
+    // NB negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
     let hdLabelRightToAnchor = label.maxX - anchor.minX
-    let hdLabelCenterToAnchor = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account anchor radius
-
-    let vdLabelCenterToAnchor = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account anchor radius
-
-    // new implemenation : what I think is correct. Results in perf deterioration : see both_mirror in regression set example
-    // let vdLabelTopToAnchor = label.minY - labelTopPadding - anchor.maxY
-    // let vdLabelBottomToAnchor = label.maxY + labelTopPadding - anchor.minY
-
-    // old implemenation : is arbitrary and doesn't factor anchor size or variable padding : works better than the "correct impl does"
-    let vdLabelTopToAnchor = label.minY + 1 - anchor.maxY
-    let vdLabelBottomToAnchor = label.maxY - (anchor.y - 5)
+    let hdLabelCenterToAnchorCenter = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account anchor radius
+    let vdLabelCenterToAnchorCenter = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account anchor radius
+    let vdLabelBottomToAnchorTop = label.maxY - (anchor.minY - labelTopPadding)
+    let vdLabelTopToAnchorBottom = label.minY - (anchor.maxY + labelTopPadding)
 
     const leaderLinePositionOptions = [
       {
         name: 'centerBottomDistance',
-        distance: Math.hypot(hdLabelCenterToAnchor, vdLabelBottomToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.centeredAboveAnchor,
+        magnitude: Math.hypot(hdLabelCenterToAnchorCenter, vdLabelBottomToAnchorTop),
+        multiplier: placementPenaltyMultipliers.centeredAboveAnchor,
       },
       {
         name: 'centerTopDistance',
-        distance: Math.hypot(hdLabelCenterToAnchor, vdLabelTopToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.centeredUnderneathAnchor,
+        magnitude: Math.hypot(hdLabelCenterToAnchorCenter, vdLabelTopToAnchorBottom),
+        multiplier: placementPenaltyMultipliers.centeredUnderneathAnchor,
       },
       {
         name: 'leftCenterDistance',
-        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.besideAnchor,
+        magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchorCenter),
+        multiplier: placementPenaltyMultipliers.besideAnchor,
       },
       {
         name: 'rightCenterDistance',
-        distance: Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.besideAnchor,
+        magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchorCenter),
+        multiplier: placementPenaltyMultipliers.besideAnchor,
       },
       {
         name: 'leftTopDistance',
-        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchorBottom),
+        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
       },
       {
         name: 'rightBottomDistance',
-        distance: Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchorTop),
+        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
       },
       {
         name: 'rightTopDistance',
-        distance: Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchorBottom),
+        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
       },
       {
         name: 'leftBottomDistance',
-        distance: Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchor),
-        energyMultiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchorTop),
+        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
       },
     ]
 
     const bestLeaderLineOption = leaderLinePositionOptions
       .reduce((acc,cur,idx,src) => {
-        return (!acc.name || cur.distance < acc.distance)
+        return (!acc.name || cur.magnitude < acc.magnitude)
           ? cur : acc
       },{ name: null })
 
@@ -282,11 +289,13 @@ const labeler = function () {
   labeler.moveLabel = function ({ label, x, y }) {
     // TODO : abort if x==x and y==y
 
+    // NB the remove fn considers the bbox so you must remove label before altering the coordinates
+    collisionTree.remove(label)
+
     label.x = x
     label.y = y
     labeler.enforceBoundaries(label)
     addMinMaxAreaToRectangle(label)
-    collisionTree.remove(label)
     collisionTree.insert(label)
 
     // enforceBoundaries modified label.x and label.y so final x,y may not equal the requested x,y
@@ -349,7 +358,8 @@ const labeler = function () {
     coolCount++
     return newTemperature
   }
-  
+
+  // TODO duplicate of enforceLabelBoundaries ?
   function initLabBoundaries (lab) {
     // TODO duplicated in mcrotate and mcmove
     _.forEach(lab, l => {
@@ -413,7 +423,7 @@ const labeler = function () {
 
       const reasonsToSkip = [
         pinned,
-        staticObservations.labelFitsInsideBubble && staticObservations.anchorOverlapProportion < 0.10, // TODO configure
+        staticObservations.labelPlacedInsideBubble,
         staticObservations.noInitialCollisionsAndNoNearbyNeighbors
       ]
 
@@ -493,6 +503,7 @@ const labeler = function () {
         if (new_energy >= old_energy) { stats.acc_worse += 1}
         dynamicObservations.energy.current = new_energy
         dynamicObservations.adjustments.success++
+        // TODO best and worst are not kept up to date in the post sweep phases. They are not strictly needed consider removing
         if (!_.has(dynamicObservations.energy, 'worst') || dynamicObservations.energy.worst < new_energy) { dynamicObservations.energy.worst = new_energy }
         if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
       } else {
@@ -539,28 +550,73 @@ const labeler = function () {
     return stats
   }
 
-  labeler.postSweep = function ({ activePoints }) {
-    const proportionOfLabelsToAdjust = 0.5 // TODO expose as config variable
-    const currentEnergies = _(activePoints).map(point => `${point.label.shortText}: ${_.get(point, 'observations.dynamic.energy.current', -1).toFixed(2)}`).value()
-    const sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
-    const boundaryEnergy = sortedEnergies[Math.floor(Math.max(0,sortedEnergies.length * (1 - proportionOfLabelsToAdjust ) - 1))]
-    const worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
+  labeler.recomputeEnergies = ({ activePoints, phaseName }) => {
+    // why recompute energies ?
+    //   * if I move A to overlap B, both A and B energy changes
+    //   * if I am moving A I am also recomputing its old/new energy as part ofthe move, but I did not ALSO recompute B's energy
+    _(activePoints).each(point => {
+      const energy = labeler.energy(point, `${phaseName}:recompute`)
+      point.observations.dynamic.energy.current = energy
+    })
+  }
 
+  labeler.postSweep = function ({ activePoints }) {
+    // TODO clean up this stat object
+    // TODO specify a config that controls how many targetedCardinalSweep and the scale of each sweep
     const stats = {
-      postAdjustmentCandidates: worstPoints.length,
-      postAdjustmentsMade: 0,
+      targetedCardinalSweepOneAdjustments: 0,
+      targetedCardinalSweepTwoAdjustments: 0,
       postAlignmentsMade: 0
+    }
+
+    if (POST_SWEEP_LOGGING) {
+      console.log(`Start postSweep`)
+      console.log('all active point energies: ', activePoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
+    }
+
+    // sweep 1
+    let phaseName = 'targetedCardinalSweepOne'
+    labeler.recomputeEnergies({ activePoints, phaseName })
+    let proportionOfLabelsToAdjust = 0.5 // TODO expose as config variable
+    let sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
+    let boundaryEnergy = sortedEnergies[Math.floor(Math.max(0,sortedEnergies.length * (1 - proportionOfLabelsToAdjust ) - 1))]
+    let worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
+    stats[`${phaseName}Candidates`] = worstPoints.length
+
+    if (POST_SWEEP_LOGGING) {
+      console.log(`Start ${phaseName}`)
+      console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
 
     _(worstPoints).each(point => {
       const adjustmentMade = labeler.targetedCardinalAdjustment({ point })
-      if (adjustmentMade) { stats.postAdjustmentsMade++ }
+      if (adjustmentMade) { stats[`${phaseName}Adjustments`]++ }
+    })
+
+    // sweep 2
+    phaseName = 'targetedCardinalSweepTwo'
+    labeler.recomputeEnergies({ activePoints, phaseName })
+    proportionOfLabelsToAdjust = 0.25 // TODO expose as config variable
+    sortedEnergies = _(activePoints).map('observations.dynamic.energy.current').value().sort((a, b) => a - b)
+    boundaryEnergy = sortedEnergies[Math.floor(Math.max(0,sortedEnergies.length * (1 - proportionOfLabelsToAdjust ) - 1))]
+    worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
+    stats[`${phaseName}Candidates`] = worstPoints.length
+
+    if (POST_SWEEP_LOGGING) {
+      console.log(`Start ${phaseName}`)
+      console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
+    }
+
+    _(worstPoints).each(point => {
+      const adjustmentMade = labeler.targetedCardinalAdjustment({ point })
+      if (adjustmentMade) { stats[`${phaseName}Adjustments`]++ }
     })
 
     _(activePoints).each(point => {
       const adjustmentMade = labeler.alignLabelIfBetter({ point })
       if (adjustmentMade) { stats.postAlignmentsMade++ }
     })
+
 
     return stats
   }
@@ -578,13 +634,15 @@ const labeler = function () {
     const energyBefore = dynamicObservations.energy.current
 
     const movesPerDirection = 10
-    const widthIncrement = 0.5 * (w2 - w1) / movesPerDirection
-    const heightIncrement = 0.5 * (h2 - h1) / movesPerDirection
+    const widthIncrement = 0.25 * (w2 - w1) / movesPerDirection
+    const heightIncrement = 0.25 * (h2 - h1) / movesPerDirection
 
-    const verticalOptions = _.range(label.y - heightIncrement * movesPerDirection, label.y + heightIncrement * movesPerDirection, heightIncrement)
-      .map((newHeight, i) => ({ nickname: `vertical_${i}`, x: label.x, y: newHeight }))
-    const horizontalOptions = _.range(label.x - widthIncrement * movesPerDirection, label.x + widthIncrement * movesPerDirection, widthIncrement)
-      .map((newWidth, i) => ({ nickname: `horizontal_${i}`, x: newWidth, y: label.y }))
+    const defaultCoords = getResetCoordsForLabelUsingAnchor(point)
+
+    const verticalOptions = _.range(defaultCoords.y - heightIncrement * movesPerDirection, defaultCoords.y + heightIncrement * movesPerDirection, heightIncrement)
+      .map((newHeight, i) => ({ nickname: `vertical_${i}`, x: defaultCoords.x, y: newHeight }))
+    const horizontalOptions = _.range(defaultCoords.x - widthIncrement * movesPerDirection, defaultCoords.x + widthIncrement * movesPerDirection, widthIncrement)
+      .map((newWidth, i) => ({ nickname: `horizontal_${i}`, x: newWidth, y: anchor.y + label.height / 2 }))
     const northEasterlyDiagonal = _.range(verticalOptions.length - 1)
       .map(i => ({ nickname: `NEly_${i}`, x: horizontalOptions[i].x, y: verticalOptions[verticalOptions.length - i - 1].y }))
     const southEasterlyDiagonal = _.range(verticalOptions.length - 1)
@@ -592,7 +650,9 @@ const labeler = function () {
 
     const options = [
       {  nickname: 'last', x: label.x, y: label.y },
-      {  nickname: 'reset', x: anchor.x, y: anchor.y - anchor.r - labelTopPadding }, // TODO logic for reset positioning duplicated from PlotData.getPtsAndLabs
+      // TODO use getResetCoordsForLabelUsingAnchor via ...getResetCoordsForLabelUsingAnchor(point)
+      {  nickname: 'reset', x: defaultCoords.x, y: defaultCoords.y },
+      {  nickname: 'below', x: defaultCoords.x, y: anchor.maxY + labelTopPadding + label.height },
       ...verticalOptions,
       ...horizontalOptions,
       ...northEasterlyDiagonal,
@@ -705,9 +765,10 @@ const labeler = function () {
       point.observations = {
         // static observations are made once at beginning of simulation
         static: {
-          anchorCollidesWithOtherAnchors: false,
-          anchorOverlapProportion: 0,
+          anchorCollidesWithOtherAnchors: false, // TODO no longer used
+          anchorOverlapProportion: 0, // TODO no longer used
           labelFitsInsideBubble: false,
+          labelPlacedInsideBubble: false,
           noInitialCollisionsAndNoNearbyNeighbors: false
         },
         // dynamic observations are updated through the annealing process
@@ -729,14 +790,6 @@ const labeler = function () {
       //  * visually it works so leaving it now
 
       if (label && !pinned) {
-        if (isBubble && label.width < 2 * anchor.r) {
-          point.observations.static.labelFitsInsideBubble = true
-          labeler.moveLabel({
-            label,
-            x: label.x,
-            y: anchor.y + label.height / 4
-          })
-        }
 
         const labelAndAnchorBoundingBox = combinedBoundingBox(label, anchor)
         // TODO: make this a percentage of layout, maybe considering layout density ?
@@ -748,9 +801,25 @@ const labeler = function () {
           right: 20
         })
 
+        // TODO 2D overlap computation is duplicated in a few places
+        const xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
+        const yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
+        const selfOverlap = (xOverlap * yOverlap) > 0
+
         const nearbyThings = collisionTree.search(expandedLabelAndAnchorBoundingBox)
           .filter(notSameId(id))
-        point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = (nearbyThings.length === 0)
+
+        point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = !selfOverlap && (nearbyThings.length === 0)
+
+        if (isBubble && label.width < 2 * anchor.r) {
+          point.observations.static.labelFitsInsideBubble = true
+          point.observations.static.labelPlacedInsideBubble = true
+          labeler.moveLabel({
+            label,
+            x: label.x,
+            y: anchor.y + label.height / 4
+          })
+        }
       }
 
       const potentiallyCollidingAnchors = collisionTree.search(anchor)
@@ -777,12 +846,50 @@ const labeler = function () {
       if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
+    // NB now tie break all the labelFitsInsideBubble based on Z magnitude
+    // see testset label_inside_bubble_descending_z_series for why this is necessary
+    // const labelIsPlacedInsideBubble = ({ observations: { static: { labelPlacedInsideBubble } } }) => labelPlacedInsideBubble
+    const labelIsPlacedInsideBubble = (point) => _.get(point, 'observations.static.labelPlacedInsideBubble', false)
+
+    // NB TODO this is inefficient. If this is copied into inner loop will be big impact
+    // Current position it is only run once per anchor in a pre sweep phase
+    const labelToPoint = label => {
+      const x = _.find(points, { id: label.id });
+      return x
+    }
+
+    _(points)
+      .filter(labelIsPlacedInsideBubble)
+      .sort((a, b) => b.anchor.r - a.anchor.r)
+      .forEach(biggerPoint => {
+        const {label, anchor, pinned, id} = biggerPoint
+        // this is being manipulated in this loop so double check if this point has been changed to not be placed inside bubble
+        if (biggerPoint.observations.static.labelPlacedInsideBubble) {
+          // all remaining labelPlacedInsideBubble should be smaller than this label (because we sorted by radius), so change them to not be placed inside bubble (and let the general sweep place them)
+
+          const thru = (name) => (x) => { console.log(name); return x }
+          const potentiallyCollidingLabels = collisionTree.search(label)
+            .filter(isLabel)
+            .filter(notSameId(id))
+            .map(labelToPoint)
+            .filter(labelIsPlacedInsideBubble)
+            .forEach(smallerPoint => {
+              smallerPoint.observations.static.labelPlacedInsideBubble = false
+              resetlabelUsingAnchor(smallerPoint)
+              if (LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING) {
+                console.log(`${biggerPoint.label.shortText}(${biggerPoint.anchor.r}) bumping ${smallerPoint.label.shortText}(${smallerPoint.anchor.r})`)
+              }
+            })
+        }
+      })
+
     if (OBSERVATION_LOGGING) {
       const stats = _.transform(points, (result, { label, anchor, observations }) => {
         if (anchor) { result.anchors++ }
         if (label) { result.labels++ }
         if (observations.static.anchorCollidesWithOtherAnchors) { result.anchorCollidesWithOtherAnchors++ }
         if (observations.static.labelFitsInsideBubble) { result.labelFitsInsideBubble++ }
+        if (observations.static.labelPlacedInsideBubble) { result.labelPlacedInsideBubble++ }
         if (observations.static.noInitialCollisionsAndNoNearbyNeighbors) { result.noInitialCollisionsAndNoNearbyNeighbors++ }
       }, {
         isBubble,
@@ -790,6 +897,7 @@ const labeler = function () {
         labels: 0,
         anchorCollidesWithOtherAnchors: 0,
         labelFitsInsideBubble: 0,
+        labelPlacedInsideBubble: 0,
         noInitialCollisionsAndNoNearbyNeighbors: 0
       })
       console.log("observations on data set", stats)
