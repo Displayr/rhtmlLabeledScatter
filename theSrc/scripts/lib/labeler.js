@@ -758,6 +758,7 @@ const labeler = function () {
     collisionTree.load(lab)
   }
 
+  // TODO split the observations and adjustments. the adjustments should be referred to as "pre-sweep" operations
   labeler.makeInitialObservationsAndAdjustments = function () {
     // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
     // TODO: test each collision more precisely
@@ -774,8 +775,8 @@ const labeler = function () {
         // dynamic observations are updated through the annealing process
         dynamic: {
           adjustments: {
-            attempts: 0,
-            success: 0
+            attempts: 0, // TODO are these used ?
+            success: 0 // TODO are these used ?
           },
           energy: {}
         },
@@ -846,13 +847,13 @@ const labeler = function () {
       if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
-    // NB now tie break all the labelFitsInsideBubble based on Z magnitude
+    // NB now tie break all the labelPlacedInsideBubble based on Z magnitude
     // see testset label_inside_bubble_descending_z_series for why this is necessary
-    // const labelIsPlacedInsideBubble = ({ observations: { static: { labelPlacedInsideBubble } } }) => labelPlacedInsideBubble
+    // TODO extract into FN
     const labelIsPlacedInsideBubble = (point) => _.get(point, 'observations.static.labelPlacedInsideBubble', false)
 
     // NB TODO this is inefficient. If this is copied into inner loop will be big impact
-    // Current position it is only run once per anchor in a pre sweep phase
+    // Current position: it only runs once per anchor in a pre sweep phase so inefficiency is ok
     const labelToPoint = label => {
       const x = _.find(points, { id: label.id });
       return x
@@ -867,6 +868,13 @@ const labeler = function () {
         if (biggerPoint.observations.static.labelPlacedInsideBubble) {
           // all remaining labelPlacedInsideBubble should be smaller than this label (because we sorted by radius), so change them to not be placed inside bubble (and let the general sweep place them)
 
+
+          /* NB it is not obvious how we can assume all the overlapping labels are for smaller points. Here is the logic:
+            * in the outer loop we have sorted by anchor radius descending so in pass 0 we have the label for the biggest anchor
+            * for each iteration of the loop, we find all overlapping labels that are placed inside the anchor, and we move them outside the anchor
+            * so on pass 1, we cannot encounter label 0 (which is the only "bigger" label) because if they overlapped then we would
+              have moved label 1 outside of the bubble. This extends by induction to all other labels in the outer loop
+           */
           const thru = (name) => (x) => { console.log(name); return x }
           const potentiallyCollidingLabels = collisionTree.search(label)
             .filter(isLabel)
