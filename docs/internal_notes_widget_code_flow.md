@@ -1,5 +1,7 @@
 # Notes taken while doing a walk through of the code
 
+There are internal notes and not refined enough to be very useful for others
+
 ## Render Sequence
 
 1. standard htmlwidget -> factory -> renderValue -> then see code
@@ -33,13 +35,14 @@ In a loop based on a Promise chain then/catch model with recursion:
   * Q: what causes this to throw
 * drawLabsAndPlot
   * calls PlotData.normalizeData
-  * calls PlotData.getPtsAndLabs which computes placement
+  * calls PlotData.getPtsAndLabs
   * then calls RectPlot.drawLabs which creates SVG elements and adds to plot
+  * call placement
+  * updates x y of labels
   * Q: what causes this to throw
 * drawLegend
   * Q: what causes this to throw
 * finally set snapshot-test class to ready 
-
 
 ## File / Class notes
 
@@ -53,13 +56,15 @@ In a loop based on a Promise chain then/catch model with recursion:
     * "debounce" resize calls
     
 ### RectPlot class
+  * majority of orchestration performed here
+
 
 ## Refactor Notes
 
-* the positional parameter signature of RectPlot
-* add default settings and extract out a build config
+* the positional parameter signature of RectPlot (DONE)
+* add default settings and extract out a build config (DONE)
 * better comments on what is VIS-390
-* need testing on LabelArraySorter
+* need testing on LabelArraySorter (DEPRECATED)
 
 ## Where do Image Labels come from
 
