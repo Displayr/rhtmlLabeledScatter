@@ -21,6 +21,10 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL,
   label.placement.seed = 1, label.placement.temperature.initial = 0.01,
   label.placement.temperature.final = 1e-04,
   label.placement.weight.distance = 10,
+  label.placement.weight.distance.multiplier.centeredAboveAnchor = 1,
+  label.placement.weight.distance.multiplier.centeredUnderneathAnchor = 1.5,
+  label.placement.weight.distance.multiplier.besideAnchor = 4,
+  label.placement.weight.distance.multiplier.diagonalOfAnchor = 15,
   label.placement.weight.labelAncOverlap = 8,
   label.placement.weight.labelLabelOverlap = 12,
   labels.font.color = NULL, labels.font.family = "Arial",
@@ -110,6 +114,14 @@ LabeledScatter(X = NULL, Y = NULL, Z = NULL,
 \item{label.placement.temperature.final}{Label placement algorithm final temperature (Default is 0.0001).}
 
 \item{label.placement.weight.distance}{Label placement algorithm weight for the distance between the label and the point (Default is 10.0)}
+
+\item{label.placement.weight.distance.multiplier.centeredAboveAnchor}{TODO document}
+
+\item{label.placement.weight.distance.multiplier.centeredUnderneathAnchor}{TODO document}
+
+\item{label.placement.weight.distance.multiplier.besideAnchor}{TODO document}
+
+\item{label.placement.weight.distance.multiplier.diagonalOfAnchor}{TODO document}
 
 \item{label.placement.weight.labelAncOverlap}{Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)}
 
