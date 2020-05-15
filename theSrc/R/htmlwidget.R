@@ -92,6 +92,10 @@
 #' @param plot.border.color Color of border around plot area (Default is black).
 #' @param plot.border.width Width of border around plot area in px (Default is 1).
 #' @param label.placement.weight.distance Label placement algorithm weight for the distance between the label and the point (Default is 10.0)
+#' @param label.placement.weight.distance.multiplier.centeredAboveAnchor TODO document
+#' @param label.placement.weight.distance.multiplier.centeredUnderneathAnchor TODO document
+#' @param label.placement.weight.distance.multiplier.besideAnchor TODO document
+#' @param label.placement.weight.distance.multiplier.diagonalOfAnchor TODO document
 #' @param label.placement.weight.labelLabelOverlap Label placement algorithm weight for the overlap between two labels (Default is 12.0)
 #' @param label.placement.weight.labelAncOverlap Label placement algorithm weight fo the overlap between the point and label (Default is 8.0)
 #' @param label.placement.numSweeps Label placement algorithm number of sweeps through the dataset (Default is 500).
@@ -138,6 +142,10 @@ LabeledScatter <- function(
   label.placement.temperature.initial = 0.01,
   label.placement.temperature.final = 0.0001,
   label.placement.weight.distance = 10.0,
+  label.placement.weight.distance.multiplier.centeredAboveAnchor = 1,
+  label.placement.weight.distance.multiplier.centeredUnderneathAnchor =  1.5,
+  label.placement.weight.distance.multiplier.besideAnchor = 4,
+  label.placement.weight.distance.multiplier.diagonalOfAnchor = 15,
   label.placement.weight.labelAncOverlap = 8.0,
   label.placement.weight.labelLabelOverlap = 12.0,
   labels.font.color = NULL,
@@ -302,9 +310,13 @@ LabeledScatter <- function(
     trendLinesLineThickness = trend.lines.line.thickness,
     trendLinesPointSize = trend.lines.point.size,
     plotBorderShow = plot.border.show,
-    labelPlacementDistanceWeight = label.placement.weight.distance,
-    labelPlacementLabelLabelOverlapWeight = label.placement.weight.labelLabelOverlap,
-    labelPlacementLabelAncOverlapWeight = label.placement.weight.labelAncOverlap,
+    labelPlacementWeightDistance = label.placement.weight.distance,
+    labelPlacementWeightDistanceMultiplierCenteredAboveAnchor = label.placement.weight.distance.multiplier.centeredAboveAnchor,
+    labelPlacementWeightDistanceMultiplierCenteredUnderneathAnchor = label.placement.weight.distance.multiplier.centeredUnderneathAnchor,
+    labelPlacementWeightDistanceMultiplierBesideAnchor = label.placement.weight.distance.multiplier.besideAnchor,
+    labelPlacementWeightDistanceMultiplierDiagonalOfAnchor = label.placement.weight.distance.multiplier.diagonalOfAnchor,
+    labelPlacementWeightLabelLabelOverlap = label.placement.weight.labelLabelOverlap,
+    labelPlacementWeightLabelAnchorOverlap = label.placement.weight.labelAncOverlap,
     labelPlacementNumSweeps = label.placement.numSweeps,
     labelPlacementSeed = label.placement.seed,
     labelPlacementTemperatureInitial = label.placement.temperature.initial,

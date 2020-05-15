@@ -5,22 +5,18 @@
   },
   "scripts": {
     "prepush": "node ./build/bin/prepush",
-    "test": "gulp testSpecs && gulp testVisual",
-    "localTest": "export BRANCH=`git rev-parse --abbrev-ref HEAD`; gulp jestSpecTests && gulp testSpecs && gulp testVisual",
-    "travisTest": "gulp jestSpecTests && gulp testSpecs && gulp testVisual",
-    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/VIS-554 -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "test": "npm run localTest",
+    "localTest": "gulp testSpecs && gulp testVisual --env=local --branch=`git rev-parse --abbrev-ref HEAD`",
+    "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=`git rev-parse --abbrev-ref HEAD`",
+    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/`git rev-parse --abbrev-ref HEAD` -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "macOpenDiffs": "open .tmp/diffs",
+    "seeDiffs": "npm run gatherDiffs; npm run macOpenDiffs",
     "deleteDiffs": "find theSrc/test/snapshots -iname '__diff_output__' | xargs rm -rf"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.9.0",
-    "babel-jest": "^25.1.0",
     "gulp": "^4.0.2",
-    "jest": "^24.9.0",
-    "jest-image-snapshot": "^2.11.1",
     "nilsimsa": "^0.2.2",
-    "puppeteer": "^2.0.0",
-    "request-promise": "^4.2.5",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#4.0.6"
+    "request-promise": "^4.2.5"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -37,6 +33,7 @@
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
     "rbush": "^3.0.1",
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#5.0.0",
     "yargs": "^15.1.0"
   }
 }

@@ -1,0 +1,42 @@
+{
+  "dimensions": [
+    ["0.00005","0.005","0.5", "5", "10"]
+  ],
+  "baseline": {
+    "name": "4",
+    "override": {
+    }
+  },
+  "experiments": [
+    {
+      "name": "0.00005",
+      "override": {
+        "labelPlacementWeightDistanceMultiplierBesideAnchor": 0.00005
+      }
+    },
+    {
+      "name": "0.005",
+      "override": {
+        "labelPlacementWeightDistanceMultiplierBesideAnchor": 0.005
+      }
+    },
+    {
+      "name": "0.5",
+      "override": {
+        "labelPlacementWeightDistanceMultiplierBesideAnchor": 0.5
+      }
+    },
+    {
+      "name": "5",
+      "override": {
+        "labelPlacementWeightDistanceMultiplierBesideAnchor": 5
+      }
+    },
+    {
+      "name": "10",
+      "override": {
+        "labelPlacementWeightDistanceMultiplierBesideAnchor": 10
+      }
+    }
+  ]
+}

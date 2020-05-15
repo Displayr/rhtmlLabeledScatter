@@ -1,0 +1,24 @@
+type: multi_widget_single_page
+title: "poop"
+width: 400
+height: 400
+rowSize: 4
+comments: []
+widgets:
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.0000005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.0000005 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.000005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.000005 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.00005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.00005 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.0005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.0005 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.005 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.05","labelPlacementWeightDistanceMultiplierBesideAnchor":0.05 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.5","labelPlacementWeightDistanceMultiplierBesideAnchor":0.5 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=1","labelPlacementWeightDistanceMultiplierBesideAnchor":1 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=2","labelPlacementWeightDistanceMultiplierBesideAnchor":2 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=4","labelPlacementWeightDistanceMultiplierBesideAnchor":4 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=8","labelPlacementWeightDistanceMultiplierBesideAnchor":8 }
+  - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=10","labelPlacementWeightDistanceMultiplierBesideAnchor":10 }
+

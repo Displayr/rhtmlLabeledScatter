@@ -4,23 +4,31 @@ import SvgUtils from './utils/SvgUtils'
 import _ from 'lodash'
 
 class LabelPlacement {
-  constructor (pltId, svg, wDistance, wLabelLabelOverlap, wLabelAncOverlap,
-               isBubble, numSweeps, maxMove, maxAngle, seed,
-               initialTemperature, finalTemperature,
-               isLabelPlacementAlgoOn) {
-    this.pltId = pltId
+  constructor ({
+                 svg,
+                 pltId,
+                 isBubble,
+                 isLabelPlacementAlgoOn,
+                 weights,
+                 numSweeps,
+                 maxMove,
+                 maxAngle,
+                 seed,
+                 initialTemperature,
+                 finalTemperature
+               }) {
     this.svg = svg
-    this.wDistance = wDistance
-    this.wLabelLabelOverlap = wLabelLabelOverlap
-    this.wLabelAncOverlap = wLabelAncOverlap
+    this.pltId = pltId
     this.isBubble = isBubble
+    this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
+
+    this.weights = weights
     this.numSweeps = numSweeps
     this.maxMove = maxMove
     this.maxAngle = maxAngle
     this.seed = seed
     this.initialTemperature = initialTemperature
     this.finalTemperature = finalTemperature
-    this.isLabelPlacementAlgoOn = isLabelPlacementAlgoOn
   }
 
   updateSvgOnResize (svg) {
@@ -41,7 +49,7 @@ class LabelPlacement {
       .promise(resolve)
       .anchorType(this.isBubble)
       .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
-      .weights(this.wDistance, this.wLabelLabelOverlap, this.wLabelAncOverlap)
+      .weights(this.weights)
       .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelPlacementAlgoOn)
       .start(this.numSweeps)
   }
