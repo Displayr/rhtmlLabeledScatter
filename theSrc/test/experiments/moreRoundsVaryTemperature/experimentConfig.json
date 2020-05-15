@@ -1,0 +1,110 @@
+{
+  "dimensions": [
+    ["1-0.01","0.1-0.001","0.01-0.0001"],
+    ["1x","2x","4x","8x"]
+  ],
+  "baseline": {
+    "name": "noSweeps",
+    "override": {
+      "labelPlacementNumSweeps": 0
+    }
+  },
+  "experiments": [
+    {
+      "name": "0.01-0.0001-1x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "0.01-0.0001-2x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 1000
+      }
+    },
+    {
+      "name": "0.01-0.0001-4x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "0.01-0.0001-8x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "0.1-0.001-1x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.1,
+        "labelPlacementTemperatureFinal": 0.001,
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "0.1-0.001-2x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.1,
+        "labelPlacementTemperatureFinal": 0.001,
+        "labelPlacementNumSweeps": 1000
+      }
+    },
+    {
+      "name": "0.1-0.001-4x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.1,
+        "labelPlacementTemperatureFinal": 0.001,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "0.1-0.001-8x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.1,
+        "labelPlacementTemperatureFinal": 0.001,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "1-0.01-1x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "1-0.01-2x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 1000
+      }
+    },
+    {
+      "name": "1-0.01-4x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "1-0.01-8x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 2000
+      }
+    }
+  ]
+}

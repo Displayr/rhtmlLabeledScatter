@@ -1,0 +1,150 @@
+type: multi_widget_multi_page
+width: 576
+height: 512
+configs:
+
+# set2
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.bubble_colors
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.column_principal_scaled
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.correspondence_analysis1
+    note: "none"
+    status: none
+    width: 967
+    height: 298
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.correspondence_analysis2
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.correspondence_analysis3
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.correspondence_analysis9
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.correspondence_analysis7
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2.same_titles
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_focus.multiple_tables
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_logo.logo
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_logo.logo_small_ratio
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_mirror.both_mirror
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_mirror.d1_mirror
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_mirror.d2_mirror
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_multiple_tables.multiple_table
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_multiple_tables.multiple_table_named
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_multiple_tables.multiple_table_reprint
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_multiple_tables.multiple_table_transpose
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set2_title.no_titles
+    note: "none"
+    status: none
+
+# set3
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set3.plot_filtered
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set3.plot_labelnames
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set3.plot_variablenames
+    note: "none"
+    status: none
+
+# legacy_bubble
+  - config: config.labellerSubsetOverrides|data.legacy_bubble.bubbleplot_colas_characteristics
+    note: "none"
+    status: none
+    width: 800
+    height: 570
+  - config: config.labellerSubsetOverrides|data.legacy_bubble.bubbleplot_legend1
+    note: "none"
+    status: none
+    width: 775
+    height: 450
+
+# set4
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set4.distance_entered
+    note: "none"
+    status: none
+
+# set8
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set8.mds_metric
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set8.pca
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set8.small_opaque_points
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set8.tsne_perplexity_7
+    note: "none"
+    status: none
+
+# set9
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set9.bubblechart
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set9.vardata_size_numeric_labeled_filtered
+    note: "none"
+    status: none
+
+# set6
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set6.equamax_plot
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set6.equamax_reprint
+    note: "none"
+    status: none
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set6.promax_reprint
+    note: "none"
+    status: none
+    width: 610
+    height: 421
+
+# set7
+  - config: config.labellerSubsetOverrides|data.displayr_regression.set7.ignore_rows
+    note: "none"
+    status: none
+
+# legacy_misc_scatterplot
+  - config: config.labellerSubsetOverrides|data.legacy_misc_scatterplot.scatterplot_mass_points
+    note: "none"
+    status: none
+    width: 1800
+    height: 900
+  - config: config.labellerSubsetOverrides|data.legacy_misc_scatterplot.scatterplot_categorical_bubble
+    note: "none"
+    status: none
+    width: 800
+    height: 400
+  - config: config.labellerSubsetOverrides|data.legacy_misc_scatterplot.scatterplot_logos2
+    note: "none"
+    status: none
+    width: 900
+    height: 600

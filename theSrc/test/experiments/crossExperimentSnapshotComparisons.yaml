@@ -1,0 +1,11 @@
+crossExperimentSnapshotComparisons:
+  - name: OldTemperature 4x VS new Temp 0.01-0.0001 4x
+    experimentA: moreRoundsOldTemperature
+    configA: 4x
+    experimentB: moreRoundsVaryTemperature
+    configB: 0.01-0.0001-4x
+  - name: march 24 vs may 13
+    experimentA: moreRoundsVaryTemperature
+    configA: 0.01-0.0001-1x
+    experimentB: may15VaryTempRedo
+    configB: 0.01-0.0001-1x

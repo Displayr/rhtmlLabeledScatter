@@ -1,0 +1,31 @@
+{
+  "dimensions": [
+    ["1x","2x","4x"]
+  ],
+  "baseline": {
+    "name": "noSweeps",
+    "override": {
+      "labelPlacementNumSweeps": 0
+    }
+  },
+  "experiments": [
+    {
+      "name": "1x",
+      "override": {
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "2x",
+      "override": {
+        "labelPlacementNumSweeps": 1000
+      }
+    },
+    {
+      "name": "4x",
+      "override": {
+        "labelPlacementNumSweeps": 2000
+      }
+    }
+  ]
+}

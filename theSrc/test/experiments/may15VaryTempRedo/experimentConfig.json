@@ -1,0 +1,40 @@
+{
+  "dimensions": [
+    ["1-0.01","0.01-0.0001"],
+    ["1x","4x"]
+  ],
+  "experiments": [
+    {
+      "name": "0.01-0.0001-1x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "0.01-0.0001-4x",
+      "override": {
+        "labelPlacementTemperatureInitial": 0.01,
+        "labelPlacementTemperatureFinal": 0.0001,
+        "labelPlacementNumSweeps": 2000
+      }
+    },
+    {
+      "name": "1-0.01-1x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 500
+      }
+    },
+    {
+      "name": "1-0.01-4x",
+      "override": {
+        "labelPlacementTemperatureInitial": 1,
+        "labelPlacementTemperatureFinal": 0.01,
+        "labelPlacementNumSweeps": 2000
+      }
+    }
+  ]
+}
