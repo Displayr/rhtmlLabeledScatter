@@ -182,18 +182,6 @@ class RectPlot {
 
     const numNonEmptyLabels = (_.filter(this.label, (l) => l !== '')).length
     const labelPlacementAlgoOnToggle = numNonEmptyLabels < 100
-    this.labelPlacementSettings = {
-      distance: config.labelPlacementDistanceWeight,
-      labelLabelOverlap: config.labelPlacementLabelLabelOverlapWeight,
-      labelAncOverlap: config.labelPlacementLabelAncOverlapWeight,
-      numSweeps: config.labelPlacementNumSweeps,
-      maxMove: config.labelPlacementMaxMove,
-      maxAngle: config.labelPlacementMaxAngle,
-      seed: config.labelPlacementSeed,
-      initialTemperature: config.labelPlacementTemperatureInitial,
-      finalTemperature: config.labelPlacementTemperatureFinal,
-      isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle
-    }
 
     this.tooltipText = config.tooltipText
 
@@ -203,21 +191,31 @@ class RectPlot {
     this.setDim(this.svg, this.width, this.height)
 
     // TODO make an object then get rid of double handling via this.labelPlacementSettings
-    this.labelPlacement = new LabelPlacement(
-      this.pltUniqueId,
-      this.svg,
-      this.labelPlacementSettings.distance,
-      this.labelPlacementSettings.labelLabelOverlap,
-      this.labelPlacementSettings.labelAncOverlap,
-      Utils.isArrOfNums(this.Z),
-      this.labelPlacementSettings.numSweeps,
-      this.labelPlacementSettings.maxMove,
-      this.labelPlacementSettings.maxAngle,
-      this.labelPlacementSettings.seed,
-      this.labelPlacementSettings.initialTemperature,
-      this.labelPlacementSettings.finalTemperature,
-      this.labelPlacementSettings.isLabelPlacementAlgoOn
-    )
+    this.labelPlacement = new LabelPlacement({
+      svg: this.svg,
+      pltId: this.pltUniqueId,
+      isBubble: Utils.isArrOfNums(this.Z),
+      isLabelPlacementAlgoOn: labelPlacementAlgoOnToggle,
+      weights: {
+        distance: {
+          base: config.labelPlacementWeightDistance,
+          multipliers: {
+            centeredAboveAnchor: config.labelPlacementWeightDistanceMultiplierCenteredAboveAnchor,
+            centeredUnderneathAnchor: config.labelPlacementWeightDistanceMultiplierCenteredUnderneathAnchor,
+            besideAnchor: config.labelPlacementWeightDistanceMultiplierBesideAnchor,
+            diagonalOfAnchor: config.labelPlacementWeightDistanceMultiplierDiagonalOfAnchor
+          }
+        },
+        labelLabelOverlap: config.labelPlacementWeightLabelLabelOverlap,
+        labelPlacementWeightLabelLabelOverlap: config.labelPlacementWeightLabelAnchorOverlap
+      },
+      numSweeps: config.labelPlacementNumSweeps,
+      maxMove: config.labelPlacementMaxMove,
+      maxAngle: config.labelPlacementMaxAngle,
+      seed: config.labelPlacementSeed,
+      initialTemperature: config.labelPlacementTemperatureInitial,
+      finalTemperature: config.labelPlacementTemperatureFinal
+    })
   }
 
   setDim (svg, width, height) {

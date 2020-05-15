@@ -13,7 +13,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.isNum(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isNum(t.input)).to.equal(t.expected)
+        expect(Utils.isNum(t.input)).toEqual(t.expected)
       })
     })
   })
@@ -30,7 +30,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.isArr(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isArr(t.input)).to.equal(t.expected)
+        expect(Utils.isArr(t.input)).toEqual(t.expected)
       })
     })
   })
@@ -51,7 +51,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.isArrOfNums(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isArrOfNums(t.input)).to.equal(t.expected)
+        expect(Utils.isArrOfNums(t.input)).toEqual(t.expected)
       })
     })
   })
@@ -73,7 +73,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.isArrOfPositiveNums(${t.input} (${typeof t.input})) is ${t.expected}`, function () {
-        expect(Utils.isArrOfPositiveNums(t.input)).to.equal(t.expected)
+        expect(Utils.isArrOfPositiveNums(t.input)).toEqual(t.expected)
       })
     })
   })
@@ -88,7 +88,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.getFormattedNum(${t.input}) is ${t.expected}`, function () {
-        expect(Utils.getFormattedNum.apply(null, t.input)).to.equal(t.expected)
+        expect(Utils.getFormattedNum.apply(null, t.input)).toEqual(t.expected)
       })
     })
   })
@@ -111,7 +111,7 @@ describe('Utils:', function () {
 
     _(tests).each((t) => {
       it(`Utils.getSuperscript(${t.input}) is ${t.expected}`, function () {
-        expect(Utils.getSuperscript(t.input)).to.equal(t.expected)
+        expect(Utils.getSuperscript(t.input)).toEqual(t.expected)
       })
     })
   })

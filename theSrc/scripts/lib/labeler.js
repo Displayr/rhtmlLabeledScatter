@@ -73,21 +73,16 @@ const labeler = function () {
   let initialTemperature = null
   let finalTemperature = null
 
-  // default weights
-  let weightLineLength = 10.0 // leader line length
-  let weightLabelToLabelOverlap = 12.0 // label-label overlap
-  let weightLabelToAnchorOverlap = 8 // label-anchor overlap
-  // 1.0 - NB legacy value for leader line intersection (was never implemented)
-  // 2.0 - NB legacy value for leader line-label intersection (was never implemented)
-
-  // penalty for length of leader line
-  const placementPenaltyMultipliers = {
-    centeredAboveAnchor: weightLineLength * 1,
-    centeredUnderneathAnchor: weightLineLength * 1.5,
-    besideAnchor: weightLineLength * 4,
-    diagonalOfAnchor: weightLineLength * 15
+  // these weight values are initialised by call to this.weights()
+  let weightLineLength = null // leader line length
+  let weightLabelToLabelOverlap = null // label-label overlap
+  let weightLabelToAnchorOverlap = null // label-anchor overlap
+  let weightLineLengthMultipliers = {
+    centeredAboveAnchor: null,
+    centeredUnderneathAnchor: null,
+    besideAnchor: null,
+    diagonalOfAnchor: null
   }
-
 
   // energy considers:
   //   * distance from label to anchor
@@ -124,7 +119,7 @@ const labeler = function () {
       label.leaderLineType = 'labInsideBubble'
     } else {
       const bestLeaderLineOption = labeler.chooseBestLeaderLine(label, anchor)
-      energyParts.distanceScore = (bestLeaderLineOption.magnitude / maxDistance) * bestLeaderLineOption.multiplier
+      energyParts.distanceScore = (bestLeaderLineOption.magnitude / maxDistance) * weightLineLength * bestLeaderLineOption.multiplier
       energyParts.distanceMagnitude = bestLeaderLineOption.magnitude
       energyParts.distanceName = bestLeaderLineOption.name
       energyParts.distanceMultiplier = bestLeaderLineOption.multiplier
@@ -234,42 +229,42 @@ const labeler = function () {
       {
         name: 'centerBottomDistance',
         magnitude: Math.hypot(hdLabelCenterToAnchorCenter, vdLabelBottomToAnchorTop),
-        multiplier: placementPenaltyMultipliers.centeredAboveAnchor,
+        multiplier: weightLineLengthMultipliers.centeredAboveAnchor,
       },
       {
         name: 'centerTopDistance',
         magnitude: Math.hypot(hdLabelCenterToAnchorCenter, vdLabelTopToAnchorBottom),
-        multiplier: placementPenaltyMultipliers.centeredUnderneathAnchor,
+        multiplier: weightLineLengthMultipliers.centeredUnderneathAnchor,
       },
       {
         name: 'leftCenterDistance',
         magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelCenterToAnchorCenter),
-        multiplier: placementPenaltyMultipliers.besideAnchor,
+        multiplier: weightLineLengthMultipliers.besideAnchor,
       },
       {
         name: 'rightCenterDistance',
         magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelCenterToAnchorCenter),
-        multiplier: placementPenaltyMultipliers.besideAnchor,
+        multiplier: weightLineLengthMultipliers.besideAnchor,
       },
       {
         name: 'leftTopDistance',
         magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelTopToAnchorBottom),
-        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        multiplier: weightLineLengthMultipliers.diagonalOfAnchor,
       },
       {
         name: 'rightBottomDistance',
         magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelBottomToAnchorTop),
-        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        multiplier: weightLineLengthMultipliers.diagonalOfAnchor,
       },
       {
         name: 'rightTopDistance',
         magnitude: Math.hypot(hdLabelRightToAnchor, vdLabelTopToAnchorBottom),
-        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        multiplier: weightLineLengthMultipliers.diagonalOfAnchor,
       },
       {
         name: 'leftBottomDistance',
         magnitude: Math.hypot(hdLabelLeftToAnchor, vdLabelBottomToAnchorTop),
-        multiplier: placementPenaltyMultipliers.diagonalOfAnchor,
+        multiplier: weightLineLengthMultipliers.diagonalOfAnchor,
       },
     ]
 
@@ -374,7 +369,7 @@ const labeler = function () {
     maxDistance = Math.hypot(w2 - w1, h2 - h1)
     plotArea = (w2 - w1) * (h2 - h1)
 
-    const highestDistancePenalty = _(placementPenaltyMultipliers).values().max()
+    const highestDistancePenalty = _(weightLineLengthMultipliers).values().max() * weightLineLength
     worstCaseEnergy =
       highestDistancePenalty
       + weightLabelToLabelOverlap * (lab.length - 1)
@@ -976,11 +971,13 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.weights = function (x, y, z) {
+  labeler.weights = function (weights) {
     // Weights used in the label placement algorithm
-    weightLineLength = x
-    weightLabelToLabelOverlap = y
-    weightLabelToAnchorOverlap = z
+    weightLineLength = _.get(weights, 'distance.base')
+    weightLineLengthMultipliers = _.get(weights, 'distance.multipliers')
+    weightLabelToLabelOverlap = _.get(weights, 'labelLabelOverlap')
+    weightLabelToAnchorOverlap = _.get(weights, 'labelPlacementWeightLabelLabelOverlap')
+
     return labeler
   }
   
