@@ -28,12 +28,12 @@
     "deep-diff": "^1.0.2",
     "es6-autobind": "^1.0.7",
     "inquirer": "^7.0.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.1",
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
     "rbush": "^3.0.1",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#5.0.0",
-    "yargs": "^15.1.0"
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#5.0.1",
+    "yargs": "^15.3.1"
   }
 }
