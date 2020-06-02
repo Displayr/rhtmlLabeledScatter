@@ -1,0 +1,13 @@
+type: multi_widget_single_page
+title: "leader lines logos manually placed to show 8 positions"
+width: 400
+height: 400
+rowSize: 1
+comments: []
+widgets:
+  - config: data.functionalTest.logos_8_points_on_square|config.xBounds_10|config.yBounds_10|{"title":"fill in this title"}
+    state: state.functionalTest.manually_placed_leader_line_logos
+  - config: data.functionalTest.labels_8_points_on_square|config.xBounds_10|config.yBounds_10|{"title":"fill in this title"}
+    state: state.functionalTest.manually_placed_leader_line_labels
+  - config: data.functionalTest.labels_9_vertical_stack|{"xBoundsMaximum":2,"yBoundsMinimum":-100,"yBoundsMaximum":100}|{"title":"fill in this title"}
+    state: state.functionalTest.manually_placed_9_vertical_stack_labels
