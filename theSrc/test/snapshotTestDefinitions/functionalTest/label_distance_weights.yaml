@@ -1,14 +1,10 @@
 type: multi_widget_single_page
-title: "poop"
+title: "label weight - vary horizontal weight - this test needs work"
 width: 400
 height: 400
 rowSize: 4
 comments: []
 widgets:
-  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
-  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
-  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
-  - config: data.displayr_regression.set8.large_transparent_points|{"title":"default config"}
   - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.0000005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.0000005 }
   - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.000005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.000005 }
   - config: data.displayr_regression.set8.large_transparent_points|{"title":"besideAnchor=0.00005","labelPlacementWeightDistanceMultiplierBesideAnchor":0.00005 }
