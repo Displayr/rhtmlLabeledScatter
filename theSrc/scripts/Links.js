@@ -1,6 +1,7 @@
 
 import _ from 'lodash'
 
+const DEBUG = true
 class Links {
   constructor (pts, lab) {
     const _labIsText = labelData => labelData.url === ''
@@ -14,7 +15,13 @@ class Links {
         if (_labIsEmpty(lab[i])) {
           newLinkPt = null
         } else if (_labIsText(lab[i])) {
-          newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
+          const { point, name } = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
+          newLinkPt = point
+
+          if (DEBUG) {
+            const { minX, maxX, minY, maxY, shortText } = lab[i]
+            console.log(`label "${shortText}": ${name}. l x(${minX.toFixed(1)}->${maxX.toFixed(1)}) y(${minY.toFixed(1)}->${maxY.toFixed(1)}). p: (${pt.x.toFixed(1)},${pt.y.toFixed(1)}) r: ${pt.r.toFixed(1)}.`)
+          }
         } else {
           newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts)
         }
@@ -121,32 +128,32 @@ class Links {
     }
 
     const padding = 10
-    const centered = (ancR > labelXleft) && (ancL < labelXright)
-    const abovePadded = ancB < (labelYtop - padding)
-    const above = ancB < labelYtop
-    const belowPadded = ancT > (labelYbot + padding)
-    const below = ancT > labelYbot
-    const left = ancR < labelXleft
-    const right = ancL > labelXright
-    const leftPadded = ancR < (labelXleft - padding)
-    const rightPadded = ancL > (labelXright + padding)
+    const anchorAndLabelAreHorizontallyAligned = (ancR > labelXleft) && (ancL < labelXright)
+    const anchorIsAboveWithPadding = ancB < (labelYtop - padding)
+    const anchorIsAbove = ancB < labelYtop
+    const anchorIsBelowWithPadding = ancT > (labelYbot + padding)
+    const anchorIsBelow = ancT > labelYbot
+    const anchorIsLeftWithPadding = ancR < (labelXleft - padding)
+    const anchorIsLeft = ancR < labelXleft
+    const anchorIsRightWithPadding = ancL > (labelXright + padding)
+    const anchorIsRight = ancL > labelXright
 
-    if (centered && abovePadded) {
-      return labelBorder.topC
-    } else if (centered && belowPadded) {
-      return labelBorder.botC
-    } else if (above && left) {
-      return labelBorder.topL
-    } else if (above && right) {
-      return labelBorder.topR
-    } else if (below && left) {
-      return labelBorder.botL
-    } else if (below && right) {
-      return labelBorder.botR
-    } else if (leftPadded) {
-      return labelBorder.midL
-    } else if (rightPadded) {
-      return labelBorder.midR
+    if (anchorAndLabelAreHorizontallyAligned && anchorIsAboveWithPadding) {
+      return { point: labelBorder.topC, name: 'anchorAndLabelAreHorizontallyAligned && anchorIsAboveWithPadding' }
+    } else if (anchorAndLabelAreHorizontallyAligned && anchorIsBelowWithPadding) {
+      return { point: labelBorder.botC, name: 'anchorAndLabelAreHorizontallyAligned && anchorIsBelowWithPadding' }
+    } else if (anchorIsAbove && anchorIsLeft) {
+      return { point: labelBorder.topL, name: 'anchorIsAbove && anchorIsLeft' }
+    } else if (anchorIsAbove && anchorIsRight) {
+      return { point: labelBorder.topR, name: 'anchorIsAbove && anchorIsRight' }
+    } else if (anchorIsBelow && anchorIsLeft) {
+      return { point: labelBorder.botL, name: 'anchorIsBelow && anchorIsLeft' }
+    } else if (anchorIsBelow && anchorIsRight) {
+      return { point: labelBorder.botR, name: 'anchorIsBelow && anchorIsRight' }
+    } else if (anchorIsLeftWithPadding) {
+      return { point: labelBorder.midL, name: 'anchorIsLeftWithPadding' }
+    } else if (anchorIsRightWithPadding) {
+      return { point: labelBorder.midR, name: 'anchorIsRightWithPadding' }
     } else {
       // Draw the link if there are any anc nearby
       const ambiguityFactor = 10
@@ -162,29 +169,29 @@ class Links {
         }
       })
       if (ancNearby > 1) {
-        if (!left && !right && !above && !below) {
-          return labelBorder.botC
-        } else if (centered && above) {
-          return labelBorder.topC
-        } else if (centered && below) {
-          return labelBorder.botC
-        } else if (left && above) {
-          return labelBorder.topL
-        } else if (left && below) {
-          return labelBorder.botL
-        } else if (right && above) {
-          return labelBorder.topR
-        } else if (right && below) {
-          return labelBorder.botR
-        } else if (left) {
-          return labelBorder.midL
-        } else if (right) {
-          return labelBorder.midR
+        if (!anchorIsLeft && !anchorIsRight && !anchorIsAbove && !anchorIsBelow) {
+          return { point: labelBorder.botC, name: 'ancNearby && !anchorIsLeft && !anchorIsRight && !anchorIsAbove && !anchorIsBelow' }
+        } else if (anchorAndLabelAreHorizontallyAligned && anchorIsAbove) {
+          return { point: labelBorder.topC, name: 'ancNearby && anchorAndLabelAreHorizontallyAligned && anchorIsAbove' }
+        } else if (anchorAndLabelAreHorizontallyAligned && anchorIsBelow) {
+          return { point: labelBorder.botC, name: 'ancNearby && anchorAndLabelAreHorizontallyAligned && anchorIsBelow' }
+        } else if (anchorIsLeft && anchorIsAbove) {
+          return { point: labelBorder.topL, name: 'ancNearby && anchorIsLeft && anchorIsAbove' }
+        } else if (anchorIsLeft && anchorIsBelow) {
+          return { point: labelBorder.botL, name: 'ancNearby && anchorIsLeft && anchorIsBelow' }
+        } else if (anchorIsRight && anchorIsAbove) {
+          return { point: labelBorder.topR, name: 'ancNearby && anchorIsRight && anchorIsAbove' }
+        } else if (anchorIsRight && anchorIsBelow) {
+          return { point: labelBorder.botR, name: 'ancNearby && anchorIsRight && anchorIsBelow' }
+        } else if (anchorIsLeft) {
+          return { point: labelBorder.midL, name: 'ancNearby && anchorIsLeft' }
+        } else if (anchorIsRight) {
+          return { point: labelBorder.midR, name: 'ancNearby && anchorIsRight' }
         }
       }
     }
 
-    return null
+    return { point: null, name: 'catchall' }
   }
 
   _getPtOnAncBorder (cx, cy, cr, x, y) {
