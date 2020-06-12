@@ -128,6 +128,11 @@ class RectPlot {
       logoScale: config.labelsLogoScale
     }
 
+    this.leaderLineConfig = {
+      minimumDistance: config.leaderLineDistanceMinimum,
+      nearbyAnchorDistanceThreshold: config.leaderLineDistanceNearbyAnchors,
+    }
+
     this.xTitle = new AxisTitle(config.xTitle, config.xTitleFontColor, config.xTitleFontSize, config.xTitleFontFamily, 5, 1)
     this.yTitle = new AxisTitle(config.yTitle, config.yTitleFontColor, config.yTitleFontSize, config.yTitleFontFamily, 0, 2)
 
@@ -676,7 +681,11 @@ class RectPlot {
   }
 
   drawLinks () {
-    const links = new Links(this.data.pts, this.data.lab)
+    const links = new Links({
+      points: this.data.points,
+      minimumDistance: this.leaderLineConfig.minimumDistance,
+      nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold,
+    })
     links.drawWith(this.svg, this.data.plotColors, this.transparency)
   }
 

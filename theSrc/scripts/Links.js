@@ -1,62 +1,56 @@
-
 import _ from 'lodash'
 
-const DEBUG = true
+const DEBUG_OUTPUT = false
+
 class Links {
-  constructor (pts, lab) {
+  constructor ({
+    points,
+    minimumDistance,
+    nearbyAnchorDistanceThreshold,
+  }) {
     const _labIsText = labelData => labelData.url === ''
-    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
 
     this.links = []
-    for (let i = 0; i < pts.length; i++) {
-      const pt = pts[i]
+
+    const anchors = points.map(({ anchor }) => anchor)
+
+    points.forEach(({ label, anchor, observations }) => {
+      const hasLabel = (label)
+      const { labelPlacedInsideBubble } = observations.static
+
       let newLinkPt = null
-      if (!this._labIsInsideBubblePt(lab[i], pt)) {
-        if (_labIsEmpty(lab[i])) {
-          newLinkPt = null
-        } else if (_labIsText(lab[i])) {
-          const { point, name } = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
+      if (!labelPlacedInsideBubble && hasLabel) {
+        if (_labIsText(label)) {
+          const { point, name } = this._getNewPtOnTxtLabelBorder({ label, anchor, anchors, minimumDistance, nearbyAnchorDistanceThreshold })
           newLinkPt = point
 
-          if (DEBUG) {
-            const { minX, maxX, minY, maxY, shortText } = lab[i]
-            console.log(`label "${shortText}": ${name}. l x(${minX.toFixed(1)}->${maxX.toFixed(1)}) y(${minY.toFixed(1)}->${maxY.toFixed(1)}). p: (${pt.x.toFixed(1)},${pt.y.toFixed(1)}) r: ${pt.r.toFixed(1)}.`)
+          if (DEBUG_OUTPUT) {
+            const { minX, maxX, minY, maxY, shortText } = label
+            console.log(`label "${shortText}": ${name}. l x(${minX.toFixed(1)}->${maxX.toFixed(1)}) y(${minY.toFixed(1)}->${maxY.toFixed(1)}). p: (${anchor.x.toFixed(1)},${anchor.y.toFixed(1)}) r: ${anchor.r.toFixed(1)}.`)
           }
         } else {
-          newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts)
+          newLinkPt = this._getNewPtOnLogoLabelBorder({ label, anchor })
         }
       }
 
       if (!_.isNull(newLinkPt)) {
-        const ancBorderPt = this._getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1])
+        const ancBorderPt = this._getPtOnAncBorder(anchor.x, anchor.y, anchor.r, newLinkPt[0], newLinkPt[1])
         this.links.push({
           x1: ancBorderPt[0],
           y1: ancBorderPt[1],
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
-          color: pt.color
+          color: anchor.color
         })
       }
-    }
+    })
+
   }
 
   getLinkData () { return this.links }
 
-  _labIsInsideBubblePt (lab, pt) {
-    // Will return true if any part of the label is inside the bubble
-    const labLeftBorder = lab.x - (lab.width / 2)
-    const labRightBorder = lab.x + (lab.width / 2)
-    const labBotBorder = lab.y
-    const labTopBorder = lab.y - lab.height
-
-    return (labLeftBorder < (pt.x + pt.r)) &&
-      (labRightBorder > (pt.x - pt.r)) &&
-      (labTopBorder < (pt.y + pt.r)) &&
-      (labBotBorder > (pt.y - pt.r))
-  }
-
-  _getNewPtOnLogoLabelBorder (label, anchor) {
+  _getNewPtOnLogoLabelBorder ({ label, anchor }) {
     // Don't draw a link if anc is inside logo
     let region
     if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
@@ -102,7 +96,7 @@ class Links {
   }
 
   // calc the links from anc to label text if ambiguous
-  _getNewPtOnTxtLabelBorder (label, anchor, anchorArray) {
+  _getNewPtOnTxtLabelBorder ({ label, anchor, anchors, minimumDistance, nearbyAnchorDistanceThreshold }) {
     const labelXmid = label.x
     const labelXleft = label.x - (label.width / 2)
     const labelXright = label.x + (label.width / 2)
@@ -127,15 +121,14 @@ class Links {
       midR: [labelXright, labelYmid]
     }
 
-    const padding = 10
     const anchorAndLabelAreHorizontallyAligned = (ancR > labelXleft) && (ancL < labelXright)
-    const anchorIsAboveWithPadding = ancB < (labelYtop - padding)
+    const anchorIsAboveWithPadding = ancB < (labelYtop - minimumDistance)
     const anchorIsAbove = ancB < labelYtop
-    const anchorIsBelowWithPadding = ancT > (labelYbot + padding)
+    const anchorIsBelowWithPadding = ancT > (labelYbot + minimumDistance)
     const anchorIsBelow = ancT > labelYbot
-    const anchorIsLeftWithPadding = ancR < (labelXleft - padding)
+    const anchorIsLeftWithPadding = ancR < (labelXleft - minimumDistance)
     const anchorIsLeft = ancR < labelXleft
-    const anchorIsRightWithPadding = ancL > (labelXright + padding)
+    const anchorIsRightWithPadding = ancL > (labelXright + minimumDistance)
     const anchorIsRight = ancL > labelXright
 
     if (anchorAndLabelAreHorizontallyAligned && anchorIsAboveWithPadding) {
@@ -156,14 +149,13 @@ class Links {
       return { point: labelBorder.midR, name: 'anchorIsRightWithPadding' }
     } else {
       // Draw the link if there are any anc nearby
-      const ambiguityFactor = 10
-      const padL = labelBorder.topL[0] - ambiguityFactor
-      const padR = labelBorder.topR[0] + ambiguityFactor
-      const padT = labelBorder.topL[1] - ambiguityFactor
-      const padB = labelBorder.botR[1] + ambiguityFactor
+      const padL = labelBorder.topL[0] - nearbyAnchorDistanceThreshold
+      const padR = labelBorder.topR[0] + nearbyAnchorDistanceThreshold
+      const padT = labelBorder.topL[1] - nearbyAnchorDistanceThreshold
+      const padB = labelBorder.botR[1] + nearbyAnchorDistanceThreshold
       let ancNearby = 0
       // TODO could use collision tree here
-      _(anchorArray).each((a) => {
+      _(anchors).each((a) => {
         if (((a.x > padL) && (a.x < padR)) && ((a.y > padT) && (a.y < padB))) {
           ancNearby++
         }

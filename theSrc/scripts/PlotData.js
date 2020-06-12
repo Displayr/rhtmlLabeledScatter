@@ -408,11 +408,13 @@ class PlotData {
     this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles, this.pointRadius)
   }
 
-  isOutsideViewBox (lab) {
-    const isAllOfLabOutside = ((label.maxX < this.vb.x) ||
-                               (label.minX > (this.vb.x + this.vb.width)) ||
-                               (label.maxY < this.vb.y) ||
-                               (label.minY > (this.vb.y + this.vb.height)))
+  isOutsideViewBox (label) {
+    const isAllOfLabOutside = (
+      (label.maxX < this.vb.x) ||
+      (label.minX > (this.vb.x + this.vb.width)) ||
+      (label.maxY < this.vb.y) ||
+      (label.minY > (this.vb.y + this.vb.height))
+    )
     return isAllOfLabOutside
   }
 

@@ -103,6 +103,8 @@
 #' @param label.placement.seed Label placement algorithm setting for the randomiser seed (Default is 1).
 #' @param label.placement.temperature.initial Label placement algorithm initial temperature (Default is 0.01).
 #' @param label.placement.temperature.final Label placement algorithm final temperature (Default is 0.0001).
+#' @param leaderline.distance.minimum
+#' @param leaderline.distance.nearbyAnchors
 #' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
@@ -154,6 +156,8 @@ LabeledScatter <- function(
     labels.font.size = 10,
     labels.logo.scale = NULL,
     labels.show = TRUE,
+    leaderline.distance.minimum = 10.0,
+    leaderline.distance.nearbyAnchors = 10.0,
     legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
     legend.bubble.font.family = "Arial",
     legend.bubble.font.size = 10,
@@ -281,6 +285,8 @@ LabeledScatter <- function(
              labelsFontColor = labels.font.color,
              labelsFontSize = labels.font.size,
              labelsLogoScale = labels.logo.scale,
+             leaderLineDistanceMinimum = leaderline.distance.minimum,
+             leaderLineDistanceNearbyAnchors = leaderline.distance.nearbyAnchors,
              legendShow = legend.show,
              legendBubblesShow = legend.bubbles.show,
              legendFontColor = legend.font.color,
