@@ -3,6 +3,10 @@ title: "test bubbleplot"
 width: 400
 height: 400
 rowSize: 4
+comments:
+  - location: "no legend"
+    status: red
+    comment: VIS-574 - when legend is disabled, the space is still allocated
 widgets:
   - config: data.functionalTest.bubbleplot_simple|{"title":"default config"}
   - config: data.functionalTest.bubbleplot_simple|config.zTitle|{"title":"with z title"}

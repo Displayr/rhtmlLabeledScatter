@@ -8,7 +8,7 @@
     "test": "npm run localTest",
     "localTest": "gulp testSpecs && gulp testVisual --env=local --branch=`git rev-parse --abbrev-ref HEAD`",
     "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=`git rev-parse --abbrev-ref HEAD`",
-    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/`git rev-parse --abbrev-ref HEAD` -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; BRANCH=`git rev-parse --abbrev-ref HEAD` && for I in `find theSrc/test/snapshots/local/$BRANCH -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
     "macOpenDiffs": "open .tmp/diffs",
     "seeDiffs": "npm run gatherDiffs; npm run macOpenDiffs",
     "deleteDiffs": "find theSrc/test/snapshots -iname '__diff_output__' | xargs rm -rf"
@@ -31,6 +31,7 @@
     "lodash": "^4.17.11",
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
-    "rbush": "^3.0.1"
+    "rbush": "^3.0.1",
+    "rhtmlLabelUtils": "github:Displayr/rhtmlLabelUtils#1.0.2"
   }
 }

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import 'babel-polyfill'
 import DisplayError from './DisplayError'
+import { getHorizontalLabelDimensionsUsingSvgApproximation } from 'rhtmlLabelUtils'
 
 /* global Image */ // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
 
@@ -13,10 +14,13 @@ import DisplayError from './DisplayError'
 // to parse them apart from the regular text labels
 
 class PlotLabel {
-  constructor (givenLabelArray, labelAlt, logoScale) {
+  constructor (givenLabelArray, labelAlt, logoScale, parentContainer, fontSize, fontFamily) {
     this.givenLabelArray = givenLabelArray
     this.labelAlt = labelAlt
     this.logoScale = logoScale
+    this.parentContainer = parentContainer
+    this.fontSize = fontSize
+    this.fontFamily = fontFamily
     this.promiseLabelArray = _.map(this.givenLabelArray, (label, index) => {
       if (PlotLabel._isStringLinkToImg(label)) {
         return this._makeImgLabPromise(label, this.labelAlt[index] || '', this.logoScale[index])
@@ -31,9 +35,16 @@ class PlotLabel {
   }
 
   _makeLabPromise (label) {
+    const { width, height } = getHorizontalLabelDimensionsUsingSvgApproximation({
+      parentContainer: this.parentContainer,
+      text: label,
+      fontSize: this.fontSize,
+      fontFamily: this.fontFamily
+    })
+
     return Promise.resolve({
-      width: null,
-      height: null,
+      width,
+      height,
       label,
       url: ''
     })

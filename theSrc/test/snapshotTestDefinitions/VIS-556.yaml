@@ -1,0 +1,8 @@
+type: multi_widget_single_page
+widgets:
+  - config: data.VIS-556.1
+    width: 576
+    height: 512
+  - config: data.VIS-556.2
+    width: 576
+    height: 512

@@ -19,7 +19,7 @@ class State {
            !_.isEqual(storedY, Y) ||
            !_.isEqual(storedLabel, label)) {
       this.stateObj = {}
-      this.saveToState({ 'X': X, 'Y': Y, 'label': label })
+      this.saveToState({ X, Y, label })
     }
 
     this.legendPts = this.retrieveLegendPts()
@@ -125,17 +125,17 @@ class State {
     }
   }
 
-  pushUserPositionedLabel (id, labx, laby, vb) {
+  pushUserPositionedLabel ({ id, x, y, vb }) {
     // _.remove(this.algoPositionedLabs, e => e.id === id)
     _.remove(this.userPositionedLabs, e => e.id === id)
 
     this.userPositionedLabs.push({
       id,
-      x: (labx - vb.x) / vb.width,
-      y: (laby - vb.y) / vb.height
+      x: (x - vb.x) / vb.width,
+      y: (y - vb.y) / vb.height
     })
     this.updateViewBox(vb)
-    this.saveToState({ 'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs })
+    this.saveToState({ vb: this.vb, userPositionedLabs: this.userPositionedLabs })
   }
 
   updateLabelsWithPositionedData (labels, vb) {
@@ -144,8 +144,8 @@ class State {
       _(labels).each((label) => {
         const matchingLabel = _.find(combinedLabs, e => e.id === label.id)
         if (matchingLabel != null) {
-          label.x = (matchingLabel.x * vb.width) + vb.x
-          label.y = (matchingLabel.y * vb.height) + vb.y
+          label.x = (matchingLabel.x * vb.width) + vb.x - label.width / 2
+          label.y = (matchingLabel.y * vb.height) + vb.y - label.height
         }
       })
     }

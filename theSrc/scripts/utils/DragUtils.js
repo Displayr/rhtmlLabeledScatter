@@ -20,32 +20,40 @@ class DragUtils {
       if ($(this).prop('tagName') === 'image') {
         label.x = d3.event.x + (label.width / 2)
         label.y = d3.event.y + label.height
+        addMinMaxAreaToRectangle(label)
       } else {
-        label.x = d3.event.x
-        label.y = d3.event.y
+        label.x = d3.event.x + (label.width / 2)
+        label.y = d3.event.y + label.height
+        addMinMaxAreaToRectangle(label)
       }
     }
 
     const dragEnd = function () {
       // If label is dragged out of viewBox, remove the lab and add to legend
       const id = Number(d3.select(this).attr('id'))
-      const lab = _.find(plot.data.lab, l => l.id === id)
-      const anc = _.find(plot.data.pts, a => a.id === id)
+      const label = _.find(plot.data.lab, l => l.id === id)
+      const anchor = _.find(plot.data.pts, a => a.id === id)
 
       const notBubblePlot = !Utils.isArrOfNums(this.Z)
-      const labIsNotLogo = lab.url !== ''
-      const labOnTopOfPoint = (lab.x - (lab.width / 2) < anc.x && anc.x < lab.x + (lab.width / 2)) && (lab.y > anc.y && anc.y > lab.y - lab.height)
+      const labIsLogo = label.url !== ''
+      // TODO use shared intersection code here
+      const labOnTopOfPoint = (label.minX < anchor.x && anchor.x < label.maxX) && (label.maxY > anchor.y && anchor.y > label.minY)
 
-      if (plot.data.isOutsideViewBox(lab) && !showTrendLine) {
+      if (plot.data.isOutsideViewBox(label) && !showTrendLine) {
         // Element dragged off plot
         plot.data.addElemToLegend(id)
         plot.state.pushLegendPt(id)
         plot.resetPlotAfterDragEvent()
-      } else if (labIsNotLogo && notBubblePlot && labOnTopOfPoint) {
+      } else if (labIsLogo && notBubblePlot && labOnTopOfPoint) {
         // For logo labels and not bubbles, if the logo is directly on top of the point, do not draw point
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', 0)
       } else {
-        plot.state.pushUserPositionedLabel(id, lab.x, lab.y, plot.vb)
+        plot.state.pushUserPositionedLabel({
+          id,
+          x: label.x + (label.width / 2),
+          y: label.y + label.height,
+          vb: plot.vb
+        })
         plot.svg.select(`#anc-${id}`).attr('fill-opacity', d => d.fillOpacity)
         if (!showTrendLine) {
           plot.drawLinks()
@@ -109,3 +117,14 @@ class DragUtils {
 }
 
 module.exports = DragUtils
+
+// duplicated in 3 places
+// assume x,y is top left
+const addMinMaxAreaToRectangle = (rect) => {
+  rect.minX = rect.x - rect.width / 2
+  rect.maxX = rect.x + rect.width / 2
+  rect.minY = rect.y - rect.height
+  rect.maxY = rect.y
+  rect.area = rect.width * rect.height
+  return rect
+}

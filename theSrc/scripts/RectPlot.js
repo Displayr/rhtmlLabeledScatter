@@ -26,7 +26,7 @@ import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
 
-const DEBUG_ADD_BBOX_TO_IMG = false
+const DEBUG_ADD_BBOX_TO_LABELS = false
 
 class RectPlot {
   constructor ({ config, stateObj, svg } = {}) {
@@ -128,6 +128,11 @@ class RectPlot {
       logoScale: config.labelsLogoScale
     }
 
+    this.leaderLineConfig = {
+      minimumDistance: config.leaderLineDistanceMinimum,
+      nearbyAnchorDistanceThreshold: config.leaderLineDistanceNearbyAnchors
+    }
+
     this.xTitle = new AxisTitle(config.xTitle, config.xTitleFontColor, config.xTitleFontSize, config.xTitleFontFamily, 5, 1)
     this.yTitle = new AxisTitle(config.yTitle, config.yTitleFontColor, config.yTitleFontSize, config.yTitleFontFamily, 0, 2)
 
@@ -190,7 +195,6 @@ class RectPlot {
 
     this.setDim(this.svg, this.width, this.height)
 
-    // TODO make an object then get rid of double handling via this.labelPlacementSettings
     this.labelPlacement = new LabelPlacement({
       svg: this.svg,
       pltId: this.pltUniqueId,
@@ -236,25 +240,31 @@ class RectPlot {
     this.subtitle.setX(this.vb.getTitleX())
     this.footer.setX(this.vb.getTitleX())
 
-    this.data = new PlotData(this.X,
-                         this.Y,
-                         this.Z,
-                         this.xDataType,
-                         this.yDataType,
-                         this.xLevels,
-                         this.yLevels,
-                         this.group,
-                         this.label,
-                         this.labelAlt,
-                         this.vb,
-                         this.legend,
-                         this.colors,
-                         this.fixedRatio,
-                         this.originAlign,
-                         this.pointRadius,
-                         this.bounds,
-                         this.transparency,
-                         this.legendSettings)
+    this.data = new PlotData({
+      X: this.X,
+      Y: this.Y,
+      Z: this.Z,
+      xDataType: this.xDataType,
+      yDataType: this.yDataType,
+      xLevels: this.xLevels,
+      yLevels: this.yLevels,
+      group: this.group,
+      label: this.label,
+      labelAlt: this.labelAlt,
+      vb: this.vb,
+      legend: this.legend,
+      colors: this.colors,
+      fixedRatio: this.fixedRatio,
+      originAlign: this.originAlign,
+      pointRadius: this.pointRadius,
+      bounds: this.bounds,
+      transparency: this.transparency,
+      legendSettings: this.legendSettings,
+      state: this.state,
+      svg: this.svg,
+      labelsFontSize: this.labelsFont.size,
+      labelsFontFamily: this.labelsFont.family
+    })
 
     this.drawFailureCount = 0
   }
@@ -319,7 +329,7 @@ class RectPlot {
   drawLabsAndPlot () {
     this.data.normalizeData()
 
-    return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
+    return this.data.buildPoints('RectPlot.drawLabsAndPlot').then(() => {
       const titlesX = this.vb.x + (this.vb.width / 2)
       this.title.setX(titlesX)
       this.subtitle.setX(titlesX)
@@ -570,37 +580,48 @@ class RectPlot {
                  .append('text')
                  .attr('class', `plt-${this.pltUniqueId}-lab`)
                  .attr('id', d => d.id)
-                 .attr('x', d => d.x)
-                 .attr('y', d => d.y)
+                 .attr('x', d => d.x - (d.width / 2))
+                 .attr('y', d => d.y - d.height)
                  .attr('font-family', d => d.fontFamily)
-                 .text(d => d.text)
-                 .attr('text-anchor', 'middle')
+                 .attr('dominant-baseline', 'text-before-edge')
                  .attr('fill', d => d.color)
                  .attr('font-size', d => d.fontSize)
                  .style('cursor', 'pointer')
+                 .text(d => d.text)
                  .call(drag)
 
-        const placementPromise = new Promise((resolve, reject) => {
-          this.labelPlacement.placeLabels(
-            this.vb,
-            this.data.pts,
-            this.data.lab,
-            this.state,
-            resolve
-          )
+        const placementPromise = this.labelPlacement.placeLabels({
+          vb: this.vb,
+          points: this.data.points
         })
 
-        placementPromise.then(() => {
+        return placementPromise.then(() => {
           const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
           const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
 
           // Move labels after label placement algorithm
-          labelsSvg.attr('x', d => d.x)
-                   .attr('y', d => d.y)
-          labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                      .attr('y', d => d.y - d.height)
+          labelsSvg
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
 
-          if (DEBUG_ADD_BBOX_TO_IMG) {
+          labelsImgSvg
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
+
+          if (DEBUG_ADD_BBOX_TO_LABELS) {
+            this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-debug-bbox`)
+              .data(this.data.getTextLabels())
+              .enter()
+              .append('rect')
+              .attr('class', `plt-${this.pltUniqueId}-lab-debug-bbox`)
+              .attr('x', d => d.x - (d.width / 2))
+              .attr('y', d => d.y - d.height)
+              .attr('width', d => d.width)
+              .attr('height', d => d.height)
+              .attr('fill', 'none')
+              .attr('stroke', 'black')
+              // .each(d => console.log('debug box', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
+
             this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img-debug-bbox`)
               .data(this.data.getImgLabels())
               .enter()
@@ -616,21 +637,29 @@ class RectPlot {
 
           this.drawLinks()
         })
-        return placementPromise
       } else if (this.trendLines.show) {
         this.tl = new TrendLine(this.data.pts, this.data.lab)
         this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
         this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
-        const placementPromise = new Promise((resolve, reject) => {
-          this.labelPlacement.placeTrendLabels(
-            this.vb,
-            this.tl.pts,
-            this.tl.arrowheadLabels,
-            this.state,
-            resolve
-          )
+
+        // TODO this is duplicated from PlotData to create a points structure from the TrendLine labels
+
+        const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
+        const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
+        const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
+
+        const mergedStructure = _.merge(
+          _.keyBy(nestUnderField(this.tl.arrowheadLabels, 'label'), 'id'),
+          _.keyBy(nestUnderField(this.tl.pts, 'anchor'), 'id'),
+          pinnedById
+        )
+        const trendLinePoints = Object.values(mergedStructure)
+
+        const placementPromise = this.labelPlacement.placeTrendLabels({
+          vb: this.vb,
+          points: trendLinePoints
         })
         placementPromise.then(() => {
           const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
@@ -650,7 +679,11 @@ class RectPlot {
   }
 
   drawLinks () {
-    const links = new Links(this.data.pts, this.data.lab)
+    const links = new Links({
+      points: this.data.points,
+      minimumDistance: this.leaderLineConfig.minimumDistance,
+      nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold
+    })
     links.drawWith(this.svg, this.data.plotColors, this.transparency)
   }
 

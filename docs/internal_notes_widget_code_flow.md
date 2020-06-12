@@ -23,6 +23,8 @@ There are internal notes and not refined enough to be very useful for others
   * AxisTitle, LegendSettings, Title/Subtitle/Footer, LabelPlacement
 * initialise dimensions by calling setDim
   * setDim creates a new ViewBox and a new PlotData
+  * this.vb is the ViewBox, and vb.width and vb.height are the plt height and width, after accounting for legend etc
+  
   
 1. RectPlot.draw()
 
@@ -30,7 +32,7 @@ In a loop based on a Promise chain then/catch model with recursion:
 
 * set snapshot-test class to not ready
 * drawDimensionMarkers
-  * Q: what causes this to throw
+  * this throws if the axis renders out of bounds
 * drawLegend
   * Q: what causes this to throw
 * drawLabsAndPlot

@@ -33,6 +33,8 @@ const defaultConfig = {
   labelsFontFamily: 'Arial',
   labelsFontSize: 10,
   labelsLogoScale: [],
+  leaderLineDistanceMinimum: 10,
+  leaderLineDistanceNearbyAnchors: 10,
   legendBubbleFontColor: '#2C2C2C',
   legendBubbleFontFamily: 'Arial',
   legendBubbleFontSize: 10,

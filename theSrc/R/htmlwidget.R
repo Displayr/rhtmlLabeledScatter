@@ -36,6 +36,8 @@
 #' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
 #' @param labels.font.size is the font size of the labels
 #' @param labels.logo.scale is a vector of scaling factors for label logos
+#' @param leaderline.distance.minimum Distance between anchor and label must meet or exceed this value before a leader line will be drawn (Default is 10)
+#' @param leaderline.distance.nearbyAnchors If a label has other anchors nearby, a leader line be added regardless of distance between anchor and label (Default is 10)
 #' @param legend.show is the toggle to show the legend. Defaults to TRUE
 #' @param legend.bubbles.show toggle to show the bubble sizes in the legend. Defaults to TRUE
 #' @param legend.font.color is the font color of the legend.
@@ -154,6 +156,8 @@ LabeledScatter <- function(
     labels.font.size = 10,
     labels.logo.scale = NULL,
     labels.show = TRUE,
+    leaderline.distance.minimum = 10.0,
+    leaderline.distance.nearbyAnchors = 10.0,
     legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
     legend.bubble.font.family = "Arial",
     legend.bubble.font.size = 10,
@@ -281,6 +285,8 @@ LabeledScatter <- function(
              labelsFontColor = labels.font.color,
              labelsFontSize = labels.font.size,
              labelsLogoScale = labels.logo.scale,
+             leaderLineDistanceMinimum = leaderline.distance.minimum,
+             leaderLineDistanceNearbyAnchors = leaderline.distance.nearbyAnchors,
              legendShow = legend.show,
              legendBubblesShow = legend.bubbles.show,
              legendFontColor = legend.font.color,

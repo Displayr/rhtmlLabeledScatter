@@ -1,0 +1,35 @@
+type: multi_widget_single_page
+title: "leader lines with large fantasy font"
+width: 400
+height: 400
+rowSize: 2
+comments:
+  - location: 0
+    status: yellow
+    comment: all of the label examples show the issue with a font that has a low hanging thing
+widgets:
+  - config: data.functionalTest.logos_8_points_on_square|config.xBounds_10|config.yBounds_10|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_leader_line_logos
+  - config: data.functionalTest.labels_8_points_on_square|config.xBounds_10|config.yBounds_10|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_leader_line_labels
+
+  - config: data.functionalTest.logos_8_points_on_square_bubbleplot|config.xBounds_10|config.yBounds_10|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_leader_line_logos_bubbleplot
+  - config: data.functionalTest.labels_8_points_on_square_bubbleplot|config.xBounds_10|config.yBounds_10|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_leader_line_labels_bubbleplot
+
+
+  - config: data.functionalTest.labels_9_vertical_stack|{"xBoundsMinimum":-2,"yBoundsMinimum":-100,"yBoundsMaximum":100}|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_9_vertical_stack_labels_left_of_origin
+  - config: data.functionalTest.labels_9_vertical_stack|{"xBoundsMaximum":2,"yBoundsMinimum":-100,"yBoundsMaximum":100}|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_9_vertical_stack_labels_right_of_origin
+
+  - config: data.functionalTest.labels_9_horizontal_stack|{"yBoundsMinimum":-2,"xBoundsMinimum":-100,"xBoundsMaximum":100}|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_9_horizontal_stack_labels_below_origin
+  - config: data.functionalTest.labels_9_horizontal_stack|{"yBoundsMaximum":2,"xBoundsMinimum":-100,"xBoundsMaximum":100}|config.originDisabled|config.label_24_red_fantasy
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_9_horizontal_stack_labels_above_origin
+
+  - config: data.functionalTest.labels_9_horizontal_stack|{"yBoundsMinimum":-1,"yBoundsMaximum":1,"xBoundsMinimum":-4.5,"xBoundsMaximum":4.5}|config.originDisabled|config.label_24_red_fantasy|{"title":"currently the threshold for 'connect' to center vs conect to bottom/top is","subtitle":"based on overlap on the vertical plane between the label and anchor"}
+    state: state.functionalTest.leader_lines_fantasy_font.manually_placed_9_horizontal_stack_demonstrate_threshold
+    width: 800
+    height: 400

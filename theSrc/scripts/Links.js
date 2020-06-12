@@ -1,93 +1,104 @@
-
 import _ from 'lodash'
 
+const DEBUG_OUTPUT = false
+
 class Links {
-  constructor (pts, lab) {
+  constructor ({
+    points,
+    minimumDistance,
+    nearbyAnchorDistanceThreshold
+  }) {
     const _labIsText = labelData => labelData.url === ''
-    const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
 
     this.links = []
-    for (let i = 0; i < pts.length; i++) {
-      const pt = pts[i]
+    const anchors = points.map(({ anchor }) => anchor)
+    points.forEach(({ label, anchor }) => {
+      const hasLabel = (label)
+
       let newLinkPt = null
-      if (!this._labIsInsideBubblePt(lab[i], pt)) {
-        if (_labIsEmpty(lab[i])) {
-          newLinkPt = null
-        } else if (_labIsText(lab[i])) {
-          newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
+      if (hasLabel) {
+        if (_labIsText(label) && !this._labIsInsideBubblePt({ label, anchor })) {
+          const { point, name } = this._getNewPtOnTxtLabelBorder({ label, anchor, anchors, minimumDistance, nearbyAnchorDistanceThreshold })
+          if (DEBUG_OUTPUT) { this._debugOutput({ label, anchor, name }) }
+          newLinkPt = point
         } else {
-          newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts)
+          newLinkPt = this._getNewPtOnLogoBorder({ label, anchor })
         }
       }
 
       if (!_.isNull(newLinkPt)) {
-        const ancBorderPt = this._getPtOnAncBorder(pt.x, pt.y, pt.r, newLinkPt[0], newLinkPt[1])
+        const ancBorderPt = this._getPtOnAncBorder(anchor.x, anchor.y, anchor.r, newLinkPt[0], newLinkPt[1])
         this.links.push({
           x1: ancBorderPt[0],
           y1: ancBorderPt[1],
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
-          color: pt.color
+          color: anchor.color
         })
       }
-    }
+    })
+  }
+
+  _debugOutput ({ label, anchor, name }) {
+    const { minX, maxX, minY, maxY, shortText } = label
+    console.log(`label "${shortText}": ${name}. l x(${minX.toFixed(1)}->${maxX.toFixed(1)}) y(${minY.toFixed(1)}->${maxY.toFixed(1)}). p: (${anchor.x.toFixed(1)},${anchor.y.toFixed(1)}) r: ${anchor.r.toFixed(1)}.`)
   }
 
   getLinkData () { return this.links }
 
-  _labIsInsideBubblePt (lab, pt) {
+  _labIsInsideBubblePt ({ label, anchor }) {
     // Will return true if any part of the label is inside the bubble
-    const labLeftBorder = lab.x - (lab.width / 2)
-    const labRightBorder = lab.x + (lab.width / 2)
-    const labBotBorder = lab.y
-    const labTopBorder = lab.y - lab.height
-
-    return (labLeftBorder < (pt.x + pt.r)) &&
-      (labRightBorder > (pt.x - pt.r)) &&
-      (labTopBorder < (pt.y + pt.r)) &&
-      (labBotBorder > (pt.y - pt.r))
+    return (label.minX < (anchor.maxX)) &&
+      (label.maxX > (anchor.minX)) &&
+      (label.minY < (anchor.maxY)) &&
+      (label.maxY > (anchor.minY))
   }
 
-  _getNewPtOnLogoLabelBorder (label, anchor) {
+  _getNewPtOnLogoBorder ({ label: logo, anchor }) {
     // Don't draw a link if anc is inside logo
-    let region
-    if ((label.x - (label.width / 2) < anchor.x && anchor.x < label.x + (label.width / 2)) &&
-      (label.y - label.height < anchor.y && anchor.y < label.y)) {
+    if (
+      (logo.minX < anchor.x && anchor.x < logo.maxX) &&
+      (logo.minY < anchor.y && anchor.y < logo.maxY)
+    ) {
       return null
     }
 
     // Calculations reference - http://stackoverflow.com/questions/4061576/finding-points-on-a-rectangle-at-a-given-angle
-    const a = label.width
-    const b = label.height
-    const labx = label.x
-    const laby = label.y - (label.height / 2)
+    const halfWidth = logo.width / 2
+    const halfHeight = logo.height / 2
+    const logoCenter = {
+      x: logo.x,
+      y: logo.y - (logo.height / 2)
+    }
 
-    const dx = anchor.x - labx
-    const dy = anchor.y - laby
+    const dx = anchor.x - logoCenter.x
+    const dy = anchor.y - logoCenter.y
     const angle = Math.atan(dy / dx)
+    const aspectRatioAngle = Math.atan(logo.height / logo.width)
 
-    if (-Math.atan(b / a) < angle && angle < Math.atan(b / a)) {
+    let region
+    if (-aspectRatioAngle < angle && angle <= aspectRatioAngle) {
       region = 1
-    } else if (Math.atan(b / a) < angle && angle < Math.PI - Math.atan(b / a)) {
+    } else if (aspectRatioAngle < angle && angle <= Math.PI - aspectRatioAngle) {
       region = 2
-    } else if (Math.PI - Math.atan(b / a) < angle && angle < Math.PI + Math.atan(b / a)) {
+    } else if (Math.PI - aspectRatioAngle < angle && angle <= Math.PI + aspectRatioAngle) {
       region = 3
-    } else if (((Math.PI + Math.atan(b / a)) < angle) || (angle < -Math.atan(b / a))) {
+    } else {
       region = 4
     }
 
     if ((region === 1) || (region === 3)) {
       if (dx > 0) {
-        return [labx + (a / 2), ((a / 2) * Math.tan(angle)) + laby]
+        return [logo.maxX, (halfWidth * Math.tan(angle)) + logoCenter.y]
       } else {
-        return [labx - (a / 2), -((a / 2) * Math.tan(angle)) + laby]
+        return [logo.minX, -(halfWidth * Math.tan(angle)) + logoCenter.y]
       }
     } else if ((region === 2) || (region === 4)) {
       if (dy > 0) {
-        return [labx + (b / (2 * Math.tan(angle))), (b / 2) + laby]
+        return [logoCenter.x + halfHeight / Math.tan(angle), logo.maxY]
       } else {
-        return [labx - (b / (2 * Math.tan(angle))), (-b / 2) + laby]
+        return [logoCenter.x - halfHeight / Math.tan(angle), logo.minY]
       }
     }
 
@@ -95,96 +106,85 @@ class Links {
   }
 
   // calc the links from anc to label text if ambiguous
-  _getNewPtOnTxtLabelBorder (label, anchor, anchorArray) {
-    const labelXmid = label.x
-    const labelXleft = label.x - (label.width / 2)
-    const labelXright = label.x + (label.width / 2)
-
-    const labelYbot = label.y
-    const labelYtop = label.y - label.height
-    const labelYmid = label.y - (label.height / 2)
-
-    const ancL = anchor.x - anchor.r
-    const ancR = anchor.x + anchor.r
-    const ancT = anchor.y + anchor.r
-    const ancB = anchor.y - anchor.r
+  _getNewPtOnTxtLabelBorder ({ label, anchor, anchors, minimumDistance, nearbyAnchorDistanceThreshold }) {
+    const labelXmid = (label.maxX - label.minX) / 2 + label.minX
+    const labelYmid = (label.maxY - label.minY) / 2 + label.minY
 
     const labelBorder = {
-      botL: [labelXleft, labelYbot],
-      botC: [labelXmid, labelYbot],
-      botR: [labelXright, labelYbot],
-      topL: [labelXleft, labelYtop + 7],
-      topC: [labelXmid, labelYtop + 7],
-      topR: [labelXright, labelYtop + 7],
-      midL: [labelXleft, labelYmid],
-      midR: [labelXright, labelYmid]
+      botL: [label.minX, label.maxY],
+      botC: [labelXmid, label.maxY],
+      botR: [label.maxX, label.maxY],
+      topL: [label.minX, label.minY],
+      topC: [labelXmid, label.minY],
+      topR: [label.maxX, label.minY],
+      midL: [label.minX, labelYmid],
+      midR: [label.maxX, labelYmid]
     }
 
-    const padding = 10
-    const centered = (ancR > labelXleft) && (ancL < labelXright)
-    const abovePadded = ancB < (labelYtop - padding)
-    const above = ancB < labelYtop
-    const belowPadded = ancT > (labelYbot + padding)
-    const below = ancT > labelYbot
-    const left = ancR < labelXleft
-    const right = ancL > labelXright
-    const leftPadded = ancR < (labelXleft - padding)
-    const rightPadded = ancL > (labelXright + padding)
+    const anchorAndLabelAreHorizontallyAligned = (anchor.maxX > label.minX) && (anchor.minX < label.maxX)
+    const anchorIsAboveWithPadding = anchor.maxY < (label.minY - minimumDistance)
+    const anchorIsAbove = anchor.maxY < label.minY
+    const anchorIsBelowWithPadding = anchor.minY > (label.maxY + minimumDistance)
+    const anchorIsBelow = anchor.minY > label.maxY
+    const anchorIsLeftWithPadding = anchor.maxX < (label.minX - minimumDistance)
+    const anchorIsLeft = anchor.maxX < label.minX
+    const anchorIsRightWithPadding = anchor.minX > (label.maxX + minimumDistance)
+    const anchorIsRight = anchor.minX > label.maxX
 
-    if (centered && abovePadded) {
-      return labelBorder.topC
-    } else if (centered && belowPadded) {
-      return labelBorder.botC
-    } else if (above && left) {
-      return labelBorder.topL
-    } else if (above && right) {
-      return labelBorder.topR
-    } else if (below && left) {
-      return labelBorder.botL
-    } else if (below && right) {
-      return labelBorder.botR
-    } else if (leftPadded) {
-      return labelBorder.midL
-    } else if (rightPadded) {
-      return labelBorder.midR
+    if (anchorAndLabelAreHorizontallyAligned && anchorIsAboveWithPadding) {
+      return { point: labelBorder.topC, name: 'anchorAndLabelAreHorizontallyAligned && anchorIsAboveWithPadding' }
+    } else if (anchorAndLabelAreHorizontallyAligned && anchorIsBelowWithPadding) {
+      return { point: labelBorder.botC, name: 'anchorAndLabelAreHorizontallyAligned && anchorIsBelowWithPadding' }
+    } else if (anchorIsAbove && anchorIsLeft) {
+      return { point: labelBorder.topL, name: 'anchorIsAbove && anchorIsLeft' }
+    } else if (anchorIsAbove && anchorIsRight) {
+      return { point: labelBorder.topR, name: 'anchorIsAbove && anchorIsRight' }
+    } else if (anchorIsBelow && anchorIsLeft) {
+      return { point: labelBorder.botL, name: 'anchorIsBelow && anchorIsLeft' }
+    } else if (anchorIsBelow && anchorIsRight) {
+      return { point: labelBorder.botR, name: 'anchorIsBelow && anchorIsRight' }
+    } else if (anchorIsLeftWithPadding) {
+      return { point: labelBorder.midL, name: 'anchorIsLeftWithPadding' }
+    } else if (anchorIsRightWithPadding) {
+      return { point: labelBorder.midR, name: 'anchorIsRightWithPadding' }
     } else {
       // Draw the link if there are any anc nearby
-      const ambiguityFactor = 10
-      const padL = labelBorder.topL[0] - ambiguityFactor
-      const padR = labelBorder.topR[0] + ambiguityFactor
-      const padT = labelBorder.topL[1] - ambiguityFactor
-      const padB = labelBorder.botR[1] + ambiguityFactor
+      // TODO have utility for this in labeler.js
+      const padL = label.minX - nearbyAnchorDistanceThreshold
+      const padR = label.maxX + nearbyAnchorDistanceThreshold
+      const padT = label.minY - nearbyAnchorDistanceThreshold
+      const padB = label.maxY + nearbyAnchorDistanceThreshold
       let ancNearby = 0
       // TODO could use collision tree here
-      _(anchorArray).each((a) => {
+      _(anchors).each((a) => {
         if (((a.x > padL) && (a.x < padR)) && ((a.y > padT) && (a.y < padB))) {
           ancNearby++
         }
       })
       if (ancNearby > 1) {
-        if (!left && !right && !above && !below) {
-          return labelBorder.botC
-        } else if (centered && above) {
-          return labelBorder.topC
-        } else if (centered && below) {
-          return labelBorder.botC
-        } else if (left && above) {
-          return labelBorder.topL
-        } else if (left && below) {
-          return labelBorder.botL
-        } else if (right && above) {
-          return labelBorder.topR
-        } else if (right && below) {
-          return labelBorder.botR
-        } else if (left) {
-          return labelBorder.midL
-        } else if (right) {
-          return labelBorder.midR
+        if (!anchorIsLeft && !anchorIsRight && !anchorIsAbove && !anchorIsBelow) {
+          return { point: labelBorder.botC, name: 'ancNearby && !anchorIsLeft && !anchorIsRight && !anchorIsAbove && !anchorIsBelow' }
+        } else if (anchorAndLabelAreHorizontallyAligned && anchorIsAbove) {
+          return { point: labelBorder.topC, name: 'ancNearby && anchorAndLabelAreHorizontallyAligned && anchorIsAbove' }
+        } else if (anchorAndLabelAreHorizontallyAligned && anchorIsBelow) {
+          return { point: labelBorder.botC, name: 'ancNearby && anchorAndLabelAreHorizontallyAligned && anchorIsBelow' }
+        } else if (anchorIsLeft && anchorIsAbove) {
+          return { point: labelBorder.topL, name: 'ancNearby && anchorIsLeft && anchorIsAbove' }
+        } else if (anchorIsLeft && anchorIsBelow) {
+          return { point: labelBorder.botL, name: 'ancNearby && anchorIsLeft && anchorIsBelow' }
+        } else if (anchorIsRight && anchorIsAbove) {
+          return { point: labelBorder.topR, name: 'ancNearby && anchorIsRight && anchorIsAbove' }
+        } else if (anchorIsRight && anchorIsBelow) {
+          return { point: labelBorder.botR, name: 'ancNearby && anchorIsRight && anchorIsBelow' }
+        } else if (anchorIsLeft) {
+          return { point: labelBorder.midL, name: 'ancNearby && anchorIsLeft' }
+        } else if (anchorIsRight) {
+          return { point: labelBorder.midR, name: 'ancNearby && anchorIsRight' }
         }
       }
     }
 
-    return null
+    return { point: null, name: 'catchall' }
   }
 
   _getPtOnAncBorder (cx, cy, cr, x, y) {

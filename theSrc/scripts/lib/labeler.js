@@ -4,25 +4,25 @@ import _ from 'lodash'
 import RBush from 'rbush'
 import circleIntersection from '../utils/circleIntersection'
 
-const NO_LOGGING = 0
-const MINIMAL_LOGGING = 1
-const OUTER_LOOP_LOGGING = 2
-const INNER_LOOP_LOGGING = 3
-const TRACE_LOGGING = 4
+const LOG_LEVEL_NONE = 0
+const LOG_LEVEL_MINIMAL = 1
+const LOG_LEVEL_OUTER = 2
+const LOG_LEVEL_INNER = 3
+const LOG_LEVEL_TRACE = 4
 
 // independent log flags
-const OBSERVATION_LOGGING = false
-const TEMPERATURE_LOGGING = false
-const INITIALISATION_LOGGING = false
-const POST_SWEEP_LOGGING = 0 // [0,1,2] 2 is most logging
-const ENERGY_DETAIL_LOGGING = false
-const OVERLAP_LOGGING = 0 // [0,1,2] 2 is most logging
-const FINAL_DUMP_LOGGING = false
-const LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING = false
-const disabledMessage = 'enable ENERGY_DETAIL_LOGGING to track this field'
+const LOGGING_OBSERVATIONS = false
+const LOGGINV_TEMPERATURE = false
+const LOGGING_INITIALISATION = false
+const LOGGING_POSTSWEEP = 0 // [0,1,2] 2 is most logging
+const LOGGING_ENERGY_DETAIL = false
+const LOGGING_OVERLAP = 0 // [0,1,2] 2 is most logging
+const LOGGING_FINAL_DUMP = false
+const LOGGING_BUBBLE_PRE_SWEEP = false
+const disabledMessage = 'enable LOGGING_ENERGY_DETAIL to track this field'
 
-const LOG_LEVEL = MINIMAL_LOGGING
-// const LOG_LEVEL = OUTER_LOOP_LOGGING
+const LOG_LEVEL = LOG_LEVEL_MINIMAL
+// const LOG_LEVEL = LOG_LEVEL_OUTER
 
 // behaviour controls
 const debugForceMaxRounds = null // leave this at NULL unless you want to force the number of sweeps
@@ -39,9 +39,6 @@ const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
 
-  let lab = []
-  let anc = []
-  // TODO: better name for points (they are not points). Nodes ? Members ?
   let points = [] // combined data structure for efficiency like
   let pointsWithLabels = []
   let collisionTree = null
@@ -55,8 +52,6 @@ const labeler = function () {
   let worstCaseEnergy = null
   let labeler = {}
   let svg = {}
-  let resolveFunc = null
-  let pinned = []
   let is_placement_algo_on = true
 
   const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
@@ -105,11 +100,11 @@ const labeler = function () {
       distanceMagnitude: 0,
       distanceName: 'N/A',
       labelOverlap: 0,
-      labelOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
-      labelOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage,
+      labelOverlapCount: (LOGGING_ENERGY_DETAIL) ? 0 : disabledMessage,
+      labelOverlapList: (LOGGING_ENERGY_DETAIL) ? [] : disabledMessage,
       anchorOverlap: 0,
-      anchorOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
-      anchorOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage
+      anchorOverlapCount: (LOGGING_ENERGY_DETAIL) ? 0 : disabledMessage,
+      anchorOverlapList: (LOGGING_ENERGY_DETAIL) ? [] : disabledMessage
     }
 
     // Check if label is inside bubble for centering of label inside bubble
@@ -148,16 +143,16 @@ const labeler = function () {
       overlapArea = xOverlap * yOverlap
 
       if (overlapArea > 0) {
-        if (OVERLAP_LOGGING) {
+        if (LOGGING_OVERLAP) {
           console.log(`L->L OVERLAP: label '${label.shortText}' and comparisonLab '${comparisonLab.shortText}' overlap ${overlapArea}`)
-          if (OVERLAP_LOGGING > 1) {
+          if (LOGGING_OVERLAP > 1) {
             console.log(`label '${comparisonLab.shortText}: X ${comparisonLab.minX} - ${comparisonLab.maxX}, comparisonLab Y ${comparisonLab.minY} - ${comparisonLab.maxY}`)
             console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
           }
         }
 
         energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
-        if (ENERGY_DETAIL_LOGGING) {
+        if (LOGGING_ENERGY_DETAIL) {
           energyParts.labelOverlapCount++
           energyParts.labelOverlapList.push({shortText: comparisonLab.shortText, overlapArea})
         }
@@ -178,9 +173,9 @@ const labeler = function () {
       }
       if (overlapArea > 0) {
 
-        if (OVERLAP_LOGGING) {
+        if (LOGGING_OVERLAP) {
           console.log(`L->A OVERLAP: label '${label.shortText}' and anchor '${anchor.shortText}' overlap ${overlapArea}`)
-          if (OVERLAP_LOGGING > 1) {
+          if (LOGGING_OVERLAP > 1) {
             console.log(`anchor '${anchor.shortText}: X ${anchor.minX} - ${anchor.maxX}, anchor Y ${anchor.minY} - ${anchor.maxY} anchor R: ${anchor.r}`)
             console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
           }
@@ -189,7 +184,7 @@ const labeler = function () {
         // NB using percentage of anchor "circle" (i.e. anchor.area) to compute totalPercentageOverlap, but the overlapArea was calculated using the anchor "rectangle".
         // Will be innacurate but less expensive this way. Add the Math.min to ensure we do not get a proportion over 1.
         energyParts.anchorOverlap += (Math.min(1, overlapArea / anchor.area) * weightLabelToAnchorOverlap)
-        if (ENERGY_DETAIL_LOGGING) {
+        if (LOGGING_ENERGY_DETAIL) {
           energyParts.anchorOverlapCount++
           energyParts.anchorOverlapList.push({shortText: anchor.shortText, overlapArea})
         }
@@ -197,7 +192,7 @@ const labeler = function () {
     })
     let energy = energyParts.distanceScore + energyParts.labelOverlap + energyParts.anchorOverlap
 
-    if (ENERGY_DETAIL_LOGGING) {
+    if (LOGGING_ENERGY_DETAIL) {
       console.log(`${phaseName}:energy '${label.shortText}: ${energy}`)
       console.log(energyParts)
     }
@@ -349,34 +344,32 @@ const labeler = function () {
   labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds }) {
     const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentRound / maxRounds)
 
-    if (TEMPERATURE_LOGGING) { console.log(`coolCount: ${coolCount}. currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
+    if (LOGGINV_TEMPERATURE) { console.log(`coolCount: ${coolCount}. currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
     coolCount++
     return newTemperature
   }
 
-  // TODO duplicate of enforceLabelBoundaries ?
-  function initLabBoundaries (lab) {
-    // TODO duplicated in mcrotate and mcmove
-    _.forEach(lab, l => {
-      if (l.x + l.width / 2 > w2) l.x = w2 - l.width / 2
-      if (l.x - l.width / 2 < w1) l.x = w1 + l.width / 2
-      if (l.y > h2) l.y = h2
-      if (l.y - l.height < h1) l.y = h1 + l.height
-    })
-  }
-  
   labeler.start = function (maxSweeps) {
     maxDistance = Math.hypot(w2 - w1, h2 - h1)
     plotArea = (w2 - w1) * (h2 - h1)
 
+    const labels = points.filter(point => point.label).map(point => point.label)
+    const anchors = points.filter(point => point.anchor).map(point => point.anchor)
+
+    _.forEach(labels, label => {
+      labeler.enforceBoundaries(label)
+      addMinMaxAreaToRectangle(label)
+    })
+    collisionTree = new RBush()
+    collisionTree.load(anchors)
+    collisionTree.load(labels)
+
     const highestDistancePenalty = _(weightLineLengthMultipliers).values().max() * weightLineLength
     worstCaseEnergy =
       highestDistancePenalty
-      + weightLabelToLabelOverlap * (lab.length - 1)
-      + weightLabelToAnchorOverlap * (anc.length - 1)
+      + weightLabelToLabelOverlap * (labels.length - 1)
+      + weightLabelToAnchorOverlap * (anchors.length - 1)
 
-    initLabBoundaries(lab)
-    this.buildDataStructures()
     this.makeInitialObservationsAndAdjustments()
 
     const activePoints = labeler.chooseActivePoints({ points: pointsWithLabels })
@@ -385,7 +378,7 @@ const labeler = function () {
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
-      return resolveFunc()
+      return
     } else {
       const startTime = Date.now()
       const generalSweepStats = labeler.generalSweep({ maxSweeps, activePoints })
@@ -394,15 +387,22 @@ const labeler = function () {
       const postSweepCompleteTime = Date.now()
 
       console.log(JSON.stringify(_.merge({}, generalSweepStats, postSweepStats, {
-        labelCount: lab.length,
         activePointCount: activePoints.length,
-        anchorCount: anc.length,
         duration: postSweepCompleteTime - startTime,
         postSweepDuration: postSweepCompleteTime - generalSweepCompleteTime,
         generalSweepDuration: generalSweepCompleteTime - startTime,
       })))
 
-      return resolveFunc()
+      if (LOGGING_FINAL_DUMP) {
+        console.log('dump state after general sweep')
+        console.log(points)
+
+        _(activePoints).each(point => {
+          labeler.detailedEnergy(point,'debug-final-dump')
+        })
+      }
+
+      return
     }
   }
 
@@ -452,7 +452,7 @@ const labeler = function () {
         }
       } = point
 
-      if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+      if (LOG_LEVEL >= LOG_LEVEL_OUTER) {
         console.log(`CONSIDERING '${label.shortText}'`)
       }
 
@@ -474,7 +474,7 @@ const labeler = function () {
       const better = (new_energy < old_energy)
       let acceptChange = null
       if (better) {
-        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: better: accepting`) }
+        if (LOG_LEVEL >= LOG_LEVEL_OUTER) { console.log(`${label.shortText}: better: accepting`) }
         acceptChange = true
       } else {
         const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
@@ -489,7 +489,7 @@ const labeler = function () {
 
         acceptChange = random.real(0, 1) < odds
 
-        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
+        if (LOG_LEVEL >= LOG_LEVEL_OUTER) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
       }
 
       dynamicObservations.adjustments.attempts++
@@ -528,18 +528,8 @@ const labeler = function () {
     stats.pass_rate = Math.round((stats.acc / (stats.acc + stats.rej)) * 1000) / 1000
     stats.accept_worse_rate = Math.round((stats.acc_worse / (stats.acc_worse + stats.rej)) * 1000) / 1000
 
-    if (LOG_LEVEL >= MINIMAL_LOGGING) {
+    if (LOG_LEVEL >= LOG_LEVEL_MINIMAL) {
       console.log(`rhtmlLabeledScatter: Label placement general sweep complete after ${currentRound} sweeps. accept/reject: ${stats.acc}/${stats.rej} (accept_worse: ${stats.acc_worse})`)
-    }
-
-    if (FINAL_DUMP_LOGGING) {
-      console.log('dump state after general sweep')
-      console.log(lab)
-      console.log(anc)
-
-      _(activePoints).each(point => {
-        labeler.detailedEnergy(point,'debug-final-dump')
-      })
     }
 
     return stats
@@ -564,7 +554,7 @@ const labeler = function () {
       postAlignmentsMade: 0
     }
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start postSweep`)
       console.log('all active point energies: ', activePoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -578,7 +568,7 @@ const labeler = function () {
     let worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
     stats[`${phaseName}Candidates`] = worstPoints.length
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start ${phaseName}`)
       console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -597,7 +587,7 @@ const labeler = function () {
     worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
     stats[`${phaseName}Candidates`] = worstPoints.length
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start ${phaseName}`)
       console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -656,9 +646,9 @@ const labeler = function () {
 
     const chosenOption = labeler.chooseBestLabelPosition({ point, options, phaseName: 'targetedCardinalAdjustment' })
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`${label.shortText} done target adjustment. Energy before: ${energyBefore} Energy after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
-      if (POST_SWEEP_LOGGING > 1) {
+      if (LOGGING_POSTSWEEP > 1) {
         console.log(`${label.shortText}: options`)
         console.log(options)
         console.log('chosenOption')
@@ -695,9 +685,9 @@ const labeler = function () {
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`${anchor.shortText}: done straighten point. Energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
-      if (POST_SWEEP_LOGGING > 1) {
+      if (LOGGING_POSTSWEEP > 1) {
         console.log(`${label.shortText}: options`)
         console.log(options)
         console.log('chosenOption')
@@ -728,29 +718,6 @@ const labeler = function () {
     labeler.moveLabel({ label, x: bestOption.x, y: bestOption.y })
 
     return bestOption
-  }
-
-  labeler.buildDataStructures = function () {
-    _(anc).each(addMinMaxAreaToCircle)
-    _(anc).each(a => addTypeToObject(a, 'anchor'))
-    _(anc).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
-    _(lab).each(addMinMaxAreaToRectangle)
-    _(lab).each(l => addTypeToObject(l, 'label'))
-    _(lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
-    const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-
-    const pinnedById = _.transform(pinned, (result, id) => { result[id] = { pinned: true } }, {})
-    
-    const mergedStructure = _.merge(
-      _.keyBy(nestUnderField(lab, 'label'), 'id'),
-      _.keyBy(nestUnderField(anc, 'anchor'), 'id'),
-      pinnedById
-    )
-    points = Object.values(mergedStructure)
-
-    collisionTree = new RBush()
-    collisionTree.load(anc)
-    collisionTree.load(lab)
   }
 
   // TODO split the observations and adjustments. the adjustments should be referred to as "pre-sweep" operations
@@ -813,7 +780,7 @@ const labeler = function () {
           labeler.moveLabel({
             label,
             x: label.x,
-            y: anchor.y + label.height / 4
+            y: anchor.y + label.height / 2
           })
         }
       }
@@ -839,7 +806,7 @@ const labeler = function () {
 
       point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchorsWithOverlap.length > 0)
 
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
+      if (LOGGING_INITIALISATION) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
     // NB now tie break all the labelPlacedInsideBubble based on Z magnitude
@@ -879,14 +846,14 @@ const labeler = function () {
             .forEach(smallerPoint => {
               smallerPoint.observations.static.labelPlacedInsideBubble = false
               resetlabelUsingAnchor(smallerPoint)
-              if (LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING) {
+              if (LOGGING_BUBBLE_PRE_SWEEP) {
                 console.log(`${biggerPoint.label.shortText}(${biggerPoint.anchor.r}) bumping ${smallerPoint.label.shortText}(${smallerPoint.anchor.r})`)
               }
             })
         }
       })
 
-    if (OBSERVATION_LOGGING) {
+    if (LOGGING_OBSERVATIONS) {
       const stats = _.transform(points, (result, { label, anchor, observations }) => {
         if (anchor) { result.anchors++ }
         if (label) { result.labels++ }
@@ -907,11 +874,6 @@ const labeler = function () {
     }
 
     pointsWithLabels = points.filter(({label}) => label)
-  }
-
-  labeler.promise = function (resolve) {
-    resolveFunc = resolve
-    return labeler
   }
 
   labeler.svg = function (x) {
@@ -942,35 +904,17 @@ const labeler = function () {
     return labeler
   }
 
-  labeler.label = function (x) {
-    // users insert label positions
-    if (!arguments.length) return lab
-    lab = x
-
+  labeler.points = function (x) {
+    points = x
     return labeler
   }
 
-  labeler.anchor = function (x) {
-    // users insert anchor positions
-    if (!arguments.length) return anc
-    anc = x
-
-    return labeler
-  }
-  
   labeler.anchorType = function (x) {
     if (!arguments.length) return isBubble
     isBubble = x
     return labeler
   }
 
-  labeler.pinned = function (x) {
-    // user positioned labels
-    if (!arguments.length) return pinned
-    pinned = x
-    return labeler
-  }
-  
   labeler.weights = function (weights) {
     // Weights used in the label placement algorithm
     weightLineLength = _.get(weights, 'distance.base')
@@ -1002,14 +946,7 @@ const labeler = function () {
 module.exports = labeler
 /* eslint-enable */
 
-const addMinMaxAreaToCircle = (circle) => {
-  circle.minX = circle.x - circle.r
-  circle.maxX = circle.x + circle.r
-  circle.minY = circle.y - circle.r
-  circle.maxY = circle.y + circle.r
-  circle.area = Math.PI * Math.pow(circle.r, 2)
-  return circle
-}
+// TODO extract addMinMaxAreaToCircle and addMinMaxAreaToRectangle to util. Currently duplicated in labeler and plotdata
 
 const addMinMaxAreaToRectangle = (rect) => {
   rect.minX = rect.x - rect.width / 2
@@ -1018,11 +955,6 @@ const addMinMaxAreaToRectangle = (rect) => {
   rect.maxY = rect.y
   rect.area = rect.width * rect.height
   return rect
-}
-
-const addTypeToObject = (obj, type) => {
-  obj.type = type
-  return obj
 }
 
 const isAnchor = ({ type } = {}) => type === 'anchor'
