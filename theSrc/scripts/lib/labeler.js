@@ -780,7 +780,7 @@ const labeler = function () {
           labeler.moveLabel({
             label,
             x: label.x,
-            y: anchor.y + label.height / 4
+            y: anchor.y + label.height / 2
           })
         }
       }

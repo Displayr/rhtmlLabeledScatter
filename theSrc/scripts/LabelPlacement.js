@@ -1,6 +1,5 @@
 
 import labeler from './lib/labeler'
-import SvgUtils from './utils/SvgUtils'
 
 class LabelPlacement {
   constructor ({
@@ -50,28 +49,12 @@ class LabelPlacement {
   }
 
   placeTrendLabels ({ vb, points }) {
-    const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
-    SvgUtils.setMatchingSvgBBoxWidthAndHeight(points, labelsSvg)
-
     this.place({ vb, points })
-
-    const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
-    labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                .attr('y', d => d.y - d.height)
-
     return Promise.resolve()
   }
 
   placeLabels ({ vb, points }) {
-    const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
-    SvgUtils.setMatchingSvgBBoxWidthAndHeight(points, labelsSvg)
-
     this.place({ vb, points })
-
-    const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
-    labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                .attr('y', d => d.y - d.height)
-
     return Promise.resolve()
   }
 }

@@ -20,9 +20,11 @@ class DragUtils {
       if ($(this).prop('tagName') === 'image') {
         label.x = d3.event.x + (label.width / 2)
         label.y = d3.event.y + label.height
+        addMinMaxAreaToRectangle(label)
       } else {
         label.x = d3.event.x
         label.y = d3.event.y
+        addMinMaxAreaToRectangle(label)
       }
     }
 
@@ -109,3 +111,14 @@ class DragUtils {
 }
 
 module.exports = DragUtils
+
+// duplicated in 3 places
+// assume x,y is top left
+const addMinMaxAreaToRectangle = (rect) => {
+  rect.minX = rect.x - rect.width / 2
+  rect.maxX = rect.x + rect.width / 2
+  rect.minY = rect.y - rect.height
+  rect.maxY = rect.y
+  rect.area = rect.width * rect.height
+  return rect
+}

@@ -2,19 +2,6 @@ import _ from 'lodash'
 import TooltipUtils from './TooltipUtils'
 
 class SvgUtils {
-  static setMatchingSvgBBoxWidthAndHeight (points, svgArray) {
-    _.map(points, ({ label }) => {
-      if (label && !label.width && !label.height) {
-        const svgDataElem = _.find(svgArray[0], j => Number(j.getAttribute('id')) === label.id)
-        if (!_.isUndefined(svgDataElem)) {
-          // VIS-382: getBBox() relies on client side rendering, and thus differs for text widths
-          label.width = svgDataElem.nodeName === 'text' ? svgDataElem.getComputedTextLength() : svgDataElem.getBBox().width
-          label.height = svgDataElem.getBBox().height
-        }
-      }
-    })
-  }
-
   static setSvgBBoxWidthAndHeight (dataArray, svgArray) {
     _.map(dataArray, (dataElem, index) => {
       if (!dataElem.width && !dataElem.height) {

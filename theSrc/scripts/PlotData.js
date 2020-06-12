@@ -34,7 +34,10 @@ class PlotData {
                  bounds,
                  transparency,
                  legendSettings,
-                 state
+                 state,
+                 svg,
+                 labelsFontSize,
+                 labelsFontFamily,
                }) {
     autoBind(this)
     if (xDataType === DataTypeEnum.date) {
@@ -74,13 +77,14 @@ class PlotData {
     this.legendRequiresRedraw = false
     this.legendSettings = legendSettings
     this.state = state
+    this.svg = svg
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
       this.normalizeData()
       if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
       this.plotColors = new PlotColors(this)
-      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale)
+      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale, this.svg, labelsFontSize, labelsFontFamily)
     } else {
       throw new Error('Inputs X and Y lengths do not match!')
     }
@@ -340,6 +344,7 @@ class PlotData {
 
           let { label, width, height, url } = resolvedLabels[i]
           const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
+          const labelX = x
           const labelY = y - r - labelTopPadding
 
           const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
@@ -362,7 +367,7 @@ class PlotData {
 
           const includeLabel = (label !== '' || url !== '')
           if (includeLabel) {
-            this.lab.push({ x, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
+            this.lab.push({ x: labelX, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
           }
         }
         i++
@@ -404,19 +409,10 @@ class PlotData {
   }
 
   isOutsideViewBox (lab) {
-    const left = lab.x - (lab.width / 2)
-    const right = lab.x + (lab.width / 2)
-    const top = lab.y - lab.height
-    const bot = lab.y
-
-    // const isAnyPartOfLabOutside = ((left < this.vb.x) ||
-    //                               (right > (this.vb.x + this.vb.width)) ||
-    //                               (top < this.vb.y) ||
-    //                               (bot > (this.vb.y + this.vb.height)))
-    const isAllOfLabOutside = ((right < this.vb.x) ||
-                               (left > (this.vb.x + this.vb.width)) ||
-                               (bot < this.vb.y) ||
-                               (top > (this.vb.y + this.vb.height)))
+    const isAllOfLabOutside = ((label.maxX < this.vb.x) ||
+                               (label.minX > (this.vb.x + this.vb.width)) ||
+                               (label.maxY < this.vb.y) ||
+                               (label.minY > (this.vb.y + this.vb.height)))
     return isAllOfLabOutside
   }
 
@@ -482,6 +478,8 @@ const addMinMaxAreaToCircle = (circle) => {
   return circle
 }
 
+// duplicated in 3 places
+// assume x,y is top left
 const addMinMaxAreaToRectangle = (rect) => {
   rect.minX = rect.x - rect.width / 2
   rect.maxX = rect.x + rect.width / 2

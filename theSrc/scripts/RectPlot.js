@@ -255,7 +255,10 @@ class RectPlot {
       bounds: this.bounds,
       transparency: this.transparency,
       legendSettings: this.legendSettings,
-      state: this.state
+      state: this.state,
+      svg: this.svg,
+      labelsFontSize: this.labelsFont.size,
+      labelsFontFamily: this.labelsFont.family,
     })
 
     this.drawFailureCount = 0
@@ -572,52 +575,15 @@ class RectPlot {
                  .append('text')
                  .attr('class', `plt-${this.pltUniqueId}-lab`)
                  .attr('id', d => d.id)
-                 .attr('x', d => d.x)
-                 .attr('y', d => d.y)
+                 .attr('x', d => d.x - (d.width / 2))
+                 .attr('y', d => d.y - d.height)
                  .attr('font-family', d => d.fontFamily)
-                 .text(d => d.text)
-                 .attr('text-anchor', 'middle')
+                 .attr('dominant-baseline', 'text-before-edge')
                  .attr('fill', d => d.color)
                  .attr('font-size', d => d.fontSize)
                  .style('cursor', 'pointer')
+                 .text(d => d.text)
                  .call(drag)
-
-        // const testLabel = this.svg
-        //   .append('text')
-        //   .attr('class', `test-label`)
-        //   .attr('x', 41.6875)
-        //   .attr('y', 11)
-        //   .attr('font-family', 'Arial')
-        //   .text('Test,PpGgabel')
-        //   .attr('dominant-baseline', 'text-before-edge')
-        //   .attr('font-size', '18px')
-        //   .attr('font-family', 'Arial')
-        //   .attr('font-weight', 'normal')
-        //   .attr('fill', 'black')
-        //   .attr('font-size', 10)
-        //   .style('cursor', 'pointer')
-        //
-        // const { getHorizontalLabelDimensionsUsingSvgApproximation } = require('rhtmlLabelUtils')
-        // const dimensions = getHorizontalLabelDimensionsUsingSvgApproximation({
-        //   parentContainer: this.svg,
-        //   text: 'Test,PpGgabel',
-        //   fontSize: '18',
-        //   fontFamily: 'Arial',
-        //   fontWeight: 'normal'
-        // })
-        // const bbox = testLabel.node().getBBox()
-        // console.log('dimensions ')
-        // console.log(dimensions )
-
-        // const testBox = this.svg
-        //   .append('rect')
-        //   .attr('class', `test-box`)
-        //   .attr('x', 41.6875)
-        //   .attr('y', 11)
-        //   .attr('width', bbox.width)
-        //   .attr('height', bbox.height)
-        //   .attr('fill', 'none')
-        //   .attr('stroke', 'black')
 
         const placementPromise = this.labelPlacement.placeLabels({
           vb: this.vb,
@@ -629,11 +595,13 @@ class RectPlot {
           const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
 
           // Move labels after label placement algorithm
-          labelsSvg.attr('x', d => d.x)
-                   .attr('y', d => d.y)
-                   .each(d => console.log('readjust xy', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
-          labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                      .attr('y', d => d.y - d.height)
+          labelsSvg
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
+
+          labelsImgSvg
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
 
           if (DEBUG_ADD_BBOX_TO_LABELS) {
             this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-debug-bbox`)
@@ -647,7 +615,7 @@ class RectPlot {
               .attr('height', d => d.height)
               .attr('fill', 'none')
               .attr('stroke', 'black')
-              .each(d => console.log('debug box', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
+              // .each(d => console.log('debug box', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
 
             this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img-debug-bbox`)
               .data(this.data.getImgLabels())
