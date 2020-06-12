@@ -1,7 +1,6 @@
 
 import labeler from './lib/labeler'
 import SvgUtils from './utils/SvgUtils'
-import _ from 'lodash'
 
 class LabelPlacement {
   constructor ({
@@ -35,18 +34,14 @@ class LabelPlacement {
     this.svg = svg
   }
 
-  place (vb, anchors, labels, pinnedLabels, state, resolve) {
-    console.log('rhtmlLabeledScatter: Running label placement algorithm...')
+  place ({ vb, points }) {
     labeler()
       .svg(this.svg)
       .w1(vb.x)
       .w2(vb.x + vb.width)
       .h1(vb.y)
       .h2(vb.y + vb.height)
-      .anchor(anchors)
-      .label(labels)
-      .pinned(pinnedLabels)
-      .promise(resolve)
+      .points(points)
       .anchorType(this.isBubble)
       .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.weights)
@@ -54,26 +49,30 @@ class LabelPlacement {
       .start(this.numSweeps)
   }
 
-  placeTrendLabels (vb, anchors, labels, state, resolve) {
+  placeTrendLabels ({ vb, points }) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
-    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), state, resolve)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(points, labelsSvg)
+
+    this.place({ vb, points })
 
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
+
+    return Promise.resolve()
   }
 
-  placeLabels (vb, anchors, labels, state, resolve) {
+  placeLabels ({ vb, points }) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
+    SvgUtils.setMatchingSvgBBoxWidthAndHeight(points, labelsSvg)
+
+    this.place({ vb, points })
+
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
-    SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
-
-    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), state, resolve)
-
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
+
+    return Promise.resolve()
   }
 }
 

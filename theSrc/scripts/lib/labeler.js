@@ -39,9 +39,6 @@ const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
 
-  let lab = []
-  let anc = []
-  // TODO: better name for points (they are not points). Nodes ? Members ?
   let points = [] // combined data structure for efficiency like
   let pointsWithLabels = []
   let collisionTree = null
@@ -55,8 +52,6 @@ const labeler = function () {
   let worstCaseEnergy = null
   let labeler = {}
   let svg = {}
-  let resolveFunc = null
-  let pinned = []
   let is_placement_algo_on = true
 
   const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
@@ -354,29 +349,27 @@ const labeler = function () {
     return newTemperature
   }
 
-  // TODO duplicate of enforceLabelBoundaries ?
-  function initLabBoundaries (lab) {
-    // TODO duplicated in mcrotate and mcmove
-    _.forEach(lab, l => {
-      if (l.x + l.width / 2 > w2) l.x = w2 - l.width / 2
-      if (l.x - l.width / 2 < w1) l.x = w1 + l.width / 2
-      if (l.y > h2) l.y = h2
-      if (l.y - l.height < h1) l.y = h1 + l.height
-    })
-  }
-  
   labeler.start = function (maxSweeps) {
     maxDistance = Math.hypot(w2 - w1, h2 - h1)
     plotArea = (w2 - w1) * (h2 - h1)
 
+    const labels = points.filter(point => point.label).map(point => point.label)
+    const anchors = points.filter(point => point.anchor).map(point => point.anchor)
+
+    _.forEach(labels, label => {
+      labeler.enforceBoundaries(label)
+      addMinMaxAreaToRectangle(label)
+    })
+    collisionTree = new RBush()
+    collisionTree.load(anchors)
+    collisionTree.load(labels)
+
     const highestDistancePenalty = _(weightLineLengthMultipliers).values().max() * weightLineLength
     worstCaseEnergy =
       highestDistancePenalty
-      + weightLabelToLabelOverlap * (lab.length - 1)
-      + weightLabelToAnchorOverlap * (anc.length - 1)
+      + weightLabelToLabelOverlap * (labels.length - 1)
+      + weightLabelToAnchorOverlap * (anchors.length - 1)
 
-    initLabBoundaries(lab)
-    this.buildDataStructures()
     this.makeInitialObservationsAndAdjustments()
 
     const activePoints = labeler.chooseActivePoints({ points: pointsWithLabels })
@@ -385,7 +378,7 @@ const labeler = function () {
     if (!is_placement_algo_on) {
       // Turn off label placement algo if way too many labels given
       console.log("rhtmlLabeledScatter: Label placement turned off! (too many)")
-      return resolveFunc()
+      return
     } else {
       const startTime = Date.now()
       const generalSweepStats = labeler.generalSweep({ maxSweeps, activePoints })
@@ -394,15 +387,13 @@ const labeler = function () {
       const postSweepCompleteTime = Date.now()
 
       console.log(JSON.stringify(_.merge({}, generalSweepStats, postSweepStats, {
-        labelCount: lab.length,
         activePointCount: activePoints.length,
-        anchorCount: anc.length,
         duration: postSweepCompleteTime - startTime,
         postSweepDuration: postSweepCompleteTime - generalSweepCompleteTime,
         generalSweepDuration: generalSweepCompleteTime - startTime,
       })))
 
-      return resolveFunc()
+      return
     }
   }
 
@@ -534,8 +525,7 @@ const labeler = function () {
 
     if (FINAL_DUMP_LOGGING) {
       console.log('dump state after general sweep')
-      console.log(lab)
-      console.log(anc)
+      console.log(points)
 
       _(activePoints).each(point => {
         labeler.detailedEnergy(point,'debug-final-dump')
@@ -730,29 +720,6 @@ const labeler = function () {
     return bestOption
   }
 
-  labeler.buildDataStructures = function () {
-    _(anc).each(addMinMaxAreaToCircle)
-    _(anc).each(a => addTypeToObject(a, 'anchor'))
-    _(anc).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
-    _(lab).each(addMinMaxAreaToRectangle)
-    _(lab).each(l => addTypeToObject(l, 'label'))
-    _(lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
-    const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-
-    const pinnedById = _.transform(pinned, (result, id) => { result[id] = { pinned: true } }, {})
-    
-    const mergedStructure = _.merge(
-      _.keyBy(nestUnderField(lab, 'label'), 'id'),
-      _.keyBy(nestUnderField(anc, 'anchor'), 'id'),
-      pinnedById
-    )
-    points = Object.values(mergedStructure)
-
-    collisionTree = new RBush()
-    collisionTree.load(anc)
-    collisionTree.load(lab)
-  }
-
   // TODO split the observations and adjustments. the adjustments should be referred to as "pre-sweep" operations
   labeler.makeInitialObservationsAndAdjustments = function () {
     // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
@@ -909,11 +876,6 @@ const labeler = function () {
     pointsWithLabels = points.filter(({label}) => label)
   }
 
-  labeler.promise = function (resolve) {
-    resolveFunc = resolve
-    return labeler
-  }
-
   labeler.svg = function (x) {
     svg = x
     return labeler
@@ -942,35 +904,17 @@ const labeler = function () {
     return labeler
   }
 
-  labeler.label = function (x) {
-    // users insert label positions
-    if (!arguments.length) return lab
-    lab = x
-
+  labeler.points = function (x) {
+    points = x
     return labeler
   }
 
-  labeler.anchor = function (x) {
-    // users insert anchor positions
-    if (!arguments.length) return anc
-    anc = x
-
-    return labeler
-  }
-  
   labeler.anchorType = function (x) {
     if (!arguments.length) return isBubble
     isBubble = x
     return labeler
   }
 
-  labeler.pinned = function (x) {
-    // user positioned labels
-    if (!arguments.length) return pinned
-    pinned = x
-    return labeler
-  }
-  
   labeler.weights = function (weights) {
     // Weights used in the label placement algorithm
     weightLineLength = _.get(weights, 'distance.base')
@@ -1002,14 +946,7 @@ const labeler = function () {
 module.exports = labeler
 /* eslint-enable */
 
-const addMinMaxAreaToCircle = (circle) => {
-  circle.minX = circle.x - circle.r
-  circle.maxX = circle.x + circle.r
-  circle.minY = circle.y - circle.r
-  circle.maxY = circle.y + circle.r
-  circle.area = Math.PI * Math.pow(circle.r, 2)
-  return circle
-}
+// TODO extract addMinMaxAreaToCircle and addMinMaxAreaToRectangle to util. Currently duplicated in labeler and plotdata
 
 const addMinMaxAreaToRectangle = (rect) => {
   rect.minX = rect.x - rect.width / 2
@@ -1018,11 +955,6 @@ const addMinMaxAreaToRectangle = (rect) => {
   rect.maxY = rect.y
   rect.area = rect.width * rect.height
   return rect
-}
-
-const addTypeToObject = (obj, type) => {
-  obj.type = type
-  return obj
 }
 
 const isAnchor = ({ type } = {}) => type === 'anchor'

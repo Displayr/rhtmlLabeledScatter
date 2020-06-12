@@ -14,26 +14,28 @@ import d3 from 'd3'
 const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
 
 class PlotData {
-  constructor (X,
-    Y,
-    Z,
-    xDataType,
-    yDataType,
-    xLevels,
-    yLevels,
-    group,
-    label,
-    labelAlt,
-    vb,
-    legend,
-    colorWheel,
-    fixedAspectRatio,
-    originAlign,
-    pointRadius,
-    bounds,
-    transparency,
-    legendSettings
-  ) {
+  constructor ({
+                 X,
+                 Y,
+                 Z,
+                 xDataType,
+                 yDataType,
+                 xLevels,
+                 yLevels,
+                 group,
+                 label,
+                 labelAlt,
+                 vb,
+                 legend,
+                 colors,
+                 fixedRatio,
+                 originAlign,
+                 pointRadius,
+                 bounds,
+                 transparency,
+                 legendSettings,
+                 state
+               }) {
     autoBind(this)
     if (xDataType === DataTypeEnum.date) {
       this.X = _.map(X, d => d.getTime())
@@ -55,8 +57,8 @@ class PlotData {
     this.labelAlt = labelAlt
     this.vb = vb
     this.legend = legend
-    this.colorWheel = colorWheel
-    this.fixedAspectRatio = fixedAspectRatio
+    this.colorWheel = colors
+    this.fixedAspectRatio = fixedRatio
     this.originAlign = originAlign
     this.pointRadius = pointRadius
     this.bounds = bounds
@@ -71,6 +73,7 @@ class PlotData {
     this.outsidePlotCondensedPts = []
     this.legendRequiresRedraw = false
     this.legendSettings = legendSettings
+    this.state = state
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
@@ -297,11 +300,11 @@ class PlotData {
     this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
   }
 
-  getPtsAndLabs (calleeName) {
-    console.log(`getPtsAndLabs(${calleeName})`)
+  buildPoints (calleeName) {
+    console.log(`buildPoints(${calleeName})`)
     return Promise.all(this.labelNew.getLabels()).then((resolvedLabels) => {
       // resolvedLabels is array of { height, width, label, url }
-      // console.log(`resolvedLabels for getPtsandLabs callee name ${calleeName}`)
+      // console.log(`resolvedLabels for buildPoints callee name ${calleeName}`)
       // console.log(resolvedLabels)
 
       this.pts = []
@@ -356,21 +359,44 @@ class PlotData {
           if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
           const group = (this.group != null) ? this.group[i] : ''
           this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
-          this.lab.push({ x, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
+
+          const includeLabel = (label !== '' || url !== '')
+          if (includeLabel) {
+            this.lab.push({ x, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
+          }
         }
         i++
       }
+    })
+    .then(() => {
+      _(this.pts).each(addMinMaxAreaToCircle)
+      _(this.pts).each(a => addTypeToObject(a, 'anchor'))
+      _(this.pts).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
+      _(this.lab).each(addMinMaxAreaToRectangle)
+      _(this.lab).each(l => addTypeToObject(l, 'label'))
+      _(this.lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
+      const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
 
+      const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
+      const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
+
+      const mergedStructure = _.merge(
+        _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
+        _.keyBy(nestUnderField(this.pts, 'anchor'), 'id'),
+        pinnedById
+      )
+      this.points = Object.values(mergedStructure)
+    })
+    .then(() => {
       // Remove pts outside plot because user bounds set
-      return (() => {
-        _.forEach(this.outsideBoundsPtsId, (p, i) => {
-          if (!_.includes(this.outsidePlotPtsId, p)) {
-            this.addElemToLegend(p)
-          }
-        })
-        this.setLegend()
-      })()
-    }).catch(err => console.log(err))
+      _.forEach(this.outsideBoundsPtsId, (p, i) => {
+        if (!_.includes(this.outsidePlotPtsId, p)) {
+          this.addElemToLegend(p)
+        }
+      })
+      this.setLegend()
+    })
+    .catch(err => console.log(err))
   }
 
   setLegend () {
@@ -414,7 +440,7 @@ class PlotData {
 
     this.outsidePlotPtsId.push(id)
     this.normalizeData()
-    this.getPtsAndLabs('PlotData.addElemToLegend')
+    this.buildPoints('PlotData.addElemToLegend')
     this.legendRequiresRedraw = true
   }
 
@@ -427,7 +453,7 @@ class PlotData {
     _.remove(this.outsidePlotCondensedPts, i => i.dataId === id)
 
     this.normalizeData()
-    this.getPtsAndLabs('PlotData.removeElemFromLegend')
+    this.buildPoints('PlotData.removeElemFromLegend')
     this.setLegend()
   }
 
@@ -444,6 +470,30 @@ class PlotData {
   getImgLabels () {
     return _.filter(this.lab, l => l.url !== '')
   }
+}
+
+// TODO extract addMinMaxAreaToCircle and addMinMaxAreaToRectangle to util. Currently duplicated in labeler and plotdata
+const addMinMaxAreaToCircle = (circle) => {
+  circle.minX = circle.x - circle.r
+  circle.maxX = circle.x + circle.r
+  circle.minY = circle.y - circle.r
+  circle.maxY = circle.y + circle.r
+  circle.area = Math.PI * Math.pow(circle.r, 2)
+  return circle
+}
+
+const addMinMaxAreaToRectangle = (rect) => {
+  rect.minX = rect.x - rect.width / 2
+  rect.maxX = rect.x + rect.width / 2
+  rect.minY = rect.y - rect.height
+  rect.maxY = rect.y
+  rect.area = rect.width * rect.height
+  return rect
+}
+
+const addTypeToObject = (obj, type) => {
+  obj.type = type
+  return obj
 }
 
 module.exports = PlotData
