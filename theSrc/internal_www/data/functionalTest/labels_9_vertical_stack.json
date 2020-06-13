@@ -22,25 +22,14 @@
     4
   ],
   "label": [
-    "Text",
-    "Text",
-    "Text",
-    "Text",
-    "Text",
-    "Text",
-    "Text",
-    "Text",
-    "Text"
-  ],
-  "labelAlt": [
-    "0,-4",
-    "0,-3",
-    "0,-2",
-    "0,-1",
-    "0,0",
-    "0,1",
-    "0,2",
-    "0,3",
-    "0,4"
+    "Text1",
+    "Text2",
+    "Text3",
+    "Text4",
+    "Text5",
+    "Text6",
+    "Text7",
+    "Text8",
+    "Text9"
   ]
 }
