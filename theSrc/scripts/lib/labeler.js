@@ -4,25 +4,25 @@ import _ from 'lodash'
 import RBush from 'rbush'
 import circleIntersection from '../utils/circleIntersection'
 
-const NO_LOGGING = 0
-const MINIMAL_LOGGING = 1
-const OUTER_LOOP_LOGGING = 2
-const INNER_LOOP_LOGGING = 3
-const TRACE_LOGGING = 4
+const LOG_LEVEL_NONE = 0
+const LOG_LEVEL_MINIMAL = 1
+const LOG_LEVEL_OUTER = 2
+const LOG_LEVEL_INNER = 3
+const LOG_LEVEL_TRACE = 4
 
 // independent log flags
-const OBSERVATION_LOGGING = false
-const TEMPERATURE_LOGGING = false
-const INITIALISATION_LOGGING = false
-const POST_SWEEP_LOGGING = 0 // [0,1,2] 2 is most logging
-const ENERGY_DETAIL_LOGGING = false
-const OVERLAP_LOGGING = 0 // [0,1,2] 2 is most logging
-const FINAL_DUMP_LOGGING = false
-const LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING = false
-const disabledMessage = 'enable ENERGY_DETAIL_LOGGING to track this field'
+const LOGGING_OBSERVATIONS = false
+const LOGGINV_TEMPERATURE = false
+const LOGGING_INITIALISATION = false
+const LOGGING_POSTSWEEP = 0 // [0,1,2] 2 is most logging
+const LOGGING_ENERGY_DETAIL = false
+const LOGGING_OVERLAP = 0 // [0,1,2] 2 is most logging
+const LOGGING_FINAL_DUMP = true
+const LOGGING_BUBBLE_PRE_SWEEP = false
+const disabledMessage = 'enable LOGGING_ENERGY_DETAIL to track this field'
 
-const LOG_LEVEL = MINIMAL_LOGGING
-// const LOG_LEVEL = OUTER_LOOP_LOGGING
+const LOG_LEVEL = LOG_LEVEL_MINIMAL
+// const LOG_LEVEL = LOG_LEVEL_OUTER
 
 // behaviour controls
 const debugForceMaxRounds = null // leave this at NULL unless you want to force the number of sweeps
@@ -100,11 +100,11 @@ const labeler = function () {
       distanceMagnitude: 0,
       distanceName: 'N/A',
       labelOverlap: 0,
-      labelOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
-      labelOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage,
+      labelOverlapCount: (LOGGING_ENERGY_DETAIL) ? 0 : disabledMessage,
+      labelOverlapList: (LOGGING_ENERGY_DETAIL) ? [] : disabledMessage,
       anchorOverlap: 0,
-      anchorOverlapCount: (ENERGY_DETAIL_LOGGING) ? 0 : disabledMessage,
-      anchorOverlapList: (ENERGY_DETAIL_LOGGING) ? [] : disabledMessage
+      anchorOverlapCount: (LOGGING_ENERGY_DETAIL) ? 0 : disabledMessage,
+      anchorOverlapList: (LOGGING_ENERGY_DETAIL) ? [] : disabledMessage
     }
 
     // Check if label is inside bubble for centering of label inside bubble
@@ -143,16 +143,16 @@ const labeler = function () {
       overlapArea = xOverlap * yOverlap
 
       if (overlapArea > 0) {
-        if (OVERLAP_LOGGING) {
+        if (LOGGING_OVERLAP) {
           console.log(`L->L OVERLAP: label '${label.shortText}' and comparisonLab '${comparisonLab.shortText}' overlap ${overlapArea}`)
-          if (OVERLAP_LOGGING > 1) {
+          if (LOGGING_OVERLAP > 1) {
             console.log(`label '${comparisonLab.shortText}: X ${comparisonLab.minX} - ${comparisonLab.maxX}, comparisonLab Y ${comparisonLab.minY} - ${comparisonLab.maxY}`)
             console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
           }
         }
 
         energyParts.labelOverlap += (overlapArea / label.area * weightLabelToLabelOverlap)
-        if (ENERGY_DETAIL_LOGGING) {
+        if (LOGGING_ENERGY_DETAIL) {
           energyParts.labelOverlapCount++
           energyParts.labelOverlapList.push({shortText: comparisonLab.shortText, overlapArea})
         }
@@ -173,9 +173,9 @@ const labeler = function () {
       }
       if (overlapArea > 0) {
 
-        if (OVERLAP_LOGGING) {
+        if (LOGGING_OVERLAP) {
           console.log(`L->A OVERLAP: label '${label.shortText}' and anchor '${anchor.shortText}' overlap ${overlapArea}`)
-          if (OVERLAP_LOGGING > 1) {
+          if (LOGGING_OVERLAP > 1) {
             console.log(`anchor '${anchor.shortText}: X ${anchor.minX} - ${anchor.maxX}, anchor Y ${anchor.minY} - ${anchor.maxY} anchor R: ${anchor.r}`)
             console.log(`label '${label.shortText}: X ${label.minX} - ${label.maxX}, label Y ${label.minY} - ${label.maxY}`)
           }
@@ -184,7 +184,7 @@ const labeler = function () {
         // NB using percentage of anchor "circle" (i.e. anchor.area) to compute totalPercentageOverlap, but the overlapArea was calculated using the anchor "rectangle".
         // Will be innacurate but less expensive this way. Add the Math.min to ensure we do not get a proportion over 1.
         energyParts.anchorOverlap += (Math.min(1, overlapArea / anchor.area) * weightLabelToAnchorOverlap)
-        if (ENERGY_DETAIL_LOGGING) {
+        if (LOGGING_ENERGY_DETAIL) {
           energyParts.anchorOverlapCount++
           energyParts.anchorOverlapList.push({shortText: anchor.shortText, overlapArea})
         }
@@ -192,7 +192,7 @@ const labeler = function () {
     })
     let energy = energyParts.distanceScore + energyParts.labelOverlap + energyParts.anchorOverlap
 
-    if (ENERGY_DETAIL_LOGGING) {
+    if (LOGGING_ENERGY_DETAIL) {
       console.log(`${phaseName}:energy '${label.shortText}: ${energy}`)
       console.log(energyParts)
     }
@@ -344,7 +344,7 @@ const labeler = function () {
   labeler.cooling_schedule = function ({ currTemperature, initialTemperature, finalTemperature, currentRound, maxRounds }) {
     const newTemperature = initialTemperature - (initialTemperature - finalTemperature) * (currentRound / maxRounds)
 
-    if (TEMPERATURE_LOGGING) { console.log(`coolCount: ${coolCount}. currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
+    if (LOGGINV_TEMPERATURE) { console.log(`coolCount: ${coolCount}. currTemperature: ${currTemperature}. newTemperature: ${newTemperature}`) }
     coolCount++
     return newTemperature
   }
@@ -392,6 +392,15 @@ const labeler = function () {
         postSweepDuration: postSweepCompleteTime - generalSweepCompleteTime,
         generalSweepDuration: generalSweepCompleteTime - startTime,
       })))
+
+      if (LOGGING_FINAL_DUMP) {
+        console.log('dump state after general sweep')
+        console.log(points)
+
+        _(activePoints).each(point => {
+          labeler.detailedEnergy(point,'debug-final-dump')
+        })
+      }
 
       return
     }
@@ -443,7 +452,7 @@ const labeler = function () {
         }
       } = point
 
-      if (LOG_LEVEL >= OUTER_LOOP_LOGGING) {
+      if (LOG_LEVEL >= LOG_LEVEL_OUTER) {
         console.log(`CONSIDERING '${label.shortText}'`)
       }
 
@@ -465,7 +474,7 @@ const labeler = function () {
       const better = (new_energy < old_energy)
       let acceptChange = null
       if (better) {
-        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: better: accepting`) }
+        if (LOG_LEVEL >= LOG_LEVEL_OUTER) { console.log(`${label.shortText}: better: accepting`) }
         acceptChange = true
       } else {
         const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
@@ -480,7 +489,7 @@ const labeler = function () {
 
         acceptChange = random.real(0, 1) < odds
 
-        if (LOG_LEVEL >= OUTER_LOOP_LOGGING) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
+        if (LOG_LEVEL >= LOG_LEVEL_OUTER) { console.log(`${label.shortText}: worse: old: ${old_energy.toFixed(2)}, new: ${new_energy.toFixed(2)}, temp: ${currTemperature.toFixed(2)}, odds: ${odds.toFixed(5)}, oddsPreTemp: ${oddsPreTemp.toFixed(5)} acceptChange: ${acceptChange}`) }
       }
 
       dynamicObservations.adjustments.attempts++
@@ -519,17 +528,8 @@ const labeler = function () {
     stats.pass_rate = Math.round((stats.acc / (stats.acc + stats.rej)) * 1000) / 1000
     stats.accept_worse_rate = Math.round((stats.acc_worse / (stats.acc_worse + stats.rej)) * 1000) / 1000
 
-    if (LOG_LEVEL >= MINIMAL_LOGGING) {
+    if (LOG_LEVEL >= LOG_LEVEL_MINIMAL) {
       console.log(`rhtmlLabeledScatter: Label placement general sweep complete after ${currentRound} sweeps. accept/reject: ${stats.acc}/${stats.rej} (accept_worse: ${stats.acc_worse})`)
-    }
-
-    if (FINAL_DUMP_LOGGING) {
-      console.log('dump state after general sweep')
-      console.log(points)
-
-      _(activePoints).each(point => {
-        labeler.detailedEnergy(point,'debug-final-dump')
-      })
     }
 
     return stats
@@ -554,7 +554,7 @@ const labeler = function () {
       postAlignmentsMade: 0
     }
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start postSweep`)
       console.log('all active point energies: ', activePoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -568,7 +568,7 @@ const labeler = function () {
     let worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
     stats[`${phaseName}Candidates`] = worstPoints.length
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start ${phaseName}`)
       console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -587,7 +587,7 @@ const labeler = function () {
     worstPoints = activePoints.filter(point => point.observations.dynamic.energy.current >= boundaryEnergy)
     stats[`${phaseName}Candidates`] = worstPoints.length
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`Start ${phaseName}`)
       console.log('worst points: ', worstPoints.map(point => `"${point.anchor.shortText}": ${point.observations.dynamic.energy.current}`))
     }
@@ -646,9 +646,9 @@ const labeler = function () {
 
     const chosenOption = labeler.chooseBestLabelPosition({ point, options, phaseName: 'targetedCardinalAdjustment' })
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`${label.shortText} done target adjustment. Energy before: ${energyBefore} Energy after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
-      if (POST_SWEEP_LOGGING > 1) {
+      if (LOGGING_POSTSWEEP > 1) {
         console.log(`${label.shortText}: options`)
         console.log(options)
         console.log('chosenOption')
@@ -685,9 +685,9 @@ const labeler = function () {
     dynamicObservations.energy.current = chosenOption.energy
     dynamicObservations.energy.best = chosenOption.energy
 
-    if (POST_SWEEP_LOGGING) {
+    if (LOGGING_POSTSWEEP) {
       console.log(`${anchor.shortText}: done straighten point. Energy before: ${energyBefore} after: ${dynamicObservations.energy.current}. chosenOption: ${chosenOption.nickname}`)
-      if (POST_SWEEP_LOGGING > 1) {
+      if (LOGGING_POSTSWEEP > 1) {
         console.log(`${label.shortText}: options`)
         console.log(options)
         console.log('chosenOption')
@@ -806,7 +806,7 @@ const labeler = function () {
 
       point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchorsWithOverlap.length > 0)
 
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
+      if (LOGGING_INITIALISATION) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
     // NB now tie break all the labelPlacedInsideBubble based on Z magnitude
@@ -846,14 +846,14 @@ const labeler = function () {
             .forEach(smallerPoint => {
               smallerPoint.observations.static.labelPlacedInsideBubble = false
               resetlabelUsingAnchor(smallerPoint)
-              if (LABEL_IN_BUBBLE_PRE_SWEEP_LOGGING) {
+              if (LOGGING_BUBBLE_PRE_SWEEP) {
                 console.log(`${biggerPoint.label.shortText}(${biggerPoint.anchor.r}) bumping ${smallerPoint.label.shortText}(${smallerPoint.anchor.r})`)
               }
             })
         }
       })
 
-    if (OBSERVATION_LOGGING) {
+    if (LOGGING_OBSERVATIONS) {
       const stats = _.transform(points, (result, { label, anchor, observations }) => {
         if (anchor) { result.anchors++ }
         if (label) { result.labels++ }
