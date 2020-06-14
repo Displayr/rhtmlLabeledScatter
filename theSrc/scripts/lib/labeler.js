@@ -17,7 +17,7 @@ const LOGGING_INITIALISATION = false
 const LOGGING_POSTSWEEP = 0 // [0,1,2] 2 is most logging
 const LOGGING_ENERGY_DETAIL = false
 const LOGGING_OVERLAP = 0 // [0,1,2] 2 is most logging
-const LOGGING_FINAL_DUMP = true
+const LOGGING_FINAL_DUMP = false
 const LOGGING_BUBBLE_PRE_SWEEP = false
 const disabledMessage = 'enable LOGGING_ENERGY_DETAIL to track this field'
 
