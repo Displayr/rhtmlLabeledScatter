@@ -35,6 +35,24 @@
     1,
     2
   ],
+  "Z": [
+    1,
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    35,
+    35,
+    30,
+    25,
+    20,
+    15,
+    10,
+    5,
+    1
+  ],
   "label": [
     "Text01",
     "Text02",
@@ -52,5 +70,8 @@
     "Text14",
     "Text15",
     "Text16"
-  ]
+  ],
+  "legendBubblesShow": false,
+  "legendShow": false,
+  "pointRadius": 2
 }
