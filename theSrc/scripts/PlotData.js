@@ -37,7 +37,7 @@ class PlotData {
                  state,
                  svg,
                  labelsFontSize,
-                 labelsFontFamily,
+                 labelsFontFamily
                }) {
     autoBind(this)
     if (xDataType === DataTypeEnum.date) {

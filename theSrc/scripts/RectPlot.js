@@ -130,7 +130,7 @@ class RectPlot {
 
     this.leaderLineConfig = {
       minimumDistance: config.leaderLineDistanceMinimum,
-      nearbyAnchorDistanceThreshold: config.leaderLineDistanceNearbyAnchors,
+      nearbyAnchorDistanceThreshold: config.leaderLineDistanceNearbyAnchors
     }
 
     this.xTitle = new AxisTitle(config.xTitle, config.xTitleFontColor, config.xTitleFontSize, config.xTitleFontFamily, 5, 1)
@@ -263,7 +263,7 @@ class RectPlot {
       state: this.state,
       svg: this.svg,
       labelsFontSize: this.labelsFont.size,
-      labelsFontFamily: this.labelsFont.family,
+      labelsFontFamily: this.labelsFont.family
     })
 
     this.drawFailureCount = 0
@@ -684,7 +684,7 @@ class RectPlot {
     const links = new Links({
       points: this.data.points,
       minimumDistance: this.leaderLineConfig.minimumDistance,
-      nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold,
+      nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold
     })
     links.drawWith(this.svg, this.data.plotColors, this.transparency)
   }
