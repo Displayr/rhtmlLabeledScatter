@@ -4,9 +4,6 @@ import $ from 'jquery'
 import _ from 'lodash'
 import Utils from './Utils'
 
-const LOGGING = false
-
-
 class DragUtils {
   // address "extreme" coupling to plot
   static getLabelDragAndDrop (plot, showTrendLine = false) {
