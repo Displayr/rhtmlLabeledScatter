@@ -46,6 +46,8 @@ LabeledScatter(
   labels.font.size = 10,
   labels.logo.scale = NULL,
   labels.show = TRUE,
+  leaderline.distance.minimum = 10,
+  leaderline.distance.nearbyAnchors = 10,
   legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.bubble.font.family = "Arial",
   legend.bubble.font.size = 10,

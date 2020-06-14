@@ -1,0 +1,14 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+svg text {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+svg text::selection {
+  background: none;
+}
