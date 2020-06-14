@@ -32,6 +32,6 @@
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
     "rbush": "^3.0.1",
-    "rhtmlLabelUtils": "github:Displayr/rhtmlLabelUtils#1.0.1"
+    "rhtmlLabelUtils": "github:Displayr/rhtmlLabelUtils#1.0.2"
   }
 }
