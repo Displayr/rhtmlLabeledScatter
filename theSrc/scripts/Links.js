@@ -6,7 +6,7 @@ class Links {
   constructor ({
     points,
     minimumDistance,
-    nearbyAnchorDistanceThreshold,
+    nearbyAnchorDistanceThreshold
   }) {
     const _labIsText = labelData => labelData.url === ''
 
@@ -70,10 +70,15 @@ class Links {
     const aspectRatioAngle = Math.atan(logo.height / logo.width)
 
     let region
-    if (-aspectRatioAngle < angle && angle <= aspectRatioAngle) { region = 1 }
-    else if (aspectRatioAngle < angle && angle <= Math.PI - aspectRatioAngle) { region = 2 }
-    else if (Math.PI - aspectRatioAngle < angle && angle <= Math.PI + aspectRatioAngle) { region = 3 }
-    else { region = 4 }
+    if (-aspectRatioAngle < angle && angle <= aspectRatioAngle) {
+      region = 1
+    } else if (aspectRatioAngle < angle && angle <= Math.PI - aspectRatioAngle) {
+      region = 2
+    } else if (Math.PI - aspectRatioAngle < angle && angle <= Math.PI + aspectRatioAngle) {
+      region = 3
+    } else {
+      region = 4
+    }
 
     if ((region === 1) || (region === 3)) {
       if (dx > 0) {
