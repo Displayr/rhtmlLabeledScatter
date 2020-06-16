@@ -17,7 +17,7 @@ class Links {
 
       let newLinkPt = null
       if (hasLabel) {
-        if (_labIsText(label)) {
+        if (_labIsText(label) && !this._labIsInsideBubblePt({ label, anchor })) {
           const { point, name } = this._getNewPtOnTxtLabelBorder({ label, anchor, anchors, minimumDistance, nearbyAnchorDistanceThreshold })
           if (DEBUG_OUTPUT) { this._debugOutput({ label, anchor, name }) }
           newLinkPt = point
@@ -46,6 +46,14 @@ class Links {
   }
 
   getLinkData () { return this.links }
+
+  _labIsInsideBubblePt ({ label, anchor }) {
+    // Will return true if any part of the label is inside the bubble
+    return (label.minX < (anchor.maxX)) &&
+      (label.maxX > (anchor.minX)) &&
+      (label.minY < (anchor.maxY)) &&
+      (label.maxY > (anchor.minY))
+  }
 
   _getNewPtOnLogoBorder ({ label: logo, anchor }) {
     // Don't draw a link if anc is inside logo
