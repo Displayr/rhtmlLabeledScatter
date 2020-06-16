@@ -595,7 +595,7 @@ class RectPlot {
           points: this.data.points
         })
 
-        placementPromise.then(() => {
+        return placementPromise.then(() => {
           const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
           const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
 
@@ -637,8 +637,6 @@ class RectPlot {
 
           this.drawLinks()
         })
-        // TODO is probably a bug. we should be returning the promise from the placementPromise.then call above
-        return placementPromise
       } else if (this.trendLines.show) {
         this.tl = new TrendLine(this.data.pts, this.data.lab)
         this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
