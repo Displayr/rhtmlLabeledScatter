@@ -1,11 +1,10 @@
-#' rhtmlLabeledScatter HTML Widget
+#' @title Labeled scatterplot HTMLWidget
 #'
 #' @description A HTMLWidget that creates a labeled scatter plot.
 #'
-#'
-#' @param X is array of x coordinates of data set
-#' @param Y is array of y coordinates of data set
-#' @param Z is array of magnitudes for each set of x,y coordinates (for bubble charts). This is optional
+#' @param X is a vector of x coordinates of data set
+#' @param Y is vector of y coordinates of data set
+#' @param Z is vector of magnitudes for each set of x,y coordinates (for bubble charts). This is optional
 #' @param label is the array of text labels for the data set (can supply an url to show logos)
 #' @param label.alt is an optional array of alternate label text when an url was provided as the label. NOTE: must be same length as label
 #' @param group is the array of group name for each data point
@@ -111,6 +110,7 @@
 #' @source https://github.com/Displayr/rhtmlLabeledScatter
 #'
 #' @import htmlwidgets
+#' @importFrom grDevices rgb
 #'
 #' @export
 #'
@@ -217,13 +217,22 @@ LabeledScatter <- function(
     z.suffix = "",
     z.title = "")
 {
+    # Check inputs
+    if (is.null(X) || !is.atomic(X) || is.array(X))
+        stop("Input X needs to be a vector")
+    if (is.null(Y) || !is.atomic(Y) || is.array(Y))
+        stop("Input Y needs to be a vector")
+    if (!is.null(Z) && (!is.numeric(Z) || any(Z < 0)))
+        stop("Input Z needs to be a vector of non-negative numbers")
+    if (length(X) != length(Y))
+        stop("Inputs X and Y need to have the same length")
+    if (!is.null(Z) && length(X) != length(Z))
+        stop("Input Z needs to have the same length as X and Y")
+
     isDateTime <- function(x) { return (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))}
     xIsDateTime <- isDateTime(X[1])
     yIsDateTime <- isDateTime(Y[1])
-  
-    if (any(Z < 0))
-        stop("Parameter Z (bubble size) cannot have negative values.")
-  
+
     x = list(X = jsonlite::toJSON(X),
              Y = jsonlite::toJSON(Y),
              Z = jsonlite::toJSON(Z),
@@ -324,11 +333,11 @@ LabeledScatter <- function(
              debugMode = debug.mode,
              plotBorderColor = plot.border.color,
              plotBorderWidth = plot.border.width)
-  
+
     sizing.policy <- htmlwidgets::sizingPolicy(browser.fill = TRUE,
                                                viewer.fill = TRUE,
                                                padding = 0)
-    
+
     htmlwidgets::createWidget(name = 'rhtmlLabeledScatter',
                               x,
                               width = width,
