@@ -1,4 +1,3 @@
-*.Rproj
 .idea/
 .keys
 .Rbuildignore
