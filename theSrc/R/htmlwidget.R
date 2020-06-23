@@ -103,8 +103,8 @@
 #' @param label.placement.seed Label placement algorithm setting for the randomiser seed (Default is 1).
 #' @param label.placement.temperature.initial Label placement algorithm initial temperature (Default is 0.01).
 #' @param label.placement.temperature.final Label placement algorithm final temperature (Default is 0.0001).
-#' @param leaderline.distance.minimum
-#' @param leaderline.distance.nearbyAnchors
+#' @param leaderline.distance.minimum Distance between anchor and label must meet or exceed this value before a leader line will be drawn (Default is 10)
+#' @param leaderline.distance.nearbyAnchors If a label has other anchors nearby, a leader line be added regardless of distance between anchor and label (Default is 10)
 #' @param debug.mode Boolean toggle to display widget internals for debugging (Default is FALSE)
 #'
 #' @author Po Liu <po.liu@displayr.com>
