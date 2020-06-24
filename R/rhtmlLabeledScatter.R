@@ -22,7 +22,7 @@
 #' @param title is the title text given to the plot
 #' @param title.font.family is the font family of the plot title
 #' @param title.font.color is the font color of the plot title
-#' @param title.font size is the font size of the plot title
+#' @param title.font.size is the font size of the plot title
 #' @param subtitle is the subtitle text given to the plot
 #' @param subtitle.font.family is the font of the subtitle text
 #' @param subtitle.font.color is the font color of the subtitle text
@@ -111,6 +111,7 @@
 #'
 #' @import htmlwidgets
 #' @importFrom grDevices rgb
+#' @importFrom jsonlite toJSON
 #'
 #' @export
 #'
@@ -233,18 +234,18 @@ LabeledScatter <- function(
     xIsDateTime <- isDateTime(X[1])
     yIsDateTime <- isDateTime(Y[1])
 
-    x = list(X = jsonlite::toJSON(X),
-             Y = jsonlite::toJSON(Y),
-             Z = jsonlite::toJSON(Z),
+    x = list(X = toJSON(X),
+             Y = toJSON(Y),
+             Z = toJSON(Z),
              xIsDateTime = xIsDateTime,
              yIsDateTime = yIsDateTime,
-             label = jsonlite::toJSON(label),
-             labelAlt = jsonlite::toJSON(label.alt),
-             group = jsonlite::toJSON(group),
+             label = toJSON(label),
+             labelAlt = toJSON(label.alt),
+             group = toJSON(group),
              xLevels = x.levels,
              yLevels = y.levels,
              fixedAspectRatio = fixed.aspect,
-             colors = jsonlite::toJSON(colors),
+             colors = toJSON(colors),
              transparency = color.transparency,
              grid = grid,
              origin = origin,

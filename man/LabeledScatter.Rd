@@ -236,6 +236,8 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 
 \item{title.font.family}{is the font family of the plot title}
 
+\item{title.font.size}{is the font size of the plot title}
+
 \item{tooltip.font.color}{is the font color of the tooltips}
 
 \item{tooltip.font.family}{is the font family of the tooltips}
@@ -311,8 +313,6 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 \item{z.suffix}{A string that suffixes all bubble values(eg. "kg")}
 
 \item{z.title}{is the title text given to the bubble size}
-
-\item{title.font}{size is the font size of the plot title}
 }
 \description{
 A HTMLWidget that creates a labeled scatter plot.
