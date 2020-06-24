@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+theSrc
+docs
+gulpfile.js
+package.json
+package-lock.json
+babel.config.js
+.travis.yml
+.eslintignore
+.eslintrc
