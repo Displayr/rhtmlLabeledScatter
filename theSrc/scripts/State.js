@@ -138,17 +138,8 @@ class State {
     this.saveToState({ vb: this.vb, userPositionedLabs: this.userPositionedLabs })
   }
 
-  updateLabelsWithPositionedData (labels, vb) {
-    const combinedLabs = this.userPositionedLabs // .concat(this.algoPositionedLabs)
-    if (!_.isEmpty(combinedLabs)) {
-      _(labels).each((label) => {
-        const matchingLabel = _.find(combinedLabs, e => e.id === label.id)
-        if (matchingLabel != null) {
-          label.x = (matchingLabel.x * vb.width) + vb.x - label.width / 2
-          label.y = (matchingLabel.y * vb.height) + vb.y - label.height
-        }
-      })
-    }
+  getUserPositionedLabels () {
+    return this.userPositionedLabs
   }
 
   getUserPositionedLabIds () {

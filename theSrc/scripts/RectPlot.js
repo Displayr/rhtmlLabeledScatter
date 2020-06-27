@@ -541,7 +541,6 @@ class RectPlot {
   drawLabels () {
     if (this.showLabels) {
       let drag = DragUtils.getLabelDragAndDrop(this)
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
       this.labelPlacement.placeLabels({
         vb: this.vb,
@@ -618,7 +617,6 @@ class RectPlot {
 
     this.tl = new TrendLine(this.data.getAnchors(), this.data.getLabelsOnPlot())
     if (this.showLabels) {
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
       drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
 
@@ -640,7 +638,6 @@ class RectPlot {
 
       this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
     } else {
-      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
       this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
     }
   }

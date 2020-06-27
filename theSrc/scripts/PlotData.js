@@ -7,6 +7,8 @@ import Utils from './utils/Utils'
 import DataTypeEnum from './utils/DataTypeEnum'
 import d3 from 'd3'
 
+const SUPPRESS_ERRORS = false
+
 // To Refactor:
 //   * fixed aspect ratio code can (probably) be simplified : see Pictograph utils/geometryUtils.js
 //
@@ -15,30 +17,28 @@ const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
 
 class PlotData {
   constructor ({
-                 X,
-                 Y,
-                 Z,
-                 xDataType,
-                 yDataType,
-                 xLevels,
-                 yLevels,
-                 group,
-                 labelAlt,
-                 labelDimensions,
-                 vb,
-                 legend,
-                 colors,
-                 fixedRatio,
-                 originAlign,
-                 pointRadius,
-                 bounds,
-                 transparency,
-                 legendSettings,
-                 state,
-                 svg,
-                 labelsFontSize,
-                 labelsFontFamily
-               }) {
+    X,
+    Y,
+    Z,
+    xDataType,
+    yDataType,
+    xLevels,
+    yLevels,
+    group,
+    labelAlt,
+    labelDimensions,
+    vb,
+    legend,
+    colors,
+    fixedRatio,
+    originAlign,
+    pointRadius,
+    bounds,
+    transparency,
+    legendSettings,
+    state,
+    svg,
+  }) {
     console.log('PlotData construct')
     autoBind(this)
 
@@ -371,16 +371,28 @@ class PlotData {
     _(this.lab).each(addMinMaxAreaToRectangle)
     _(this.lab).each(l => addTypeToObject(l, 'label'))
     _(this.lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
+
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-
-    const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
-    const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
-
     const pointsMap = _.merge(
       _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
-      _.keyBy(nestUnderField(this.pts, 'anchor'), 'id'),
-      pinnedById
+      _.keyBy(nestUnderField(this.pts, 'anchor'), 'id')
     )
+
+    const userPositionedLabels = this.state.getUserPositionedLabels()
+    userPositionedLabels.forEach(({ id, x, y}) => {
+      if (_.has(pointsMap, id)) {
+        pointsMap[id].label.x = (x * this.vb.width) + this.vb.x - pointsMap[id].label.width / 2
+        pointsMap[id].label.y = (y * this.vb.height) + this.vb.y - pointsMap[id].label.height
+        pointsMap[id].pinned = true
+      } else {
+        const errorString = `ERROR: state has unknown id ${id}`
+        if (SUPPRESS_ERRORS) {
+          console.log(errorString)
+        } else {
+          throw new Error(errorString)
+        }
+      }
+    })
 
     this.plotArea.init({
       parentContainer: this.svg,
