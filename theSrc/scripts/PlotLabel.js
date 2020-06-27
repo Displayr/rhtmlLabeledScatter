@@ -5,9 +5,6 @@ import { getHorizontalLabelDimensionsUsingSvgApproximation } from 'rhtmlLabelUti
 
 /* global Image */ // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
 
-/* To Refactor:
- * *no method to access the label promises (PlotData accesses the internal directly)
- */
 
 // PlotLabel class
 // The primary purpose of this class is to support images as the labels and
@@ -31,7 +28,7 @@ class PlotLabel {
   }
 
   getLabels () {
-    return this.promiseLabelArray
+    return Promise.all(this.promiseLabelArray)
   }
 
   _makeLabPromise (label) {

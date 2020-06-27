@@ -11,7 +11,7 @@ module.exports = function (element, width, height, stateChanged) {
       // TODO add try catch with DisplayError block
       instance.setConfig(config)
       instance.setUserState(userState)
-      return instance.draw()
+      instance.draw()
     },
 
     labeledScatter: instance

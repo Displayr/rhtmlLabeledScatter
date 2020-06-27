@@ -86,9 +86,6 @@ class LabeledScatter {
             .attr('height', this.height)
             .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
-    // console.log('rhtmlLabeledScatter data')
-    // console.log(JSON.stringify(this.data))
-
     // Error checking
     DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')
     DisplayError.isAxisValid(this.data.Y, this.rootElement, 'Given Y values is neither array of nums, dates, or strings!')
@@ -100,8 +97,13 @@ class LabeledScatter {
 
     const config = buildConfig(this.data, this.width, this.height)
     this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
-    this.plot.draw()
-    return this
+    this.plot.doAsyncThings()
+      .then(() => this.plot.draw())
+      .catch(error => {
+        console.log(`ERROR in plot init/draw calls:`)
+        console.log(error)
+        DisplayError.displayErrorMessage(this.rootElement, 'Internal error. See console logs for details')
+      })
   }
 }
 

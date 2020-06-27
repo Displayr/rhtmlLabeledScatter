@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
 import PlotColors from './PlotColors'
-import PlotLabel from './PlotLabel'
 import LegendUtils from './utils/LegendUtils'
 import Utils from './utils/Utils'
 import DataTypeEnum from './utils/DataTypeEnum'
@@ -23,8 +22,8 @@ class PlotData {
                  xLevels,
                  yLevels,
                  group,
-                 label,
                  labelAlt,
+                 labelDimensions,
                  vb,
                  legend,
                  colors,
@@ -39,6 +38,7 @@ class PlotData {
                  labelsFontSize,
                  labelsFontFamily
                }) {
+    console.log('PlotData construct')
     autoBind(this)
     if (xDataType === DataTypeEnum.date) {
       this.X = _.map(X, d => d.getTime())
@@ -56,8 +56,8 @@ class PlotData {
     this.xDataType = xDataType
     this.yDataType = yDataType
     this.group = group
-    this.label = label
     this.labelAlt = labelAlt
+    this.labelDimensions = labelDimensions
     this.vb = vb
     this.legend = legend
     this.colorWheel = colors
@@ -82,9 +82,7 @@ class PlotData {
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
       this.normalizeData()
-      if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
       this.plotColors = new PlotColors(this)
-      this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale, this.svg, labelsFontSize, labelsFontFamily)
     } else {
       throw new Error('Inputs X and Y lengths do not match!')
     }
@@ -186,6 +184,7 @@ class PlotData {
   }
 
   normalizeData () {
+    console.log('PlotData normalizeData')
     // TODO KZ remove this side effect. Plus Data.calcMinMax is called over and over in the code. Why ??
     let i
     this.calculateMinMax()
@@ -282,21 +281,16 @@ class PlotData {
         i++
       }
     }
-
-    i = 0
-    return (() => {
-      const result = []
-      while (i < this.origLen) {
-        this.normX[i] = this.minX === this.maxX ? this.minX : (this.X[i] - this.minX) / (this.maxX - this.minX)
-        // copy/paste bug using x when calculating Y. WTF is this even doing ?
-        this.normY[i] = this.minY === this.maxY ? this.minX : (this.Y[i] - this.minY) / (this.maxY - this.minY)
-        result.push(i++)
-      }
-      return result
-    })()
+    
+    _(this.X).each((x,i) => {
+      this.normX[i] = this.minX === this.maxX ? this.minX : (this.X[i] - this.minX) / (this.maxX - this.minX)
+      this.normY[i] = this.minY === this.maxY ? this.minY : (this.Y[i] - this.minY) / (this.maxY - this.minY)
+    })
+    if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
   }
 
   normalizeZData () {
+    console.log('PlotData normalize Z Data')
     const legendUtils = LegendUtils
 
     const maxZ = _.max(this.Z)
@@ -305,103 +299,98 @@ class PlotData {
   }
 
   buildPoints (calleeName) {
-    console.log(`buildPoints(${calleeName})`)
-    return Promise.all(this.labelNew.getLabels()).then((resolvedLabels) => {
-      // resolvedLabels is array of { height, width, label, url }
-      // console.log(`resolvedLabels for buildPoints callee name ${calleeName}`)
-      // console.log(resolvedLabels)
+    console.log(`PlotData buildPoints(${calleeName})`)
+    // resolvedLabels is array of { height, width, label, url }
+    const resolvedLabels = this.labelDimensions
 
-      this.pts = []
-      this.lab = []
+    // get rid of these and make everyone use the combined points structure, make these getters ?
+    this.pts = []
+    this.lab = []
 
-      let i = 0
-      while (i < this.origLen) {
-        // TODO this assumes the IDs are the indexes
-        if ((!_.includes(this.outsidePlotPtsId, i)) || _.includes((_.map(this.outsidePlotCondensedPts, 'dataId')), i)) {
-          let ptColor
-          let x = 0
-          let y = 0
-          if (this.xDataType === DataTypeEnum.ordinal) {
-            const scaleOrdinal = d3.scale.ordinal().domain(this.xLevels).rangePoints([0, 1])
-            const sidePadPercent = 0.08
-            x = (scaleOrdinal(this.X[i]) * this.vb.width * (1 - 2 * sidePadPercent)) + this.vb.x + (this.vb.width * sidePadPercent)
-          } else {
-            x = (this.normX[i] * this.vb.width) + this.vb.x
-          }
-          if (this.yDataType === DataTypeEnum.ordinal) {
-            const scaleOrdinal = d3.scale.ordinal().domain(this.yLevels).rangePoints([0, 1])
-            const sidePadPercent = 0.08
-            y = (scaleOrdinal(this.Y[i]) * this.vb.height * (1 - 2 * sidePadPercent)) + this.vb.y + (this.vb.height * sidePadPercent)
-          } else {
-            y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
-          }
-          let r = this.pointRadius
-          if (Utils.isArrOfNums(this.Z)) {
-            const legendUtils = LegendUtils
-            r = legendUtils.normalizedZtoRadius(this.pointRadius, this.normZ[i])
-          }
-          const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
-
-          let { label, width, height, url } = resolvedLabels[i]
-          const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
-          const labelX = x
-          const labelY = y - r - labelTopPadding
-
-          const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
-          let fontSize = this.vb.labelFontSize
-
-          // If pt has been already condensed
-          if (_.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
-            const pt = _.find(this.outsidePlotCondensedPts, e => e.dataId === i)
-            label = pt.markerId + 1
-            fontSize = this.vb.labelSmallFontSize
-            url = ''
-            width = null
-            height = null
-          }
-
-          let fontColor = (ptColor = this.plotColors.getColor(i))
-          if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
-          const group = (this.group != null) ? this.group[i] : ''
-          this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
-
-          const includeLabel = (label !== '' || url !== '')
-          if (includeLabel) {
-            this.lab.push({ x: labelX, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
-          }
+    let i = 0
+    while (i < this.origLen) {
+      // TODO this assumes the IDs are the indexes
+      if ((!_.includes(this.outsidePlotPtsId, i)) || _.includes((_.map(this.outsidePlotCondensedPts, 'dataId')), i)) {
+        let ptColor
+        let x = 0
+        let y = 0
+        if (this.xDataType === DataTypeEnum.ordinal) {
+          const scaleOrdinal = d3.scale.ordinal().domain(this.xLevels).rangePoints([0, 1])
+          const sidePadPercent = 0.08
+          x = (scaleOrdinal(this.X[i]) * this.vb.width * (1 - 2 * sidePadPercent)) + this.vb.x + (this.vb.width * sidePadPercent)
+        } else {
+          x = (this.normX[i] * this.vb.width) + this.vb.x
         }
-        i++
+        if (this.yDataType === DataTypeEnum.ordinal) {
+          const scaleOrdinal = d3.scale.ordinal().domain(this.yLevels).rangePoints([0, 1])
+          const sidePadPercent = 0.08
+          y = (scaleOrdinal(this.Y[i]) * this.vb.height * (1 - 2 * sidePadPercent)) + this.vb.y + (this.vb.height * sidePadPercent)
+        } else {
+          y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
+        }
+        let r = this.pointRadius
+        if (Utils.isArrOfNums(this.Z)) {
+          const legendUtils = LegendUtils
+          r = legendUtils.normalizedZtoRadius(this.pointRadius, this.normZ[i])
+        }
+        const fillOpacity = this.plotColors.getFillOpacity(this.transparency)
+
+        let { label, width, height, url } = resolvedLabels[i]
+        const labelAlt = ((this.labelAlt !== null ? this.labelAlt[i] : undefined) !== null) ? this.labelAlt[i] : ''
+        const labelX = x
+        const labelY = y - r - labelTopPadding
+
+        const labelZ = Utils.isArrOfNums(this.Z) ? this.Z[i].toString() : ''
+        let fontSize = this.vb.labelFontSize
+
+        // If pt has been already condensed
+        if (_.includes((_.map(this.outsidePlotCondensedPts, e => e.dataId)), i)) {
+          const pt = _.find(this.outsidePlotCondensedPts, e => e.dataId === i)
+          label = pt.markerId + 1
+          fontSize = this.vb.labelSmallFontSize
+          url = ''
+          width = null
+          height = null
+        }
+
+        let fontColor = (ptColor = this.plotColors.getColor(i))
+        if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
+        const group = (this.group != null) ? this.group[i] : ''
+        this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
+
+        const includeLabel = (label !== '' || url !== '')
+        if (includeLabel) {
+          this.lab.push({ x: labelX, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
+        }
+      }
+      i++
+    }
+
+    _(this.pts).each(addMinMaxAreaToCircle)
+    _(this.pts).each(a => addTypeToObject(a, 'anchor'))
+    _(this.pts).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
+    _(this.lab).each(addMinMaxAreaToRectangle)
+    _(this.lab).each(l => addTypeToObject(l, 'label'))
+    _(this.lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
+    const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
+
+    const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
+    const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
+
+    const mergedStructure = _.merge(
+      _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
+      _.keyBy(nestUnderField(this.pts, 'anchor'), 'id'),
+      pinnedById
+    )
+    this.points = Object.values(mergedStructure)
+
+    // Remove pts outside plot because user bounds set
+    _.forEach(this.outsideBoundsPtsId, (p, i) => {
+      if (!_.includes(this.outsidePlotPtsId, p)) {
+        this.addElemToLegend(p)
       }
     })
-    .then(() => {
-      _(this.pts).each(addMinMaxAreaToCircle)
-      _(this.pts).each(a => addTypeToObject(a, 'anchor'))
-      _(this.pts).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
-      _(this.lab).each(addMinMaxAreaToRectangle)
-      _(this.lab).each(l => addTypeToObject(l, 'label'))
-      _(this.lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
-      const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-
-      const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
-      const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
-
-      const mergedStructure = _.merge(
-        _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
-        _.keyBy(nestUnderField(this.pts, 'anchor'), 'id'),
-        pinnedById
-      )
-      this.points = Object.values(mergedStructure)
-    })
-    .then(() => {
-      // Remove pts outside plot because user bounds set
-      _.forEach(this.outsideBoundsPtsId, (p, i) => {
-        if (!_.includes(this.outsidePlotPtsId, p)) {
-          this.addElemToLegend(p)
-        }
-      })
-      this.setLegend()
-    })
-    .catch(err => console.log(err))
+    this.setLegend()
   }
 
   setLegend () {

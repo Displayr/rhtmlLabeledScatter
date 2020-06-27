@@ -4,32 +4,34 @@ import d3 from 'd3'
 import 'babel-polyfill'
 import md5 from 'md5'
 import autoBind from 'es6-autobind'
-import Links from './Links'
-import PlotData from './PlotData'
-import TrendLine from './TrendLine'
-import DragUtils from './utils/DragUtils'
-import SvgUtils from './utils/SvgUtils'
-import Utils from './utils/Utils'
-import TooltipUtils from './utils/TooltipUtils'
-import LabelPlacement from './LabelPlacement'
-import LegendSettings from './LegendSettings'
-import Legend from './Legend'
-import DebugMessage from './DebugMessage'
-import ViewBox from './ViewBox'
-import Title from './Title'
-import Subtitle from './Subtitle'
-import Footer from './Footer'
-import PlotAxisLabels from './PlotAxisLabels'
-import PlotAxis from './PlotAxis'
-import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
 import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
+import DebugMessage from './DebugMessage'
+import DragUtils from './utils/DragUtils'
+import Footer from './Footer'
+import LabelPlacement from './LabelPlacement'
+import Legend from './Legend'
+import LegendSettings from './LegendSettings'
+import Links from './Links'
+import PlotAxis from './PlotAxis'
+import PlotAxisLabels from './PlotAxisLabels'
+import PlotLabel from './PlotLabel'
+import PlotData from './PlotData'
+import ResetButton from './ResetButton'
+import Subtitle from './Subtitle'
+import SvgUtils from './utils/SvgUtils'
+import Title from './Title'
+import TooltipUtils from './utils/TooltipUtils'
+import TrendLine from './TrendLine'
+import Utils from './utils/Utils'
+import ViewBox from './ViewBox'
 
 const DEBUG_ADD_BBOX_TO_LABELS = false
 
 class RectPlot {
   constructor ({ config, stateObj, svg } = {}) {
+    console.log('RectPlot constructor')
     autoBind(this)
     this.pltUniqueId = md5((new Date()).getTime())
     this.state = stateObj
@@ -193,8 +195,6 @@ class RectPlot {
     this.debugMode = config.debugMode
     this.showResetButton = config.showResetButton
 
-    this.setDim(this.svg, this.width, this.height)
-
     this.labelPlacement = new LabelPlacement({
       svg: this.svg,
       pltId: this.pltUniqueId,
@@ -222,7 +222,26 @@ class RectPlot {
     })
   }
 
+  // this is an async call, put all async things here
+  doAsyncThings () {
+    console.log('RectPlot doasyncThings')
+    this.setDim(this.svg, this.width, this.height)
+    return this.determineLabelDimensions()
+      .then(labelDimensions => {
+        // resolvedLabels is array of { height, width, label, url }
+        this.labelDimensions = labelDimensions
+        this.initialisePlotData()
+      })
+  }
+
+  determineLabelDimensions () {
+
+    const plotLabel = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale, this.svg, this.labelsFont.size, this.labelsFont.family)
+    return plotLabel.getLabels()
+  }
+
   setDim (svg, width, height) {
+    console.log('RectPlot setDim')
     this.svg = svg
     this.width = width
     this.height = height
@@ -239,31 +258,34 @@ class RectPlot {
     this.title.setX(this.vb.getTitleX())
     this.subtitle.setX(this.vb.getTitleX())
     this.footer.setX(this.vb.getTitleX())
+  }
 
+  initialisePlotData () {
+    console.log('RectPlot initialisePlotData')
     this.data = new PlotData({
-      X: this.X,
-      Y: this.Y,
-      Z: this.Z,
-      xDataType: this.xDataType,
-      yDataType: this.yDataType,
-      xLevels: this.xLevels,
-      yLevels: this.yLevels,
-      group: this.group,
-      label: this.label,
-      labelAlt: this.labelAlt,
-      vb: this.vb,
-      legend: this.legend,
+      bounds: this.bounds,
       colors: this.colors,
       fixedRatio: this.fixedRatio,
+      group: this.group,
+      labelAlt: this.labelAlt,
+      labelDimensions: this.labelDimensions,
+      labelsFontFamily: this.labelsFont.family,
+      labelsFontSize: this.labelsFont.size,
+      legend: this.legend,
+      legendSettings: this.legendSettings,
       originAlign: this.originAlign,
       pointRadius: this.pointRadius,
-      bounds: this.bounds,
-      transparency: this.transparency,
-      legendSettings: this.legendSettings,
       state: this.state,
       svg: this.svg,
-      labelsFontSize: this.labelsFont.size,
-      labelsFontFamily: this.labelsFont.family
+      transparency: this.transparency,
+      vb: this.vb,
+      X: this.X,
+      xDataType: this.xDataType,
+      xLevels: this.xLevels,
+      Y: this.Y,
+      yDataType: this.yDataType,
+      yLevels: this.yLevels,
+      Z: this.Z
     })
 
     this.drawFailureCount = 0
@@ -328,64 +350,63 @@ class RectPlot {
 
   drawLabsAndPlot () {
     this.data.normalizeData()
+    this.data.buildPoints('RectPlot.drawLabsAndPlot')
 
-    return this.data.buildPoints('RectPlot.drawLabsAndPlot').then(() => {
-      const titlesX = this.vb.x + (this.vb.width / 2)
-      this.title.setX(titlesX)
-      this.subtitle.setX(titlesX)
-      this.footer.setX(titlesX)
+    const titlesX = this.vb.x + (this.vb.width / 2)
+    this.title.setX(titlesX)
+    this.subtitle.setX(titlesX)
+    this.footer.setX(titlesX)
 
-      if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
-        _.map(this.state.getLegendPts(), pt => {
-          if (!_.includes(this.data.outsidePlotPtsId, pt)) {
-            this.data.addElemToLegend(pt)
-          }
-        })
-
-        _.map(this.data.outsidePlotPtsId, pt => {
-          if (!_.includes(this.state.getLegendPts(), pt)) {
-            this.state.pushLegendPt(pt)
-          }
-        })
-        const error = new Error('drawLabsAndPlot failed : state.isLegendPtsSynced = false')
-        error.retry = true
-        throw error
-      }
-    }).then(() => {
-      try {
-        this.title.drawWith(this.pltUniqueId, this.svg)
-        this.subtitle.drawWith(this.pltUniqueId, this.svg)
-        this.footer.drawWith(this.pltUniqueId, this.svg)
-        this.drawResetButton()
-
-        if (Utils.isArrOfNums(this.Z)) {
-          // Anchors drawn before labs to avoid bubbles covering labs
-          const ancPromise = this.drawAnc()
-          const labelPromise = ancPromise.then(() => {
-            this.drawLabs()
-          })
-          labelPromise.then(() => {
-            if (this.trendLines.show) { this.drawTrendLines() }
-            this.drawDraggedMarkers()
-          })
-        } else {
-          // If no bubbles, then draw anc on top of potential logos
-          const labelPromise = this.drawLabs()
-          labelPromise.then(() => {
-            if (this.trendLines.show) { this.drawTrendLines() }
-            this.drawDraggedMarkers()
-          }).finally(() => {
-            this.drawAnc()
-          })
+    if (!this.state.isLegendPtsSynced(this.data.outsidePlotPtsId)) {
+      _.map(this.state.getLegendPts(), pt => {
+        if (!_.includes(this.data.outsidePlotPtsId, pt)) {
+          this.data.addElemToLegend(pt)
         }
+      })
 
-        if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
-        this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle, this.padding)
-        this.axisLabels.drawWith(this.pltUniqueId, this.svg)
-      } catch (error) {
-        console.log(error)
+      _.map(this.data.outsidePlotPtsId, pt => {
+        if (!_.includes(this.state.getLegendPts(), pt)) {
+          this.state.pushLegendPt(pt)
+        }
+      })
+      const error = new Error('drawLabsAndPlot failed : state.isLegendPtsSynced = false')
+      error.retry = true
+      throw error
+    }
+
+    try {
+      this.title.drawWith(this.pltUniqueId, this.svg)
+      this.subtitle.drawWith(this.pltUniqueId, this.svg)
+      this.footer.drawWith(this.pltUniqueId, this.svg)
+      this.drawResetButton()
+
+      if (Utils.isArrOfNums(this.Z)) {
+        // Anchors drawn before labs to avoid bubbles covering labs
+        const ancPromise = this.drawAnc()
+        const labelPromise = ancPromise.then(() => {
+          this.drawLabs()
+        })
+        labelPromise.then(() => {
+          if (this.trendLines.show) { this.drawTrendLines() }
+          this.drawDraggedMarkers()
+        })
+      } else {
+        // If no bubbles, then draw anc on top of potential logos
+        const labelPromise = this.drawLabs()
+        labelPromise.then(() => {
+          if (this.trendLines.show) { this.drawTrendLines() }
+          this.drawDraggedMarkers()
+        }).finally(() => {
+          this.drawAnc()
+        })
       }
-    })
+
+      if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
+      this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle, this.padding)
+      this.axisLabels.drawWith(this.pltUniqueId, this.svg)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   drawResetButton () {
@@ -434,6 +455,7 @@ class RectPlot {
           (initAxisTextRowHeight !== this.axisSettings.textDimensions.rowMaxHeight) ||
           (initAxisTextColHeight !== this.axisSettings.textDimensions.colMaxHeight)) {
           this.setDim(this.svg, this.width, this.height)
+          this.initialisePlotData()
           this.data.revertMinMax()
           const error = new Error('axis marker out of bound')
           error.retry = true
@@ -701,6 +723,7 @@ class RectPlot {
     this.height = height
     this.footer.updateContainerHeight(this.height)
     this.setDim(this.svg, this.width, this.height)
+    this.initialisePlotData()
     this.labelPlacement.updateSvgOnResize(this.svg)
     this.state.resetStateOnResize(this.vb)
     this.draw()
