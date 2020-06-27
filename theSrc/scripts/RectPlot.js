@@ -614,7 +614,7 @@ class RectPlot {
 
         const placementPromise = this.labelPlacement.placeLabels({
           vb: this.vb,
-          points: this.data.points
+          plotArea: this.data.getPlotArea()
         })
 
         return placementPromise.then(() => {
@@ -702,7 +702,7 @@ class RectPlot {
 
   drawLinks () {
     const links = new Links({
-      points: this.data.points,
+      points: this.data.getPlotArea().getPoints(), // TODO pass plotArea to Links
       minimumDistance: this.leaderLineConfig.minimumDistance,
       nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold
     })

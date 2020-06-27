@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
 import PlotColors from './PlotColors'
+import PlotArea from './PlotArea'
 import LegendUtils from './utils/LegendUtils'
 import Utils from './utils/Utils'
 import DataTypeEnum from './utils/DataTypeEnum'
@@ -40,6 +41,9 @@ class PlotData {
                }) {
     console.log('PlotData construct')
     autoBind(this)
+
+    this.plotArea = new PlotArea()
+
     if (xDataType === DataTypeEnum.date) {
       this.X = _.map(X, d => d.getTime())
     } else {
@@ -286,16 +290,11 @@ class PlotData {
       this.normX[i] = this.minX === this.maxX ? this.minX : (this.X[i] - this.minX) / (this.maxX - this.minX)
       this.normY[i] = this.minY === this.maxY ? this.minY : (this.Y[i] - this.minY) / (this.maxY - this.minY)
     })
-    if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
-  }
-
-  normalizeZData () {
-    console.log('PlotData normalize Z Data')
-    const legendUtils = LegendUtils
-
-    const maxZ = _.max(this.Z)
-    this.Zquartiles = legendUtils.getZQuartiles(maxZ)
-    this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
+    if (Utils.isArrOfNums(this.Z)) {
+      const maxZ = _.max(this.Z)
+      this.Zquartiles = LegendUtils.getZQuartiles(maxZ)
+      this.normZ = LegendUtils.normalizeZValues(this.Z, maxZ)
+    }
   }
 
   buildPoints (calleeName) {
@@ -377,12 +376,20 @@ class PlotData {
     const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
     const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
 
-    const mergedStructure = _.merge(
+    const pointsMap = _.merge(
       _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
       _.keyBy(nestUnderField(this.pts, 'anchor'), 'id'),
       pinnedById
     )
-    this.points = Object.values(mergedStructure)
+
+    this.plotArea.init({
+      parentContainer: this.svg,
+      width: this.vb.width,
+      height: this.vb.height,
+      top: this.vb.y,
+      left: this.vb.x,
+      points : Object.values(pointsMap)
+    })
 
     // Remove pts outside plot because user bounds set
     _.forEach(this.outsideBoundsPtsId, (p, i) => {
@@ -391,6 +398,10 @@ class PlotData {
       }
     })
     this.setLegend()
+  }
+
+  getPlotArea () {
+    return this.plotArea
   }
 
   setLegend () {

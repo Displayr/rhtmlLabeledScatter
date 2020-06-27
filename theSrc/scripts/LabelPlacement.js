@@ -33,14 +33,15 @@ class LabelPlacement {
     this.svg = svg
   }
 
-  place ({ vb, points }) {
+  place ({ vb, plotArea }) {
     labeler()
       .svg(this.svg)
-      .w1(vb.x)
-      .w2(vb.x + vb.width)
-      .h1(vb.y)
-      .h2(vb.y + vb.height)
-      .points(points)
+      .plotArea(plotArea)
+      // .w1(vb.x)
+      // .w2(vb.x + vb.width)
+      // .h1(vb.y)
+      // .h2(vb.y + vb.height)
+      // .points(points)
       .anchorType(this.isBubble)
       .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.weights)
@@ -53,8 +54,8 @@ class LabelPlacement {
     return Promise.resolve()
   }
 
-  placeLabels ({ vb, points }) {
-    this.place({ vb, points })
+  placeLabels ({ vb, plotArea }) {
+    this.place({ vb, plotArea })
     return Promise.resolve()
   }
 }

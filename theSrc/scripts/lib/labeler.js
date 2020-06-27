@@ -1,7 +1,6 @@
  /* eslint-disable */
 import Random from 'random-js'
 import _ from 'lodash'
-import RBush from 'rbush'
 import circleIntersection from '../utils/circleIntersection'
 
 const LOG_LEVEL_NONE = 0
@@ -11,6 +10,7 @@ const LOG_LEVEL_INNER = 3
 const LOG_LEVEL_TRACE = 4
 
 // independent log flags
+const LOGGING_ANOMOLIES = false
 const LOGGING_OBSERVATIONS = false
 const LOGGINV_TEMPERATURE = false
 const LOGGING_INITIALISATION = false
@@ -39,16 +39,10 @@ const labeler = function () {
     // Use Mersenne Twister seeded random number generator
   let random = new Random(Random.engines.mt19937().seed(1))
 
-  let points = [] // combined data structure for efficiency like
-  let pointsWithLabels = []
-  let collisionTree = null
-  let isBubble = false
-  let h1 = 1 // TODO: better variable names. These are the bounds of the view port
-  let h2 = 1 // TODO: better variable names. These are the bounds of the view port
-  let w1 = 1 // TODO: better variable names. These are the bounds of the view port
-  let w2 = 1 // TODO: better variable names. These are the bounds of the view port
-  let maxDistance = null
   let plotArea = null
+  let pointsWithLabels = []
+  let isBubble = false
+  let maxDistance = null
   let worstCaseEnergy = null
   let labeler = {}
   let svg = {}
@@ -59,7 +53,7 @@ const labeler = function () {
   const getResetCoordsForLabelUsingAnchor = ({ anchor, label }) => ({ x: anchor.x, y: anchor.y - anchor.r - labelTopPadding })
   const resetlabelUsingAnchor = ({ anchor, label }) => {
     const { x, y } = getResetCoordsForLabelUsingAnchor({ anchor, label })
-    labeler.moveLabel({ label, x, y })
+    plotArea.moveLabel({ label, x, y })
   }
 
   let max_move = 5.0
@@ -122,7 +116,7 @@ const labeler = function () {
     }
 
     // TODO: this may need a if numLabels > X then use this ...
-    const potentiallyOverlapping = collisionTree.search(label)
+    const potentiallyOverlapping = plotArea.findCollisions(label)
     const potentiallyOverlappingLabels = potentiallyOverlapping
       .filter(isLabel)
       .filter(notSameId(label.id))
@@ -276,34 +270,11 @@ const labeler = function () {
     return bestLeaderLineOption
   }
 
-  labeler.moveLabel = function ({ label, x, y }) {
-    // TODO : abort if x==x and y==y
-
-    // NB the remove fn considers the bbox so you must remove label before altering the coordinates
-    collisionTree.remove(label)
-
-    label.x = x
-    label.y = y
-    labeler.enforceBoundaries(label)
-    addMinMaxAreaToRectangle(label)
-    collisionTree.insert(label)
-
-    // enforceBoundaries modified label.x and label.y so final x,y may not equal the requested x,y
-    return { x: label.x, y: label.y }
-  }
-
-  labeler.enforceBoundaries = function (label) {
-    if (label.x + label.width / 2 > w2) { label.x = w2 - label.width / 2 }
-    if (label.x - label.width / 2 < w1) { label.x = w1 + label.width / 2 }
-    if (label.y > h2) { label.y = h2 }
-    if (label.y - label.height < h1) { label.y = h1 + label.height }
-  }
-
   labeler.mcmove = function ({ label }) {
     const x = label.x + (random.real(0, 1) - 0.5) * max_move
     const y = label.y + (random.real(0, 1) - 0.5) * max_move
 
-    labeler.moveLabel({ label, x, y })
+    plotArea.moveLabel({ label, x, y })
   }
 
 
@@ -337,7 +308,7 @@ const labeler = function () {
     const x = rotated.x + anchor.x - label.width / 2
     const y = rotated.y + anchor.y
 
-    labeler.moveLabel({ label, x, y })
+    plotArea.moveLabel({ label, x, y })
   }
 
   let coolCount = 0
@@ -350,19 +321,10 @@ const labeler = function () {
   }
 
   labeler.start = function (maxSweeps) {
-    maxDistance = Math.hypot(w2 - w1, h2 - h1)
-    plotArea = (w2 - w1) * (h2 - h1)
+    maxDistance = Math.hypot(plotArea.width, plotArea.height)
 
-    const labels = points.filter(point => point.label).map(point => point.label)
-    const anchors = points.filter(point => point.anchor).map(point => point.anchor)
-
-    _.forEach(labels, label => {
-      labeler.enforceBoundaries(label)
-      addMinMaxAreaToRectangle(label)
-    })
-    collisionTree = new RBush()
-    collisionTree.load(anchors)
-    collisionTree.load(labels)
+    const labels = plotArea.getPoints().filter(({ label }) => label).map(({ label }) => label)
+    const anchors = plotArea.getPoints().filter(({ anchor }) => anchor).map(({ anchor }) => anchor)
 
     const highestDistancePenalty = _(weightLineLengthMultipliers).values().max() * weightLineLength
     worstCaseEnergy =
@@ -372,7 +334,7 @@ const labeler = function () {
 
     this.makeInitialObservationsAndAdjustments()
 
-    const activePoints = labeler.chooseActivePoints({ points: pointsWithLabels })
+    const activePoints = labeler.chooseActivePoints()
 
     // TODO: this is no longer accurate as we still do _some_ stuff before this point
     if (!is_placement_algo_on) {
@@ -395,7 +357,7 @@ const labeler = function () {
 
       if (LOGGING_FINAL_DUMP) {
         console.log('dump state after general sweep')
-        console.log(points)
+        console.log(plotArea.getPoints())
 
         _(activePoints).each(point => {
           labeler.detailedEnergy(point,'debug-final-dump')
@@ -406,23 +368,23 @@ const labeler = function () {
     }
   }
 
-  labeler.chooseActivePoints = function ({ points }) {
-    return points.filter(point => {
-      const {
-        label,
-        pinned,
-        observations: {
-          static: staticObservations
-        }
-      } = point
+  labeler.chooseActivePoints = function () {
+    return plotArea.getPoints()
+      .filter(({label}) => label)
+      .filter(point => {
+        const {
+          label,
+          pinned,
+          observations: { static: staticObservations }
+        } = point
 
-      const reasonsToSkip = [
-        pinned,
-        staticObservations.labelPlacedInsideBubble,
-        staticObservations.noInitialCollisionsAndNoNearbyNeighbors
-      ]
+        const reasonsToSkip = [
+          pinned,
+          staticObservations.labelPlacedInsideBubble,
+          staticObservations.noInitialCollisionsAndNoNearbyNeighbors
+        ]
 
-      return !_.some(reasonsToSkip)
+        return !_.some(reasonsToSkip)
     })
   }
 
@@ -469,8 +431,6 @@ const labeler = function () {
 
       let new_energy = labeler.energy(point, `general:${currentRound}:new`)
 
-      // TODO document final solution once it is ready
-
       const better = (new_energy < old_energy)
       let acceptChange = null
       if (better) {
@@ -480,12 +440,14 @@ const labeler = function () {
         const oddsPreTemp = 1 - ((new_energy - old_energy) / worstCaseEnergy)
         const odds = oddsPreTemp * currTemperature
 
-        if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
-        if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
-        // if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
-        // if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
-        // if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
-        // if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
+        if (LOGGING_ANOMOLIES) {
+          if (currTemperature > 1) {console.error(`got temp > 1 : ${currTemperature}`)}
+          if (currTemperature < 0) {console.error(`got temp < 0 : ${currTemperature}`)}
+          if (oddsPreTemp > 1) {console.error(`got odds pre temp > 1 : ${oddsPreTemp}`)}
+          if (oddsPreTemp < 0) {console.error(`got odds pre temp < 0 : ${oddsPreTemp}`)}
+          if (odds > 1) {console.error(`got odds > 1 : ${odds}`)}
+          if (odds < 0) {console.error(`got odds < 0 : ${odds}`)}
+        }
 
         acceptChange = random.real(0, 1) < odds
 
@@ -503,7 +465,7 @@ const labeler = function () {
         if (!_.has(dynamicObservations.energy, 'best') || dynamicObservations.energy.best > new_energy) { dynamicObservations.energy.best = new_energy }
       } else {
         // move back to old coordinates
-        labeler.moveLabel({ label, x: x_old, y: y_old })
+        plotArea.moveLabel({ label, x: x_old, y: y_old })
         stats.rej += 1
       }
 
@@ -619,8 +581,8 @@ const labeler = function () {
     const energyBefore = dynamicObservations.energy.current
 
     const movesPerDirection = 10
-    const widthIncrement = 0.25 * (w2 - w1) / movesPerDirection
-    const heightIncrement = 0.25 * (h2 - h1) / movesPerDirection
+    const widthIncrement = 0.25 * (plotArea.width) / movesPerDirection
+    const heightIncrement = 0.25 * (plotArea.height) / movesPerDirection
 
     const defaultCoords = getResetCoordsForLabelUsingAnchor(point)
 
@@ -701,7 +663,7 @@ const labeler = function () {
   labeler.chooseBestLabelPosition = function ({ point, options, phaseName }) {
     const { label } = point
     _(options).each(option => {
-      labeler.moveLabel({ label, x: option.x, y: option.y })
+      plotArea.moveLabel({ label, x: option.x, y: option.y })
       // NB note the adjusted coords (moveLabel may not accept input due to hard wall boundaries)
       option.x = label.x
       option.y = label.y
@@ -715,16 +677,17 @@ const labeler = function () {
       .sortBy('energy')
       .first()
 
-    labeler.moveLabel({ label, x: bestOption.x, y: bestOption.y })
+    plotArea.moveLabel({ label, x: bestOption.x, y: bestOption.y })
 
     return bestOption
   }
 
   // TODO split the observations and adjustments. the adjustments should be referred to as "pre-sweep" operations
   labeler.makeInitialObservationsAndAdjustments = function () {
+
     // note this is a broad sweep collision detection (it is using a rectangle to detect sphere overlap)
     // TODO: test each collision more precisely
-    points.forEach(point => {
+    plotArea.getPoints().forEach(point => {
       point.observations = {
         // static observations are made once at beginning of simulation
         static: {
@@ -769,7 +732,7 @@ const labeler = function () {
         const yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
         const selfOverlap = (xOverlap * yOverlap) > 0
 
-        const nearbyThings = collisionTree.search(expandedLabelAndAnchorBoundingBox)
+        const nearbyThings = plotArea.findCollisions(expandedLabelAndAnchorBoundingBox)
           .filter(notSameId(id))
 
         point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = !selfOverlap && (nearbyThings.length === 0)
@@ -777,7 +740,7 @@ const labeler = function () {
         if (isBubble && label.width < 2 * anchor.r) {
           point.observations.static.labelFitsInsideBubble = true
           point.observations.static.labelPlacedInsideBubble = true
-          labeler.moveLabel({
+          plotArea.moveLabel({
             label,
             x: label.x,
             y: anchor.y + label.height / 2
@@ -785,7 +748,7 @@ const labeler = function () {
         }
       }
 
-      const potentiallyCollidingAnchors = collisionTree.search(anchor)
+      const potentiallyCollidingAnchors = plotArea.findCollisions(anchor)
         .filter(isAnchor)
         .filter(notSameId(id))
 
@@ -817,11 +780,11 @@ const labeler = function () {
     // NB TODO this is inefficient. If this is copied into inner loop will be big impact
     // Current position: it only runs once per anchor in a pre sweep phase so inefficiency is ok
     const labelToPoint = label => {
-      const x = _.find(points, { id: label.id });
+      const x = _.find(plotArea.getPoints(), { id: label.id });
       return x
     }
 
-    _(points)
+    _(plotArea.getPoints())
       .filter(labelIsPlacedInsideBubble)
       .sort((a, b) => b.anchor.r - a.anchor.r)
       .forEach(biggerPoint => {
@@ -838,7 +801,7 @@ const labeler = function () {
               have moved label 1 outside of the bubble. This extends by induction to all other labels in the outer loop
            */
           const thru = (name) => (x) => { console.log(name); return x }
-          const potentiallyCollidingLabels = collisionTree.search(label)
+          const potentiallyCollidingLabels = plotArea.findCollisions(label)
             .filter(isLabel)
             .filter(notSameId(id))
             .map(labelToPoint)
@@ -854,7 +817,7 @@ const labeler = function () {
       })
 
     if (LOGGING_OBSERVATIONS) {
-      const stats = _.transform(points, (result, { label, anchor, observations }) => {
+      const stats = _.transform(plotArea.getPoints(), (result, { label, anchor, observations }) => {
         if (anchor) { result.anchors++ }
         if (label) { result.labels++ }
         if (observations.static.anchorCollidesWithOtherAnchors) { result.anchorCollidesWithOtherAnchors++ }
@@ -872,8 +835,6 @@ const labeler = function () {
       })
       console.log("observations on data set", stats)
     }
-
-    pointsWithLabels = points.filter(({label}) => label)
   }
 
   labeler.svg = function (x) {
@@ -881,31 +842,8 @@ const labeler = function () {
     return labeler
   }
 
-  labeler.w1 = function (x) {
-    if (!arguments.length) return w
-    w1 = x
-    return labeler
-  }
-  labeler.w2 = function (x) {
-    if (!arguments.length) return w
-    w2 = x
-    return labeler
-  }
-
-  labeler.h1 = function (x) {
-    if (!arguments.length) return h
-    h1 = x
-    return labeler
-  }
-
-  labeler.h2 = function (x) {
-    if (!arguments.length) return h
-    h2 = x
-    return labeler
-  }
-
-  labeler.points = function (x) {
-    points = x
+  labeler.plotArea = function (x) {
+    plotArea = x
     return labeler
   }
 
@@ -945,17 +883,6 @@ const labeler = function () {
 
 module.exports = labeler
 /* eslint-enable */
-
-// TODO extract addMinMaxAreaToCircle and addMinMaxAreaToRectangle to util. Currently duplicated in labeler and plotdata
-
-const addMinMaxAreaToRectangle = (rect) => {
-  rect.minX = rect.x - rect.width / 2
-  rect.maxX = rect.x + rect.width / 2
-  rect.minY = rect.y - rect.height
-  rect.maxY = rect.y
-  rect.area = rect.width * rect.height
-  return rect
-}
 
 const isAnchor = ({ type } = {}) => type === 'anchor'
 const isLabel = ({ type } = {}) => type === 'label'
