@@ -59,6 +59,14 @@ class PlotArea {
     return this.points
   }
 
+  getAnchors () {
+    return this.points.map(({ anchor }) => anchor)
+  }
+
+  getLabels () {
+    return this.points.filter(({ label }) => label).map(({ label }) => label)
+  }
+
   moveLabel ({ label, x, y }) {
     // TODO : abort if x==x and y==y
 
@@ -89,8 +97,6 @@ class PlotArea {
   removePoint(id) {}
 
   addPoint(point) {}
-
-  draw() {}
 }
 
 module.exports = PlotArea

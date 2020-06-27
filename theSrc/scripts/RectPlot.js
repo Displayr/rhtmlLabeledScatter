@@ -28,6 +28,7 @@ import Utils from './utils/Utils'
 import ViewBox from './ViewBox'
 
 const DEBUG_ADD_BBOX_TO_LABELS = false
+const SUPPRESS_ERRORS = false
 
 class RectPlot {
   constructor ({ config, stateObj, svg } = {}) {
@@ -379,33 +380,18 @@ class RectPlot {
       this.subtitle.drawWith(this.pltUniqueId, this.svg)
       this.footer.drawWith(this.pltUniqueId, this.svg)
       this.drawResetButton()
-
-      if (Utils.isArrOfNums(this.Z)) {
-        // Anchors drawn before labs to avoid bubbles covering labs
-        const ancPromise = this.drawAnc()
-        const labelPromise = ancPromise.then(() => {
-          this.drawLabs()
-        })
-        labelPromise.then(() => {
-          if (this.trendLines.show) { this.drawTrendLines() }
-          this.drawDraggedMarkers()
-        })
-      } else {
-        // If no bubbles, then draw anc on top of potential logos
-        const labelPromise = this.drawLabs()
-        labelPromise.then(() => {
-          if (this.trendLines.show) { this.drawTrendLines() }
-          this.drawDraggedMarkers()
-        }).finally(() => {
-          this.drawAnc()
-        })
-      }
+      
+      this.drawPlotArea()
 
       if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
       this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle, this.padding)
       this.axisLabels.drawWith(this.pltUniqueId, this.svg)
     } catch (error) {
-      console.log(error)
+      if (SUPPRESS_ERRORS) {
+        console.log(error)
+      } else {
+        throw error
+      }
     }
   }
 
@@ -496,65 +482,6 @@ class RectPlot {
     }.bind(this))
   }
 
-  drawAnc () {
-    return new Promise(function (resolve, reject) {
-      this.svg.selectAll('.anc').remove()
-      const anc = this.svg.selectAll('.anc')
-               .data(this.data.pts)
-               .enter()
-               .append('circle')
-               .attr('class', 'anc')
-               .attr('id', d => `anc-${d.id}`)
-               .attr('cx', d => d.x)
-               .attr('cy', d => d.y)
-               .attr('fill', d => d.color)
-               .attr('fill-opacity', d => d.fillOpacity)
-               .attr('r', (d) => {
-                 if (this.trendLines.show) {
-                   return this.trendLines.pointSize
-                 } else {
-                   return d.r
-                 }
-               })
-      TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
-      // Clip paths used to crop bubbles if they expand beyond the plot's borders
-      if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
-        this.svg.selectAll('clipPath').remove()
-        SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, this.data.pts, this.vb, this.pltUniqueId)
-      }
-      resolve()
-    }.bind(this))
-  }
-
-  drawDraggedMarkers () {
-    this.svg.selectAll('.marker').remove()
-    this.svg.selectAll('.marker')
-        .data(this.data.outsidePlotMarkers)
-        .enter()
-        .append('line')
-        .attr('class', 'marker')
-        .attr('x1', d => d.x1)
-        .attr('y1', d => d.y1)
-        .attr('x2', d => d.x2)
-        .attr('y2', d => d.y2)
-        .attr('stroke-width', d => d.width)
-        .attr('stroke', d => d.color)
-
-    this.svg.selectAll('.marker-label').remove()
-    this.svg.selectAll('.marker-label')
-        .data(this.data.outsidePlotMarkers)
-        .enter()
-        .append('text')
-        .attr('class', 'marker-label')
-        .attr('x', d => d.markerTextX)
-        .attr('y', d => d.markerTextY)
-        .attr('font-family', 'Arial')
-        .attr('text-anchor', 'start')
-        .attr('font-size', this.legend.getMarkerTextSize())
-        .attr('fill', d => d.color)
-        .text(d => d.markerLabel)
-  }
-
   resetPlotAfterDragEvent () {
     const plotElems = [
       '.plot-viewbox',
@@ -574,132 +501,184 @@ class RectPlot {
     return this.draw()
   }
 
-  drawLabs () {
-    let drag
+  drawPlotArea () {
+    this.drawAnchors()
+    // TODO ENABLE
+    if (this.trendLines.show) {
+      this.drawTrendLines()
+    } else {
+      this.drawLabels()
+      this.drawLinks()
+    }
+    this.drawDraggedMarkers()
+  }
+
+  drawAnchors () {
+    const anchors = this.data.getAnchors()
+    this.svg.selectAll('.anc').remove()
+    this.svg.selectAll('.anc')
+      .data(anchors)
+      .enter()
+      .append('circle')
+      .attr('class', 'anc')
+      .attr('id', d => `anc-${d.id}`)
+      .attr('cx', d => d.x)
+      .attr('cy', d => d.y)
+      .attr('fill', d => d.color)
+      .attr('fill-opacity', d => d.fillOpacity)
+      .attr('r', d => d.r)
+
+    // TODO ENABLE
+    // TooltipUtils.appendTooltips(anchors, this.Z, this.axisSettings, this.tooltipText)
+
+    // Clip paths used to crop bubbles if they expand beyond the plot's borders
+    if (this.plotBorder.show) {
+      this.svg.selectAll('clipPath').remove()
+      SvgUtils.clipBubbleIfOutsidePlotArea(this.svg, anchors, this.vb, this.pltUniqueId)
+    }
+  }
+
+  drawLabels () {
     if (this.showLabels) {
-      if (!this.trendLines.show) {
-        drag = DragUtils.getLabelDragAndDrop(this)
-        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+      let drag = DragUtils.getLabelDragAndDrop(this)
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
 
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
-            .data(this.data.getImgLabels())
-            .enter()
-            .append('svg:image')
-            .attr('class', `plt-${this.pltUniqueId}-lab-img`)
-            .attr('xlink:href', d => d.url)
-            .attr('id', d => d.id)
-            .attr('x', d => d.x - (d.width / 2))
-            .attr('y', d => d.y - d.height)
-            .attr('width', d => d.width)
-            .attr('height', d => d.height)
-            .call(drag)
+      this.labelPlacement.placeLabels({
+        vb: this.vb,
+        plotArea: this.data.getPlotArea()
+      })
 
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`).remove()
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
-                 .data(this.data.getTextLabels())
-                 .enter()
-                 .append('text')
-                 .attr('class', `plt-${this.pltUniqueId}-lab`)
-                 .attr('id', d => d.id)
-                 .attr('x', d => d.x - (d.width / 2))
-                 .attr('y', d => d.y - d.height)
-                 .attr('font-family', d => d.fontFamily)
-                 .attr('dominant-baseline', 'text-before-edge')
-                 .attr('fill', d => d.color)
-                 .attr('font-size', d => d.fontSize)
-                 .style('cursor', 'pointer')
-                 .text(d => d.text)
-                 .call(drag)
+      this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
+      this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
+        .data(this.data.getImgLabels())
+        .enter()
+        .append('svg:image')
+        .attr('class', `plt-${this.pltUniqueId}-lab-img`)
+        .attr('xlink:href', d => d.url)
+        .attr('id', d => d.id)
+        .attr('x', d => d.x - (d.width / 2))
+        .attr('y', d => d.y - d.height)
+        .attr('width', d => d.width)
+        .attr('height', d => d.height)
+        .call(drag)
 
-        const placementPromise = this.labelPlacement.placeLabels({
-          vb: this.vb,
-          plotArea: this.data.getPlotArea()
-        })
+      this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`).remove()
+      this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
+        .data(this.data.getTextLabels())
+        .enter()
+        .append('text')
+        .attr('class', `plt-${this.pltUniqueId}-lab`)
+        .attr('id', d => d.id)
+        .attr('x', d => d.x - (d.width / 2))
+        .attr('y', d => d.y - d.height)
+        .attr('font-family', d => d.fontFamily)
+        .attr('dominant-baseline', 'text-before-edge')
+        .attr('fill', d => d.color)
+        .attr('font-size', d => d.fontSize)
+        .style('cursor', 'pointer')
+        .text(d => d.text)
+        .call(drag)
 
-        return placementPromise.then(() => {
-          const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
-          const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
+      if (DEBUG_ADD_BBOX_TO_LABELS) {
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-debug-bbox`)
+          .data(this.data.getTextLabels())
+          .enter()
+          .append('rect')
+          .attr('class', `plt-${this.pltUniqueId}-lab-debug-bbox`)
+          .attr('x', d => d.x - (d.width / 2))
+          .attr('y', d => d.y - d.height)
+          .attr('width', d => d.width)
+          .attr('height', d => d.height)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
+        // .each(d => console.log('debug box', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
 
-          // Move labels after label placement algorithm
-          labelsSvg
-            .attr('x', d => d.x - (d.width / 2))
-            .attr('y', d => d.y - d.height)
-
-          labelsImgSvg
-            .attr('x', d => d.x - (d.width / 2))
-            .attr('y', d => d.y - d.height)
-
-          if (DEBUG_ADD_BBOX_TO_LABELS) {
-            this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-debug-bbox`)
-              .data(this.data.getTextLabels())
-              .enter()
-              .append('rect')
-              .attr('class', `plt-${this.pltUniqueId}-lab-debug-bbox`)
-              .attr('x', d => d.x - (d.width / 2))
-              .attr('y', d => d.y - d.height)
-              .attr('width', d => d.width)
-              .attr('height', d => d.height)
-              .attr('fill', 'none')
-              .attr('stroke', 'black')
-              // .each(d => console.log('debug box', JSON.stringify({ id: d.id, x: d.x.toFixed(1), y: d.y.toFixed(1), height: d.height.toFixed(1), width: d.width.toFixed(1) })))
-
-            this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img-debug-bbox`)
-              .data(this.data.getImgLabels())
-              .enter()
-              .append('rect')
-              .attr('class', `plt-${this.pltUniqueId}-lab-img-debug-bbox`)
-              .attr('x', d => d.x - (d.width / 2))
-              .attr('y', d => d.y - d.height)
-              .attr('width', d => d.width)
-              .attr('height', d => d.height)
-              .attr('fill', 'none')
-              .attr('stroke', 'black')
-          }
-
-          this.drawLinks()
-        })
-      } else if (this.trendLines.show) {
-        this.tl = new TrendLine(this.data.pts, this.data.lab)
-        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
-
-        drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
-        this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
-
-        // TODO this is duplicated from PlotData to create a points structure from the TrendLine labels
-
-        const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-        const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
-        const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
-
-        const mergedStructure = _.merge(
-          _.keyBy(nestUnderField(this.tl.arrowheadLabels, 'label'), 'id'),
-          _.keyBy(nestUnderField(this.tl.pts, 'anchor'), 'id'),
-          pinnedById
-        )
-        const trendLinePoints = Object.values(mergedStructure)
-
-        const placementPromise = this.labelPlacement.placeTrendLabels({
-          vb: this.vb,
-          points: trendLinePoints
-        })
-        placementPromise.then(() => {
-          const labelsSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
-          const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
-
-          // Move labels after label placement algorithm
-          labelsSvg.attr('x', d => d.x)
-                   .attr('y', d => d.y)
-          labelsImgSvg.attr('x', d => d.x - (d.width / 2))
-                      .attr('y', d => d.y - d.height)
-        })
-        return placementPromise
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img-debug-bbox`)
+          .data(this.data.getImgLabels())
+          .enter()
+          .append('rect')
+          .attr('class', `plt-${this.pltUniqueId}-lab-img-debug-bbox`)
+          .attr('x', d => d.x - (d.width / 2))
+          .attr('y', d => d.y - d.height)
+          .attr('width', d => d.width)
+          .attr('height', d => d.height)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
       }
+
+      this.drawLinks()
+
     } else {
       return Promise.reject('Labels turned off')
     }
   }
 
+  drawTrendLines () {
+    return
+
+    this.tl = new TrendLine(this.data.getAnchors(), this.data.getLabelsOnPlot())
+    if (this.showLabels) {
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+
+      drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
+
+      const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
+      const pinnedLabelIds = this.state.getPositionedLabIds(this.vb)
+      const pinnedById = _.transform(pinnedLabelIds, (result, id) => { result[id] = { pinned: true } }, {})
+
+      const mergedStructure = _.merge(
+        _.keyBy(nestUnderField(this.tl.arrowheadLabels, 'label'), 'id'),
+        _.keyBy(nestUnderField(this.tl.pts, 'anchor'), 'id'),
+        pinnedById
+      )
+      const trendLinePoints = Object.values(mergedStructure)
+
+      this.labelPlacement.placeTrendLabels({
+        vb: this.vb,
+        points: trendLinePoints
+      })
+
+      this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
+    } else {
+      this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+      this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
+    }
+  }
+
+  drawDraggedMarkers () {
+    return
+    this.svg.selectAll('.marker').remove()
+    this.svg.selectAll('.marker')
+      .data(this.data.outsidePlotMarkers)
+      .enter()
+      .append('line')
+      .attr('class', 'marker')
+      .attr('x1', d => d.x1)
+      .attr('y1', d => d.y1)
+      .attr('x2', d => d.x2)
+      .attr('y2', d => d.y2)
+      .attr('stroke-width', d => d.width)
+      .attr('stroke', d => d.color)
+
+    this.svg.selectAll('.marker-label').remove()
+    this.svg.selectAll('.marker-label')
+      .data(this.data.outsidePlotMarkers)
+      .enter()
+      .append('text')
+      .attr('class', 'marker-label')
+      .attr('x', d => d.markerTextX)
+      .attr('y', d => d.markerTextY)
+      .attr('font-family', 'Arial')
+      .attr('text-anchor', 'start')
+      .attr('font-size', this.legend.getMarkerTextSize())
+      .attr('fill', d => d.color)
+      .text(d => d.markerLabel)
+  }
+
+  drawLinks () {
+    return
+  }
+  
   drawLinks () {
     const links = new Links({
       plotArea: this.data.getPlotArea(),
@@ -707,14 +686,6 @@ class RectPlot {
       nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold
     })
     links.drawWith(this.svg, this.data.plotColors, this.transparency)
-  }
-
-  drawTrendLines () {
-    this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
-    if ((this.tl === undefined) || (this.tl === null)) {
-      this.tl = new TrendLine(this.data.pts, this.data.lab)
-    }
-    this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
   }
 
   resized (svg, width, height) {

@@ -51,12 +51,10 @@ class LabelPlacement {
 
   placeTrendLabels ({ vb, points }) {
     this.place({ vb, points })
-    return Promise.resolve()
   }
 
   placeLabels ({ vb, plotArea }) {
     this.place({ vb, plotArea })
-    return Promise.resolve()
   }
 }
 

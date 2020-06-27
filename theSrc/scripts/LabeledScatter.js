@@ -81,10 +81,10 @@ class LabeledScatter {
     $(this.rootElement).find('*').remove()
 
     const svg = d3.select(this.rootElement)
-            .append('svg')
-            .attr('width', this.width)
-            .attr('height', this.height)
-            .attr('class', 'plot-container rhtmlwidget-outer-svg')
+      .append('svg')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // Error checking
     DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')

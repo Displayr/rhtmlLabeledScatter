@@ -404,6 +404,24 @@ class PlotData {
     return this.plotArea
   }
 
+  getAnchors () {
+    return this.getPlotArea().getAnchors()
+  }
+
+  getLabelsOnPlot () {
+    return this.getPlotArea().getLabels()
+  }
+
+  // TODO make img/txt this explicit in the label data structure
+  getTextLabels () {
+    return _.filter(this.getLabelsOnPlot(), l => l.url === '')
+  }
+
+  // TODO make img/txt this explicit in the label data structure
+  getImgLabels () {
+    return _.filter(this.getLabelsOnPlot(), l => l.url !== '')
+  }
+
   setLegend () {
     this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles, this.pointRadius)
   }
@@ -459,14 +477,6 @@ class PlotData {
     _.forEachRight(this.legend.pts, lp => {
       if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id)
     })
-  }
-
-  getTextLabels () {
-    return _.filter(this.lab, l => l.url === '')
-  }
-
-  getImgLabels () {
-    return _.filter(this.lab, l => l.url !== '')
   }
 }
 
