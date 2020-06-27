@@ -702,7 +702,7 @@ class RectPlot {
 
   drawLinks () {
     const links = new Links({
-      points: this.data.getPlotArea().getPoints(), // TODO pass plotArea to Links
+      plotArea: this.data.getPlotArea(),
       minimumDistance: this.leaderLineConfig.minimumDistance,
       nearbyAnchorDistanceThreshold: this.leaderLineConfig.nearbyAnchorDistanceThreshold
     })

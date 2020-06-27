@@ -4,13 +4,14 @@ const DEBUG_OUTPUT = false
 
 class Links {
   constructor ({
-    points,
+    plotArea,
     minimumDistance,
     nearbyAnchorDistanceThreshold
   }) {
     const _labIsText = labelData => labelData.url === ''
 
     this.links = []
+    const points = plotArea.getPoints()
     const anchors = points.map(({ anchor }) => anchor)
     points.forEach(({ label, anchor }) => {
       const hasLabel = (label)
