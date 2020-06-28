@@ -237,6 +237,36 @@ describe('state interactions', () => {
     await page.close()
   })
 
+  // complex legend interactions
+  test(`${++testId}: Drag labels causes bounds to recalculate, and markers are used for out of bounds labels`, async function () {
+    const { page, scatterPlot } = await loadWidget({
+      browser,
+      configName: 'data.bdd.legend_drag_test_plot',
+      width: 600,
+      height: 600
+    })
+
+    await testSnapshots({ page, snapshotName: 'initial_legend_drag_test_plot' })
+
+    await scatterPlot.movePlotLabelToLegend({ id: 0 })
+    await scatterPlot.movePlotLabelToLegend({ id: 3 })
+    await scatterPlot.movePlotLabelToLegend({ id: 4 })
+    await scatterPlot.movePlotLabelToLegend({ id: 7 })
+
+    await testSnapshots({ page, snapshotName: 'legend_drag_test_plot_four_outliers_dragged_to_legend' })
+
+    await scatterPlot.movePlotLabelToLegend({ id: 8 })
+    await scatterPlot.movePlotLabelToLegend({ id: 9 })
+    await scatterPlot.movePlotLabelToLegend({ id: 10 })
+    await scatterPlot.movePlotLabelToLegend({ id: 11 })
+
+    await testSnapshots({ page, snapshotName: 'legend_drag_test_plot_eight_outliers_dragged_to_legend' })
+
+    await testState({ page, stateName: 'data.bdd.legend_drag_test_plot_state.eight_outliers_dragged_to_legend', tolerance: 0 })
+
+    await page.close()
+  })
+
   // unrelated truncated plot
   test(`${++testId}: Load saved state and see truncated scatterplot with 2 columns`, async function () {
     const { page } = await loadWidget({

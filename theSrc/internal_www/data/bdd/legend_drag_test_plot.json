@@ -1,0 +1,37 @@
+{
+  "label": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L"
+  ],
+  "X": [3,2,4,0,6,2,4,3,1,5,1,5],
+  "Y": [0,2,2,3,3,4,4,6,1,1,5,5],
+  "group": [
+    "G1",
+    "G2",
+    "G2",
+    "G1",
+    "G1",
+    "G2",
+    "G2",
+    "G1",
+    "G3",
+    "G3",
+    "G3",
+    "G3"
+  ],
+  "showResetButton": false,
+  "pointRadius": 4,
+  "origin":false,
+  "showXAxis": false,
+  "showYAxis": false
+}
