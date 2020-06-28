@@ -90,6 +90,20 @@ describe('state interactions', () => {
     await page.close()
   })
 
+  test(`${++testId}: Drag a label to the legend, then reposition marker`, async function () {
+    const { page, scatterPlot } = await loadWidget({ browser })
+
+    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+
+    await scatterPlot.movePlotLabelToLegend({ id: 0 })
+    await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
+
+    await testSnapshots({ page, snapshotName: 'after_porche_drag_to_legend_and_reposition_1_marker' })
+    await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend_and_reposition_1_marker', tolerance: 1 })
+
+    await page.close()
+  })
+
   // image label actions 1-5
   test(`${++testId}: Drag a image label`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
