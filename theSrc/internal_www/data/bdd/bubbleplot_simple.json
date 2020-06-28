@@ -39,6 +39,14 @@
     "G2",
     "G2"
   ],
+  "tooltipText": [
+    "tooltip 0",
+    "tooltip 1",
+    "tooltip 2",
+    "tooltip 3",
+    "tooltip 4",
+    "tooltip 5"
+  ],
   "titleFontSize": 40,
   "yTitleFontSize": 16,
   "xTitleFontSize": 20,
@@ -55,14 +63,6 @@
   "colors": [
     "#5B9BD5",
     "#ED7D31"
-  ],
-  "tooltipText": [
-    "A \n 10 \nCustom text",
-    "custom5",
-    "custom4",
-    "custom3",
-    "custom2",
-    "custom1\nNew line"
   ],
   "showResetButton": false,
   "pointRadius": 2

@@ -70,9 +70,3 @@ describe('resize', () => {
     await page.close()
   })
 })
-
-
-// DONT USER page.waitForFunction !
-// return page.evaluate(getStateUpdates).then((stateUpdates) => {
-//   return stateUpdates[stateUpdates.length - 1]
-// })

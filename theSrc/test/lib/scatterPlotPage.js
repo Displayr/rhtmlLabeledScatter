@@ -71,6 +71,10 @@ class ScatterPlotPage {
     return this.page.mouse.move(initialMousePosition.x, initialMousePosition.y)
   }
 
+  async moveMouseOntoAnchor ({ id }) {
+    return this.page.hover(`#anc-${id}`)
+  }
+
   async plotLabel ({ id }) {
     return this.page.$(`[id="${id}"]`)
   }
@@ -90,16 +94,6 @@ class ScatterPlotPage {
     await this.page.mouse.move(to.x, to.y)
     return this.page.mouse.up()
   }
-
-  //
-  // circleAnchor (id) {
-  //   return element(by.id(`anc-${id}`))
-  // }
-  //
-  //
-  // plotReset () {
-  //   return element(by.css('.plot-reset-button'))
-  // }
 }
 
 module.exports = ScatterPlotPage
