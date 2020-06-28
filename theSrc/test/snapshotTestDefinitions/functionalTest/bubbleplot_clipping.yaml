@@ -1,0 +1,8 @@
+type: multi_widget_single_page
+title: "bubbleplot clipping on and off"
+width: 400
+height: 400
+rowSize: 4
+widgets:
+  - config: data.functionalTest.bubbleplot_on_edge
+  - config: data.functionalTest.bubbleplot_on_edge|config.plotBorderShowFalse
