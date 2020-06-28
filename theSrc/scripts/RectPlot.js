@@ -671,10 +671,6 @@ class RectPlot {
       .attr('fill', d => d.color)
       .text(d => d.markerLabel)
   }
-
-  drawLinks () {
-    return
-  }
   
   drawLinks () {
     const links = new Links({

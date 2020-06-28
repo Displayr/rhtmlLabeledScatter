@@ -373,17 +373,17 @@ class PlotData {
     _(this.lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
 
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
-    const pointsMap = _.merge(
+    const pointsHash = _.merge(
       _.keyBy(nestUnderField(this.lab, 'label'), 'id'),
       _.keyBy(nestUnderField(this.pts, 'anchor'), 'id')
     )
 
     const userPositionedLabels = this.state.getUserPositionedLabels()
     userPositionedLabels.forEach(({ id, x, y}) => {
-      if (_.has(pointsMap, id)) {
-        pointsMap[id].label.x = (x * this.vb.width) + this.vb.x - pointsMap[id].label.width / 2
-        pointsMap[id].label.y = (y * this.vb.height) + this.vb.y - pointsMap[id].label.height
-        pointsMap[id].pinned = true
+      if (_.has(pointsHash, id)) {
+        pointsHash[id].label.x = (x * this.vb.width) + this.vb.x - pointsHash[id].label.width / 2
+        pointsHash[id].label.y = (y * this.vb.height) + this.vb.y - pointsHash[id].label.height
+        pointsHash[id].pinned = true
       } else {
         const errorString = `ERROR: state has unknown id ${id}`
         if (SUPPRESS_ERRORS) {
@@ -400,7 +400,7 @@ class PlotData {
       height: this.vb.height,
       top: this.vb.y,
       left: this.vb.x,
-      points : Object.values(pointsMap)
+      points : Object.values(pointsHash)
     })
 
     // Remove pts outside plot because user bounds set
