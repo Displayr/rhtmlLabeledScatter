@@ -1,5 +1,7 @@
 context("Input checks")
 
+# The following tests have been converted to table tests in the test project R htmlwidgets.Q
+
 test_that("Basic working scatterplot", {
     expect_error(LabeledScatter(X = 1:10, Y = 11:20, Z = 0:9,
                                 label = letters[1:10]), NA)
