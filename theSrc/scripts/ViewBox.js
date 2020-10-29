@@ -1,3 +1,6 @@
+import InsufficientHeightError from './exceptions/InsufficientHeightError'
+import InsufficientWidthError from './exceptions/InsufficientWidthError'
+
 class ViewBox {
   constructor (width,
                height,
@@ -37,7 +40,7 @@ class ViewBox {
     if (w > 0) {
       this.width = w
     } else {
-      throw new Error(`ViewBox width cannot be < 0!`)
+      throw new InsufficientWidthError()
     }
   }
 
@@ -45,7 +48,7 @@ class ViewBox {
     if (h > 0) {
       this.height = h
     } else {
-      throw new Error(`ViewBox height cannot be < 0! ! ${h}, ${this.svgWidth}, ${this.svgHeight}`)
+      throw new InsufficientHeightError()
     }
   }
 

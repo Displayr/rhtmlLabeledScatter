@@ -43,8 +43,12 @@ class DisplayError {
 
     $(svg).empty()
     $(svg).append(errorContainer)
+  }
 
-    throw new Error(msg)
+  static displayEmptyErrorContainer (svg) {
+    const errorContainer = $('<div class="rhtml-error-container">')
+    $(svg).empty()
+    $(svg).append(errorContainer)
   }
 
   static getErrorImgUrl () {

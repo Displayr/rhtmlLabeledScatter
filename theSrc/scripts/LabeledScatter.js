@@ -7,37 +7,10 @@ import RectPlot from './RectPlot'
 import State from './State'
 import 'babel-polyfill'
 
+import InsufficientHeightError from './exceptions/InsufficientHeightError'
+import InsufficientWidthError from './exceptions/InsufficientWidthError'
+
 class LabeledScatter {
-  getResizeDelayPromise () {
-    if (_.isNull(this.resizeDelayPromise)) {
-      this.resizeDelayPromise = new Promise((function () {
-        return setTimeout(() => {
-          console.log('rhtmlLabeledScatter: resize timeout')
-
-          const resizeParams = this.resizeStack.pop()
-          const el = resizeParams[0]
-          const width = resizeParams[1]
-          const height = resizeParams[2]
-          this.resizeStack = []
-
-          this.width = width
-          this.height = height
-          d3.select('.plot-container').remove()
-          const svg = d3.select(el)
-                  .append('svg')
-                  .attr('width', this.width)
-                  .attr('height', this.height)
-                  .attr('class', 'plot-container rhtmlwidget-outer-svg')
-          this.plot.resized(svg, this.width, this.height)
-          this.resizeDelayPromise = null
-        }
-        , 500)
-      }.bind(this)))
-    }
-
-    return this.resizeDelayPromise
-  }
-
   constructor (element, width, height, stateChangedCallback) {
     this.rootElement = _.has(element, 'length') ? element[0] : element
     this.width = width
@@ -45,12 +18,6 @@ class LabeledScatter {
     this.stateChangedCallback = stateChangedCallback
     this.resizeStack = []
     this.resizeDelayPromise = null
-  }
-
-  resize (el, width, height) {
-    // NB this is where you should sanitise user input. Not in scope for this repo
-    this.resizeStack.push([el, width, height])
-    return this.getResizeDelayPromise()
   }
 
   setConfig (data) {
@@ -81,10 +48,10 @@ class LabeledScatter {
     $(this.rootElement).find('*').remove()
 
     const svg = d3.select(this.rootElement)
-            .append('svg')
-            .attr('width', this.width)
-            .attr('height', this.height)
-            .attr('class', 'plot-container rhtmlwidget-outer-svg')
+      .append('svg')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // console.log('rhtmlLabeledScatter data')
     // console.log(JSON.stringify(this.data))
@@ -101,7 +68,66 @@ class LabeledScatter {
     const config = buildConfig(this.data, this.width, this.height)
     this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
     this.plot.draw()
-    return this
+      .catch(err => {
+        if (
+          err.type === InsufficientHeightError.type ||
+          err.type === InsufficientWidthError.type
+        ) {
+          console.log(`caught expected error '${err.type}' and aborted rendering`)
+          DisplayError.displayEmptyErrorContainer(this.rootElement)
+        } else {
+          throw err
+        }
+      })
+  }
+
+  resize (el, width, height) {
+    // NB this is where you should sanitise user input. Not in scope for this repo
+    this.resizeStack.push([el, width, height])
+    return this.getResizeDelayPromise()
+  }
+
+  getResizeDelayPromise () {
+    if (_.isNull(this.resizeDelayPromise)) {
+      this.resizeDelayPromise = new Promise(() => {
+        return setTimeout(() => {
+          console.log('rhtmlLabeledScatter: resize timeout')
+
+          const resizeParams = this.resizeStack.pop()
+          const el = resizeParams[0]
+          const width = resizeParams[1]
+          const height = resizeParams[2]
+          this.resizeStack = []
+
+          this.width = width
+          this.height = height
+          d3.select('.plot-container').remove()
+          const svg = d3.select(el)
+                  .append('svg')
+                  .attr('width', this.width)
+                  .attr('height', this.height)
+                  .attr('class', 'plot-container rhtmlwidget-outer-svg')
+
+          this.plot.resized(svg, this.width, this.height)
+            .catch(err => {
+              if (
+                err.type === InsufficientHeightError.type ||
+                err.type === InsufficientWidthError.type
+              ) {
+                console.log(`caught expected error '${err.type}' and aborted rendering`)
+                DisplayError.displayEmptyErrorContainer(this.rootElement)
+              } else {
+                throw err
+              }
+            })
+
+          // TODO this should be in a then/catch/finally attached to this.plot.resized but not going to attempt that now
+          this.resizeDelayPromise = null
+        }, 500)
+      })
+    }
+
+    return this.resizeDelayPromise
   }
 }
 

@@ -263,11 +263,11 @@ class RectPlot {
     // Tell visual tests widget as not ready
     this.svg.attr('class', (this.svg.attr('class')).replace('rhtmlLabeledScatter-isReadySelector', ''))
 
-    this.drawDimensionMarkers()
-      .then(this.drawLegend.bind(this))
-      .then(this.drawLabsAndPlot.bind(this))
+    return this.drawDimensionMarkers()
+      .then(() => this.drawLegend())
+      .then(() => this.drawLabsAndPlot())
       .then(() => {
-        // TODO Po if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
+        // if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if (this.data.legendRequiresRedraw) {
           return this.drawLegend()
         }
@@ -436,7 +436,7 @@ class RectPlot {
   }
 
   drawLegend () {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
       this.data.setLegend()
       if (this.legendSettings.showBubblesInLegend() && Utils.isArrOfNums(this.Z)) {
         this.legend.drawBubblesWith(this.svg, this.axisSettings)
@@ -461,7 +461,7 @@ class RectPlot {
         }
       }
       return resolve()
-    }.bind(this))
+    })
   }
 
   drawAnc () {
@@ -663,14 +663,18 @@ class RectPlot {
   }
 
   resized (svg, width, height) {
-    this.svg = svg
-    this.width = width
-    this.height = height
-    this.footer.updateContainerHeight(this.height)
-    this.setDim(this.svg, this.width, this.height)
-    this.labelPlacement.updateSvgOnResize(this.svg)
-    this.state.resetStateOnResize(this.vb)
-    this.draw()
+    // some of the below throw, so wrap in a promise chain to ensure errors do not escape
+    return Promise.resolve()
+      .then(() => {
+      this.svg = svg
+      this.width = width
+      this.height = height
+      this.footer.updateContainerHeight(this.height)
+      this.setDim(this.svg, this.width, this.height)
+      this.labelPlacement.updateSvgOnResize(this.svg)
+      this.state.resetStateOnResize(this.vb)
+      return this.draw()
+    })
   }
 }
 
