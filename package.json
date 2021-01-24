@@ -7,10 +7,12 @@
     "prepush": "node ./build/bin/prepush",
     "test": "npm run localTest",
     "localTest": "gulp testSpecs && gulp testVisual --env=local --branch=`git rev-parse --abbrev-ref HEAD`",
-    "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=`git rev-parse --abbrev-ref HEAD`",
+    "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=master",
     "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/`git rev-parse --abbrev-ref HEAD` -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "gatherMasterDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/master -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
     "macOpenDiffs": "open .tmp/diffs",
     "seeDiffs": "npm run gatherDiffs; npm run macOpenDiffs",
+    "seeMasterDiffs": "npm run gatherMasterDiffs; npm run macOpenDiffs",
     "deleteDiffs": "find theSrc/test/snapshots -iname '__diff_output__' | xargs rm -rf"
   },
   "devDependencies": {
