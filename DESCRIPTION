@@ -7,7 +7,7 @@ Maintainer: Displayr <opensource@displayr.com>
 Description: An HTML widget that creates a labeled scatter plot.
 License: GPL-3
 LazyData: TRUE
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 Imports: htmlwidgets,
  jsonlite
