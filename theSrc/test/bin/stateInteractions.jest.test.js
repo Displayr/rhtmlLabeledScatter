@@ -11,7 +11,7 @@ const {
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
-configureImageSnapshotMatcher('stateInteractions')
+configureImageSnapshotMatcher({ collectionIdentifier: 'stateInteractions' })
 
 // NB these do not need to be persistent over time. The Ids are a convenience used to isolate tests via jest -t '11:'
 let testId = 0
@@ -31,11 +31,11 @@ describe('state interactions', () => {
   test(`${++testId}: Drag a label`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
 
-    await testSnapshots({ page, snapshotName: 'after_porche_drag_on_canvas' })
+    await testSnapshots({ page, testName: 'after_porche_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50', tolerance: 1 })
 
     await page.close()
@@ -47,7 +47,7 @@ describe('state interactions', () => {
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50'
     })
 
-    await testSnapshots({ page, snapshotName: 'after_porche_drag_on_canvas' })
+    await testSnapshots({ page, testName: 'after_porche_drag_on_canvas' })
 
     await page.close()
   })
@@ -55,11 +55,11 @@ describe('state interactions', () => {
   test(`${++testId}: Drag a label to the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 0 })
 
-    await testSnapshots({ page, snapshotName: 'after_porche_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_porche_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend', tolerance: 1 })
 
     await page.close()
@@ -71,7 +71,7 @@ describe('state interactions', () => {
       stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
     })
 
-    await testSnapshots({ page, snapshotName: 'after_porche_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_porche_drag_to_legend' })
 
     await page.close()
   })
@@ -84,7 +84,7 @@ describe('state interactions', () => {
 
     await scatterPlot.moveLegendLabelToPlot({ id: 0 })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 1 })
 
     await page.close()
@@ -93,12 +93,12 @@ describe('state interactions', () => {
   test(`${++testId}: Drag a label to the legend, then reposition marker`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 0 })
     await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
 
-    await testSnapshots({ page, snapshotName: 'after_porche_drag_to_legend_and_reposition_1_marker' })
+    await testSnapshots({ page, testName: 'after_porche_drag_to_legend_and_reposition_1_marker' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend_and_reposition_1_marker', tolerance: 1 })
 
     await page.close()
@@ -108,11 +108,11 @@ describe('state interactions', () => {
   test(`${++testId}: Drag a image label`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabel({ id: 2, x: 200, y: 100 })
 
-    await testSnapshots({ page, snapshotName: 'after_apple_drag_on_canvas' })
+    await testSnapshots({ page, testName: 'after_apple_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100', tolerance: 1 })
 
     await page.close()
@@ -124,7 +124,7 @@ describe('state interactions', () => {
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100'
     })
 
-    await testSnapshots({ page, snapshotName: 'after_apple_drag_on_canvas' })
+    await testSnapshots({ page, testName: 'after_apple_drag_on_canvas' })
 
     await page.close()
   })
@@ -132,11 +132,11 @@ describe('state interactions', () => {
   test(`${++testId}: Drag a image label to the legend`, async function () {
     const { page, scatterPlot } = await loadWidget({ browser })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
 
-    await testSnapshots({ page, snapshotName: 'after_apple_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_apple_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend', tolerance: 1 })
 
     await page.close()
@@ -148,7 +148,7 @@ describe('state interactions', () => {
       stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
     })
 
-    await testSnapshots({ page, snapshotName: 'after_apple_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_apple_drag_to_legend' })
 
     await page.close()
   })
@@ -161,7 +161,7 @@ describe('state interactions', () => {
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
 
-    await testSnapshots({ page, snapshotName: 'initial_three_point' })
+    await testSnapshots({ page, testName: 'initial_three_point' })
     await testState({ page, stateName: 'data.bdd.three_point_brand_state.back_to_original', tolerance: 1 })
 
     await page.close()
@@ -176,11 +176,11 @@ describe('state interactions', () => {
       height: 600
     })
 
-    await testSnapshots({ page, snapshotName: 'initial_bubble' })
+    await testSnapshots({ page, testName: 'initial_bubble' })
 
     await scatterPlot.movePlotLabel({ id: 2, x: 100, y: 100 })
 
-    await testSnapshots({ page, snapshotName: 'after_bubble_drag_on_canvas' })
+    await testSnapshots({ page, testName: 'after_bubble_drag_on_canvas' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100', tolerance: 2 })
 
     await page.close()
@@ -196,8 +196,8 @@ describe('state interactions', () => {
       height: 600
     })
 
-    // await testSnapshots({ page, snapshotName: 'after_bubble_drag_on_canvas' }) // this is ideal behaviour (equality)
-    await testSnapshots({ page, snapshotName: 'after_bubble_drag_on_canvas-reload' }) // this is current behaviour (small diff)
+    // await testSnapshots({ page, testName: 'after_bubble_drag_on_canvas' }) // this is ideal behaviour (equality)
+    await testSnapshots({ page, testName: 'after_bubble_drag_on_canvas-reload' }) // this is current behaviour (small diff)
 
     await page.close()
   })
@@ -210,11 +210,11 @@ describe('state interactions', () => {
       height: 600
     })
 
-    await testSnapshots({ page, snapshotName: 'initial_bubble' })
+    await testSnapshots({ page, testName: 'initial_bubble' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 2 })
 
-    await testSnapshots({ page, snapshotName: 'after_bubble_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_bubble_drag_to_legend' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend', tolerance: 1 })
 
     await page.close()
@@ -229,7 +229,7 @@ describe('state interactions', () => {
       height: 600
     })
 
-    await testSnapshots({ page, snapshotName: 'after_bubble_drag_to_legend' })
+    await testSnapshots({ page, testName: 'after_bubble_drag_to_legend' })
 
     await page.close()
   })
@@ -245,7 +245,7 @@ describe('state interactions', () => {
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
 
-    await testSnapshots({ page, snapshotName: 'initial_bubble' })
+    await testSnapshots({ page, testName: 'initial_bubble' })
     await testState({ page, stateName: 'data.bdd.bubbleplot_simple_state.back_to_original', tolerance: 1 })
 
     await page.close()
@@ -260,21 +260,21 @@ describe('state interactions', () => {
       height: 600
     })
 
-    await testSnapshots({ page, snapshotName: 'initial_legend_drag_test_plot' })
+    await testSnapshots({ page, testName: 'initial_legend_drag_test_plot' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 0 })
     await scatterPlot.movePlotLabelToLegend({ id: 3 })
     await scatterPlot.movePlotLabelToLegend({ id: 4 })
     await scatterPlot.movePlotLabelToLegend({ id: 7 })
 
-    await testSnapshots({ page, snapshotName: 'legend_drag_test_plot_four_outliers_dragged_to_legend' })
+    await testSnapshots({ page, testName: 'legend_drag_test_plot_four_outliers_dragged_to_legend' })
 
     await scatterPlot.movePlotLabelToLegend({ id: 8 })
     await scatterPlot.movePlotLabelToLegend({ id: 9 })
     await scatterPlot.movePlotLabelToLegend({ id: 10 })
     await scatterPlot.movePlotLabelToLegend({ id: 11 })
 
-    await testSnapshots({ page, snapshotName: 'legend_drag_test_plot_eight_outliers_dragged_to_legend' })
+    await testSnapshots({ page, testName: 'legend_drag_test_plot_eight_outliers_dragged_to_legend' })
 
     await testState({ page, stateName: 'data.bdd.legend_drag_test_plot_state.eight_outliers_dragged_to_legend', tolerance: 0 })
 
@@ -291,7 +291,7 @@ describe('state interactions', () => {
       height: 150
     })
 
-    await testSnapshots({ page, snapshotName: 'legend_truncation_2cols' })
+    await testSnapshots({ page, testName: 'legend_truncation_2cols' })
 
     await page.close()
   })
@@ -305,7 +305,7 @@ describe('state interactions', () => {
       height: 150
     })
 
-    await testSnapshots({ page, snapshotName: 'legend_truncation_3cols' })
+    await testSnapshots({ page, testName: 'legend_truncation_3cols' })
 
     await page.close()
   })

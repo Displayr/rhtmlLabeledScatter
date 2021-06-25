@@ -10,7 +10,7 @@ const {
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
-configureImageSnapshotMatcher('multipleRerender')
+configureImageSnapshotMatcher({ collectionIdentifier: 'multipleRerender' })
 
 describe('multiple render tests', () => {
   let browser
@@ -35,7 +35,7 @@ describe('multiple render tests', () => {
       rerenderControls: true
     })
 
-    await testSnapshots({ page, snapshotName: 'initial' })
+    await testSnapshots({ page, testName: 'initial' })
 
     await page.evaluate(() => { document.querySelector('.example-0 .rerender-config').value = '' })
     await page.type('.example-0 .rerender-config', newConfig, { delay: 0 })
@@ -45,7 +45,7 @@ describe('multiple render tests', () => {
       return document.querySelectorAll(selectorString).length
     }, { timeout: 10000 }, 'body[widgets-ready], .rhtml-error-container')
 
-    await testSnapshots({ page, snapshotName: 'final' })
+    await testSnapshots({ page, testName: 'final' })
 
     await page.close()
   })

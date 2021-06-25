@@ -10,7 +10,7 @@ const {
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
-configureImageSnapshotMatcher('resize')
+configureImageSnapshotMatcher({ collectionIdentifier: 'resize' })
 
 describe('resize', () => {
   let browser
@@ -31,7 +31,7 @@ describe('resize', () => {
       height: 500
     })
 
-    await testSnapshots({ page, snapshotName: 'basic_initial' })
+    await testSnapshots({ page, testName: 'basic_initial' })
 
     await page.evaluate(() => {
       window.resizeHook(750, 750)
@@ -39,7 +39,7 @@ describe('resize', () => {
 
     await page.waitFor(1000)
 
-    await testSnapshots({ page, snapshotName: 'basic_after_resize' })
+    await testSnapshots({ page, testName: 'basic_after_resize' })
 
     await page.close()
   })
@@ -52,12 +52,12 @@ describe('resize', () => {
       height: 500
     })
 
-    await testSnapshots({ page, snapshotName: 'user_interaction_initial' })
+    await testSnapshots({ page, testName: 'user_interaction_initial' })
 
     await scatterPlot.movePlotLabel({ id: 0, x: 50, y: 50 })
     await scatterPlot.movePlotLabelToLegend({ id: 1 })
 
-    await testSnapshots({ page, snapshotName: 'user_interaction_after_interaction' })
+    await testSnapshots({ page, testName: 'user_interaction_after_interaction' })
 
     await page.evaluate(() => {
       window.resizeHook(750, 750)
@@ -65,7 +65,7 @@ describe('resize', () => {
 
     await page.waitFor(1000)
 
-    await testSnapshots({ page, snapshotName: 'user_interaction_after_resize' })
+    await testSnapshots({ page, testName: 'user_interaction_after_resize' })
 
     await page.close()
   })

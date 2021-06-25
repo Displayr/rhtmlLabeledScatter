@@ -10,7 +10,7 @@ const {
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
-configureImageSnapshotMatcher('tooltip')
+configureImageSnapshotMatcher({ collectionIdentifier: 'tooltip' })
 
 // TODO: CANNOT GET TOOLIP VISUAL TESTING TO WORK
 
@@ -33,13 +33,13 @@ describe('tooltip', () => {
       height: 500
     })
 
-    await testSnapshots({ page, snapshotName: 'basic_initial' })
+    await testSnapshots({ page, testName: 'basic_initial' })
 
     await scatterPlot.moveMouseOntoAnchor({ id: 1 })
 
     await page.waitFor(5000)
 
-    await testSnapshots({ page, snapshotName: 'hover_on_tooltip' })
+    await testSnapshots({ page, testName: 'hover_on_tooltip' })
 
     await page.close()
   })
