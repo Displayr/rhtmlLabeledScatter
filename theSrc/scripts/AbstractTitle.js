@@ -9,7 +9,7 @@ class AbstractTitle {
     this.font = {
       color: titleFontColor,
       size: titleFontSize,
-      family: titleFontFamily
+      family: titleFontFamily,
     }
 
     // Vars that need initialisation
@@ -19,7 +19,7 @@ class AbstractTitle {
       this.padding = {
         top: 0,
         bot: 0,
-        inner: 0
+        inner: 0,
       }
   }
 

@@ -6,7 +6,7 @@ const {
   configureImageSnapshotMatcher,
   puppeteerSettings,
   testSnapshots,
-  jestTimeout
+  jestTimeout,
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
@@ -30,7 +30,7 @@ describe('tooltip', () => {
       browser,
       configName: 'data.bdd.bubbleplot_no_label',
       width: 500,
-      height: 500
+      height: 500,
     })
 
     await testSnapshots({ page, testName: 'basic_initial' })

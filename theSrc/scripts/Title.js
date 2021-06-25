@@ -12,10 +12,10 @@ class Title extends AbstractTitle {
     this.font = {
       color: titleFontColor,
       size: titleFontSize,
-      family: titleFontFamily
+      family: titleFontFamily,
     }
     this.padding = {
-      bot: 10
+      bot: 10,
     }
 
     if (this.text === '' || !_.isString(this.text)) {

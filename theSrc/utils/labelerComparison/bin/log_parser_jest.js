@@ -12,8 +12,8 @@ const questions = [
     name: 'logFiles',
     message: 'choose log file',
     choices: logFiles,
-    default: ''
-  }
+    default: '',
+  },
 ]
 
 function go () {

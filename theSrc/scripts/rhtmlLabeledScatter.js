@@ -6,5 +6,5 @@ import widgetFactory from './rhtmlLabeledScatter.factory'
 HTMLWidgets.widget({
   name: 'rhtmlLabeledScatter',
   type: 'output',
-  factory: widgetFactory
+  factory: widgetFactory,
 })

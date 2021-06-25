@@ -6,7 +6,7 @@ const {
   configureImageSnapshotMatcher,
   puppeteerSettings,
   testSnapshots,
-  jestTimeout
+  jestTimeout,
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
@@ -32,7 +32,7 @@ describe('multiple render tests', () => {
       configName: originalConfig,
       width: 1000,
       height: 600,
-      rerenderControls: true
+      rerenderControls: true,
     })
 
     await testSnapshots({ page, testName: 'initial' })

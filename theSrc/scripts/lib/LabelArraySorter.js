@@ -24,7 +24,7 @@ class LabelArraySorter extends ArraySorter {
       'left': _.sortBy(this.labelArray, this.getBoundaryFunction('left')),
       'right': _.sortBy(this.labelArray, this.getBoundaryFunction('right')),
       'top': _.sortBy(this.labelArray, this.getBoundaryFunction('top')),
-      'bot': _.sortBy(this.labelArray, this.getBoundaryFunction('bot'))
+      'bot': _.sortBy(this.labelArray, this.getBoundaryFunction('bot')),
     }
   }
 

@@ -23,7 +23,7 @@ function compareTwoTestRuns ({ baseline, candidate }) {
 
   const independentStats = {
     baseline: computeIndependent(baseline.tests),
-    candidate: computeIndependent(candidate.tests)
+    candidate: computeIndependent(candidate.tests),
   }
 
   printIndependentStats(independentStats)
@@ -51,7 +51,7 @@ function computeIndependent (testStatArray) {
     min_accept_worse_rate: (hasAcceptWorseRateStat) ? _(testStatArray).map('accept_worse_rate').min().toFixed(3) : 'N/A',
     max_accept_worse_rate: (hasAcceptWorseRateStat) ? _(testStatArray).map('accept_worse_rate').max().toFixed(3) : 'N/A',
     average_accept_worse_rate: (hasAcceptWorseRateStat) ? _(testStatArray).meanBy('accept_worse_rate').toFixed(3) : 'N/A',
-    median_accept_worse_rate: (hasAcceptWorseRateStat) ? median(_(testStatArray).map('accept_worse_rate').value()).toFixed(3) : 'N/A'
+    median_accept_worse_rate: (hasAcceptWorseRateStat) ? median(_(testStatArray).map('accept_worse_rate').value()).toFixed(3) : 'N/A',
   }
   return stats
 }

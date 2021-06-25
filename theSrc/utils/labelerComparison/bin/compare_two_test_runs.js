@@ -11,15 +11,15 @@ const questions = [
     name: 'baselineFile',
     message: 'choose baseline file',
     choices: logFiles,
-    default: ''
+    default: '',
   },
   {
     type: 'list',
     name: 'candidateFile',
     message: 'choose candidate file',
     choices: logFiles,
-    default: ''
-  }
+    default: '',
+  },
 ]
 
 function go () {

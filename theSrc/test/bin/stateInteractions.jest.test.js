@@ -7,7 +7,7 @@ const {
   puppeteerSettings,
   jestTimeout,
   testSnapshots,
-  testState
+  testState,
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
@@ -44,7 +44,7 @@ describe('state interactions', () => {
   test(`${++testId}: Load saved state and see a user positioned label`, async function () {
     const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50'
+      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_50x50',
     })
 
     await testSnapshots({ page, testName: 'after_porche_drag_on_canvas' })
@@ -68,7 +68,7 @@ describe('state interactions', () => {
   test(`${++testId}: Load saved state and see a user positioned label on the legend`, async function () {
     const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
+      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend',
     })
 
     await testSnapshots({ page, testName: 'after_porche_drag_to_legend' })
@@ -79,7 +79,7 @@ describe('state interactions', () => {
   test(`${++testId}: Drag label from legend and snap to original position`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend'
+      stateName: 'data.bdd.three_point_brand_state.porche_label_moved_to_legend',
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 0 })
@@ -121,7 +121,7 @@ describe('state interactions', () => {
   test(`${++testId}: Load saved state and see a user positioned image label`, async function () {
     const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100'
+      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_200x100',
     })
 
     await testSnapshots({ page, testName: 'after_apple_drag_on_canvas' })
@@ -145,7 +145,7 @@ describe('state interactions', () => {
   test(`${++testId}: Load saved state and see a user positioned image label on the legend`, async function () {
     const { page } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
+      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend',
     })
 
     await testSnapshots({ page, testName: 'after_apple_drag_to_legend' })
@@ -156,7 +156,7 @@ describe('state interactions', () => {
   test(`${++testId}: Drag image label from legend and snap to original position`, async function () {
     const { page, scatterPlot } = await loadWidget({
       browser,
-      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend'
+      stateName: 'data.bdd.three_point_brand_state.apple_label_moved_to_legend',
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
@@ -173,7 +173,7 @@ describe('state interactions', () => {
       browser,
       configName: 'data.bdd.bubbleplot_simple',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     await testSnapshots({ page, testName: 'initial_bubble' })
@@ -193,7 +193,7 @@ describe('state interactions', () => {
       configName: 'data.bdd.bubbleplot_simple',
       stateName: 'data.bdd.bubbleplot_simple_state.label_moved_100x100',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     // await testSnapshots({ page, testName: 'after_bubble_drag_on_canvas' }) // this is ideal behaviour (equality)
@@ -207,7 +207,7 @@ describe('state interactions', () => {
       browser,
       configName: 'data.bdd.bubbleplot_simple',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     await testSnapshots({ page, testName: 'initial_bubble' })
@@ -226,7 +226,7 @@ describe('state interactions', () => {
       configName: 'data.bdd.bubbleplot_simple',
       stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     await testSnapshots({ page, testName: 'after_bubble_drag_to_legend' })
@@ -240,7 +240,7 @@ describe('state interactions', () => {
       configName: 'data.bdd.bubbleplot_simple',
       stateName: 'data.bdd.bubbleplot_simple_state.label_moved_to_legend',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     await scatterPlot.moveLegendLabelToPlot({ id: 2 })
@@ -257,7 +257,7 @@ describe('state interactions', () => {
       browser,
       configName: 'data.bdd.legend_drag_test_plot',
       width: 600,
-      height: 600
+      height: 600,
     })
 
     await testSnapshots({ page, testName: 'initial_legend_drag_test_plot' })
@@ -288,7 +288,7 @@ describe('state interactions', () => {
       configName: 'data.bdd.scatterplot_yaxis_not_visible',
       stateName: 'data.bdd.scatterplot_yaxis_not_visible_state.legend_truncation_2cols',
       width: 755,
-      height: 150
+      height: 150,
     })
 
     await testSnapshots({ page, testName: 'legend_truncation_2cols' })
@@ -302,7 +302,7 @@ describe('state interactions', () => {
       configName: 'data.bdd.scatterplot_yaxis_not_visible',
       stateName: 'data.bdd.scatterplot_yaxis_not_visible_state.legend_truncation_3cols',
       width: 755,
-      height: 150
+      height: 150,
     })
 
     await testSnapshots({ page, testName: 'legend_truncation_3cols' })

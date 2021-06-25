@@ -10,12 +10,12 @@ class ScatterPlotPage {
 
     const initialMousePosition = {
       x: labelBox.x + labelBox.width / 2,
-      y: labelBox.y + labelBox.height / 2
+      y: labelBox.y + labelBox.height / 2,
     }
 
     const finalMousePosition = {
       x: initialMousePosition.x + x,
-      y: initialMousePosition.y + y
+      y: initialMousePosition.y + y,
     }
 
     return this.drag({ from: initialMousePosition, to: finalMousePosition })
@@ -30,12 +30,12 @@ class ScatterPlotPage {
 
     const initialMousePosition = {
       x: labelBox.x + labelBox.width / 2,
-      y: labelBox.y + labelBox.height / 2
+      y: labelBox.y + labelBox.height / 2,
     }
 
     const finalMousePosition = {
       x: legendBox.x + legendBox.width / 2,
-      y: legendBox.y + legendBox.height / 2
+      y: legendBox.y + legendBox.height / 2,
     }
 
     return this.drag({ from: initialMousePosition, to: finalMousePosition })
@@ -47,12 +47,12 @@ class ScatterPlotPage {
 
     const initialMousePosition = {
       x: legendLabelBox.x + legendLabelBox.width / 2,
-      y: legendLabelBox.y + legendLabelBox.height / 2
+      y: legendLabelBox.y + legendLabelBox.height / 2,
     }
 
     const finalMousePosition = {
       x: initialMousePosition.x - 300,
-      y: initialMousePosition.y
+      y: initialMousePosition.y,
     }
 
     return this.drag({ from: initialMousePosition, to: finalMousePosition })
@@ -65,7 +65,7 @@ class ScatterPlotPage {
 
     const initialMousePosition = {
       x: unmovedLabelBox.x + unmovedLabelBox.width / 2,
-      y: unmovedLabelBox.y + unmovedLabelBox.height / 2
+      y: unmovedLabelBox.y + unmovedLabelBox.height / 2,
     }
 
     return this.page.mouse.move(initialMousePosition.x, initialMousePosition.y)

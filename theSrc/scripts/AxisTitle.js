@@ -3,14 +3,14 @@ class AxisTitle extends AbstractTitle {
   constructor (axisTitle, axisFontColor, axisFontSize, axisFontFamily, topPadding, axisId) {
     super(axisTitle, axisFontColor, axisFontSize, axisFontFamily)
     this.padding = {
-      top: topPadding
+      top: topPadding,
     }
     this.anchor = 'middle'
     this.font.weight = 'normal'
     this.padding = {
       top: 0,
       bot: 3,
-      inner: 5
+      inner: 5,
     }
 
     this.generateMultiLineTextArray(0)

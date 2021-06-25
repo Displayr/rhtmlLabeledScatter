@@ -14,6 +14,6 @@ module.exports = function (element, width, height, stateChanged) {
       instance.draw()
     },
 
-    labeledScatter: instance
+    labeledScatter: instance,
   }
 }

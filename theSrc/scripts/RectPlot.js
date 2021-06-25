@@ -81,7 +81,7 @@ class RectPlot {
     this.plotBorder = {
       show: config.plotBorderShow,
       color: config.plotBorderColor,
-      width: `${parseInt(config.plotBorderWidth)}px`
+      width: `${parseInt(config.plotBorderWidth)}px`,
     }
     this.maxDrawFailureCount = 200 // TODO configure
 
@@ -96,7 +96,7 @@ class RectPlot {
         rowMaxHeight: 0,
         colMaxWidth: 0,
         colMaxHeight: 0,
-        rightPadding: 0 // Set later, for when axis markers labels protrude (VIS-146)
+        rightPadding: 0, // Set later, for when axis markers labels protrude (VIS-146)
       },
       leaderLineLength: 5,
       x: {
@@ -104,28 +104,28 @@ class RectPlot {
         boundsUnitsMajor: config.xBoundsUnitsMajor,
         prefix: config.xPrefix,
         suffix: config.xSuffix,
-        decimals: config.xDecimals
+        decimals: config.xDecimals,
       },
       y: {
         format: config.yFormat,
         boundsUnitsMajor: config.yBoundsUnitsMajor,
         prefix: config.yPrefix,
         suffix: config.ySuffix,
-        decimals: config.yDecimals
+        decimals: config.yDecimals,
       },
       z: {
         prefix: config.zPrefix,
         suffix: config.zSuffix,
-        decimals: config.zDecimals
+        decimals: config.zDecimals,
       },
-      strokeWidth: 1 // VIS-380: this currently matches plotly for chrome rendering bug
+      strokeWidth: 1, // VIS-380: this currently matches plotly for chrome rendering bug
     }
 
     this.labelsFont = {
       size: config.labelsFontSize,
       color: config.labelsFontColor,
       family: config.labelsFontFamily,
-      logoScale: config.labelsLogoScale
+      logoScale: config.labelsLogoScale,
     }
 
     this.xTitle = new AxisTitle(config.xTitle, config.xTitleFontColor, config.xTitleFontSize, config.xTitleFontFamily, 5, 1)
@@ -150,20 +150,20 @@ class RectPlot {
     this.trendLines = {
       show: config.trendLines,
       lineThickness: config.trendLinesLineThickness,
-      pointSize: config.trendLinesPointSize
+      pointSize: config.trendLinesPointSize,
     }
 
     // TODO configure
     this.padding = {
       vertical: 5,
-      horizontal: 10
+      horizontal: 10,
     }
 
     this.bounds = {
       xmin: config.xBoundsMinimum,
       xmax: config.xBoundsMaximum,
       ymin: config.yBoundsMinimum,
-      ymax: config.yBoundsMaximum
+      ymax: config.yBoundsMaximum,
     }
 
     this.title = new Title(config.title, config.titleFontColor, config.titleFontSize, config.titleFontFamily, this.axisSettings.fontSize, this.padding.vertical)
@@ -203,18 +203,18 @@ class RectPlot {
             centeredAboveAnchor: config.labelPlacementWeightDistanceMultiplierCenteredAboveAnchor,
             centeredUnderneathAnchor: config.labelPlacementWeightDistanceMultiplierCenteredUnderneathAnchor,
             besideAnchor: config.labelPlacementWeightDistanceMultiplierBesideAnchor,
-            diagonalOfAnchor: config.labelPlacementWeightDistanceMultiplierDiagonalOfAnchor
-          }
+            diagonalOfAnchor: config.labelPlacementWeightDistanceMultiplierDiagonalOfAnchor,
+          },
         },
         labelLabelOverlap: config.labelPlacementWeightLabelLabelOverlap,
-        labelPlacementWeightLabelLabelOverlap: config.labelPlacementWeightLabelAnchorOverlap
+        labelPlacementWeightLabelLabelOverlap: config.labelPlacementWeightLabelAnchorOverlap,
       },
       numSweeps: config.labelPlacementNumSweeps,
       maxMove: config.labelPlacementMaxMove,
       maxAngle: config.labelPlacementMaxAngle,
       seed: config.labelPlacementSeed,
       initialTemperature: config.labelPlacementTemperatureInitial,
-      finalTemperature: config.labelPlacementTemperatureFinal
+      finalTemperature: config.labelPlacementTemperatureFinal,
     })
   }
 
@@ -534,7 +534,7 @@ class RectPlot {
       '.legend-pts',
       '.legend-text',
       '.anc',
-      '.link'
+      '.link',
     ]
     _.forEach(plotElems, (elem, i) => {
       this.svg.selectAll(elem).remove()

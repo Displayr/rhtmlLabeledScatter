@@ -7,7 +7,7 @@ const getLabel = ({ w = 2, h = 2, x = 10, y = 10 } = {}) => ({
   minX: x - w / 2,
   maxX: x + w / 2,
   minY: y - h / 2,
-  maxY: y + h / 2
+  maxY: y + h / 2,
 })
 
 const getAnchor = ({ r = 2, x = 10, y = 10 } = {}) => ({
@@ -17,7 +17,7 @@ const getAnchor = ({ r = 2, x = 10, y = 10 } = {}) => ({
   minX: x - r,
   maxX: x + r,
   minY: y - r,
-  maxY: y + r
+  maxY: y + r,
 })
 
 const basicBehaviourTestConfig = {
@@ -30,8 +30,8 @@ const basicBehaviourTestConfig = {
     ['leftTopDistance', getLabel({ x: 15, y: 15 })],
     ['rightBottomDistance', getLabel({ x: 5, y: 5 })],
     ['rightTopDistance', getLabel({ x: 5, y: 15 })],
-    ['leftBottomDistance', getLabel({ x: 15, y: 5 })]
-  ]
+    ['leftBottomDistance', getLabel({ x: 15, y: 5 })],
+  ],
 }
 
 describe('chooseBestLeaderLine:', () => {

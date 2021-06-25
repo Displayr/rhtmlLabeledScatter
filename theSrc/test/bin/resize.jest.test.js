@@ -6,7 +6,7 @@ const {
   configureImageSnapshotMatcher,
   puppeteerSettings,
   testSnapshots,
-  jestTimeout
+  jestTimeout,
 } = renderExamplePageTestHelper
 
 jest.setTimeout(jestTimeout)
@@ -28,7 +28,7 @@ describe('resize', () => {
       browser,
       configName: 'data.bdd.legend_drag_test_plot',
       width: 500,
-      height: 500
+      height: 500,
     })
 
     await testSnapshots({ page, testName: 'basic_initial' })
@@ -49,7 +49,7 @@ describe('resize', () => {
       browser,
       configName: 'data.bdd.three_point_brand',
       width: 500,
-      height: 500
+      height: 500,
     })
 
     await testSnapshots({ page, testName: 'user_interaction_initial' })

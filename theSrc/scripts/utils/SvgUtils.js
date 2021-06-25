@@ -31,14 +31,14 @@ class SvgUtils {
       left: vb.x,
       right: vb.x + vb.width,
       top: vb.y,
-      bot: vb.y + vb.height
+      bot: vb.y + vb.height,
     }
     _.map(pts, (pt, i) => {
       const bubble = {
         left: pt.x - pt.r,
         right: pt.x + pt.r,
         top: pt.y - pt.r,
-        bot: pt.y + pt.r
+        bot: pt.y + pt.r,
       }
       if (bubble.right > bound.right || bubble.left < bound.left || bubble.top < bound.top || bubble.bot > bound.bot) {
         // Build a clip path depending on which side is on the boundary
@@ -46,7 +46,7 @@ class SvgUtils {
           width: pt.r * 2,
           height: pt.r * 2,
           x: bubble.left,
-          y: bubble.top
+          y: bubble.top,
         }
         if (bubble.right > bound.right) {
           cp.width = (pt.r * 2) - (bubble.right - bound.right)

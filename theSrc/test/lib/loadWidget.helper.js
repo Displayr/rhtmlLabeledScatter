@@ -2,7 +2,7 @@ const { snapshotTesting: { renderExamplePageTestHelper } } = require('rhtmlBuild
 
 const {
   getExampleUrl,
-  waitForWidgetToLoad
+  waitForWidgetToLoad,
 } = renderExamplePageTestHelper
 
 const ScatterPlotPage = require('./scatterPlotPage')
@@ -14,7 +14,7 @@ const loadWidget = async ({
   stateName,
   width = 1000,
   rerenderControls,
-  height = 600
+  height = 600,
 }) => {
   const page = await browser.newPage()
   const url = getExampleUrl({ configName, stateName, rerenderControls, width, height })

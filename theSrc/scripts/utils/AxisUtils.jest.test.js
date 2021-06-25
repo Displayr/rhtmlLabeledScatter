@@ -15,7 +15,7 @@ describe('AxisUtils:', function () {
           const result = compute()
           expect(result.gridOrigin).toEqual([
             { x1: 50, y1: 0, x2: 50, y2: 100 },
-            { x1: 0, y1: 50, x2: 100, y2: 50 }
+            { x1: 0, y1: 50, x2: 100, y2: 50 },
           ])
         })
       })
@@ -25,7 +25,7 @@ describe('AxisUtils:', function () {
           const result = compute({ data: _.merge({}, defaultData, { minX: -15, maxX: 5, minY: -15, maxY: 5 }) })
           expect(result.gridOrigin).toEqual([
             { x1: 75, y1: 0, x2: 75, y2: 100 },
-            { x1: 0, y1: 25, x2: 100, y2: 25 }
+            { x1: 0, y1: 25, x2: 100, y2: 25 },
           ])
         })
       })
@@ -44,12 +44,12 @@ describe('AxisUtils:', function () {
           data: _.merge({}, defaultData, { minX: 0, maxX: 10, minY: 0, maxY: 10 }),
           axisSettings: _.merge({}, defaultAxisSettings, {
             x: {
-              boundsUnitsMajor: 5
+              boundsUnitsMajor: 5,
             },
             y: {
-              boundsUnitsMajor: 5
-            }
-          })
+              boundsUnitsMajor: 5,
+            },
+          }),
         })
 
         it('should compute 6 gridlines', function () {
@@ -78,7 +78,7 @@ describe('AxisUtils:', function () {
             { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: AxisTypeEnum.Y },
             { x: -5, y: 78.33333333333333, label: '2.5', anchor: 'end', type: AxisTypeEnum.Y },
             { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: AxisTypeEnum.Y },
-            { x: -5, y: 28.333333333333332, label: '7.5', anchor: 'end', type: AxisTypeEnum.Y }
+            { x: -5, y: 28.333333333333332, label: '7.5', anchor: 'end', type: AxisTypeEnum.Y },
           ])
         })
       })
@@ -88,12 +88,12 @@ describe('AxisUtils:', function () {
           data: _.merge({}, defaultData, { minX: -7, maxX: 3, minY: 1, maxY: 1 }),
           axisSettings: _.merge({}, defaultAxisSettings, {
             x: {
-              boundsUnitsMajor: 3
+              boundsUnitsMajor: 3,
             },
             y: {
-              boundsUnitsMajor: 3
-            }
-          })
+              boundsUnitsMajor: 3,
+            },
+          }),
         })
 
         it('should compute 6 gridlines', function () {
@@ -115,7 +115,7 @@ describe('AxisUtils:', function () {
             { x: 40, y: 115, label: '-3.0', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 55.00000000000001, y: 115, label: '-1.5', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 70, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 85, y: 115, label: '1.5', anchor: 'middle', type: AxisTypeEnum.X }
+            { x: 85, y: 115, label: '1.5', anchor: 'middle', type: AxisTypeEnum.X },
           ])
         })
       })
@@ -130,7 +130,7 @@ const defaultViewBox = {
   x: 0,
   y: 0,
   width: 100,
-  height: 100
+  height: 100,
 }
 
 const defaultData = {
@@ -141,7 +141,7 @@ const defaultData = {
   minY: -5,
   maxY: 5,
   xDataType: DataTypeEnum.numeric,
-  yDataType: DataTypeEnum.numeric
+  yDataType: DataTypeEnum.numeric,
 }
 
 const defaultAxisSettings = {
@@ -151,20 +151,20 @@ const defaultAxisSettings = {
   x: {
     format: null,
     boundsUnitsMajor: 2,
-    decimals: 1
+    decimals: 1,
   },
   y: {
     format: null,
     boundsUnitsMajor: 2,
-    decimals: 1
+    decimals: 1,
   },
   z: {
-    decimals: null
+    decimals: null,
   },
   textDimensions: {
     rowMaxHeight: 10,
-    colMaxHeight: 10
-  }
+    colMaxHeight: 10,
+  },
 }
 
 const compute = ({ data = defaultData, vb = defaultViewBox, axisSettings = defaultAxisSettings } = {}) => {

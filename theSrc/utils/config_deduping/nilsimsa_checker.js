@@ -9,7 +9,7 @@ const configs = _(paths)
       path: path,
       group: path.split('/')[path.split('/').length - 2],
       name: _.last(path.split('/')).replace('.json', ''),
-      content: require(`../../../${path}`)
+      content: require(`../../../${path}`),
     }
   })
   .map(config => {

@@ -13,19 +13,19 @@ class LegendSettings {
     this.font = {
       family: fontFamily,
       size: fontSize,
-      color: fontColor
+      color: fontColor,
     }
     this.bubble = {
       font: {
         family: _.isString(bubbleFontFamily) ? bubbleFontFamily : fontFamily,
         size: _.isNumber(bubbleFontSize) ? bubbleFontSize : fontSize,
-        color: _.isString(bubbleFontColor) ? bubbleFontColor : fontColor
+        color: _.isString(bubbleFontColor) ? bubbleFontColor : fontColor,
       },
       titleFont: {
         family: _.isString(bubbleTitleFontFamily) ? bubbleTitleFontFamily : fontFamily,
         size: _.isNumber(bubbleTitleFontSize) ? bubbleTitleFontSize : fontSize,
-        color: _.isString(bubbleTitleFontColor) ? bubbleTitleFontColor : fontColor
-      }
+        color: _.isString(bubbleTitleFontColor) ? bubbleTitleFontColor : fontColor,
+      },
     }
     this.title = zTitle
   }

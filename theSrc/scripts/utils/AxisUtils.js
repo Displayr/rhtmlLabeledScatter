@@ -227,7 +227,7 @@ class AxisUtils {
       gridOrigin: originAxis,
       gridLines: gridLineStack,
       axisLeader: axisLeaderStack,
-      axisLeaderLabel: axisLeaderLabelStack
+      axisLeaderLabel: axisLeaderLabelStack,
     }
   }
 }

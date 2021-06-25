@@ -10,8 +10,8 @@ const config = {
     singleWidgetSnapshotSelector: 'svg.rhtmlwidget-outer-svg',
     default_border: true,
     css: [
-      '/styles/rhtmlLabeledScatter.css'
-    ]
+      '/styles/rhtmlLabeledScatter.css',
+    ],
   },
   snapshotTesting: {
     consoleLogHandler: (msg, testName) => {
@@ -27,8 +27,8 @@ const config = {
           console.log(JSON.stringify(_.assign(stats, { scenario: testName })))
         }
       }
-    }
-  }
+    },
+  },
 }
 
 const commandLineOverides = _.omit(cliArgs, ['_', '$0'])

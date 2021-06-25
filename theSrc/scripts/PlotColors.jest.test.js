@@ -5,7 +5,7 @@ describe('PlotColors:', function () {
     const colors = new PlotColors({
       group: ['G1', 'G2', 'G3', 'G4'],
       colorWheel: ['red', 'blue', 'green'],
-      legend: { addGroup: () => {} }
+      legend: { addGroup: () => {} },
     })
 
     it('should return colors from the colorWheel, reusing colors if necessary', function () {
@@ -26,7 +26,7 @@ describe('PlotColors:', function () {
       const colors = new PlotColors({
         group: ['G1', 'G2', 'G2', 'G1'],
         colorWheel: ['red', 'blue'],
-        legend: { addGroup: () => {} }
+        legend: { addGroup: () => {} },
       })
 
       it('should return color for the group[i]', function () {
@@ -44,7 +44,7 @@ describe('PlotColors:', function () {
     describe('when no groups are defined', function () {
       const colors = new PlotColors({
         colorWheel: ['red', 'blue'],
-        legend: { addGroup: () => {} }
+        legend: { addGroup: () => {} },
       })
 
       it('should return the first color, regardless of the index', function () {
