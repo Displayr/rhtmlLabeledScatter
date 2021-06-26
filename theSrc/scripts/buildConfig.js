@@ -99,7 +99,7 @@ const defaultConfig = {
   zDecimals: null,
   zPrefix: '',
   zSuffix: '',
-  zTitle: ''
+  zTitle: '',
 }
 
 function buildConfig (userConfig, width, height) {
@@ -115,5 +115,5 @@ function buildConfig (userConfig, width, height) {
 
 module.exports = {
   buildConfig,
-  defaultConfig: _.cloneDeep(defaultConfig)
+  defaultConfig: _.cloneDeep(defaultConfig),
 }

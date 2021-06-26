@@ -57,7 +57,7 @@ class DragUtils {
       .origin(function () {
         return {
           x: d3.select(this).attr('x'),
-          y: d3.select(this).attr('y')
+          y: d3.select(this).attr('y'),
         }
       })
       .on('dragstart', dragStart)
@@ -99,7 +99,7 @@ class DragUtils {
       .origin(function () {
         return {
           x: d3.select(this).attr('x'),
-          y: d3.select(this).attr('y')
+          y: d3.select(this).attr('y'),
         }
       })
       .on('dragstart', dragStart)

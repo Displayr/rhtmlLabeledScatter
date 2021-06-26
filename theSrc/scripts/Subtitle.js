@@ -14,7 +14,7 @@ class Subtitle extends AbstractTitle {
     this.padding = {
       inner: 2,
       top: 10,
-      bot: 20
+      bot: 20,
     }
     const ifTextEmptyHeight = (titleText === '') ? 0 : this.padding.bot
     this.generateMultiLineTextArray(ifTextEmptyHeight)

@@ -35,7 +35,7 @@ class PlotLabel {
       width: null,
       height: null,
       label,
-      url: ''
+      url: '',
     })
   }
 
@@ -58,7 +58,7 @@ class PlotLabel {
           width: adjW,
           height: adjH,
           label: labelAlt,
-          url: labelLink
+          url: labelLink,
         })
       }
 
@@ -72,7 +72,7 @@ class PlotLabel {
           width: defaultErrorLogoSize,
           height: defaultErrorLogoSize,
           label: '',
-          url: DisplayError.getErrorImgUrl()
+          url: DisplayError.getErrorImgUrl(),
         })
       }
 

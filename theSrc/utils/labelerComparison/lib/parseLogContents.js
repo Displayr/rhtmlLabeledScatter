@@ -33,7 +33,7 @@ function parseLogContents (fileContents, batchName) {
       }
       const stats = JSON.parse(json)
       tests.push(_.assign(stats, {
-        scenario: (snapshotsInScenarioCount === 1) ? currentScenarioName : `${currentScenarioName}-${snapshotsInScenarioCount}`
+        scenario: (snapshotsInScenarioCount === 1) ? currentScenarioName : `${currentScenarioName}-${snapshotsInScenarioCount}`,
       }))
     }
   })

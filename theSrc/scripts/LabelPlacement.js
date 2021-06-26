@@ -15,7 +15,7 @@ class LabelPlacement {
                  maxAngle,
                  seed,
                  initialTemperature,
-                 finalTemperature
+                 finalTemperature,
                }) {
     this.svg = svg
     this.pltId = pltId

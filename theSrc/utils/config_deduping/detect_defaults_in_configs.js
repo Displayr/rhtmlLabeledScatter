@@ -16,7 +16,7 @@ const toSkip = [
   'Y',
   'yTitle',
   'Z',
-  'zTitle'
+  'zTitle',
 ]
 
 console.log(`considering ${paths.length} configs`)

@@ -8,7 +8,7 @@ describe('LegendUtils:', function () {
       expect(zQuartiles).toEqual({
         top: { lab: '9.00k', val: 0.5352372348458313 },
         mid: { lab: '4.00k', val: 0.3568248232305542 },
-        bot: { lab: '1.00k', val: 0.1784124116152771 }
+        bot: { lab: '1.00k', val: 0.1784124116152771 },
       })
     })
 
@@ -18,7 +18,7 @@ describe('LegendUtils:', function () {
       expect(zQuartiles).toEqual({
         top: { lab: '900k', val: 0.5352372348458313 },
         mid: { lab: '400k', val: 0.3568248232305542 },
-        bot: { lab: '100k', val: 0.1784124116152771 }
+        bot: { lab: '100k', val: 0.1784124116152771 },
       })
     })
   })

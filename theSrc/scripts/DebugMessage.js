@@ -21,7 +21,7 @@ class DebugMessage {
         'X: ' + String(this.viewBox.x),
         'Y: ' + String(this.viewBox.y),
         'wH: ' + String(this.svg.style('width')),
-        'wW: ' + String(this.svg.style('height'))
+        'wW: ' + String(this.svg.style('height')),
       ]
       _.forEach(labels, (l) => {
         debugText.push(`${l.text}:${l.height}, ${l.width}`)

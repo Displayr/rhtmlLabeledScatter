@@ -8,7 +8,7 @@ describe('Utils:', function () {
       { input: '4', expected: false },
       { input: ['4'], expected: false },
       { input: undefined, expected: false },
-      { input: null, expected: false }
+      { input: null, expected: false },
     ]
 
     _(tests).each((t) => {
@@ -25,7 +25,7 @@ describe('Utils:', function () {
       { input: ['4'], expected: true },
       { input: [4], expected: true },
       { input: undefined, expected: false },
-      { input: null, expected: false }
+      { input: null, expected: false },
     ]
 
     _(tests).each((t) => {
@@ -46,7 +46,7 @@ describe('Utils:', function () {
       { input: [4, '4.5', 5], expected: true },
       { input: [4.5, -5.5], expected: true },
       { input: undefined, expected: false },
-      { input: null, expected: false }
+      { input: null, expected: false },
     ]
 
     _(tests).each((t) => {
@@ -68,7 +68,7 @@ describe('Utils:', function () {
       { input: [4.5, -5.5], expected: false },
       { input: [0, 1], expected: true },
       { input: undefined, expected: false },
-      { input: null, expected: false }
+      { input: null, expected: false },
     ]
 
     _(tests).each((t) => {
@@ -83,7 +83,7 @@ describe('Utils:', function () {
       { input: [1.234567, 2, 'p', 's'], expected: 'p1.23s' },
       { input: [1.234567, 2], expected: '1.23' },
       { input: [1.234567, 2, '', ''], expected: '1.23' },
-      { input: [1.234567, 2, '$', ''], expected: '$1.23' }
+      { input: [1.234567, 2, '$', ''], expected: '$1.23' },
     ]
 
     _(tests).each((t) => {
@@ -106,7 +106,7 @@ describe('Utils:', function () {
       { input: 8, expected: '⁸' },
       { input: 9, expected: '⁹' },
       { input: 10, expected: '¹⁰' },
-      { input: 11, expected: '¹¹' }
+      { input: 11, expected: '¹¹' },
     ]
 
     _(tests).each((t) => {

@@ -1,4 +1,12 @@
 {
+  "globals": {
+    "afterAll": true,
+    "afterEach": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "expect": true,
+    "jest": true
+  },
   "env": {
     "browser": false,
     "node": true,
@@ -12,6 +20,7 @@
   ],
   "rules": {
     "indent": 0,
-    "prefer-promise-reject-errors": 0
+    "prefer-promise-reject-errors": 0,
+    "comma-dangle": ["error", "always-multiline"]
   }
 }

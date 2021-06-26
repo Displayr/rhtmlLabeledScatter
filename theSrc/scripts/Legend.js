@@ -11,17 +11,17 @@ class Legend {
     this.decimals = {
       x: axisSettings.x.decimals,
       y: axisSettings.y.decimals,
-      z: axisSettings.z.decimals
+      z: axisSettings.z.decimals,
     }
     this.prefix = {
       x: axisSettings.x.prefix,
       y: axisSettings.y.prefix,
-      z: axisSettings.z.prefix
+      z: axisSettings.z.prefix,
     }
     this.suffix = {
       x: axisSettings.x.suffix,
       y: axisSettings.y.suffix,
-      z: axisSettings.z.suffix
+      z: axisSettings.z.suffix,
     }
     this.width = 0
     this.maxWidth = 0
@@ -29,7 +29,7 @@ class Legend {
     this.padding = {
       right: legendSettings.getFontSize() / 1.6,
       left: legendSettings.getFontSize() / 0.8,
-      middle: legendSettings.getFontSize() / 0.53
+      middle: legendSettings.getFontSize() / 0.53,
     }
     this.ptRadius = legendSettings.getFontSize() / 2.67
     this.ptToTextSpace = legendSettings.getFontSize()
@@ -39,7 +39,7 @@ class Legend {
       len: 5,
       width: 1,
       textSize: 10,
-      charWidth: 4
+      charWidth: 4,
     }
 
     this.x = 0
@@ -167,7 +167,7 @@ class Legend {
       anchor: 'start',
       text: `${movedLab[0].text} (${Utils.getFormattedNum(movedPt[0].labelX, this.decimals.x, this.prefix.x, this.suffix.x)}, ${Utils.getFormattedNum(movedPt[0].labelY, this.decimals.y, this.prefix.y, this.suffix.y)})`,
       color: movedPt[0].color,
-      isDraggedPt: true
+      isDraggedPt: true,
     })
   }
 
@@ -182,7 +182,7 @@ class Legend {
       color: color,
       r: this.getPtRadius(),
       anchor: 'start',
-      fillOpacity: fillOpacity
+      fillOpacity: fillOpacity,
     })
   }
 

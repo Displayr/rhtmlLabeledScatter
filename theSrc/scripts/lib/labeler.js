@@ -1034,7 +1034,7 @@ const expandBox = ({ box, up = 0, down = 0, left = 0, right = 0 }) => {
     minX: box.minX - left,
     maxX: box.maxX + right,
     minY: box.minY - up,
-    maxY: box.maxY + down
+    maxY: box.maxY + down,
   }
 }
 
@@ -1045,12 +1045,12 @@ const combinedBoundingBox = (...boxes) => {
       minX: Math.min(minMaxes.minX, box.minX),
       maxX: Math.max(minMaxes.maxX, box.maxX),
       minY: Math.min(minMaxes.minY, box.minY),
-      maxY: Math.max(minMaxes.maxY, box.maxY)
+      maxY: Math.max(minMaxes.maxY, box.maxY),
   }), {
     minX: Infinity,
     maxX: -Infinity,
     minY: Infinity,
-    maxY: -Infinity
+    maxY: -Infinity,
   })
 }
 

@@ -11,7 +11,7 @@ describe('PlotLabel:', function () {
       { input: '/images/image.gif', expected: true },
       { input: '/images/image.txt', expected: false },
       { input: '/images/image.png?foo=bar', expected: true },
-      { input: 'foo', expected: false }
+      { input: 'foo', expected: false },
     ].map(testConfig => [testConfig.input, testConfig])
 
     test.each(tests)(`%#: %s`, (testName, testConfig) => {

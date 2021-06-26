@@ -242,7 +242,7 @@ class PlotData {
           markerTextX,
           markerTextY,
           width: this.legend.getMarkerWidth(),
-          color: lp.color
+          color: lp.color,
         })
 
         // if the points were condensed, remove point
@@ -254,7 +254,7 @@ class PlotData {
         if (!_.includes(condensedPtsDataIdArray, id)) {
           this.outsidePlotCondensedPts.push({
             dataId: id,
-            markerId: newMarkerId
+            markerId: newMarkerId,
           })
         }
       }

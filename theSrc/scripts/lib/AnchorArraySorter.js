@@ -66,7 +66,7 @@ class AnchorArraySorter extends ArraySorter {
       'left': _.sortBy(this.anchorArray, this.getAncBoundaryFunction('left')),
       'right': _.sortBy(this.anchorArray, this.getAncBoundaryFunction('right')),
       'top': _.sortBy(this.anchorArray, this.getAncBoundaryFunction('top')),
-      'bot': _.sortBy(this.anchorArray, this.getAncBoundaryFunction('bot'))
+      'bot': _.sortBy(this.anchorArray, this.getAncBoundaryFunction('bot')),
     }
   }
 

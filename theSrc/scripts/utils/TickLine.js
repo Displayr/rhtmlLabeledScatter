@@ -14,7 +14,7 @@ class TickLine {
       y1: this.y2,
       x2: this.x1,
       y2: this.y2 + this.length,
-      num: this.associatedLabel
+      num: this.associatedLabel,
     }
   }
 
@@ -24,7 +24,7 @@ class TickLine {
       y1: this.y1,
       x2: this.x1,
       y2: this.y2,
-      num: this.associatedLabel
+      num: this.associatedLabel,
     }
   }
 }

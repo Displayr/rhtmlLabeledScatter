@@ -134,5 +134,5 @@ module.exports = [
   'theSrc/internal_www/data/trendlines/set5_trendlines.json',
   'theSrc/internal_www/data/trendlines/set5_trendlines_2point.json',
   'theSrc/internal_www/data/trendlines/trendData1.json',
-  'theSrc/internal_www/data/trendlines/trendData2.json'
+  'theSrc/internal_www/data/trendlines/trendData2.json',
 ].filter(path => fs.existsSync(`${__dirname}/../../../${path}`))

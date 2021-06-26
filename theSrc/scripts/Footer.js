@@ -9,7 +9,7 @@ class Footer extends AbstractTitle {
     this.padding = {
       inner: 0,
       top: 15,
-      bot: 10
+      bot: 10,
     }
 
     this.generateMultiLineTextArray(0)

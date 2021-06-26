@@ -7,8 +7,8 @@
     "prepush": "node ./build/bin/prepush",
     "test": "npm run localTest",
     "localTest": "gulp testSpecs && gulp testVisual --env=local --branch=`git rev-parse --abbrev-ref HEAD`",
-    "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=master",
-    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/`git rev-parse --abbrev-ref HEAD` -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
+    "travisTest": "gulp testSpecs && gulp testVisual --env=travis --branch=$BRANCH",
+    "gatherDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; BRANCH=`git rev-parse --abbrev-ref HEAD` && for I in `find theSrc/test/snapshots/local/$BRANCH -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
     "gatherMasterDiffs": "rm -rf .tmp/diffs; mkdir -p .tmp/diffs/; for I in `find theSrc/test/snapshots/local/master -type d -name __diff_output__`; do cp $I/* .tmp/diffs/ 2> /dev/null; done; true",
     "macOpenDiffs": "open .tmp/diffs",
     "seeDiffs": "npm run gatherDiffs; npm run macOpenDiffs",
@@ -18,7 +18,7 @@
   "devDependencies": {
     "gulp": "^4.0.2",
     "request-promise": "^4.2.5",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#5.0.2"
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#7.0.3"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
@@ -30,7 +30,7 @@
     "deep-diff": "^1.0.2",
     "es6-autobind": "^1.0.7",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "md5": "^2.2.1",
     "random-js": "^1.0.8",
     "rbush": "^3.0.1"

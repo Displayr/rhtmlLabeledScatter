@@ -13,7 +13,7 @@ class LegendUtils {
       24: 'spt', // septillion
       27: 'oct', // octillian
       30: 'nn', // nonillian
-      33: 'dc' // decillian
+      33: 'dc', // decillian
     }
   }
 
@@ -79,16 +79,16 @@ class LegendUtils {
     const Zquartiles = {
       top: {
         lab: topQuartileLabel + expShortForm,
-        val: getZVal(topQ, maxZ, precision)
+        val: getZVal(topQ, maxZ, precision),
       },
       mid: {
         lab: removePrecedingZero(midQuartileLabel) + expShortForm,
-        val: getZVal(midQ, maxZ)
+        val: getZVal(midQ, maxZ),
       },
       bot: {
         lab: removePrecedingZero(botQuartileLabel) + expShortForm,
-        val: getZVal(botQ, maxZ)
-      }
+        val: getZVal(botQ, maxZ),
+      },
     }
     return Zquartiles
   }
@@ -116,7 +116,7 @@ class LegendUtils {
         r: rTop,
         x: cx,
         y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding,
-        text: Zquartiles.top.lab
+        text: Zquartiles.top.lab,
       },
       {
         cx,
@@ -124,7 +124,7 @@ class LegendUtils {
         r: rMid,
         x: cx,
         y: viewBoxYBottom - (2 * rMid) - bubbleTextPadding,
-        text: Zquartiles.mid.lab
+        text: Zquartiles.mid.lab,
       },
       {
         cx,
@@ -132,14 +132,14 @@ class LegendUtils {
         r: rBot,
         x: cx,
         y: viewBoxYBottom - (2 * rBot) - bubbleTextPadding,
-        text: Zquartiles.bot.lab
-      }
+        text: Zquartiles.bot.lab,
+      },
     ])
     legend.setBubblesTitle([
       {
         x: cx,
-        y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding
-      }
+        y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding,
+      },
     ])
   }
 }

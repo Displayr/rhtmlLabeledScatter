@@ -28,7 +28,7 @@ class Links {
           x2: newLinkPt[0],
           y2: newLinkPt[1],
           width: 1,
-          color: pt.color
+          color: pt.color,
         })
       }
     }
@@ -117,7 +117,7 @@ class Links {
       topC: [labelXmid, labelYtop + 7],
       topR: [labelXright, labelYtop + 7],
       midL: [labelXleft, labelYmid],
-      midR: [labelXright, labelYmid]
+      midR: [labelXright, labelYmid],
     }
 
     const padding = 10

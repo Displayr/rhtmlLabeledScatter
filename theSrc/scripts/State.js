@@ -82,7 +82,7 @@ class State {
     this.updateViewBox(vb)
     this.stateObj = {
       'vb': this.vb,
-      'userPositionedLabs': this.userPositionedLabs
+      'userPositionedLabs': this.userPositionedLabs,
       // 'algoPositionedLabs': this.algoPositionedLabs
     }
     this.saveToState(this.stateObj)
@@ -121,7 +121,7 @@ class State {
       width: vb.width,
       height: vb.height,
       x: vb.x,
-      y: vb.y
+      y: vb.y,
     }
   }
 
@@ -132,7 +132,7 @@ class State {
     this.userPositionedLabs.push({
       id,
       x: (labx - vb.x) / vb.width,
-      y: (laby - vb.y) / vb.height
+      y: (laby - vb.y) / vb.height,
     })
     this.updateViewBox(vb)
     this.saveToState({ 'vb': this.vb, 'userPositionedLabs': this.userPositionedLabs })
