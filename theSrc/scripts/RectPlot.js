@@ -645,7 +645,7 @@ class RectPlot {
         return placementPromise
       }
     } else {
-      return Promise.reject('Labels turned off')
+      return Promise.resolve();
     }
   }
 
