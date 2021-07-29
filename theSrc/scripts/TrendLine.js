@@ -131,11 +131,12 @@ class TrendLine {
     _.map(this.getUniqueGroups(), (group) => {
       // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
       const cssGroupName = md5(group)
+      const cssArrowheadName = md5(plotColors.getColorFromGroup(group))
 
       // Arrowhead marker
-      svg.selectAll(`#triangle-${cssGroupName}`).remove()
+      svg.selectAll(`#trendline-arrowhead-${cssArrowheadName}`).remove()
       svg.append('svg:defs').append('svg:marker')
-         .attr('id', `triangle-${cssGroupName}`)
+         .attr('id', `trendline-arrowhead-${cssArrowheadName}`)
          .attr('refX', 6)
          .attr('refY', 6)
          .attr('markerWidth', 30)
@@ -160,7 +161,7 @@ class TrendLine {
          .attr('marker-end', (d, i) => {
            // Draw arrowhead on last element in trendline
            if (i === ((this.getLineArray(group)).length - 1)) {
-             return `url(#triangle-${cssGroupName})`
+             return `url(#trendline-arrowhead-${cssArrowheadName})`
            }
          })
     })
