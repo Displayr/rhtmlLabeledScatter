@@ -13,7 +13,7 @@ describe('LegendUtils:', function () {
     })
 
     it('computes top, mid, and bot quartile thresholds for zMax=1000000', function () {
-      const zQuartiles = LegendUtils.getZQuartiles(1000000, '', %)
+      const zQuartiles = LegendUtils.getZQuartiles(1000000, '', '%')
 
       expect(zQuartiles).toEqual({
         top: { lab: '900k%', val: 0.5352372348458313 },
