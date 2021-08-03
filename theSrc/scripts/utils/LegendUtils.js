@@ -29,7 +29,7 @@ class LegendUtils {
   }
 
   // Calculates the sizes of the Legend bubble plots and the labels that go with them
-  static getZQuartiles (maxZ) {
+  static getZQuartiles (maxZ, zPrefix, zSuffix) {
     const maxSigFigsInTopQuartile = 3
     const getZVal = (val, max) => Math.sqrt((max * val) / max / Math.PI)
 
@@ -78,15 +78,15 @@ class LegendUtils {
 
     const Zquartiles = {
       top: {
-        lab: topQuartileLabel + expShortForm,
+        lab: zPrefix + topQuartileLabel + expShortForm + zSuffix,
         val: getZVal(topQ, maxZ, precision),
       },
       mid: {
-        lab: removePrecedingZero(midQuartileLabel) + expShortForm,
+        lab: zPrefix + removePrecedingZero(midQuartileLabel) + expShortForm + zSuffix,
         val: getZVal(midQ, maxZ),
       },
       bot: {
-        lab: removePrecedingZero(botQuartileLabel) + expShortForm,
+        lab: zPrefix + removePrecedingZero(botQuartileLabel) + expShortForm + zSuffix,
         val: getZVal(botQ, maxZ),
       },
     }

@@ -6,7 +6,7 @@ class LegendSettings {
   constructor (show, showBubbles,
                fontFamily, fontSize, fontColor,
                bubbleFontFamily, bubbleFontSize, bubbleFontColor,
-               bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor, zTitle) {
+               bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor, zTitle, zPrefix, zSuffix) {
     autoBind(this)
     this.show = show
     this.showBubbles = showBubbles
@@ -28,6 +28,8 @@ class LegendSettings {
       },
     }
     this.title = zTitle
+    this.zPrefix = zPrefix
+    this.zSuffix = zSuffix
   }
 
   isDisplayed (Z, legendPts) {
