@@ -131,7 +131,7 @@ class TrendLine {
     _.map(this.getUniqueGroups(), (group) => {
       // Need new groupName because CSS ids cannot contain spaces and maintain uniqueness
       const cssGroupName = md5(group)
-      const cssArrowheadName = md5(plotColors.getColorFromGroup(group))
+      const cssArrowheadName = md5(group + plotColors.getColorFromGroup(group))
 
       // Arrowhead marker
       svg.selectAll(`#trendline-arrowhead-${cssArrowheadName}`).remove()
