@@ -32,6 +32,7 @@ class AxisUtils {
     } else {
       // If user has defined tick interval
       let i = 0
+      // If origin is within the range, ensure that there is a tick at the origin
       if (min <= 0 && max >= 0) {
         while ((i <= max) || (-i >= min)) {
           if (i >= 0 && i < max) {
