@@ -94,7 +94,7 @@ describe('AxisUtils:', function () {
 
         it('should compute gridlines', function () {
           expect(getResult().gridLines[0]).toEqual({ x1: 10, y1: 0, x2: 10, y2: 100 }) // -6
-          expect(getResult().gridLines[2]).toEqual({ x1: 40, y1: 0, x2: 40, y2: 100 }) // -3
+          expect(getResult().gridLines[1]).toEqual({ x1: 40, y1: 0, x2: 40, y2: 100 }) // -3
         })
 
         it('should compute 3 axis markers lines', function () {
