@@ -22,7 +22,7 @@ class TooltipUtils {
         } else {
           xlabel = Utils.getFormattedNum(d.labelX, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix)
           ylabel = Utils.getFormattedNum(d.labelY, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix)
-          const zlabel = Utils.getFormattedNum(d.labelZ, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix)
+          const zlabel = Utils.getFormattedNum(d.labelZ, axisSettings.z.decimals, axisSettings.z.prefix, axisSettings.z.suffix)
           labelTxt = d.label === '' ? d.labelAlt : d.label
           groupLabel = _.isUndefined(d.group) ? '' : `,  ${d.group}`
           return `${labelTxt}${groupLabel}\n${zlabel}\n(${xlabel}, ${ylabel})`

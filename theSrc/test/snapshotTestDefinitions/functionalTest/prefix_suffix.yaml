@@ -3,10 +3,6 @@ title: "test prefix and suffix configurations"
 width: 400
 height: 400
 rowSize: 3
-comments:
-  - location: z
-    status: red
-    comment: zPrefix and zSuffix are not respected
 widgets:
   - config: data.functionalTest.scatterplot_simple|config.xPrefix|{"title":"x prefix"}
   - config: data.functionalTest.scatterplot_simple|config.xSuffix|{"title":"x suffix"}
