@@ -40,14 +40,14 @@ class AxisUtils {
           if (-i < 0 && -i > min) {
             scaleLinear.push(-i)
           }
-          i += unitMajor / 2
+          i += unitMajor
         }
       } else {
         const tickExp = this._getTickExponential(unitMajor)
-        i = _.ceil(_.toNumber(min), -tickExp)
+        i = _.floor(_.toNumber(min), tickExp)
         while (i < max) {
           scaleLinear.push(_.round(i, tickExp))
-          i += unitMajor / 2
+          i += unitMajor
         }
       }
       return _.sortBy(scaleLinear)
@@ -124,7 +124,7 @@ class AxisUtils {
     const getTicks = (userTickInterval, min, max) => {
       let ticks = null
       if (Utils.isNum(userTickInterval)) {
-        ticks = userTickInterval / 2
+        ticks = userTickInterval
       } else {
         ticks = this._getTickInterval(min, max)
       }
