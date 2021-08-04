@@ -47,7 +47,7 @@ class AxisUtils {
         const tickExp = this._getTickExponential(unitMajor)
         i = _.floor(_.toNumber(min), tickExp)
         while (i < max) {
-          scaleLinear.push(_.round(i, tickExp))
+          scaleLinear.push(i)
           i += unitMajor
         }
       }
