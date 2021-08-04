@@ -52,33 +52,25 @@ describe('AxisUtils:', function () {
           }),
         })
 
-        it('should compute 6 gridlines', function () {
-          expect(getResult().gridLines.length).toEqual(6) // X: 0, 5, 10, Y: 0, 5, 10
+        it('should compute 2 gridlines', function () {
+          expect(getResult().gridLines.length).toEqual(2)
         })
 
         it('should compute gridlines at 0, 5, and 10', function () {
-          expect(getResult().gridLines[0]).toEqual({ x1: 25, y1: 0, x2: 25, y2: 100 })
-          expect(getResult().gridLines[1]).toEqual({ x1: 50, y1: 0, x2: 50, y2: 100 })
-          expect(getResult().gridLines[2]).toEqual({ x1: 75, y1: 0, x2: 75, y2: 100 })
-          expect(getResult().gridLines[3]).toEqual({ x1: 0, y1: 75, x2: 100, y2: 75 })
-          expect(getResult().gridLines[4]).toEqual({ x1: 0, y1: 50, x2: 100, y2: 50 })
-          expect(getResult().gridLines[5]).toEqual({ x1: 0, y1: 25, x2: 100, y2: 25 })
+          expect(getResult().gridLines[0]).toEqual({ x1: 50, y1: 0, x2: 50, y2: 100 })
+          expect(getResult().gridLines[1]).toEqual({ x1: 0, y1: 50, x2: 100, y2: 50 })
         })
 
         it('should compute 4 axis markers lines', function () {
-          expect(getResult().axisLeader.length).toEqual(8)
+          expect(getResult().axisLeader.length).toEqual(4)
         })
 
         it('should compute 4 axis markers lines', function () {
           expect(getResult().axisLeaderLabel).toEqual([
             { x: 0, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 25, y: 115, label: '2.5', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 50, y: 115, label: '5.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 75, y: 115, label: '7.5', anchor: 'middle', type: AxisTypeEnum.X },
             { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: AxisTypeEnum.Y },
-            { x: -5, y: 78.33333333333333, label: '2.5', anchor: 'end', type: AxisTypeEnum.Y },
             { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: AxisTypeEnum.Y },
-            { x: -5, y: 28.333333333333332, label: '7.5', anchor: 'end', type: AxisTypeEnum.Y },
           ])
         })
       })
@@ -96,26 +88,20 @@ describe('AxisUtils:', function () {
           }),
         })
 
-        it('should compute 6 gridlines', function () {
-          expect(getResult().gridLines.length).toEqual(5)
+        it('should compute 2 gridlines', function () {
+          expect(getResult().gridLines.length).toEqual(2)
         })
 
         it('should compute gridlines', function () {
           expect(getResult().gridLines[0]).toEqual({ x1: 10, y1: 0, x2: 10, y2: 100 }) // -6
-          expect(getResult().gridLines[1]).toEqual({ x1: 25, y1: 0, x2: 25, y2: 100 }) // -4.5
-          expect(getResult().gridLines[2]).toEqual({ x1: 40, y1: 0, x2: 40, y2: 100 }) // -3
-          expect(getResult().gridLines[3]).toEqual({ x1: 55.00000000000001, y1: 0, x2: 55.00000000000001, y2: 100 }) // -1.5
-          expect(getResult().gridLines[4]).toEqual({ x1: 85, y1: 0, x2: 85, y2: 100 }) // 1.5
+          expect(getResult().gridLines[1]).toEqual({ x1: 40, y1: 0, x2: 40, y2: 100 }) // -3
         })
 
-        it('should compute 6 axis markers lines', function () {
+        it('should compute 3 axis markers lines', function () {
           expect(getResult().axisLeaderLabel).toEqual([
             { x: 10, y: 115, label: '-6.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 25, y: 115, label: '-4.5', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 40, y: 115, label: '-3.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 55.00000000000001, y: 115, label: '-1.5', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 70, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 85, y: 115, label: '1.5', anchor: 'middle', type: AxisTypeEnum.X },
           ])
         })
       })

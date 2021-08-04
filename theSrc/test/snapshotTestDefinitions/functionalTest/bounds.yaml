@@ -3,13 +3,6 @@ title: "test axis bounds configurations"
 width: 400
 height: 400
 rowSize: 4
-comments:
-  - status: yellow
-    location: xBoundsUnitMajor_5
-    comment: bounds unit set to 5 but it chooses a bounds unit of 3
-  - status: yellow
-    location: xBoundsUnitMajor_2
-    comment: bounds unit set to 5 but it chooses a bounds unit of 1
 widgets:
   - config: data.functionalTest.scatterplot_simple|{"title":"no bounds config"}
   - config: data.functionalTest.scatterplot_simple|config.originAlign|{"title":"align to origin"}
