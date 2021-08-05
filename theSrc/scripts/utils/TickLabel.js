@@ -31,7 +31,7 @@ class TickLabel {
     if (_.isInteger(tickIncr)) return 0
 
     const integerAndDecimalStrings = tickIncr.toString().split('.')
-    return integerAndDecimalStrings.length == 2 ? integerAndDecimalStrings[1].length : 0
+    return integerAndDecimalStrings.length === 2 ? integerAndDecimalStrings[1].length : 0
   }
 
   getDisplayLabel () {
