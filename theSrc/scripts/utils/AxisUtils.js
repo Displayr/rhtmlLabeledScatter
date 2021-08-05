@@ -151,12 +151,12 @@ class AxisUtils {
       const xRoundedScaleLinear = this._getRoundedScaleLinear(data.minX, data.maxX, axisSettings.x.boundsUnitsMajor)
       _.map(xRoundedScaleLinear, val => {
         if (val === 0) {
-          const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
-          const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
-          if (axisSettings.showX) {
-            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
-          }
-          if ((data.minX !== 0) && (data.maxX !== 0)) {
+          if (data.minX < 0 && data.maxX > 0) {
+            const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
+            const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
+            if (axisSettings.showX) {
+              pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
+            }
             originAxis.push(yAxisOrigin.getData())
           }
         } else {
@@ -195,12 +195,12 @@ class AxisUtils {
       const yRoundedScaleLinear = this._getRoundedScaleLinear(data.minY, data.maxY, axisSettings.y.boundsUnitsMajor)
       _.map(yRoundedScaleLinear, val => {
         if (val === 0) {
-          const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
-          const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
-          if (axisSettings.showY) {
-            pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
-          }
-          if ((data.minY !== 0) && (data.maxY !== 0)) {
+          if (data.minY < 0 && data.maxY > 0) {
+            const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
+            const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
+            if (axisSettings.showY) {
+              pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
+            }
             originAxis.push(xAxisOrigin.getData())
           }
         } else {

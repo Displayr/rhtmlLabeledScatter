@@ -30,9 +30,8 @@ class TickLabel {
     if (!_.isNull(userDecimals)) return userDecimals
     if (_.isInteger(tickIncr)) return 0
 
-    // Otherwise, return the inverse exponent of the tick increment
-    const tickExponent = Utils.getExponentOfNum(tickIncr)
-    return ((tickExponent < 0) ? Math.abs(tickExponent) : 0)
+    const integerAndDecimalStrings = tickIncr.toString().split('.')
+    return integerAndDecimalStrings.length === 2 ? integerAndDecimalStrings[1].length : 0
   }
 
   getDisplayLabel () {
