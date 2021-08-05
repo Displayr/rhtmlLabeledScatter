@@ -17,3 +17,4 @@ widgets:
   - config: data.functionalTest.bubbleplot_simple|config.zDecimals_0|{"title":"z decimals 0"}
   - config: data.functionalTest.bubbleplot_simple|config.zDecimals_1|{"title":"z decimals 1"}
   - config: data.functionalTest.bubbleplot_simple|config.zDecimals_2|{"title":"z decimals 2"}
+  - config: data.functionalTest.scatterplot_simple|config.xBounds_10|config.yBounds_10|config.xBoundsUnitMajor_nonInteger|config.yBoundsUnitMajor_nonInteger|{"title":"units set to 2.5"}
