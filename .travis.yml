@@ -5,6 +5,7 @@ sudo: required
 dist: xenial
 addons:
   chrome: stable
+  artifacts: true
 artifacts:
   debug: false
   paths:
