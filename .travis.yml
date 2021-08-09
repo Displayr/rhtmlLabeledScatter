@@ -7,9 +7,10 @@ addons:
   chrome: stable
   artifacts: true
 artifacts:
-  debug: false
-  paths:
-    - theSrc/test/snapshots/travis/master/multipleRerender
+  debug: true
+  # paths:
+  #   - theSrc/test/snapshots/travis/master/multipleRerender
+  working_dir: theSrc/test/snapshots/travis/master/multipleRerender
 before_install:
   - sudo apt-get update
 before_script:
