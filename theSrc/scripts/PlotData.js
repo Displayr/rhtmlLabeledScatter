@@ -65,7 +65,7 @@ class PlotData {
     this.origY = this.Y.slice(0)
     this.normX = this.X.slice(0)
     this.normY = this.Y.slice(0)
-    if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice() }
+    if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice()}
     this.outsidePlotPtsId = []
     // this.legendPts = []
     this.outsidePlotCondensedPts = []
@@ -74,8 +74,8 @@ class PlotData {
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
-      this.normalizeData()
       if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
+      this.normalizeData()
       this.plotColors = new PlotColors(this)
       this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale)
     } else {
@@ -105,27 +105,7 @@ class PlotData {
     this.minY = _.min(notMovedY)
     this.maxY = _.max(notMovedY)
 
-    // threshold used so pts are not right on border of plot
-    let rangeX = this.maxX - this.minX
-    let rangeY = this.maxY - this.minY
-    const thres = 0.08
-    let xThres = thres * rangeX
-    let yThres = thres * rangeY
-    // If both ranges are 0, then set default unary
-    if (xThres === 0 && yThres === 0) {
-      xThres = 1
-      yThres = 1
-    } else if (xThres === 0) { // make the range limited to one axis
-      xThres = yThres
-    } if (yThres === 0) { // make the range limited to one axis
-      yThres = xThres
-    }
-
-    // Note: Thresholding increase the space around the points which is why we add to the max and min
-    this.maxX += xThres
-    this.minX -= xThres
-    this.maxY += yThres
-    this.minY -= yThres
+    this.addBufferToBounds(notMovedX, notMovedY)
 
     // originAlign: compensates to make sure origin lines are on axis
     if (this.originAlign) {
@@ -443,6 +423,100 @@ class PlotData {
 
   getImgLabels () {
     return _.filter(this.lab, l => l.url !== '')
+  }
+
+  addBufferToBounds (notMovedX, notMovedY) {
+    let rangeX = this.maxX - this.minX
+    let rangeY = this.maxY - this.minY
+
+    const r = this.pointRadius
+    if (Utils.isArrOfNums(this.Z)) {
+      let bubbleBufferMinX = 0
+      let bubbleBufferMaxX = 0
+      let bubbleBufferMinY = 0
+      let bubbleBufferMaxY = 0
+
+      for (let i = 0; i < this.origLen; i++) {
+        if (!_.includes(this.outsideBoundsPtsId, i)) {
+          if (this.origX[i] == this.minX) {
+              const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+              if (bubbleRadius > bubbleBufferMinX)
+                bubbleBufferMinX = bubbleRadius * (this.maxX - this.minX) / this.vb.width
+          }
+          if (this.origX[i] == this.maxX) {
+              const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+              if (bubbleRadius > bubbleBufferMaxX)
+                bubbleBufferMaxX = bubbleRadius * (this.maxX - this.minX) / this.vb.width
+          }
+          if (this.origY[i] == this.minY) {
+              const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+              if (bubbleRadius > bubbleBufferMinY)
+                bubbleBufferMinY = bubbleRadius * (this.maxY - this.minY) / this.vb.height
+          }
+          if (this.origY[i] == this.maxY) {
+              const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+              if (bubbleRadius > bubbleBufferMaxY)
+                bubbleBufferMaxY = bubbleRadius * (this.maxY - this.minY) / this.vb.height
+          }
+        }
+        const thres = 0.08 // move this
+        let bufferMinX = thres * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMinX
+        let bufferMaxX = thres * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMaxX
+        let bufferMinY = thres * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMinY
+        let bufferMaxY = thres * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMaxY
+
+        if (rangeX === 0 && rangeY === 0) {
+          bufferMinX = 1
+          bufferMaxX = 1
+          bufferMinY = 1
+          bufferMaxY = 1
+        } else if (rangeX === 0) {
+          bufferMinX = bufferMinY
+          bufferMaxX = bufferMaxY
+        } else if (rangeY === 0) {
+          bufferMinY = bufferMinX
+          bufferMaxY = bufferMaxX
+        }
+
+        this.minX -= bufferMinX
+        this.maxX += bufferMaxX
+        this.minY -= bufferMinY
+        this.maxY += bufferMaxY
+      }
+    } else {
+      const pointBufferX = r * (this.maxX - this.minX) / this.vb.width
+      const pointBufferY = r * (this.maxY - this.minY) / this.vb.height
+      const thres = 0.08 // move this
+      let bufferX = thres * (rangeX + 2 * pointBufferX) + pointBufferX
+      let bufferY = thres * (rangeY + 2 * pointBufferY) + pointBufferY
+      if (rangeX === 0 && rangeY === 0) {
+        bufferX = 1
+        bufferY = 1
+      } else if (rangeX === 0) {
+        bufferX = bufferY
+      } if (rangeY === 0) {
+        bufferY = bufferX
+      }
+      this.minX -= bufferX
+      this.maxX += bufferX
+      this.minY -= bufferY
+      this.maxY += bufferY
+    }
+
+    // let rangeX = this.maxX - this.minX
+    // let rangeY = this.maxY - this.minY
+    // const thres = 0.08
+    // let xThres = thres * rangeX
+    // let yThres = thres * rangeY
+    // // If both ranges are 0, then set default unary
+    // if (xThres === 0 && yThres === 0) {
+    //   xThres = 1
+    //   yThres = 1
+    // } else if (xThres === 0) { // make the range limited to one axis
+    //   xThres = yThres
+    // } if (yThres === 0) { // make the range limited to one axis
+    //   yThres = xThres
+    // }
   }
 }
 
