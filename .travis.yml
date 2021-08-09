@@ -9,7 +9,7 @@ addons:
 artifacts:
   debug: false
   paths:
-    - theSrc/test/snapshots/travis
+    - theSrc/test/snapshots/travis/master/multipleRerender
 before_install:
   - sudo apt-get update
 before_script:
