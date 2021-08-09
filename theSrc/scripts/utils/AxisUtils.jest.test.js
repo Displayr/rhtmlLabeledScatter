@@ -61,13 +61,15 @@ describe('AxisUtils:', function () {
           expect(getResult().gridLines[1]).toEqual({ x1: 0, y1: 50, x2: 100, y2: 50 })
         })
 
-        it('should compute 2 axis markers lines', function () {
-          expect(getResult().axisLeader.length).toEqual(2)
+        it('should compute 4 axis leaders', function () {
+          expect(getResult().axisLeader.length).toEqual(4)
         })
 
-        it('should compute 2 axis markers lines', function () {
+        it('should compute 4 axis leaders', function () {
           expect(getResult().axisLeaderLabel).toEqual([
+            { x: 0, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
             { x: 50, y: 115, label: '5.0', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: AxisTypeEnum.Y },
             { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: AxisTypeEnum.Y },
           ])
         })
