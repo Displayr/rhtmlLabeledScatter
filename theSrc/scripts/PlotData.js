@@ -447,22 +447,22 @@ class PlotData {
 
       for (let i = 0; i < this.origLen; i++) {
         if (!_.includes(this.outsideBoundsPtsId, i)) {
-          if (this.origX[i] == this.minX) {
+          if (this.origX[i] === this.minX) {
               const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
               if (bubbleRadius > bubbleBufferMinX)
                 bubbleBufferMinX = bubbleRadius * (this.maxX - this.minX) / this.vb.width
           }
-          if (this.origX[i] == this.maxX) {
+          if (this.origX[i] === this.maxX) {
               const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
               if (bubbleRadius > bubbleBufferMaxX)
                 bubbleBufferMaxX = bubbleRadius * (this.maxX - this.minX) / this.vb.width
           }
-          if (this.origY[i] == this.minY) {
+          if (this.origY[i] === this.minY) {
               const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
               if (bubbleRadius > bubbleBufferMinY)
                 bubbleBufferMinY = bubbleRadius * (this.maxY - this.minY) / this.vb.height
           }
-          if (this.origY[i] == this.maxY) {
+          if (this.origY[i] === this.maxY) {
               const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
               if (bubbleRadius > bubbleBufferMaxY)
                 bubbleBufferMaxY = bubbleRadius * (this.maxY - this.minY) / this.vb.height
