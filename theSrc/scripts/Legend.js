@@ -202,9 +202,13 @@ class Legend {
     this.setCols(Math.ceil(((totalLegendItems) * this.getHeightOfRow()) / this.height))
     this.setWidth((maxTextWidth * this.getCols()) + spacingAroundMaxTextWidth + (this.getPaddingMid() * (this.getCols() - 1)))
 
-    const bubbleTitleWidth = this.getBubbleTitleWidth()
-    this.setWidth(_.max([this.width, bubbleTitleWidth + bubbleLeftRightPadding,
-      this.getBubblesMaxWidth() + bubbleLeftRightPadding]))
+    if (this.legendSettings.showBubblesInLegend()) {
+      const bubbleTitleWidth = this.getBubbleTitleWidth()
+      this.setWidth(_.max([this.width, bubbleTitleWidth + bubbleLeftRightPadding,
+        this.getBubblesMaxWidth() + bubbleLeftRightPadding]))
+    } else {
+      this.setWidth(this.width)
+    }
 
     this.setColSpace(_.min([maxTextWidth, this.getMaxTextWidth()]))
 

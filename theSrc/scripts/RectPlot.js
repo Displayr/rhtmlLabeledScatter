@@ -144,7 +144,9 @@ class RectPlot {
       config.legendBubbleTitleFontFamily,
       config.legendBubbleTitleFontSize,
       config.legendBubbleTitleFontColor,
-      this.zTitle
+      this.zTitle,
+      config.zPrefix,
+      config.zSuffix
     )
 
     this.trendLines = {

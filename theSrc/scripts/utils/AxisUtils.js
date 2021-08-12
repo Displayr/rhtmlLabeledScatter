@@ -32,6 +32,7 @@ class AxisUtils {
     } else {
       // If user has defined tick interval
       let i = 0
+      // If origin is within the range, ensure that there is a tick at the origin
       if (min <= 0 && max >= 0) {
         while ((i <= max) || (-i >= min)) {
           if (i >= 0 && i < max) {
@@ -40,14 +41,14 @@ class AxisUtils {
           if (-i < 0 && -i > min) {
             scaleLinear.push(-i)
           }
-          i += unitMajor / 2
+          i += unitMajor
         }
       } else {
         const tickExp = this._getTickExponential(unitMajor)
-        i = _.ceil(_.toNumber(min), -tickExp)
+        i = _.floor(_.toNumber(min), tickExp)
         while (i < max) {
-          scaleLinear.push(_.round(i, tickExp))
-          i += unitMajor / 2
+          scaleLinear.push(i)
+          i += unitMajor
         }
       }
       return _.sortBy(scaleLinear)
@@ -124,7 +125,7 @@ class AxisUtils {
     const getTicks = (userTickInterval, min, max) => {
       let ticks = null
       if (Utils.isNum(userTickInterval)) {
-        ticks = userTickInterval / 2
+        ticks = userTickInterval
       } else {
         ticks = this._getTickInterval(min, max)
       }
@@ -152,10 +153,10 @@ class AxisUtils {
         if (val === 0) {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
           const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
-          if (axisSettings.showX) {
+          if (axisSettings.showX && data.minX <= 0 && data.maxX >= 0) {
             pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
           }
-          if ((data.minX !== 0) && (data.maxX !== 0)) {
+          if (data.minX < 0 && data.maxX > 0) {
             originAxis.push(yAxisOrigin.getData())
           }
         } else {
@@ -196,10 +197,10 @@ class AxisUtils {
         if (val === 0) {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
           const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
-          if (axisSettings.showY) {
+          if (axisSettings.showY && data.minY <= 0 && data.maxY >= 0) {
             pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
           }
-          if ((data.minY !== 0) && (data.maxY !== 0)) {
+          if (data.minY < 0 && data.maxY > 0) {
             originAxis.push(xAxisOrigin.getData())
           }
         } else {
