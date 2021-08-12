@@ -107,14 +107,18 @@ class PlotData {
 
     // originAlign: compensates to make sure origin lines are on axis
     if (this.originAlign) {
-      if (this.minX > 0)
+      if (this.minX > 0) {
         this.minX = 0
-      if (this.maxX < 0)
+      }
+      if (this.maxX < 0) {
         this.maxX = 0
-      if (this.minY > 0)
+      }
+      if (this.minY > 0) {
         this.minY = 0
-      if (this.maxY < 0)
+      }
+      if (this.maxY < 0) {
         this.maxY = 0
+      }
     }
 
     this.addBufferToBounds(notMovedX, notMovedY)
