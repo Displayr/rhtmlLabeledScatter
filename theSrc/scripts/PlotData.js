@@ -65,7 +65,7 @@ class PlotData {
     this.origY = this.Y.slice(0)
     this.normX = this.X.slice(0)
     this.normY = this.Y.slice(0)
-    if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice()}
+    if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice() }
     this.outsidePlotPtsId = []
     // this.legendPts = []
     this.outsidePlotCondensedPts = []
@@ -105,20 +105,24 @@ class PlotData {
     this.minY = _.min(notMovedY)
     this.maxY = _.max(notMovedY)
 
-    this.addBufferToBounds(notMovedX, notMovedY)
-
     // originAlign: compensates to make sure origin lines are on axis
     if (this.originAlign) {
-      this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres // so axis can be on origin
-      this.minX = this.minX > 0 ? 0 : this.minX - xThres
-      this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres
-      this.minY = this.minY > 0 ? 0 : this.minY - yThres
+      if (this.minX > 0)
+        this.minX = 0
+      if (this.maxX < 0)
+        this.maxX = 0
+      if (this.minY > 0)
+        this.minY = 0
+      if (this.maxY < 0)
+        this.maxY = 0
     }
+
+    this.addBufferToBounds(notMovedX, notMovedY)
 
     // Fixed aspect ratio computations: not easily simplified as the boundaries cannot be reduced
     if (this.fixedAspectRatio) {
-      rangeX = this.maxX - this.minX
-      rangeY = this.maxY - this.minY
+      const rangeX = this.maxX - this.minX
+      const rangeY = this.maxY - this.minY
       const rangeAR = Math.abs(rangeX / rangeY)
       const widgetAR = (this.vb.width / this.vb.height)
       const rangeToWidgetARRatio = widgetAR / rangeAR
@@ -430,6 +434,7 @@ class PlotData {
     let rangeY = this.maxY - this.minY
 
     const r = this.pointRadius
+    const extraBufferProportion = 0.08
     if (Utils.isArrOfNums(this.Z)) {
       let bubbleBufferMinX = 0
       let bubbleBufferMaxX = 0
@@ -459,36 +464,34 @@ class PlotData {
                 bubbleBufferMaxY = bubbleRadius * (this.maxY - this.minY) / this.vb.height
           }
         }
-        const thres = 0.08 // move this
-        let bufferMinX = thres * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMinX
-        let bufferMaxX = thres * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMaxX
-        let bufferMinY = thres * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMinY
-        let bufferMaxY = thres * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMaxY
-
-        if (rangeX === 0 && rangeY === 0) {
-          bufferMinX = 1
-          bufferMaxX = 1
-          bufferMinY = 1
-          bufferMaxY = 1
-        } else if (rangeX === 0) {
-          bufferMinX = bufferMinY
-          bufferMaxX = bufferMaxY
-        } else if (rangeY === 0) {
-          bufferMinY = bufferMinX
-          bufferMaxY = bufferMaxX
-        }
-
-        this.minX -= bufferMinX
-        this.maxX += bufferMaxX
-        this.minY -= bufferMinY
-        this.maxY += bufferMaxY
       }
+      let bufferMinX = extraBufferProportion * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMinX
+      let bufferMaxX = extraBufferProportion * (rangeX + bubbleBufferMinX + bubbleBufferMaxX) + bubbleBufferMaxX
+      let bufferMinY = extraBufferProportion * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMinY
+      let bufferMaxY = extraBufferProportion * (rangeY + bubbleBufferMinY + bubbleBufferMaxY) + bubbleBufferMaxY
+
+      if (rangeX === 0 && rangeY === 0) {
+        bufferMinX = 1
+        bufferMaxX = 1
+        bufferMinY = 1
+        bufferMaxY = 1
+      } else if (rangeX === 0) {
+        bufferMinX = bufferMinY
+        bufferMaxX = bufferMaxY
+      } else if (rangeY === 0) {
+        bufferMinY = bufferMinX
+        bufferMaxY = bufferMaxX
+      }
+
+      this.minX -= bufferMinX
+      this.maxX += bufferMaxX
+      this.minY -= bufferMinY
+      this.maxY += bufferMaxY
     } else {
       const pointBufferX = r * (this.maxX - this.minX) / this.vb.width
       const pointBufferY = r * (this.maxY - this.minY) / this.vb.height
-      const thres = 0.08 // move this
-      let bufferX = thres * (rangeX + 2 * pointBufferX) + pointBufferX
-      let bufferY = thres * (rangeY + 2 * pointBufferY) + pointBufferY
+      let bufferX = extraBufferProportion * (rangeX + 2 * pointBufferX) + pointBufferX
+      let bufferY = extraBufferProportion * (rangeY + 2 * pointBufferY) + pointBufferY
       if (rangeX === 0 && rangeY === 0) {
         bufferX = 1
         bufferY = 1
@@ -502,21 +505,6 @@ class PlotData {
       this.minY -= bufferY
       this.maxY += bufferY
     }
-
-    // let rangeX = this.maxX - this.minX
-    // let rangeY = this.maxY - this.minY
-    // const thres = 0.08
-    // let xThres = thres * rangeX
-    // let yThres = thres * rangeY
-    // // If both ranges are 0, then set default unary
-    // if (xThres === 0 && yThres === 0) {
-    //   xThres = 1
-    //   yThres = 1
-    // } else if (xThres === 0) { // make the range limited to one axis
-    //   xThres = yThres
-    // } if (yThres === 0) { // make the range limited to one axis
-    //   yThres = xThres
-    // }
   }
 }
 
