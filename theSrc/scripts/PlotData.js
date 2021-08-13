@@ -12,7 +12,8 @@ import d3 from 'd3'
 //
 
 const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
-const extraPaddingProportion = 0.05
+const extraPaddingProportion = 0.08
+const extraBubblePaddingProportion = 0.05
 
 class PlotData {
   constructor (X,
@@ -473,10 +474,10 @@ class PlotData {
           }
         }
       }
-      let paddingMinX = extraPaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMinX
-      let paddingMaxX = extraPaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMaxX
-      let paddingMinY = extraPaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMinY
-      let paddingMaxY = extraPaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMaxY
+      let paddingMinX = extraBubblePaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMinX
+      let paddingMaxX = extraBubblePaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMaxX
+      let paddingMinY = extraBubblePaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMinY
+      let paddingMaxY = extraBubblePaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMaxY
 
       if (rangeX === 0 && rangeY === 0) {
         paddingMinX = 1
@@ -558,13 +559,14 @@ class PlotData {
             }
           }
         }
-        this.ordinalMinXPaddingProportion = bubbleRadiusMinX / this.vb.width + extraPaddingProportion
-        this.ordinalMaxXPaddingProportion = bubbleRadiusMaxX / this.vb.width + extraPaddingProportion
+        this.ordinalMinXPaddingProportion = bubbleRadiusMinX / this.vb.width + extraBubblePaddingProportion
+        this.ordinalMaxXPaddingProportion = bubbleRadiusMaxX / this.vb.width + extraBubblePaddingProportion
       } else {
         this.ordinalMinXPaddingProportion = r / this.vb.width + extraPaddingProportion
         this.ordinalMaxXPaddingProportion = r / this.vb.width + extraPaddingProportion
       }
-      // max bound on padding?
+      this.ordinalMinXPaddingProportion = Math.min(this.ordinalMinXPaddingProportion, 0.5)
+      this.ordinalMaxXPaddingProportion = Math.min(this.ordinalMaxXPaddingProportion, 0.5)
     }
 
     if (this.yDataType === DataTypeEnum.ordinal) {
@@ -587,12 +589,14 @@ class PlotData {
             }
           }
         }
-        this.ordinalMinYPaddingProportion = bubbleRadiusMinY / this.vb.height + extraPaddingProportion
-        this.ordinalMaxYPaddingProportion = bubbleRadiusMaxY / this.vb.height + extraPaddingProportion
+        this.ordinalMinYPaddingProportion = bubbleRadiusMinY / this.vb.height + extraBubblePaddingProportion
+        this.ordinalMaxYPaddingProportion = bubbleRadiusMaxY / this.vb.height + extraBubblePaddingProportion
       } else {
         this.ordinalMinYPaddingProportion = r / this.vb.height + extraPaddingProportion
         this.ordinalMaxYPaddingProportion = r / this.vb.height + extraPaddingProportion
       }
+      this.ordinalMinYPaddingProportion = Math.min(this.ordinalMinYPaddingProportion, 0.3)
+      this.ordinalMaxYPaddingProportion = Math.min(this.ordinalMaxYPaddingProportion, 0.3)
     }
   }
 }
