@@ -122,6 +122,7 @@ const defaultViewBox = {
 const defaultData = {
   len: 1,
   calculateMinMax: _.noop,
+  calculateOrdinalPaddingProportions: _.noop,
   minX: -5,
   maxX: 5,
   minY: -5,

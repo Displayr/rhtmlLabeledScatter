@@ -3,10 +3,6 @@ title: "test point radius configurations"
 width: 400
 height: 400
 rowSize: 3
-comments:
-  - location: pointRadius_30
-    status: red
-    comment: bubble goes outside plot
 widgets:
   - config: data.functionalTest.scatterplot_simple|config.pointRadius_0|{"title":"point radius = 0"}
   - config: data.functionalTest.scatterplot_simple|config.pointRadius_1|{"title":"point radius = 1"}

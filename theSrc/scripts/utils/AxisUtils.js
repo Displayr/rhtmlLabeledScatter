@@ -134,6 +134,7 @@ class AxisUtils {
 
     // Call to find Max and mins as users may have moved points out of the plot
     data.calculateMinMax()
+    data.calculateOrdinalPaddingProportions()
 
     let ticksX = getTicks(axisSettings.x.boundsUnitsMajor, data.minX, data.maxX)
     if (data.xDataType === DataTypeEnum.date) {
@@ -169,9 +170,9 @@ class AxisUtils {
       })
     } else if (data.xDataType === DataTypeEnum.ordinal) {
       const scaleOrdinal = d3.scale.ordinal().domain(data.xLevels).rangePoints([0, 1])
+      const nonPaddingProportion = 1 - data.ordinalMinXPaddingProportion - data.ordinalMaxXPaddingProportion
       _.map(data.xLevels, x => {
-        const sidePadPercent = 0.08
-        const gridX = (scaleOrdinal(x) * vb.width * (1 - 2 * sidePadPercent)) + vb.x + (vb.width * sidePadPercent)
+        const gridX = scaleOrdinal(x) * vb.width * nonPaddingProportion + vb.x + vb.width * data.ordinalMinXPaddingProportion
         const gridLine = new GridLine(gridX, vb.y, gridX, vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showX) {
@@ -213,9 +214,9 @@ class AxisUtils {
       })
     } else if (data.yDataType === DataTypeEnum.ordinal) {
       const scaleOrdinal = d3.scale.ordinal().domain(data.yLevels).rangePoints([0, 1])
-      const sidePadPercent = 0.08
+      const nonPaddingProportion = 1 - data.ordinalMinYPaddingProportion - data.ordinalMaxYPaddingProportion
       _.map(data.yLevels, y => {
-        const gridY = (scaleOrdinal(y) * vb.height * (1 - 2 * sidePadPercent)) + vb.y + (vb.height * sidePadPercent)
+        const gridY = scaleOrdinal(y) * vb.height * nonPaddingProportion + vb.y + vb.height * data.ordinalMinYPaddingProportion
         const gridLine = new GridLine(vb.x, gridY, vb.x + vb.width, gridY)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {

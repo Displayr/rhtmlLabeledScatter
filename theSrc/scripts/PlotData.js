@@ -12,6 +12,7 @@ import d3 from 'd3'
 //
 
 const labelTopPadding = 3 // TODO needs to be configurable, and is duplicated !
+const extraPaddingProportion = 0.05
 
 class PlotData {
   constructor (X,
@@ -74,8 +75,8 @@ class PlotData {
 
     if (this.X.length === this.Y.length) {
       this.len = (this.origLen = X.length)
-      this.normalizeData()
       if (Utils.isArrOfNums(this.Z)) { this.normalizeZData() }
+      this.normalizeData()
       this.plotColors = new PlotColors(this)
       this.labelNew = new PlotLabel(this.label, this.labelAlt, this.vb.labelLogoScale)
     } else {
@@ -105,40 +106,32 @@ class PlotData {
     this.minY = _.min(notMovedY)
     this.maxY = _.max(notMovedY)
 
-    // threshold used so pts are not right on border of plot
-    let rangeX = this.maxX - this.minX
-    let rangeY = this.maxY - this.minY
-    const thres = 0.08
-    let xThres = thres * rangeX
-    let yThres = thres * rangeY
-    // If both ranges are 0, then set default unary
-    if (xThres === 0 && yThres === 0) {
-      xThres = 1
-      yThres = 1
-    } else if (xThres === 0) { // make the range limited to one axis
-      xThres = yThres
-    } if (yThres === 0) { // make the range limited to one axis
-      yThres = xThres
-    }
-
-    // Note: Thresholding increase the space around the points which is why we add to the max and min
-    this.maxX += xThres
-    this.minX -= xThres
-    this.maxY += yThres
-    this.minY -= yThres
-
     // originAlign: compensates to make sure origin lines are on axis
     if (this.originAlign) {
-      this.maxX = this.maxX < 0 ? 0 : this.maxX + xThres // so axis can be on origin
-      this.minX = this.minX > 0 ? 0 : this.minX - xThres
-      this.maxY = this.maxY < 0 ? 0 : this.maxY + yThres
-      this.minY = this.minY > 0 ? 0 : this.minY - yThres
+      if (this.minX > 0) {
+        this.minX = 0
+        this.minXAlignedToOrigin = true
+      }
+      if (this.maxX < 0) {
+        this.maxX = 0
+        this.maxXAlignedToOrigin = true
+      }
+      if (this.minY > 0) {
+        this.minY = 0
+        this.minYAlignedToOrigin = true
+      }
+      if (this.maxY < 0) {
+        this.maxY = 0
+        this.maxYAlignedToOrigin = true
+      }
     }
+
+    this.addPaddingToBounds()
 
     // Fixed aspect ratio computations: not easily simplified as the boundaries cannot be reduced
     if (this.fixedAspectRatio) {
-      rangeX = this.maxX - this.minX
-      rangeY = this.maxY - this.minY
+      const rangeX = this.maxX - this.minX
+      const rangeY = this.maxY - this.minY
       const rangeAR = Math.abs(rangeX / rangeY)
       const widgetAR = (this.vb.width / this.vb.height)
       const rangeToWidgetARRatio = widgetAR / rangeAR
@@ -182,6 +175,7 @@ class PlotData {
     // TODO KZ remove this side effect. Plus Data.calcMinMax is called over and over in the code. Why ??
     let i
     this.calculateMinMax()
+    this.calculateOrdinalPaddingProportions()
 
     // create list of movedOffPts that need markers
     this.outsidePlotMarkers = []
@@ -316,15 +310,15 @@ class PlotData {
           let y = 0
           if (this.xDataType === DataTypeEnum.ordinal) {
             const scaleOrdinal = d3.scale.ordinal().domain(this.xLevels).rangePoints([0, 1])
-            const sidePadPercent = 0.08
-            x = (scaleOrdinal(this.X[i]) * this.vb.width * (1 - 2 * sidePadPercent)) + this.vb.x + (this.vb.width * sidePadPercent)
+            const nonPaddingProportion = 1 - this.ordinalMinXPaddingProportion - this.ordinalMaxXPaddingProportion
+            x = scaleOrdinal(this.X[i]) * this.vb.width * nonPaddingProportion + this.vb.x + this.vb.width * this.ordinalMinXPaddingProportion
           } else {
             x = (this.normX[i] * this.vb.width) + this.vb.x
           }
           if (this.yDataType === DataTypeEnum.ordinal) {
             const scaleOrdinal = d3.scale.ordinal().domain(this.yLevels).rangePoints([0, 1])
-            const sidePadPercent = 0.08
-            y = (scaleOrdinal(this.Y[i]) * this.vb.height * (1 - 2 * sidePadPercent)) + this.vb.y + (this.vb.height * sidePadPercent)
+            const nonPaddingProportion = 1 - this.ordinalMinYPaddingProportion - this.ordinalMaxYPaddingProportion
+            y = scaleOrdinal(this.Y[i]) * this.vb.height * nonPaddingProportion + this.vb.y + this.vb.height * this.ordinalMinYPaddingProportion
           } else {
             y = ((1 - this.normY[i]) * this.vb.height) + this.vb.y
           }
@@ -443,6 +437,163 @@ class PlotData {
 
   getImgLabels () {
     return _.filter(this.lab, l => l.url !== '')
+  }
+
+  // For non-ordinal coordinates, augment the min and max bounds with some padding.
+  // The padding includes marker and bubble radii as well as some extra space.
+  addPaddingToBounds () {
+    const rangeX = this.maxX - this.minX
+    const rangeY = this.maxY - this.minY
+
+    const r = this.pointRadius
+    if (Utils.isArrOfNums(this.Z)) {
+      let bubblePaddingMinX = 0
+      let bubblePaddingMaxX = 0
+      let bubblePaddingMinY = 0
+      let bubblePaddingMaxY = 0
+
+      for (let i = 0; i < this.origLen; i++) {
+        if (!_.includes(this.outsideBoundsPtsId, i)) {
+          const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+          const bubblePaddingMinXCandidate = bubbleRadius * rangeX / this.vb.width - (this.origX[i] - this.minX)
+          if (bubblePaddingMinXCandidate > bubblePaddingMinX) {
+            bubblePaddingMinX = bubblePaddingMinXCandidate
+          }
+          const bubblePaddingMaxXCandidate = bubbleRadius * rangeX / this.vb.width - (this.maxX - this.origX[i])
+          if (bubblePaddingMaxXCandidate > bubblePaddingMaxX) {
+            bubblePaddingMaxX = bubblePaddingMaxXCandidate
+          }
+          const bubblePaddingMinYCandidate = bubbleRadius * rangeY / this.vb.height - (this.origY[i] - this.minY)
+          if (bubblePaddingMinYCandidate > bubblePaddingMinY) {
+            bubblePaddingMinY = bubblePaddingMinYCandidate
+          }
+          const bubblePaddingMaxYCandidate = bubbleRadius * rangeY / this.vb.height - (this.maxY - this.origY[i])
+          if (bubblePaddingMaxYCandidate > bubblePaddingMaxY) {
+            bubblePaddingMaxY = bubblePaddingMaxYCandidate
+          }
+        }
+      }
+      let paddingMinX = extraPaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMinX
+      let paddingMaxX = extraPaddingProportion * (rangeX + bubblePaddingMinX + bubblePaddingMaxX) + bubblePaddingMaxX
+      let paddingMinY = extraPaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMinY
+      let paddingMaxY = extraPaddingProportion * (rangeY + bubblePaddingMinY + bubblePaddingMaxY) + bubblePaddingMaxY
+
+      if (rangeX === 0 && rangeY === 0) {
+        paddingMinX = 1
+        paddingMaxX = 1
+        paddingMinY = 1
+        paddingMaxY = 1
+      } else if (rangeX === 0) {
+        paddingMinX = paddingMinY
+        paddingMaxX = paddingMaxY
+      } else if (rangeY === 0) {
+        paddingMinY = paddingMinX
+        paddingMaxY = paddingMaxX
+      }
+
+      if (!this.minXAlignedToOrigin) {
+        this.minX -= paddingMinX
+      }
+      if (!this.maxXAlignedToOrigin) {
+        this.maxX += paddingMaxX
+      }
+      if (!this.minYAlignedToOrigin) {
+        this.minY -= paddingMinY
+      }
+      if (!this.maxYAlignedToOrigin) {
+        this.maxY += paddingMaxY
+      }
+    } else {
+      const pointpaddingX = r * (this.maxX - this.minX) / this.vb.width
+      const pointpaddingY = r * (this.maxY - this.minY) / this.vb.height
+      let paddingX = extraPaddingProportion * (rangeX + 2 * pointpaddingX) + pointpaddingX
+      let paddingY = extraPaddingProportion * (rangeY + 2 * pointpaddingY) + pointpaddingY
+      if (rangeX === 0 && rangeY === 0) {
+        paddingX = 1
+        paddingY = 1
+      } else if (rangeX === 0) {
+        paddingX = paddingY
+      } if (rangeY === 0) {
+        paddingY = paddingX
+      }
+
+      if (!this.minXAlignedToOrigin) {
+        this.minX -= paddingX
+      }
+      if (!this.maxXAlignedToOrigin) {
+        this.maxX += paddingX
+      }
+      if (!this.minYAlignedToOrigin) {
+        this.minY -= paddingY
+      }
+      if (!this.maxYAlignedToOrigin) {
+        this.maxY += paddingY
+      }
+    }
+  }
+
+  // For ordinal coordinates, determine extra padding for min and max bounds
+  // as a proportion of the original range. The padding includes marker and
+  // bubble radii as well as some extra space.
+  calculateOrdinalPaddingProportions () {
+    const r = this.pointRadius
+
+    if (this.xDataType === DataTypeEnum.ordinal) {
+      if (Utils.isArrOfNums(this.Z)) {
+        const nLevels = this.xLevels.length
+        let bubbleRadiusMinX = 0
+        let bubbleRadiusMaxX = 0
+
+        for (let i = 0; i < this.origLen; i++) {
+          if (!_.includes(this.outsideBoundsPtsId, i)) {
+            const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+            const idx = this.xLevels.indexOf(this.origX[i])
+            const bubbleRadiusMinXCandidate = bubbleRadius - idx * this.vb.width / nLevels
+            if (bubbleRadiusMinXCandidate > bubbleRadiusMinX) {
+              bubbleRadiusMinX = bubbleRadiusMinXCandidate
+            }
+            const bubbleRadiusMaxXCandidate = bubbleRadius - (nLevels - idx - 1) * this.vb.width / nLevels
+            if (bubbleRadiusMaxXCandidate > bubbleRadiusMaxX) {
+              bubbleRadiusMaxX = bubbleRadiusMaxXCandidate
+            }
+          }
+        }
+        this.ordinalMinXPaddingProportion = bubbleRadiusMinX / this.vb.width + extraPaddingProportion
+        this.ordinalMaxXPaddingProportion = bubbleRadiusMaxX / this.vb.width + extraPaddingProportion
+      } else {
+        this.ordinalMinXPaddingProportion = r / this.vb.width + extraPaddingProportion
+        this.ordinalMaxXPaddingProportion = r / this.vb.width + extraPaddingProportion
+      }
+      // max bound on padding?
+    }
+
+    if (this.yDataType === DataTypeEnum.ordinal) {
+      if (Utils.isArrOfNums(this.Z)) {
+        const nLevels = this.yLevels.length
+        let bubbleRadiusMinY = 0
+        let bubbleRadiusMaxY = 0
+
+        for (let i = 0; i < this.origLen; i++) {
+          if (!_.includes(this.outsideBoundsPtsId, i)) {
+            const bubbleRadius = LegendUtils.normalizedZtoRadius(r, this.normZ[i])
+            const idx = this.yLevels.indexOf(this.origY[i])
+            const bubbleRadiusMinYCandidate = bubbleRadius - idx * this.vb.height / nLevels
+            if (bubbleRadiusMinYCandidate > bubbleRadiusMinY) {
+              bubbleRadiusMinY = bubbleRadiusMinYCandidate
+            }
+            const bubbleRadiusMaxYCandidate = bubbleRadius - (nLevels - idx - 1) * this.vb.height / nLevels
+            if (bubbleRadiusMaxYCandidate > bubbleRadiusMaxY) {
+              bubbleRadiusMaxY = bubbleRadiusMaxYCandidate
+            }
+          }
+        }
+        this.ordinalMinYPaddingProportion = bubbleRadiusMinY / this.vb.height + extraPaddingProportion
+        this.ordinalMaxYPaddingProportion = bubbleRadiusMaxY / this.vb.height + extraPaddingProportion
+      } else {
+        this.ordinalMinYPaddingProportion = r / this.vb.height + extraPaddingProportion
+        this.ordinalMaxYPaddingProportion = r / this.vb.height + extraPaddingProportion
+      }
+    }
   }
 }
 
