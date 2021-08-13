@@ -595,8 +595,8 @@ class PlotData {
         this.ordinalMinYPaddingProportion = r / this.vb.height + extraPaddingProportion
         this.ordinalMaxYPaddingProportion = r / this.vb.height + extraPaddingProportion
       }
-      this.ordinalMinYPaddingProportion = Math.min(this.ordinalMinYPaddingProportion, 0.3)
-      this.ordinalMaxYPaddingProportion = Math.min(this.ordinalMaxYPaddingProportion, 0.3)
+      this.ordinalMinYPaddingProportion = Math.min(this.ordinalMinYPaddingProportion, 0.5)
+      this.ordinalMaxYPaddingProportion = Math.min(this.ordinalMaxYPaddingProportion, 0.5)
     }
   }
 }
