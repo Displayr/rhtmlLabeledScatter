@@ -4,3 +4,6 @@ width: 1000
 height: 500
 type: for_each_data_in_directory
 use_config_as_title: true
+assert_log:
+  - type: error
+    exist: false
