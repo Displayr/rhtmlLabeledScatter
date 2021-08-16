@@ -66,19 +66,20 @@ class LabeledScatter {
     }
 
     const config = buildConfig(this.data, this.width, this.height)
-    this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
-    this.plot.draw()
-      .catch(err => {
-        if (
-          err.type === InsufficientHeightError.type ||
-          err.type === InsufficientWidthError.type
-        ) {
-          console.log(`caught expected error '${err.type}' and aborted rendering`)
-          DisplayError.displayEmptyErrorContainer(this.rootElement)
-        } else {
-          throw err
-        }
-      })
+    try {
+      this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
+      this.plot.draw()
+    } catch (err) {
+      if (
+        err.type === InsufficientHeightError.type ||
+        err.type === InsufficientWidthError.type
+      ) {
+        console.log(`caught expected error '${err.type}' and aborted rendering`)
+        DisplayError.displayEmptyErrorContainer(this.rootElement)
+      } else {
+        throw err
+      }
+    }
   }
 
   resize (el, width, height) {
