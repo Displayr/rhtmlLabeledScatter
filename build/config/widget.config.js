@@ -28,6 +28,14 @@ const config = {
         }
       }
     },
+    pixelmatch: {
+      // smaller values -> more sensitive : https://github.com/mapbox/pixelmatch#pixelmatchimg1-img2-output-width-height-options
+      customDiffConfig: {
+        threshold: 0.1,
+      },
+      failureThreshold: 0.0001,
+      failureThresholdType: 'percent', // pixel or percent
+    },
   },
 }
 

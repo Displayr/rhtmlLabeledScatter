@@ -350,26 +350,23 @@ class RectPlot {
         this.footer.drawWith(this.pltUniqueId, this.svg)
         this.drawResetButton()
 
-        if (Utils.isArrOfNums(this.Z)) {
-          // Anchors drawn before labs to avoid bubbles covering labs
-          const ancPromise = this.drawAnc()
-          const labelPromise = ancPromise.then(() => {
-            this.drawLabs()
-          })
-          labelPromise.then(() => {
-            if (this.trendLines.show) { this.drawTrendLines() }
-            this.drawDraggedMarkers()
-          })
-        } else {
-          // If no bubbles, then draw anc on top of potential logos
-          const labelPromise = this.drawLabs()
-          labelPromise.then(() => {
-            if (this.trendLines.show) { this.drawTrendLines() }
-            this.drawDraggedMarkers()
-          }).finally(() => {
-            this.drawAnc()
-          })
+        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
+        if (this.trendLines.show) {
+          this.tl = new TrendLine(this.data.pts, this.data.lab)
         }
+
+        // Draw in the following order so that label images (logos) are under
+        // anchor markers, which in turn are under text labels
+        this.drawLabelImages()
+        this.drawAnc().then(() => {
+          this.drawLabs()
+          this.placeLabels()
+        }).then(() => {
+          if (this.trendLines.show) {
+            this.drawTrendLines()
+          }
+          this.drawDraggedMarkers()
+        })
 
         if (this.plotBorder.show) { this.vb.drawBorderWith(this.svg, this.plotBorder) }
         this.axisLabels = new PlotAxisLabels(this.vb, this.axisSettings.leaderLineLength, this.axisSettings.textDimensions, this.xTitle, this.yTitle, this.padding)
@@ -549,21 +546,6 @@ class RectPlot {
     if (this.showLabels) {
       if (!this.trendLines.show) {
         drag = DragUtils.getLabelDragAndDrop(this)
-        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
-
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
-        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
-            .data(this.data.getImgLabels())
-            .enter()
-            .append('svg:image')
-            .attr('class', `plt-${this.pltUniqueId}-lab-img`)
-            .attr('xlink:href', d => d.url)
-            .attr('id', d => d.id)
-            .attr('x', d => d.x - (d.width / 2))
-            .attr('y', d => d.y - d.height)
-            .attr('width', d => d.width)
-            .attr('height', d => d.height)
-            .call(drag)
 
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`).remove()
         this.svg.selectAll(`.plt-${this.pltUniqueId}-lab`)
@@ -581,7 +563,42 @@ class RectPlot {
                  .attr('font-size', d => d.fontSize)
                  .style('cursor', 'pointer')
                  .call(drag)
+      } else if (this.trendLines.show) {
+        drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
+        this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
+      }
+    }
+  }
 
+  drawLabelImages () {
+    let drag
+    if (this.showLabels) {
+      if (!this.trendLines.show) {
+        drag = DragUtils.getLabelDragAndDrop(this)
+
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`).remove()
+        this.svg.selectAll(`.plt-${this.pltUniqueId}-lab-img`)
+            .data(this.data.getImgLabels())
+            .enter()
+            .append('svg:image')
+            .attr('class', `plt-${this.pltUniqueId}-lab-img`)
+            .attr('xlink:href', d => d.url)
+            .attr('id', d => d.id)
+            .attr('x', d => d.x - (d.width / 2))
+            .attr('y', d => d.y - d.height)
+            .attr('width', d => d.width)
+            .attr('height', d => d.height)
+            .call(drag)
+      } else if (this.trendLines.show) {
+        drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
+        this.tl.drawImageLabelsWith(this.pltUniqueId, this.svg, drag)
+      }
+    }
+  }
+
+  placeLabels () {
+    if (this.showLabels) {
+      if (!this.trendLines.show) {
         const placementPromise = new Promise((resolve, reject) => {
           this.labelPlacement.placeLabels(
             this.vb,
@@ -620,11 +637,6 @@ class RectPlot {
         })
         return placementPromise
       } else if (this.trendLines.show) {
-        this.tl = new TrendLine(this.data.pts, this.data.lab)
-        this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
-
-        drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
-        this.tl.drawLabelsWith(this.pltUniqueId, this.svg, drag)
         const placementPromise = new Promise((resolve, reject) => {
           this.labelPlacement.placeTrendLabels(
             this.vb,
@@ -646,8 +658,6 @@ class RectPlot {
         })
         return placementPromise
       }
-    } else {
-      return Promise.resolve()
     }
   }
 
@@ -657,10 +667,6 @@ class RectPlot {
   }
 
   drawTrendLines () {
-    this.state.updateLabelsWithPositionedData(this.data.lab, this.data.vb)
-    if ((this.tl === undefined) || (this.tl === null)) {
-      this.tl = new TrendLine(this.data.pts, this.data.lab)
-    }
     this.tl.drawWith(this.svg, this.data.plotColors, this.trendLines)
   }
 

@@ -168,20 +168,6 @@ class TrendLine {
   }
 
   drawLabelsWith (pltId, svg, drag) {
-    svg.selectAll(`.plt-${pltId}-lab-img`).remove()
-    svg.selectAll(`.plt-${pltId}-lab-img`)
-       .data(this.getImgLabels())
-       .enter()
-       .append('svg:image')
-       .attr('class', `plt-${pltId}-lab-img`)
-       .attr('xlink:href', d => d.url)
-       .attr('id', d => d.id)
-       .attr('x', d => d.x - (d.width / 2))
-       .attr('y', d => d.y - d.height)
-       .attr('width', d => d.width)
-       .attr('height', d => d.height)
-       .call(drag)
-
     svg.selectAll(`.plt-${pltId}-lab`).remove()
     svg.selectAll(`.plt-${pltId}-lab`)
        .data(this.getTextLabels())
@@ -196,6 +182,21 @@ class TrendLine {
        .attr('text-anchor', 'middle')
        .attr('fill', d => d.color)
        .attr('font-size', d => d.fontSize)
+       .call(drag)
+  }
+
+  drawImageLabelsWith (pltId, svg, drag) {
+    svg.selectAll(`.plt-${pltId}-lab-img`).remove()
+    svg.selectAll(`.plt-${pltId}-lab-img`)
+       .data(this.getImgLabels())
+       .enter()
+       .append('svg:image')
+       .attr('class', `plt-${pltId}-lab-img`)
+       .attr('xlink:href', d => d.url)
+       .attr('x', d => d.x - (d.width / 2))
+       .attr('y', d => d.y - d.height)
+       .attr('width', d => d.width)
+       .attr('height', d => d.height)
        .call(drag)
   }
 }

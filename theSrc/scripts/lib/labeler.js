@@ -46,6 +46,7 @@ const labeler = function () {
   let pointsWithLabels = []
   let collisionTree = null
   let isBubble = false
+  let isTrendLabel = false
   let h1 = 1 // TODO: better variable names. These are the bounds of the view port
   let h2 = 1 // TODO: better variable names. These are the bounds of the view port
   let w1 = 1 // TODO: better variable names. These are the bounds of the view port
@@ -807,7 +808,7 @@ const labeler = function () {
 
         point.observations.static.noInitialCollisionsAndNoNearbyNeighbors = !selfOverlap && (nearbyThings.length === 0)
 
-        if (isBubble && label.width < 2 * anchor.r) {
+        if (label.width < 2 * anchor.r && label.height < 2 * anchor.r && (label.color !== anchor.color || anchor.fillOpacity < 1) && !isTrendLabel) {
           point.observations.static.labelFitsInsideBubble = true
           point.observations.static.labelPlacedInsideBubble = true
           labeler.moveLabel({
@@ -958,9 +959,15 @@ const labeler = function () {
     return labeler
   }
   
-  labeler.anchorType = function (x) {
+  labeler.isBubble = function (x) {
     if (!arguments.length) return isBubble
     isBubble = x
+    return labeler
+  }
+
+  labeler.isTrendLabel = function (x) {
+    if (!arguments.length) return isTrendLabel
+    isTrendLabel = x
     return labeler
   }
 
