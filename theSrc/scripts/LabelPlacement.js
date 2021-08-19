@@ -35,7 +35,7 @@ class LabelPlacement {
     this.svg = svg
   }
 
-  place (vb, anchors, labels, pinnedLabels, state, resolve) {
+  place (vb, anchors, labels, pinnedLabels, isTrendLabel, resolve) {
     console.log('rhtmlLabeledScatter: Running label placement algorithm...')
     labeler()
       .svg(this.svg)
@@ -47,7 +47,8 @@ class LabelPlacement {
       .label(labels)
       .pinned(pinnedLabels)
       .promise(resolve)
-      .anchorType(this.isBubble)
+      .isBubble(this.isBubble)
+      .isTrendLabel(isTrendLabel)
       .setTemperatureBounds(this.initialTemperature, this.finalTemperature)
       .weights(this.weights)
       .settings(this.seed, this.maxMove, this.maxAngle, this.isLabelPlacementAlgoOn)
@@ -57,7 +58,7 @@ class LabelPlacement {
   placeTrendLabels (vb, anchors, labels, state, resolve) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), state, resolve)
+    this.place(vb, anchors, labels, state.getPositionedLabIds(vb), true, resolve)
 
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
@@ -70,7 +71,7 @@ class LabelPlacement {
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
-    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), state, resolve)
+    this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), false, resolve)
 
     labelsImgSvg.attr('x', d => d.x - (d.width / 2))
                 .attr('y', d => d.y - d.height)
