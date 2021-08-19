@@ -1,0 +1,8 @@
+type: multi_widget_single_page
+width: 40
+height: 15
+widgets:
+  - config: data.functionalTest.bubbleplot_simple
+assert_log:
+  - type: error
+    exist: false
