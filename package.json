@@ -21,7 +21,7 @@
     "gulp": "^4.0.2",
     "npm-force-resolutions": "0.0.10",
     "request-promise": "^4.2.5",
-    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#7.2.2"
+    "rhtmlBuildUtils": "github:Displayr/rhtmlBuildUtils#7.2.3"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
