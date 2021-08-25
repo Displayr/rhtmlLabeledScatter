@@ -16,11 +16,11 @@ class AbstractTitle {
     this.height = 0
     this.x = 0
     this.y = 0
-      this.padding = {
-        top: 0,
-        bot: 0,
-        inner: 0,
-      }
+    this.padding = {
+      top: 0,
+      bot: 0,
+      inner: 0,
+    }
   }
 
   setX (x) { this.x = x }

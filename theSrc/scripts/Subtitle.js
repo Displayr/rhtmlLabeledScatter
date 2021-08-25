@@ -5,18 +5,17 @@ class Subtitle extends AbstractTitle {
   constructor (subtitleText,
                subtitleFontColor,
                subtitleFontSize,
-               subtitleFontFamily,
-               titleText) {
+               subtitleFontFamily) {
     super(subtitleText, subtitleFontColor, subtitleFontSize, subtitleFontFamily)
     this.font.size = _.isNumber(subtitleFontSize) ? subtitleFontSize : 0
 
     // Positional parameter initialization
     this.padding = {
       inner: 2,
-      top: 10,
-      bot: 20,
+      top: 0,
+      bot: this.font.size / 4 + 15,
     }
-    const ifTextEmptyHeight = (titleText === '') ? 0 : this.padding.bot
+    const ifTextEmptyHeight = 0
     this.generateMultiLineTextArray(ifTextEmptyHeight)
   }
 
@@ -28,7 +27,7 @@ class Subtitle extends AbstractTitle {
               .append('text')
               .attr('class', `plt-${plotId}-subtitle`)
               .attr('x', this.x)
-              .attr('y', (d, i) => this.padding.top + this.y + (i * (this.font.size + this.padding.inner)))
+              .attr('y', (d, i) => this.y + this.padding.top + this.font.size + (i * (this.font.size + this.padding.inner)))
               .attr('fill', this.font.color)
               .attr('font-family', this.font.family)
               .attr('font-size', this.font.size)

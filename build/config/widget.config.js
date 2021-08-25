@@ -33,7 +33,7 @@ const config = {
       customDiffConfig: {
         threshold: 0.1,
       },
-      failureThreshold: 0.0001,
+      failureThreshold: 0.001,
       failureThresholdType: 'percent', // pixel or percent
     },
   },

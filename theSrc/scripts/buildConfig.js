@@ -11,7 +11,7 @@ const defaultConfig = {
   footer: '',
   footerFontColor: '#2C2C2C',
   footerFontFamily: 'Arial',
-  footerFontSize: 8,
+  footerFontSize: 10,
   grid: true,
   group: null,
   label: null,

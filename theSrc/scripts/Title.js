@@ -7,7 +7,8 @@ class Title extends AbstractTitle {
                titleFontSize,
                titleFontFamily,
                axisFontSize,
-               plotPaddingVertical) {
+               plotPaddingVertical,
+               hasSubtitle) {
     super(titleText, titleFontColor, titleFontSize, titleFontFamily)
     this.font = {
       color: titleFontColor,
@@ -15,17 +16,18 @@ class Title extends AbstractTitle {
       family: titleFontFamily,
     }
     this.padding = {
-      bot: 10,
+      top: 0,
+      bot: hasSubtitle ? this.font.size / 4 : this.font.size / 4 + 15,
     }
 
     if (this.text === '' || !_.isString(this.text)) {
       // If empty title height, vertical axis numbers may need excess padding
       this.height = _.isNumber(axisFontSize) ? axisFontSize / 2 : 0
     } else {
-      this.height = this.font.size
+      this.height = this.font.size + this.padding.top + this.padding.bot
     }
 
-    this.y = plotPaddingVertical + this.height
+    this.y = plotPaddingVertical + this.font.size + this.padding.top
   }
 
   getSubtitleY () {
