@@ -6,6 +6,6 @@ rowSize: 4
 widgets:
   - config: data.functionalTest.bubbleplot_simple|{"title":"default config"}
   - config: data.functionalTest.bubbleplot_simple|config.hideLabels|{"title":"hide labels"}
-  - config: data.functionalTest.bubbleplot_simple|config.label_24_red_fantasy|{"title":"labels font configured"}
+  - config: data.functionalTest.bubbleplot_simple|config.label_24_red_serif|{"title":"labels font configured"}
   - config: data.functionalTest.bubbleplot_simple_no_label_field|{"title":"no label field in data"}
 
