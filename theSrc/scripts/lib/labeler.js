@@ -68,6 +68,11 @@ const labeler = function () {
     labeler.moveLabel({ label, x, y })
   }
 
+  // This is the amount by which we shrink text label height so that when a text label is positioned under an anchor,
+  // the label appears closer to the anchor. This is necessary as the supplied bbox height is an overestimate of the
+  // actual height and the label appears too far from the anchor.
+  const labelHeightShrinkage = 0.6
+
   let max_move = 5.0
   let max_angle = 2 * 3.1415
 
@@ -169,8 +174,12 @@ const labeler = function () {
     // VIS-291 - this is separate because there could be different number of anc to lab
     // TODO 2D overlap computation is duplicated in a few places
     potentiallyOverlappingAnchors.forEach(anchor => {
+      // Use adjusted min Y to compensate for extra height given to text,
+      // to reduce the gap between labels and their anchors when the anchor is above the labels
+      const labelMinY = anchor.id === label.id && label.url === '' ? label.minY + (1 - labelHeightShrinkage) * label.height : label.minY 
+
       xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
-      yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, label.minY))
+      yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, labelMinY))
       overlapArea = xOverlap * yOverlap
 
       // less penalty if the label is overlapping its own bubble
@@ -218,13 +227,16 @@ const labeler = function () {
   // Perf note: this fn runs many many times
   // Avoid lodash in this fn
   labeler.chooseBestLeaderLine = function (label, anchor) {
+    // See description for labelHeightShrinkage
+    const labelMinY = label.url === '' ? label.minY + (1 - labelHeightShrinkage) * label.height : label.minY
+
     // NB negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
     let hdLabelRightToAnchor = label.maxX - anchor.minX
     let hdLabelCenterToAnchorCenter = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account anchor radius
     let vdLabelCenterToAnchorCenter = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account anchor radius
     let vdLabelBottomToAnchorTop = label.maxY - (anchor.minY - labelTopPadding)
-    let vdLabelTopToAnchorBottom = label.minY - (anchor.maxY + labelTopPadding)
+    let vdLabelTopToAnchorBottom = labelMinY - (anchor.maxY + labelTopPadding)
 
     const leaderLinePositionOptions = [
       {
@@ -644,11 +656,14 @@ const labeler = function () {
     const southEasterlyDiagonal = _.range(verticalOptions.length - 1)
       .map(i => ({ nickname: `SEly_${i}`, x: horizontalOptions[i].x, y: verticalOptions[i].y }))
 
+    // See description for labelHeightShrinkage
+    const labelHeight = label.url ? label.height : label.height * labelHeightShrinkage
+
     const options = [
       {  nickname: 'last', x: label.x, y: label.y },
       // TODO use getResetCoordsForLabelUsingAnchor via ...getResetCoordsForLabelUsingAnchor(point)
       {  nickname: 'reset', x: defaultCoords.x, y: defaultCoords.y },
-      {  nickname: 'below', x: defaultCoords.x, y: anchor.maxY + labelTopPadding + label.height },
+      {  nickname: 'below', x: defaultCoords.x, y: anchor.maxY + labelTopPadding + labelHeight },
       ...verticalOptions,
       ...horizontalOptions,
       ...northEasterlyDiagonal,
@@ -717,7 +732,7 @@ const labeler = function () {
       option.x = label.x
       option.y = label.y
 
-      const { energy, energyParts } = labeler.detailedEnergy(point, `${phaseName}:${option.nickname}`)
+      const { energy, energyParts } = labeler.detailedEnergy(point, `${phaseName}:${option.nickname}`, `${option.nickname}`)
       option.energy = energy
       option.energyParts = energyParts
     })
