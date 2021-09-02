@@ -58,7 +58,7 @@ class LabelPlacement {
   placeTrendLabels (vb, anchors, labels, state, resolve) {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    computeAdjustedLabelHeight(labels)
+    this.computeAdjustedLabelHeight(labels)
     this.place(vb, anchors, labels, state.getPositionedLabIds(vb), true, resolve)
 
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
@@ -70,7 +70,7 @@ class LabelPlacement {
     const labelsSvg = this.svg.selectAll(`.plt-${this.pltId}-lab`)
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
-    computeAdjustedLabelHeight(labels)
+    this.computeAdjustedLabelHeight(labels)
     const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
 
     this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), false, resolve)
@@ -79,9 +79,12 @@ class LabelPlacement {
                 .attr('y', d => d.y - d.height)
   }
 
+  // Compute an adjusted text label height that is closer to the actual observed height
+  // as getBBox tends to overestimate it. This height is used when dealing with the anchor,
+  // so that when a text label is positioned under an anchor, the label appears correctly distanced from its anchor.
   computeAdjustedLabelHeight (labels) {
     labels.forEach(lbl => {
-      lbl.adjustedHeight = bl.url === '' ? lbl.height * 0.6 : lbl.height
+      lbl.adjustedHeight = lbl.url === '' ? lbl.height * 0.6 : lbl.height
     })
   }
 }

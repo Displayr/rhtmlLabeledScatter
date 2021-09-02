@@ -68,11 +68,6 @@ const labeler = function () {
     labeler.moveLabel({ label, x, y })
   }
 
-  // This is the amount by which we shrink text label height so that when a text label is positioned under an anchor,
-  // the label appears closer to the anchor. This is necessary as the supplied bbox height is an overestimate of the
-  // actual height and the label appears too far from the anchor.
-  const labelHeightShrinkage = 0.6
-
   let max_move = 5.0
   let max_angle = 2 * 3.1415
 
@@ -301,6 +296,7 @@ const labeler = function () {
     label.y = y
     labeler.enforceBoundaries(label)
     addMinMaxAreaToRectangle(label)
+    addAdjustedMinYToLabel(label)
     collisionTree.insert(label)
 
     // enforceBoundaries modified label.x and label.y so final x,y may not equal the requested x,y
@@ -745,6 +741,7 @@ const labeler = function () {
     _(anc).each(a => addTypeToObject(a, 'anchor'))
     _(anc).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
     _(lab).each(addMinMaxAreaToRectangle)
+    _(lab).each(addAdjustedMinYToLabel)
     _(lab).each(l => addTypeToObject(l, 'label'))
     _(lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
