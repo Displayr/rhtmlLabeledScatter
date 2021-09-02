@@ -42,7 +42,7 @@ class Links {
     const labLeftBorder = lab.x - (lab.width / 2)
     const labRightBorder = lab.x + (lab.width / 2)
     const labBotBorder = lab.y
-    const labTopBorder = lab.url === '' ? lab.y - label.adjustedHeight - this.topBorderOffset : lab.y - lab.height
+    const labTopBorder = lab.y - lab.adjustedHeight
 
     return (labLeftBorder < (pt.x + pt.r)) &&
       (labRightBorder > (pt.x - pt.r)) &&
@@ -102,7 +102,7 @@ class Links {
     const labelXright = label.x + (label.width / 2)
 
     const labelYbot = label.y
-    const labelYtop = label.y - label.adjustedHeight - this.topBorderOffset
+    const labelYtop = label.y - label.adjustedHeight
     const labelYmid = label.y - (label.height / 2)
 
     const ancL = anchor.x - anchor.r
