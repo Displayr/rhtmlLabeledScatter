@@ -68,11 +68,6 @@ const labeler = function () {
     labeler.moveLabel({ label, x, y })
   }
 
-  // This is the amount by which we shrink text label height so that when a text label is positioned under an anchor,
-  // the label appears closer to the anchor. This is necessary as the supplied bbox height is an overestimate of the
-  // actual height and the label appears too far from the anchor.
-  const labelHeightShrinkage = 0.6
-
   let max_move = 5.0
   let max_angle = 2 * 3.1415
 
@@ -176,7 +171,7 @@ const labeler = function () {
     potentiallyOverlappingAnchors.forEach(anchor => {
       // Use adjusted min Y to compensate for extra height given to text,
       // to reduce the gap between labels and their anchors when the anchor is above the labels
-      const labelMinY = anchor.id === label.id && label.url === '' ? label.minY + (1 - labelHeightShrinkage) * label.height : label.minY 
+      const labelMinY = anchor.id === label.id ? label.adjustedMinY : label.minY
 
       xOverlap = Math.max(0, Math.min(anchor.maxX, label.maxX) - Math.max(anchor.minX, label.minX))
       yOverlap = Math.max(0, Math.min(anchor.maxY, label.maxY) - Math.max(anchor.minY, labelMinY))
@@ -227,16 +222,13 @@ const labeler = function () {
   // Perf note: this fn runs many many times
   // Avoid lodash in this fn
   labeler.chooseBestLeaderLine = function (label, anchor) {
-    // See description for labelHeightShrinkage
-    const labelMinY = label.url === '' ? label.minY + (1 - labelHeightShrinkage) * label.height : label.minY
-
     // NB negatives are fine here, as they are only used for Math.hypot, and we discard anything not enabled
     let hdLabelLeftToAnchor = label.minX - anchor.maxX
     let hdLabelRightToAnchor = label.maxX - anchor.minX
     let hdLabelCenterToAnchorCenter = (label.maxX - label.width / 2) - anchor.x // TODO does not take into account anchor radius
     let vdLabelCenterToAnchorCenter = (label.maxY - label.height / 2) - anchor.y // TODO does not take into account anchor radius
     let vdLabelBottomToAnchorTop = label.maxY - (anchor.minY - labelTopPadding)
-    let vdLabelTopToAnchorBottom = labelMinY - (anchor.maxY + labelTopPadding)
+    let vdLabelTopToAnchorBottom = label.adjustedMinY - (anchor.maxY + labelTopPadding)
 
     const leaderLinePositionOptions = [
       {
@@ -304,6 +296,7 @@ const labeler = function () {
     label.y = y
     labeler.enforceBoundaries(label)
     addMinMaxAreaToRectangle(label)
+    addAdjustedMinYToLabel(label)
     collisionTree.insert(label)
 
     // enforceBoundaries modified label.x and label.y so final x,y may not equal the requested x,y
@@ -656,14 +649,11 @@ const labeler = function () {
     const southEasterlyDiagonal = _.range(verticalOptions.length - 1)
       .map(i => ({ nickname: `SEly_${i}`, x: horizontalOptions[i].x, y: verticalOptions[i].y }))
 
-    // See description for labelHeightShrinkage
-    const labelHeight = label.url ? label.height : label.height * labelHeightShrinkage
-
     const options = [
       {  nickname: 'last', x: label.x, y: label.y },
       // TODO use getResetCoordsForLabelUsingAnchor via ...getResetCoordsForLabelUsingAnchor(point)
       {  nickname: 'reset', x: defaultCoords.x, y: defaultCoords.y },
-      {  nickname: 'below', x: defaultCoords.x, y: anchor.maxY + labelTopPadding + labelHeight },
+      {  nickname: 'below', x: defaultCoords.x, y: anchor.maxY + labelTopPadding + label.adjustedHeight },
       ...verticalOptions,
       ...horizontalOptions,
       ...northEasterlyDiagonal,
@@ -751,6 +741,7 @@ const labeler = function () {
     _(anc).each(a => addTypeToObject(a, 'anchor'))
     _(anc).each(a => { a.shortText = a.label.substr(0, 8).padStart(8) })
     _(lab).each(addMinMaxAreaToRectangle)
+    _(lab).each(addAdjustedMinYToLabel)
     _(lab).each(l => addTypeToObject(l, 'label'))
     _(lab).each(l => { l.shortText = l.text.substr(0, 8).padStart(8) })
     const nestUnderField = (array, type) => array.map(item => ({ id: item.id, [type]: item }))
@@ -1040,6 +1031,10 @@ const addMinMaxAreaToRectangle = (rect) => {
   rect.maxY = rect.y
   rect.area = rect.width * rect.height
   return rect
+}
+
+const addAdjustedMinYToLabel = label => {
+  label.adjustedMinY = label.y - label.adjustedHeight
 }
 
 const addTypeToObject = (obj, type) => {

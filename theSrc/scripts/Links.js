@@ -5,6 +5,7 @@ class Links {
   constructor (pts, lab) {
     const _labIsText = labelData => labelData.url === ''
     const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
+    this.topBorderOffset = 3 // extra space between text label and link point
 
     this.links = []
     for (let i = 0; i < pts.length; i++) {
@@ -41,7 +42,7 @@ class Links {
     const labLeftBorder = lab.x - (lab.width / 2)
     const labRightBorder = lab.x + (lab.width / 2)
     const labBotBorder = lab.y
-    const labTopBorder = lab.y - lab.height
+    const labTopBorder = lab.y - lab.adjustedHeight
 
     return (labLeftBorder < (pt.x + pt.r)) &&
       (labRightBorder > (pt.x - pt.r)) &&
@@ -101,7 +102,7 @@ class Links {
     const labelXright = label.x + (label.width / 2)
 
     const labelYbot = label.y
-    const labelYtop = label.y - label.height
+    const labelYtop = label.y - label.adjustedHeight
     const labelYmid = label.y - (label.height / 2)
 
     const ancL = anchor.x - anchor.r
@@ -113,9 +114,9 @@ class Links {
       botL: [labelXleft, labelYbot],
       botC: [labelXmid, labelYbot],
       botR: [labelXright, labelYbot],
-      topL: [labelXleft, labelYtop + 7],
-      topC: [labelXmid, labelYtop + 7],
-      topR: [labelXright, labelYtop + 7],
+      topL: [labelXleft, labelYtop],
+      topC: [labelXmid, labelYtop],
+      topR: [labelXright, labelYtop],
       midL: [labelXleft, labelYmid],
       midR: [labelXright, labelYmid],
     }

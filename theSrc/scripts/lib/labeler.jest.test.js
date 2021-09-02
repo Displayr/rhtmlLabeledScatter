@@ -6,8 +6,10 @@ const getLabel = ({ w = 2, h = 2, x = 10, y = 10 } = {}) => ({
   height: h,
   minX: x - w / 2,
   maxX: x + w / 2,
-  minY: y - h / 2,
-  maxY: y + h / 2,
+  minY: y - h,
+  maxY: y,
+  adjustedHeight: h * 0.6,
+  adjustedMinY: y - h * 0.6,
 })
 
 const getAnchor = ({ r = 2, x = 10, y = 10 } = {}) => ({
