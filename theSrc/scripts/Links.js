@@ -103,12 +103,12 @@ class Links {
 
     const labelYbot = label.y
     const labelYtop = label.y - label.adjustedHeight
-    const labelYmid = label.y - (label.height / 2)
+    const labelYmid = label.y - (label.adjustedHeight / 2)
 
     const ancL = anchor.x - anchor.r
     const ancR = anchor.x + anchor.r
-    const ancT = anchor.y + anchor.r
-    const ancB = anchor.y - anchor.r
+    const ancT = anchor.y - anchor.r
+    const ancB = anchor.y + anchor.r
 
     const labelBorder = {
       botL: [labelXleft, labelYbot],
@@ -121,7 +121,7 @@ class Links {
       midR: [labelXright, labelYmid],
     }
 
-    const padding = 10
+    const padding = 5
     const centered = (ancR > labelXleft) && (ancL < labelXright)
     const abovePadded = ancB < (labelYtop - padding)
     const above = ancB < labelYtop
