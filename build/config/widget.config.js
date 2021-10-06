@@ -6,7 +6,7 @@ const config = {
   widgetFactory: 'theSrc/scripts/rhtmlLabeledScatter.factory.js',
   widgetName: 'rhtmlLabeledScatter',
   internalWebSettings: {
-    isReadySelector: '.rhtmlLabeledScatter-isReadySelector',
+    isReadySelector: 'div[rhtmlwidget-status=ready]',
     singleWidgetSnapshotSelector: 'svg.rhtmlwidget-outer-svg',
     default_border: true,
     css: [
