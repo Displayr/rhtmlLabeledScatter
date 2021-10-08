@@ -71,7 +71,7 @@ describe('resize', () => {
   })
 
   test('VIS-998: resize from an output that is too small to a normal size', async function () {
-    const { page, scatterPlot } = await loadWidget({
+    const { page } = await loadWidget({
       browser,
       configName: 'data.bdd.legend_drag_test_plot',
       width: 500,
