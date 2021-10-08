@@ -102,25 +102,30 @@ class LabeledScatter {
 
           this.width = width
           this.height = height
-          d3.select('.plot-container').remove()
-          const svg = d3.select(el)
-                  .append('svg')
-                  .attr('width', this.width)
-                  .attr('height', this.height)
-                  .attr('class', 'plot-container rhtmlwidget-outer-svg')
 
-          this.plot.resized(svg, this.width, this.height)
-            .catch(err => {
-              if (
-                err.type === InsufficientHeightError.type ||
-                err.type === InsufficientWidthError.type
-              ) {
-                console.log(`caught expected error '${err.type}' and aborted rendering`)
-                DisplayError.displayEmptyErrorContainer(this.rootElement)
-              } else {
-                throw err
-              }
-            })
+          if (typeof this.plot === 'undefined') {
+            this.draw()
+          } else {
+            d3.select('.plot-container').remove()
+            const svg = d3.select(el)
+                    .append('svg')
+                    .attr('width', this.width)
+                    .attr('height', this.height)
+                    .attr('class', 'plot-container rhtmlwidget-outer-svg')
+
+            this.plot.resized(svg, this.width, this.height)
+              .catch(err => {
+                if (
+                  err.type === InsufficientHeightError.type ||
+                  err.type === InsufficientWidthError.type
+                ) {
+                  console.log(`caught expected error '${err.type}' and aborted rendering`)
+                  DisplayError.displayEmptyErrorContainer(this.rootElement)
+                } else {
+                  throw err
+                }
+              })
+          }
 
           // TODO this should be in a then/catch/finally attached to this.plot.resized but not going to attempt that now
           this.resizeDelayPromise = null
