@@ -288,7 +288,7 @@ class PlotData {
     const legendUtils = LegendUtils
 
     const maxZ = _.max(this.Z)
-    this.Zquartiles = legendUtils.getZQuartiles(maxZ, this.legendSettings.zPrefix, this.legendSettings.zSuffix)
+    this.Zquantiles = legendUtils.getZQuantiles(maxZ, this.legendSettings.zPrefix, this.legendSettings.zSuffix)
     this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
   }
 
@@ -369,7 +369,7 @@ class PlotData {
   }
 
   setLegend () {
-    this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles, this.pointRadius)
+    this.legend.setLegendGroupsAndPts(this.vb, this.Zquantiles, this.pointRadius)
   }
 
   isOutsideViewBox (lab) {

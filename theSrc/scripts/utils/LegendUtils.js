@@ -1,110 +1,113 @@
 import _ from 'lodash'
 
 class LegendUtils {
-  static get exponentialShortForms () {
-    return {
-      3: 'k', // thousand
-      6: 'm', // million
-      9: 'b', // billion
-      12: 't', // trillion
-      15: 'qd', // quadrillion
-      18: 'qt', // quintillion
-      21: 'sxt', // sextillion
-      24: 'spt', // septillion
-      27: 'oct', // octillian
-      30: 'nn', // nonillian
-      33: 'dc', // decillian
-    }
-  }
-
-  static getExponentialShortForm (val) {
-    return this.exponentialShortForms[val]
-  }
-
-  static normalizedZtoRadius (scale, normZval) {
+  static normalizedZtoRadius (scale, normalizedZ) {
     // z values are multiplied by the point size and a constant multiplier (50/3)
     // the constant multiplier makes LabeledScatter behave consistently with flipStandardCharts::Scatter
     // it means that when point.radius = 3 (default), the largest marker will have a radius of 50 pixels
-    return (normZval * scale * 50 / 3)
+    return (Math.sqrt(normalizedZ / Math.PI) * scale * 50 / 3)
   }
 
-  // Calculates the sizes of the Legend bubble plots and the labels that go with them
-  static getZQuartiles (maxZ, zPrefix, zSuffix) {
-    const maxSigFigsInTopQuartile = 3
-    const getZVal = (val, max) => Math.sqrt((max * val) / max / Math.PI)
+  static getZQuantiles(maxZ, zPrefix, zSuffix) {
+    const quantileValues = this.getQuantileValues(maxZ)
+    const quantileLabels = this.getQuantileLabels(quantileValues, zPrefix, zSuffix)
 
-    const getExponential = num => Number(num.toExponential().split('e')[1]) - (maxSigFigsInTopQuartile - 1)
-
-    // Check if mid and bot are < 1, remove 0 before decimal
-    const removePrecedingZero = label => {
-      if (_.isString(label) && label.charAt(0) === '0') {
-        return label.substring(1, label.length)
-      } else {
-        return label
-      }
-    }
-
-    // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
-    const topQ = 0.9
-    const midQ = 0.4
-    const botQ = 0.1
-
-    // Round to 3 sig figs in top and precision consistent across mid and bot
-    // See VIS-262, VIS-319
-    let topQuartileZ = (maxZ * topQ)
-    topQuartileZ = Number(topQuartileZ.toPrecision(maxSigFigsInTopQuartile))
-    let topQexp = getExponential(topQuartileZ)
-    let precision = topQexp * -1
-
-    // Calculations necessary to figure out which short form to apply
-    let exp = Math.log(topQuartileZ)
-    exp = Math.round(exp * 100000) / 100000
-    exp /= Math.LN10
-
-    const expDecimal = exp % 1
-    exp -= expDecimal
-    const digitsBtwnShortForms = exp % 3
-    exp -= digitsBtwnShortForms
-    const expShortForm = this.getExponentialShortForm(exp) || ''
-
-    let topQuartileLabel = topQuartileZ / (10 ** exp)
-    let midQuartileLabel = Number(_.round((maxZ * midQ), precision)) / (10 ** exp)
-    let botQuartileLabel = Number(_.round((maxZ * botQ), precision)) / (10 ** exp)
-    if (precision + exp >= 0) {
-      topQuartileLabel = topQuartileLabel.toFixed(precision + exp)
-      midQuartileLabel = midQuartileLabel.toFixed(precision + exp)
-      botQuartileLabel = botQuartileLabel.toFixed(precision + exp)
-    }
-
-    const Zquartiles = {
+    const Zquantiles = {
       top: {
-        lab: zPrefix + topQuartileLabel + expShortForm + zSuffix,
-        val: getZVal(topQ, maxZ, precision),
+        lab: quantileLabels[0],
+        val: quantileValues[0],
       },
       mid: {
-        lab: zPrefix + removePrecedingZero(midQuartileLabel) + expShortForm + zSuffix,
-        val: getZVal(midQ, maxZ),
+        lab: quantileLabels[1],
+        val: quantileValues[1],
       },
       bot: {
-        lab: zPrefix + removePrecedingZero(botQuartileLabel) + expShortForm + zSuffix,
-        val: getZVal(botQ, maxZ),
+        lab: quantileLabels[2],
+        val: quantileValues[2],
       },
     }
-    return Zquartiles
+    return Zquantiles
   }
 
-  // Normalizes Z values so that the radius size reflects the actual pixel size in the rect plot
+  static getQuantileValues(maxZ) {
+    const quantileSignificands = this.getQuantileSignificands(maxZ)
+    const exponent = this.getExponent(maxZ)
+    return quantileSignificands.map(x => x * (10 ** exponent))
+  }
+
+  static getQuantileSignificands(maxZ) {
+    const maxSignificand = this.roundUpSignificand(maxZ)
+
+    if (maxSignificand == 10) {
+      return [maxSignificand, 5, 1]
+    } else if (maxSignificand >= 8) {
+      return [maxSignificand, 4, 1]
+    } else if (maxSignificand >= 6) {
+      return [maxSignificand, 3, 1]
+    } else if (maxSignificand == 5) {
+      return [maxSignificand, 2.5, 0.5]
+    } else if (maxSignificand >= 4) {
+      return [maxSignificand, 2, 0.5]
+    } else if (maxSignificand >= 3) {
+      return [maxSignificand, 1.5, 0.5]
+    } else if (maxSignificand >= 2) {
+      return [maxSignificand, 1, 0.2]
+    } else if (maxSignificand > 2) {
+      return [maxSignificand, maxSignificand / 2, 0.2]
+    } else { // maxSignificand == 1
+      return [maxSignificand, 0.5, 0.1] // consistent with maxSignificand == 10
+    }
+  }
+
+  // Returns one of the following values: 10, 9, 8, 7, 6, 5, 4, 3, 2.5, 2, 1.5, 1.2, 1
+  static roundUpSignificand(value) {
+    const significand = this.getSignificand(value)
+    if (significand > 5) { // round up to next integer
+      return Math.ceil(significand)
+    } else if (significand > 2) { // round to closest multiple of 0.5
+      return Math.ceil(2 * significand) / 2
+    } else { // if significand <= 2, round to closest multiple of 0.2
+      return Math.ceil(5 * significand) / 5
+    }
+  }
+
+  // For example if value is 123.45, then this returns 1.2345
+  static getSignificand(value) {
+    return parseFloat(value.toExponential().split('e')[0])
+  }
+
+  static getExponent(value) {
+    return parseInt(value.toExponential().split('e')[1])
+  }
+
+  static getQuantileLabels(quantileValues, prefix, suffix) {
+    const oneThousand = 10 ** 3
+    const oneMillion = 10 ** 6
+    const oneBillion = 10 ** 9
+    const oneTrillion = 10 ** 12
+    if (quantileValues[0] >= oneTrillion) {
+      return quantileValues.map(x => prefix + (x / oneTrillion).toString() + 'T' + suffix)
+    } else if (quantileValues[0] >= oneBillion) {
+      return quantileValues.map(x => prefix + (x / oneBillion).toString() + 'B' + suffix)
+    } else if (quantileValues[0] >= oneMillion) {
+      return quantileValues.map(x => prefix + (x / oneMillion).toString() + 'M' + suffix)
+    } else if (quantileValues[0] >= 8000) {
+      return quantileValues.map(x => prefix + (x / oneThousand).toString() + 'K' + suffix)
+    } else { // quantileValues[0] < 8000
+      return quantileValues.map(x => prefix + x.toString() + suffix)
+    }
+  }
+
   static normalizeZValues (Z, maxZ) {
     return _.map(Z, (z) => {
-      const normalizedArea = z / maxZ
-      return Math.sqrt(normalizedArea / Math.PI)
+      return z / maxZ
     })
   }
 
   static setupBubbles (vb, Zquartiles, legend, pointRadius) {
-    const rTop = this.normalizedZtoRadius(pointRadius, Zquartiles.top.val)
-    const rMid = this.normalizedZtoRadius(pointRadius, Zquartiles.mid.val)
-    const rBot = this.normalizedZtoRadius(pointRadius, Zquartiles.bot.val)
+    const rTop = this.normalizedZtoRadius(pointRadius, Zquartiles.top.val / Zquartiles.top.val)
+    const rMid = this.normalizedZtoRadius(pointRadius, Zquartiles.mid.val / Zquartiles.top.val)
+    const rBot = this.normalizedZtoRadius(pointRadius, Zquartiles.bot.val / Zquartiles.top.val)
     const cx = vb.x + vb.width + (legend.getWidth() / 2)
     const viewBoxYBottom = vb.y + vb.height
     const bubbleTextPadding = 5
