@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import BigNumber from 'bignumber.js'
 
 class LegendUtils {
   static normalizedZtoRadius (scale, normalizedZ) {
@@ -92,9 +91,9 @@ class LegendUtils {
       return quantileValues.map(x => this.formatQuantileValue(x,  oneBillion, 'B', prefix, suffix))
     } else if (quantileValues[0] >= oneMillion) {
       return quantileValues.map(x => this.formatQuantileValue(x, oneMillion, 'M', prefix, suffix))
-    } else if (quantileValues[0] >= 8000) {
+    } else if (quantileValues[0] >= oneThousand) {
       return quantileValues.map(x => this.formatQuantileValue(x, oneThousand, 'K', prefix, suffix))
-    } else { // quantileValues[0] < 8000
+    } else { // quantileValues[0] < 1000
       return quantileValues.map(x => this.formatQuantileValue(x, 1, '', prefix, suffix))
     }
   }
@@ -103,7 +102,15 @@ class LegendUtils {
     // Round to 2 significant figures to avoid numerical issues when formatting as string
     // The quantile values have no more than 2 significant figures
     const denominatedValue = Number((value / denominator).toPrecision(2))
-    return prefix + (new BigNumber(denominatedValue)).toFormat() + denominatorLetter + suffix
+    return prefix + this.removePrecedingZero(denominatedValue.toString()) + denominatorLetter + suffix
+  }
+
+  static removePrecedingZero(label) {
+    if (_.isString(label) && label.charAt(0) === '0') {
+      return label.substring(1, label.length)
+    } else {
+      return label
+    }
   }
 
   static normalizeZValues (Z, maxZ) {
