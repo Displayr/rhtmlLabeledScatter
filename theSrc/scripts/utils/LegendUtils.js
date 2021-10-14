@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import BigNumber from 'bignumber.js'
 
 class LegendUtils {
   static normalizedZtoRadius (scale, normalizedZ) {
@@ -52,7 +53,7 @@ class LegendUtils {
       return [maxSignificand, 1.5, 0.5]
     } else if (maxSignificand >= 2) {
       return [maxSignificand, 1, 0.2]
-    } else if (maxSignificand > 2) {
+    } else if (maxSignificand > 1) {
       return [maxSignificand, maxSignificand / 2, 0.2]
     } else { // maxSignificand == 1
       return [maxSignificand, 0.5, 0.1] // consistent with maxSignificand == 10
@@ -73,11 +74,11 @@ class LegendUtils {
 
   // For example if value is 123.45, then this returns 1.2345
   static getSignificand(value) {
-    return parseFloat(value.toExponential().split('e')[0])
+    return Number(value.toExponential().split('e')[0])
   }
 
   static getExponent(value) {
-    return parseInt(value.toExponential().split('e')[1])
+    return Number(value.toExponential().split('e')[1])
   }
 
   static getQuantileLabels(quantileValues, prefix, suffix) {
@@ -86,16 +87,23 @@ class LegendUtils {
     const oneBillion = 10 ** 9
     const oneTrillion = 10 ** 12
     if (quantileValues[0] >= oneTrillion) {
-      return quantileValues.map(x => prefix + (x / oneTrillion).toString() + 'T' + suffix)
+      return quantileValues.map(x => this.formatQuantileValue(x, oneTrillion, 'T', prefix, suffix))
     } else if (quantileValues[0] >= oneBillion) {
-      return quantileValues.map(x => prefix + (x / oneBillion).toString() + 'B' + suffix)
+      return quantileValues.map(x => this.formatQuantileValue(x,  oneBillion, 'B', prefix, suffix))
     } else if (quantileValues[0] >= oneMillion) {
-      return quantileValues.map(x => prefix + (x / oneMillion).toString() + 'M' + suffix)
+      return quantileValues.map(x => this.formatQuantileValue(x, oneMillion, 'M', prefix, suffix))
     } else if (quantileValues[0] >= 8000) {
-      return quantileValues.map(x => prefix + (x / oneThousand).toString() + 'K' + suffix)
+      return quantileValues.map(x => this.formatQuantileValue(x, oneThousand, 'K', prefix, suffix))
     } else { // quantileValues[0] < 8000
-      return quantileValues.map(x => prefix + x.toString() + suffix)
+      return quantileValues.map(x => this.formatQuantileValue(x, 1, '', prefix, suffix))
     }
+  }
+
+  static formatQuantileValue(value, denominator, denominatorLetter, prefix, suffix) {
+    // Round to 2 significant figures to avoid numerical issues when formatting as string
+    // The quantile values have no more than 2 significant figures
+    const denominatedValue = Number((value / denominator).toPrecision(2))
+    return prefix + (new BigNumber(denominatedValue)).toFormat() + denominatorLetter + suffix
   }
 
   static normalizeZValues (Z, maxZ) {
@@ -110,7 +118,7 @@ class LegendUtils {
     const rBot = this.normalizedZtoRadius(pointRadius, Zquartiles.bot.val / Zquartiles.top.val)
     const cx = vb.x + vb.width + (legend.getWidth() / 2)
     const viewBoxYBottom = vb.y + vb.height
-    const bubbleTextPadding = 5
+    const bubbleTextPadding = 2
     legend.setBubblesMaxWidth(rTop * 2)
     legend.setBubbles([
       {
