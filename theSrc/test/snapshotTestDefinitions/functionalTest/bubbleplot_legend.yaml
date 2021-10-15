@@ -1,0 +1,18 @@
+type: multi_widget_single_page
+title: "bubbleplot legend"
+width: 400
+height: 400
+rowSize: 3
+widgets:
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_1
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_2
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_3
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_4
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_5
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_6
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_7
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_8
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_9
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_10
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_11
+  - config: data.functionalTest.bubbleplot_legend.bubbleplot_legend_example_12

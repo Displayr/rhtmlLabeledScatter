@@ -79,7 +79,7 @@ class Legend {
     return (this.getBubblesTitle() !== null) ? this.getBubblesTitle()[0].width : undefined
   }
 
-  setLegendGroupsAndPts (vb, Zquartiles, pointRadius) {
+  setLegendGroupsAndPts (vb, legendBubbles, pointRadius) {
     const showGroups = this.legendSettings.showLegend()
     const pts = this.pts
     const groups = this.groups
@@ -92,19 +92,19 @@ class Legend {
       _.map(groups, g => legendItemArray.push(g))
       _.map(pts, p => legendItemArray.push(p))
 
-      const itemPositions = this.getLegendItemsPositions(vb, Zquartiles, legendItemArray, pointRadius)
+      const itemPositions = this.getLegendItemsPositions(vb, legendBubbles, legendItemArray, pointRadius)
 
       _.forEach(itemPositions, (item) => {
         (item.cx === undefined) ? this.pts.push(item) : this.groups.push(item)
       })
     } else if ((pts.length > 0) && !showGroups) {
-      this.pts = this.getLegendItemsPositions(vb, Zquartiles, pts, pointRadius)
+      this.pts = this.getLegendItemsPositions(vb, legendBubbles, pts, pointRadius)
     } else {
-      this.groups = this.getLegendItemsPositions(vb, Zquartiles, groups, pointRadius)
+      this.groups = this.getLegendItemsPositions(vb, legendBubbles, groups, pointRadius)
     }
   }
 
-  getLegendItemsPositions (vb, Zquartiles, itemsArray, pointRadius) {
+  getLegendItemsPositions (vb, legendBubbles, itemsArray, pointRadius) {
     const bubbleLegendTextHeight = 20
     const numItems = itemsArray.length
     this.setHeight(vb.height)
@@ -113,9 +113,9 @@ class Legend {
       this.height = this.getBubblesTitle()[0].y - bubbleLegendTextHeight - vb.y
     }
 
-    if (Zquartiles != null) {
+    if (legendBubbles != null && this.legendSettings.showBubblesInLegend) {
       const legendUtils = LegendUtils
-      legendUtils.setupBubbles(vb, Zquartiles, this, pointRadius)
+      legendUtils.setupBubbles(vb, legendBubbles, this, pointRadius)
     }
 
     const startOfCenteredLegendItems = (((vb.y + (this.height / 2)) -
