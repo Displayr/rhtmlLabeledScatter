@@ -1,113 +1,134 @@
 import _ from 'lodash'
 
 class LegendUtils {
-  static get exponentialShortForms () {
-    return {
-      3: 'k', // thousand
-      6: 'm', // million
-      9: 'b', // billion
-      12: 't', // trillion
-      15: 'qd', // quadrillion
-      18: 'qt', // quintillion
-      21: 'sxt', // sextillion
-      24: 'spt', // septillion
-      27: 'oct', // octillian
-      30: 'nn', // nonillian
-      33: 'dc', // decillian
-    }
-  }
-
-  static getExponentialShortForm (val) {
-    return this.exponentialShortForms[val]
-  }
-
-  static normalizedZtoRadius (scale, normZval) {
+  static normalizedZtoRadius (scale, normalizedZ) {
     // z values are multiplied by the point size and a constant multiplier (50/3)
     // the constant multiplier makes LabeledScatter behave consistently with flipStandardCharts::Scatter
     // it means that when point.radius = 3 (default), the largest marker will have a radius of 50 pixels
-    return (normZval * scale * 50 / 3)
+    return (Math.sqrt(normalizedZ / Math.PI) * scale * 50 / 3)
   }
 
-  // Calculates the sizes of the Legend bubble plots and the labels that go with them
-  static getZQuartiles (maxZ, zPrefix, zSuffix) {
-    const maxSigFigsInTopQuartile = 3
-    const getZVal = (val, max) => Math.sqrt((max * val) / max / Math.PI)
+  static getLegendBubbles (maxZ, zPrefix, zSuffix) {
+    const bubbleSizes = this.getLegendBubbleSizes(maxZ)
+    const bubbleLabels = this.getLegendBubbleLabels(bubbleSizes, zPrefix, zSuffix)
 
-    const getExponential = num => Number(num.toExponential().split('e')[1]) - (maxSigFigsInTopQuartile - 1)
-
-    // Check if mid and bot are < 1, remove 0 before decimal
-    const removePrecedingZero = label => {
-      if (_.isString(label) && label.charAt(0) === '0') {
-        return label.substring(1, label.length)
-      } else {
-        return label
-      }
-    }
-
-    // Quartiles that determine size of each of the legend bubbles in proportion to maximum Z val
-    const topQ = 0.9
-    const midQ = 0.4
-    const botQ = 0.1
-
-    // Round to 3 sig figs in top and precision consistent across mid and bot
-    // See VIS-262, VIS-319
-    let topQuartileZ = (maxZ * topQ)
-    topQuartileZ = Number(topQuartileZ.toPrecision(maxSigFigsInTopQuartile))
-    let topQexp = getExponential(topQuartileZ)
-    let precision = topQexp * -1
-
-    // Calculations necessary to figure out which short form to apply
-    let exp = Math.log(topQuartileZ)
-    exp = Math.round(exp * 100000) / 100000
-    exp /= Math.LN10
-
-    const expDecimal = exp % 1
-    exp -= expDecimal
-    const digitsBtwnShortForms = exp % 3
-    exp -= digitsBtwnShortForms
-    const expShortForm = this.getExponentialShortForm(exp) || ''
-
-    let topQuartileLabel = topQuartileZ / (10 ** exp)
-    let midQuartileLabel = Number(_.round((maxZ * midQ), precision)) / (10 ** exp)
-    let botQuartileLabel = Number(_.round((maxZ * botQ), precision)) / (10 ** exp)
-    if (precision + exp >= 0) {
-      topQuartileLabel = topQuartileLabel.toFixed(precision + exp)
-      midQuartileLabel = midQuartileLabel.toFixed(precision + exp)
-      botQuartileLabel = botQuartileLabel.toFixed(precision + exp)
-    }
-
-    const Zquartiles = {
-      top: {
-        lab: zPrefix + topQuartileLabel + expShortForm + zSuffix,
-        val: getZVal(topQ, maxZ, precision),
+    const legendBubbles = {
+      large: {
+        size: bubbleSizes[0],
+        label: bubbleLabels[0],
       },
-      mid: {
-        lab: zPrefix + removePrecedingZero(midQuartileLabel) + expShortForm + zSuffix,
-        val: getZVal(midQ, maxZ),
+      medium: {
+        size: bubbleSizes[1],
+        label: bubbleLabels[1],
       },
-      bot: {
-        lab: zPrefix + removePrecedingZero(botQuartileLabel) + expShortForm + zSuffix,
-        val: getZVal(botQ, maxZ),
+      small: {
+        size: bubbleSizes[2],
+        label: bubbleLabels[2],
       },
+      maxSize: Math.max(maxZ, bubbleSizes[0]),
     }
-    return Zquartiles
+    return legendBubbles
   }
 
-  // Normalizes Z values so that the radius size reflects the actual pixel size in the rect plot
+  static getLegendBubbleSizes (maxZ) {
+    const significands = this.getBubbleSizeSignificands(maxZ)
+    const exponent = this.getExponent(maxZ)
+    return significands.map(x => x * (10 ** exponent))
+  }
+
+  static getBubbleSizeSignificands (maxZ) {
+    const significand = this.getSignificand(maxZ)
+    const maxSignificand = this.roundSignificand(significand)
+
+    if (maxSignificand === 10) {
+      return [maxSignificand, 5, 1]
+    } else if (maxSignificand === 7) {
+      return [maxSignificand, 3, 1]
+    } else if (maxSignificand >= 6) {
+      return [maxSignificand, 3, 1]
+    } else if (maxSignificand === 5) {
+      return [maxSignificand, 2, 0.5]
+    } else if (maxSignificand === 4) {
+      return [maxSignificand, 2, 0.5]
+    } else if (maxSignificand === 3) {
+      return [maxSignificand, 1.5, 0.5]
+    } else if (maxSignificand === 2) {
+      return [maxSignificand, 1, 0.2]
+    } else if (maxSignificand === 1.5) {
+      return [maxSignificand, 0.7, 0.2]
+    } else { // maxSignificand === 1
+      return [maxSignificand, 0.5, 0.1] // consistent with maxSignificand == 10
+    }
+  }
+
+  // Returns 10, 7, 6, 5, 4, 3, 2, 1.5 or 1 (exclude 8 and 9 because it is better to round those up to 10)
+  static roundSignificand (significand) {
+    if (significand >= 8) {
+      return 10
+    } else if (significand >= 7.5) {
+      return 7
+    } else if (significand >= 2) {
+      return Math.round(significand)
+    } else {
+      return Math.round(2 * significand) / 2
+    }
+  }
+
+  // For example if value is 123.45, then this returns 1.2345
+  static getSignificand (value) {
+    return Number(value.toExponential().split('e')[0])
+  }
+
+  static getExponent (value) {
+    return Number(value.toExponential().split('e')[1])
+  }
+
+  static getLegendBubbleLabels (bubbleSizes, prefix, suffix) {
+    const oneThousand = 10 ** 3
+    const oneMillion = 10 ** 6
+    const oneBillion = 10 ** 9
+    const oneTrillion = 10 ** 12
+    if (bubbleSizes[0] >= oneTrillion) {
+      return bubbleSizes.map(x => this.formatBubbleSize(x, oneTrillion, 'T', prefix, suffix))
+    } else if (bubbleSizes[0] >= oneBillion) {
+      return bubbleSizes.map(x => this.formatBubbleSize(x, oneBillion, 'B', prefix, suffix))
+    } else if (bubbleSizes[0] >= oneMillion) {
+      return bubbleSizes.map(x => this.formatBubbleSize(x, oneMillion, 'M', prefix, suffix))
+    } else if (bubbleSizes[0] >= oneThousand) {
+      return bubbleSizes.map(x => this.formatBubbleSize(x, oneThousand, 'K', prefix, suffix))
+    } else { // bubbleSizes[0] < 1000
+      return bubbleSizes.map(x => this.formatBubbleSize(x, 1, '', prefix, suffix))
+    }
+  }
+
+  static formatBubbleSize (bubbleSize, denominator, denominatorLetter, prefix, suffix) {
+    // Round to 2 significant figures to avoid numerical issues when formatting as string
+    // The bubble sizes have no more than 2 significant figures
+    const denominatedSize = Number((bubbleSize / denominator).toPrecision(2))
+    return prefix + this.removePrecedingZero(denominatedSize.toString()) + denominatorLetter + suffix
+  }
+
+  static removePrecedingZero (label) {
+    if (_.isString(label) && label.charAt(0) === '0') {
+      return label.substring(1, label.length)
+    } else {
+      return label
+    }
+  }
+
   static normalizeZValues (Z, maxZ) {
     return _.map(Z, (z) => {
-      const normalizedArea = z / maxZ
-      return Math.sqrt(normalizedArea / Math.PI)
+      return z / maxZ
     })
   }
 
-  static setupBubbles (vb, Zquartiles, legend, pointRadius) {
-    const rTop = this.normalizedZtoRadius(pointRadius, Zquartiles.top.val)
-    const rMid = this.normalizedZtoRadius(pointRadius, Zquartiles.mid.val)
-    const rBot = this.normalizedZtoRadius(pointRadius, Zquartiles.bot.val)
+  static setupBubbles (vb, legendBubbles, legend, pointRadius) {
+    const rTop = this.normalizedZtoRadius(pointRadius, legendBubbles.large.size / legendBubbles.maxSize)
+    const rMid = this.normalizedZtoRadius(pointRadius, legendBubbles.medium.size / legendBubbles.maxSize)
+    const rBot = this.normalizedZtoRadius(pointRadius, legendBubbles.small.size / legendBubbles.maxSize)
     const cx = vb.x + vb.width + (legend.getWidth() / 2)
     const viewBoxYBottom = vb.y + vb.height
-    const bubbleTextPadding = 5
+    const bubbleTextPadding = 2
     legend.setBubblesMaxWidth(rTop * 2)
     legend.setBubbles([
       {
@@ -116,7 +137,7 @@ class LegendUtils {
         r: rTop,
         x: cx,
         y: viewBoxYBottom - (2 * rTop) - bubbleTextPadding,
-        text: Zquartiles.top.lab,
+        text: legendBubbles.large.label,
       },
       {
         cx,
@@ -124,7 +145,7 @@ class LegendUtils {
         r: rMid,
         x: cx,
         y: viewBoxYBottom - (2 * rMid) - bubbleTextPadding,
-        text: Zquartiles.mid.lab,
+        text: legendBubbles.medium.label,
       },
       {
         cx,
@@ -132,7 +153,7 @@ class LegendUtils {
         r: rBot,
         x: cx,
         y: viewBoxYBottom - (2 * rBot) - bubbleTextPadding,
-        text: Zquartiles.bot.lab,
+        text: legendBubbles.small.label,
       },
     ])
     legend.setBubblesTitle([

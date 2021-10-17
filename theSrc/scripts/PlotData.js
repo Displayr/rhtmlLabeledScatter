@@ -288,8 +288,12 @@ class PlotData {
     const legendUtils = LegendUtils
 
     const maxZ = _.max(this.Z)
-    this.Zquartiles = legendUtils.getZQuartiles(maxZ, this.legendSettings.zPrefix, this.legendSettings.zSuffix)
-    this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
+    if (this.legendSettings.showBubblesInLegend) {
+      this.legendBubbles = legendUtils.getLegendBubbles(maxZ, this.legendSettings.zPrefix, this.legendSettings.zSuffix)
+      this.normZ = legendUtils.normalizeZValues(this.Z, this.legendBubbles.maxSize)
+    } else {
+      this.normZ = legendUtils.normalizeZValues(this.Z, maxZ)
+    }
   }
 
   getPtsAndLabs (calleeName) {
@@ -369,7 +373,7 @@ class PlotData {
   }
 
   setLegend () {
-    this.legend.setLegendGroupsAndPts(this.vb, this.Zquartiles, this.pointRadius)
+    this.legend.setLegendGroupsAndPts(this.vb, this.legendBubbles, this.pointRadius)
   }
 
   isOutsideViewBox (lab) {

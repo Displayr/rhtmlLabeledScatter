@@ -3,13 +3,6 @@ title: "test decimals configurations"
 width: 400
 height: 400
 rowSize: 3
-comments:
-  - location: zDecimals_0
-    status: red
-    comment: zDecimals is not respected
-  - location: zDecimals_1
-    status: red
-    comment: zDecimals is not respected
 widgets:
   - config: data.functionalTest.scatterplot_simple|config.xDecimals_0|config.yDecimals_0|{"title":"x and y decimals=0"}
   - config: data.functionalTest.scatterplot_simple|config.xDecimals_1|config.yDecimals_1|{"title":"x and y decimals=1"}
