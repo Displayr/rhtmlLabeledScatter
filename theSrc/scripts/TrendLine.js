@@ -193,6 +193,7 @@ class TrendLine {
        .append('svg:image')
        .attr('class', `plt-${pltId}-lab-img`)
        .attr('xlink:href', d => d.url)
+       .attr('id', d => d.id)
        .attr('x', d => d.x - (d.width / 2))
        .attr('y', d => d.y - d.height)
        .attr('width', d => d.width)
