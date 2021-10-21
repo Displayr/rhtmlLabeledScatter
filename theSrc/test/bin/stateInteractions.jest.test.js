@@ -309,4 +309,21 @@ describe('state interactions', () => {
 
     await page.close()
   })
+
+  test(`${++testId}: Drag image in a trendline plot`, async function () {
+    const { page } = await loadWidget({
+      browser,
+      configName: 'data.functionalTest.trendlines.logos_tech_trends',
+      width: 600,
+      height: 600,
+    })
+
+    await testSnapshots({ page, testName: 'initial_trendline' })
+
+    await scatterPlot.movePlotLabel({ id: 3, x: 100, y: 100 }) // move IBM logo
+
+    await testSnapshots({ page, testName: 'trendline_after_dragging_ibm_logo' })
+
+    await page.close()
+  })
 })
