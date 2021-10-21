@@ -311,7 +311,7 @@ describe('state interactions', () => {
   })
 
   test(`${++testId}: Drag image in a trendline plot`, async function () {
-    const { page } = await loadWidget({
+    const { page, scatterPlot } = await loadWidget({
       browser,
       configName: 'data.functionalTest.trendlines.logos_tech_trends',
       width: 600,
