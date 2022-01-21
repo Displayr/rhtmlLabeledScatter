@@ -56,7 +56,9 @@ class State {
 
   resetState () {
     if (_.isFunction(this.stateChangedCallback)) {
-      this.stateObj = {}
+      delete this.stateObj.userPositionedLabs
+      delete this.stateObj.vb
+      delete this.stateObj.legend.pts
       this.stateChangedCallback(this.stateObj)
     }
   }
