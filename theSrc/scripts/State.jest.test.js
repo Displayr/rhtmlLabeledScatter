@@ -13,16 +13,16 @@ describe('VIS-576', function () {
       x: 200,
       y: 100,
     }
-    let is_reset = false;
+    let isReset = false
     const stateChangedCallback = obj => {
-      if (is_reset) {
+      if (isReset) {
         expect(obj).toEqual({ X: X, Y: Y, label: label })
       }
     }
 
-    const state = new State(state_obj, stateChangedCallback, X, Y, label)
+    const state = new State(stateObj, stateChangedCallback, X, Y, label)
     state.pushUserPositionedLabel(2, 600, 400, viewBox)
-    is_reset = true
+    isReset = true
     state.resetState()
   })
 })
