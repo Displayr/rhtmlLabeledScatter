@@ -56,9 +56,9 @@ class State {
 
   resetState () {
     if (_.isFunction(this.stateChangedCallback)) {
-      delete this.stateObj.userPositionedLabs
-      delete this.stateObj.vb
-      delete this.stateObj.legend.pts
+      delete this.stateObj['userPositionedLabs']
+      delete this.stateObj['vb']
+      delete this.stateObj['legend.pts']
       this.stateChangedCallback(this.stateObj)
     }
   }
