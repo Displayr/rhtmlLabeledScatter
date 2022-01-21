@@ -80,13 +80,9 @@ class State {
 
   resetStateOnResize (vb) {
     this.userPositionedLabs = []
-    // this.algoPositionedLabs = []
     this.updateViewBox(vb)
-    this.stateObj = {
-      'vb': this.vb,
-      'userPositionedLabs': this.userPositionedLabs,
-      // 'algoPositionedLabs': this.algoPositionedLabs
-    }
+    this.stateObj.vb = this.vb
+    this.stateObj.userPositionedLabs = []
     this.saveToState(this.stateObj)
   }
 
