@@ -5,6 +5,12 @@ const defaultConfig = {
   axisFontColor: '#000000',
   axisFontFamily: 'Arial',
   axisFontSize: 12,
+  xAxisFontColor: null,
+  xAxisFontFamily: null,
+  xAxisFontSize: null,
+  yAxisFontColor: null,
+  yAxisFontFamily: null,
+  yAxisFontSize: null,
   colors: ['#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47', '#255E91', '#9E480E', '#636363', '#997300', '#264478', '#43682B', '#FF2323'],
   debugMode: false,
   fixedAspectRatio: false,
@@ -40,6 +46,7 @@ const defaultConfig = {
   legendBubbleTitleFontColor: '#2C2C2C',
   legendBubbleTitleFontFamily: 'Arial',
   legendBubbleTitleFontSize: 12,
+  legendBubbleLineColor: '#000000',
   legendFontColor: '#2C2C2C',
   legendFontFamily: 'Arial',
   legendFontSize: 12,
@@ -109,6 +116,13 @@ function buildConfig (userConfig, width, height) {
     config.pointRadius = (_.isArray(config.Z) && config.Z.length)
       ? 4 : 2
   }
+
+   if (config.xAxisFontColor === null) { config.xAxisFontColor = config.axisFontColor }
+   if (config.xAxisFontFamily === null) { config.xAxisFontFamily = config.axisFontFamily }
+   if (config.xAxisFontSize === null) { config.xAxisFontSize = config.axisFontSize }
+   if (config.yAxisFontColor === null) { config.yAxisFontColor = config.axisFontColor }
+   if (config.yAxisFontFamily === null) { config.yAxisFontFamily = config.axisFontFamily }
+   if (config.yAxisFontSize === null) { config.yAxisFontSize = config.axisFontSize }
 
   return config
 }

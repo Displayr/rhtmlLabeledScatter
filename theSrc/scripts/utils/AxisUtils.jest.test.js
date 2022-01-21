@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const AxisUtils = require('./AxisUtils.js')
-const AxisTypeEnum = require('./AxisTypeEnum.js')
 const DataTypeEnum = require('./DataTypeEnum.js')
 
 /*
@@ -67,10 +66,10 @@ describe('AxisUtils:', function () {
 
         it('should compute 4 axis leaders', function () {
           expect(getResult().axisLeaderLabel).toEqual([
-            { x: 0, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 50, y: 115, label: '5.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: AxisTypeEnum.Y },
-            { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: AxisTypeEnum.Y },
+            { x: 0, y: 115, label: '0.0', anchor: 'middle', type: 'x' },
+            { x: 50, y: 115, label: '5.0', anchor: 'middle', type: 'x' },
+            { x: -5, y: 103.33333333333333, label: '0.0', anchor: 'end', type: 'y' },
+            { x: -5, y: 53.333333333333336, label: '5.0', anchor: 'end', type: 'y' },
           ])
         })
       })
@@ -99,9 +98,9 @@ describe('AxisUtils:', function () {
 
         it('should compute 3 axis markers lines', function () {
           expect(getResult().axisLeaderLabel).toEqual([
-            { x: 10, y: 115, label: '-6.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 40, y: 115, label: '-3.0', anchor: 'middle', type: AxisTypeEnum.X },
-            { x: 70, y: 115, label: '0.0', anchor: 'middle', type: AxisTypeEnum.X },
+            { x: 10, y: 115, label: '-6.0', anchor: 'middle', type: 'x' },
+            { x: 40, y: 115, label: '-3.0', anchor: 'middle', type: 'x' },
+            { x: 70, y: 115, label: '0.0', anchor: 'middle', type: 'x' },
           ])
         })
       })

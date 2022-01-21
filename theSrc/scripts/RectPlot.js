@@ -23,7 +23,6 @@ import PlotAxisLabels from './PlotAxisLabels'
 import PlotAxis from './PlotAxis'
 import ResetButton from './ResetButton'
 import AxisTitle from './AxisTitle'
-import AxisTypeEnum from './utils/AxisTypeEnum'
 import DataTypeEnum from './utils/DataTypeEnum'
 
 const DEBUG_ADD_BBOX_TO_IMG = false
@@ -86,9 +85,6 @@ class RectPlot {
     this.maxDrawFailureCount = 200 // TODO configure
 
     this.axisSettings = {
-      fontFamily: config.axisFontFamily,
-      fontSize: config.axisFontSize,
-      fontColor: config.axisFontColor,
       showX: config.showXAxis,
       showY: config.showYAxis,
       textDimensions: {
@@ -100,6 +96,9 @@ class RectPlot {
       },
       leaderLineLength: 5,
       x: {
+        fontFamily: config.xAxisFontFamily,
+        fontSize: config.xAxisFontSize,
+        fontColor: config.xAxisFontColor,
         format: config.xFormat,
         boundsUnitsMajor: config.xBoundsUnitsMajor,
         prefix: config.xPrefix,
@@ -107,6 +106,9 @@ class RectPlot {
         decimals: config.xDecimals,
       },
       y: {
+        fontFamily: config.yAxisFontFamily,
+        fontSize: config.yAxisFontSize,
+        fontColor: config.yAxisFontColor,
         format: config.yFormat,
         boundsUnitsMajor: config.yBoundsUnitsMajor,
         prefix: config.yPrefix,
@@ -141,6 +143,7 @@ class RectPlot {
       config.legendBubbleFontFamily,
       config.legendBubbleFontSize,
       config.legendBubbleFontColor,
+      config.legendBubbleLineColor,
       config.legendBubbleTitleFontFamily,
       config.legendBubbleTitleFontSize,
       config.legendBubbleTitleFontColor,
@@ -405,12 +408,12 @@ class RectPlot {
         const initAxisTextColHeight = this.axisSettings.textDimensions.colMaxHeight
         for (let i = 0; i < markerLabels[0].length; i++) {
           const markerLabel = markerLabels[0][i]
-          const labelType = Number(d3.select(markerLabel).attr('type'))
+          const labelType = d3.select(markerLabel).attr('type')
           const bb = markerLabel.getBBox()
-          if ((this.axisSettings.textDimensions.rowMaxWidth < bb.width) && (labelType === AxisTypeEnum.Y)) { this.axisSettings.textDimensions.rowMaxWidth = bb.width }
-          if ((this.axisSettings.textDimensions.colMaxWidth < bb.width) && (labelType === AxisTypeEnum.X)) { this.axisSettings.textDimensions.colMaxWidth = bb.width }
-          if ((this.axisSettings.textDimensions.rowMaxHeight < bb.height) && (labelType === AxisTypeEnum.Y)) { this.axisSettings.textDimensions.rowMaxHeight = bb.height }
-          if ((this.axisSettings.textDimensions.colMaxHeight < bb.height) && (labelType === AxisTypeEnum.X)) { this.axisSettings.textDimensions.colMaxHeight = bb.height }
+          if ((this.axisSettings.textDimensions.rowMaxWidth < bb.width) && (labelType === 'y')) { this.axisSettings.textDimensions.rowMaxWidth = bb.width }
+          if ((this.axisSettings.textDimensions.colMaxWidth < bb.width) && (labelType === 'x')) { this.axisSettings.textDimensions.colMaxWidth = bb.width }
+          if ((this.axisSettings.textDimensions.rowMaxHeight < bb.height) && (labelType === 'y')) { this.axisSettings.textDimensions.rowMaxHeight = bb.height }
+          if ((this.axisSettings.textDimensions.colMaxHeight < bb.height) && (labelType === 'x')) { this.axisSettings.textDimensions.colMaxHeight = bb.height }
 
           if (this.width < (bb.x + bb.width)) {
             this.axisSettings.textDimensions.rightPadding = bb.width / 2

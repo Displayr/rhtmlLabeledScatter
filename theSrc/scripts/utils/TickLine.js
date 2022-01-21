@@ -15,6 +15,7 @@ class TickLine {
       x2: this.x1,
       y2: this.y2 + this.length,
       num: this.associatedLabel,
+      type: 'x',
     }
   }
 
@@ -25,6 +26,7 @@ class TickLine {
       x2: this.x1,
       y2: this.y2,
       num: this.associatedLabel,
+      type: 'y',
     }
   }
 }

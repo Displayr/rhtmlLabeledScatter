@@ -286,7 +286,7 @@ class Legend {
        .attr('cy', d => d.cy)
        .attr('r', d => d.r)
        .attr('fill', 'none')
-       .attr('stroke', axisSettings.fontColor)
+       .attr('stroke', this.legendSettings.getBubbleLineColor())
        .attr('stroke-opacity', 0.5)
   }
 

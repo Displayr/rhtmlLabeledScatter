@@ -55,9 +55,15 @@
 #' @param x.title.font.family is the font family of the x axis title
 #' @param x.axis.show Boolean toggle to show the x axis tick markers (Default is TRUE).
 #' @param y.axis.show Boolean toggle to show the y axis tick markers (Default is TRUE).
-#' @param axis.font.family Font Family of the axis labels
-#' @param axis.font.size Font size of the axis labels
-#' @param axis.font.color Font color of the axis labels
+#' @param x.axis.font.family Font Family of the axis labels
+#' @param x.axis.font.size Font size of the x axis labels
+#' @param x.axis.font.color Font color of the x axis labels
+#' @param y.axis.font.family Font Family of the y axis labels
+#' @param y.axis.font.size Font size of the y axis labels
+#' @param y.axis.font.color Font color of the y axis labels
+#' @param axis.font.family Font Family of the axis labels. Only used if the values for specific axis is not set.
+#' @param axis.font.size Font size of the axis labels. Only used if the values for specific axis is not set.
+#' @param axis.font.color Font color of the axis labels. Only used if the values for specific axis is not set.
 #' @param tooltip.text is an array of text containing custom tool tip text that appears on mouse hover ('\\n' for new line)
 #' @param tooltip.font.color is the font color of the tooltips
 #' @param tooltip.font.family is the font family of the tooltips
@@ -123,6 +129,12 @@ LabeledScatter <- function(
     axis.font.color = 'Black',
     axis.font.family = 'Arial',
     axis.font.size = 12,
+    x.axis.font.color = axis.font.color,
+    x.axis.font.family = axis.font.family,
+    x.axis.size = axis.font.size,
+    y.axis.font.color = axis.font.color,
+    y.axis.font.family = axis.font.family,
+    y.axis.size = axis.font.size,
     color.transparency = NULL,
     colors = c('#5B9BD5', '#ED7D31', '#A5A5A5', '#1EC000', '#4472C4', '#70AD47','#255E91','#9E480E','#636363','#997300','#264478','#43682B','#FF2323'),
     debug.mode = FALSE,

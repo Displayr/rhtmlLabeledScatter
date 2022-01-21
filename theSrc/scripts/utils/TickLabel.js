@@ -1,7 +1,6 @@
 import Utils from './Utils'
 import _ from 'lodash'
 import autoBind from 'es6-autobind'
-import AxisTypeEnum from './AxisTypeEnum'
 import DataTypeEnum from './DataTypeEnum'
 import d3 from 'd3'
 
@@ -55,7 +54,7 @@ class TickLabel {
       y: this.y2 + this.leaderLineLength + this.labelHeight,
       label: this.getDisplayLabel(),
       anchor: 'middle',
-      type: AxisTypeEnum.X,
+      type: 'x',
     }
   }
 
@@ -65,7 +64,7 @@ class TickLabel {
       y: this.y2 + (this.labelHeight / 3),
       label: this.getDisplayLabel(),
       anchor: 'end',
-      type: AxisTypeEnum.Y,
+      type: 'y',
     }
   }
 }
