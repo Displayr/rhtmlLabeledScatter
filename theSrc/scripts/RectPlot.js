@@ -143,7 +143,6 @@ class RectPlot {
       config.legendBubbleFontFamily,
       config.legendBubbleFontSize,
       config.legendBubbleFontColor,
-      config.legendBubbleLineColor,
       config.legendBubbleTitleFontFamily,
       config.legendBubbleTitleFontSize,
       config.legendBubbleTitleFontColor,

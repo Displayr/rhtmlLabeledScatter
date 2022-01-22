@@ -46,7 +46,6 @@ const defaultConfig = {
   legendBubbleTitleFontColor: '#2C2C2C',
   legendBubbleTitleFontFamily: 'Arial',
   legendBubbleTitleFontSize: 12,
-  legendBubbleLineColor: '#000000',
   legendFontColor: '#2C2C2C',
   legendFontFamily: 'Arial',
   legendFontSize: 12,

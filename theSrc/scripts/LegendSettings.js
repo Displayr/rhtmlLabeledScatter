@@ -5,7 +5,7 @@ import Utils from './utils/Utils'
 class LegendSettings {
   constructor (show, showBubbles,
                fontFamily, fontSize, fontColor,
-               bubbleFontFamily, bubbleFontSize, bubbleFontColor, bubbleLineColor,
+               bubbleFontFamily, bubbleFontSize, bubbleFontColor,
                bubbleTitleFontFamily, bubbleTitleFontSize, bubbleTitleFontColor, zTitle, zPrefix, zSuffix) {
     autoBind(this)
     this.show = show
@@ -21,7 +21,6 @@ class LegendSettings {
         size: _.isNumber(bubbleFontSize) ? bubbleFontSize : fontSize,
         color: _.isString(bubbleFontColor) ? bubbleFontColor : fontColor,
       },
-      linecolor: _.isString(bubbleLineColor) ? bubbleLineColor : fontColor,
       titleFont: {
         family: _.isString(bubbleTitleFontFamily) ? bubbleTitleFontFamily : fontFamily,
         size: _.isNumber(bubbleTitleFontSize) ? bubbleTitleFontSize : fontSize,
@@ -47,7 +46,6 @@ class LegendSettings {
   getBubbleFontFamily () { return this.bubble.font.family }
   getBubbleFontSize () { return this.bubble.font.size }
   getBubbleFontColor () { return this.bubble.font.color }
-  getBubbleLineColor () { return this.bubble.linecolor }
   getBubbleTitleFontFamily () { return this.bubble.titleFont.family }
   getBubbleTitleFontSize () { return this.bubble.titleFont.size }
   getBubbleTitleFontColor () { return this.bubble.titleFont.color }
