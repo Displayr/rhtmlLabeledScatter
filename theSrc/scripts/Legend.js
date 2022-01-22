@@ -286,15 +286,7 @@ class Legend {
        .attr('cy', d => d.cy)
        .attr('r', d => d.r)
        .attr('fill', 'none')
-<<<<<<< HEAD
-<<<<<<< HEAD
        .attr('stroke', this.legendSettings.getBubbleFontColor())
-=======
-       .attr('stroke', this.legendSettings.getBubbleLineColor())
->>>>>>> 510643c5 (VIS-1013: separate x and y axis fonts)
-=======
-       .attr('stroke', this.legendSettings.getBubbleFontColor())
->>>>>>> 7d37a8ce (Fix up some color and size settings)
        .attr('stroke-opacity', 0.5)
   }
 
