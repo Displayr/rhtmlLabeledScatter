@@ -16,10 +16,10 @@ LabeledScatter(
   axis.font.size = 12,
   x.axis.font.color = axis.font.color,
   x.axis.font.family = axis.font.family,
-  x.axis.size = axis.font.size,
+  x.axis.font.size = axis.font.size,
   y.axis.font.color = axis.font.color,
   y.axis.font.family = axis.font.family,
-  y.axis.size = axis.font.size,
+  y.axis.font.size = axis.font.size,
   color.transparency = NULL,
   colors = c("#5B9BD5", "#ED7D31", "#A5A5A5", "#1EC000", "#4472C4", "#70AD47",
     "#255E91", "#9E480E", "#636363", "#997300", "#264478", "#43682B", "#FF2323"),
@@ -134,9 +134,13 @@ LabeledScatter(
 
 \item{x.axis.font.family}{Font Family of the axis labels}
 
+\item{x.axis.font.size}{Font size of the x axis labels}
+
 \item{y.axis.font.color}{Font color of the y axis labels}
 
 \item{y.axis.font.family}{Font Family of the y axis labels}
+
+\item{y.axis.font.size}{Font size of the y axis labels}
 
 \item{color.transparency}{Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z}
 
@@ -327,10 +331,6 @@ When the \code{Z} is supplied, the points are scaled so that the largest point h
 \item{z.suffix}{A string that suffixes all bubble values(eg. "kg")}
 
 \item{z.title}{is the title text given to the bubble size}
-
-\item{x.axis.font.size}{Font size of the x axis labels}
-
-\item{y.axis.font.size}{Font size of the y axis labels}
 }
 \description{
 A HTMLWidget that creates a labeled scatter plot.
