@@ -172,7 +172,7 @@ class RectPlot {
     }
 
     const hasSubtitle = config.subtitle !== '' && _.isString(config.subtitle)
-    this.title = new Title(config.title, config.titleFontColor, config.titleFontSize, config.titleFontFamily, this.axisSettings.fontSize, this.padding.vertical, hasSubtitle)
+    this.title = new Title(config.title, config.titleFontColor, config.titleFontSize, config.titleFontFamily, this.axisSettings.x.fontSize, this.padding.vertical, hasSubtitle)
     this.subtitle = new Subtitle(config.subtitle, config.subtitleFontColor, config.subtitleFontSize, config.subtitleFontFamily)
     this.subtitle.setY(this.title.getSubtitleY())
     this.footer = new Footer(config.footer, config.footerFontColor, config.footerFontSize, config.footerFontFamily, this.height, this.padding.vertical)
