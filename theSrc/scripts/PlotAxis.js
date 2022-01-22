@@ -25,7 +25,7 @@ class PlotAxis {
          .style('stroke-dasharray', ('4, 6'))
          .attr('stroke-width', this.settings.strokeWidth)
          .attr('opacity', 1)
-         .attr('stroke', this.settings.fontColor)
+         .attr('stroke', '#000000')
     }
   }
 
@@ -61,7 +61,7 @@ class PlotAxis {
          .attr('opacity', d => {
            if (d.num === 0 && showOrigin) { return 1 } else { return 0.2 }
          })
-         .attr('stroke', this.settings.fontColor)
+         .attr('stroke', d => this.settings[d.type].fontColor)
     }
 
     svg.selectAll('.dim-marker-label').remove()
@@ -72,9 +72,9 @@ class PlotAxis {
        .attr('class', 'dim-marker-label')
        .attr('x', d => d.x)
        .attr('y', d => d.y)
-       .attr('font-family', this.settings.fontFamily)
-       .attr('fill', this.settings.fontColor)
-       .attr('font-size', this.settings.fontSize)
+       .attr('font-family', d => this.settings[d.type].fontFamily)
+       .attr('fill', d => this.settings[d.type].fontColor)
+       .attr('font-size', d => this.settings[d.type].fontSize)
        .text(d => d.label)
        .attr('text-anchor', d => d.anchor)
        .attr('type', d => d.type)
