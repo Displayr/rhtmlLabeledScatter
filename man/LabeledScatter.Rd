@@ -14,6 +14,12 @@ LabeledScatter(
   axis.font.color = "Black",
   axis.font.family = "Arial",
   axis.font.size = 12,
+  x.axis.font.color = axis.font.color,
+  x.axis.font.family = axis.font.family,
+  x.axis.font.size = axis.font.size,
+  y.axis.font.color = axis.font.color,
+  y.axis.font.family = axis.font.family,
+  y.axis.font.size = axis.font.size,
   color.transparency = NULL,
   colors = c("#5B9BD5", "#ED7D31", "#A5A5A5", "#1EC000", "#4472C4", "#70AD47",
     "#255E91", "#9E480E", "#636363", "#997300", "#264478", "#43682B", "#FF2323"),
@@ -118,11 +124,23 @@ LabeledScatter(
 
 \item{Z}{is vector of magnitudes for each set of x,y coordinates (for bubble charts). This is optional}
 
-\item{axis.font.color}{Font color of the axis labels}
+\item{axis.font.color}{Font color of the axis labels. Only used if the values for specific axis is not set.}
 
-\item{axis.font.family}{Font Family of the axis labels}
+\item{axis.font.family}{Font Family of the axis labels. Only used if the values for specific axis is not set.}
 
-\item{axis.font.size}{Font size of the axis labels}
+\item{axis.font.size}{Font size of the axis labels. Only used if the values for specific axis is not set.}
+
+\item{x.axis.font.color}{Font color of the x axis labels}
+
+\item{x.axis.font.family}{Font Family of the axis labels}
+
+\item{x.axis.font.size}{Font size of the x axis labels}
+
+\item{y.axis.font.color}{Font color of the y axis labels}
+
+\item{y.axis.font.family}{Font Family of the y axis labels}
+
+\item{y.axis.font.size}{Font size of the y axis labels}
 
 \item{color.transparency}{Value 0-1 specifying the transparency level of the plot points. Defaults to 1 without Z and 0.8 with Z}
 

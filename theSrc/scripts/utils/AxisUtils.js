@@ -5,7 +5,6 @@ import { scaleTime } from 'd3-scale'
 import TickLabel from './TickLabel'
 import TickLine from './TickLine'
 import GridLine from './GridLine'
-import AxisTypeEnum from './AxisTypeEnum'
 import DataTypeEnum from './DataTypeEnum'
 
 /* To Refactor:
@@ -109,13 +108,13 @@ class AxisUtils {
       const labelHeight = _.max([axisSettings.textDimensions.rowMaxHeight, axisSettings.textDimensions.colMaxHeight])
       const tickLine = new TickLine(x1, y1, x2, y2, leaderLineLen, label)
 
-      if (type === AxisTypeEnum.X) {
+      if (type === 'x') {
         const tickLabel = new TickLabel(label, tickIncrement, axisSettings.x.decimals, axisSettings.x.prefix, axisSettings.x.suffix, data.xDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getXAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getXAxisLabelData())
       }
 
-      if (type === AxisTypeEnum.Y) {
+      if (type === 'y') {
         const tickLabel = new TickLabel(label, tickIncrement, axisSettings.y.decimals, axisSettings.y.prefix, axisSettings.y.suffix, data.yDataType, leaderLineLen, labelHeight, x1, y1, x2, y2, format)
         axisLeaderStack.push(tickLine.getYAxisTickLineData())
         axisLeaderLabelStack.push(tickLabel.getYAxisLabelData())
@@ -145,7 +144,7 @@ class AxisUtils {
         const gridLine = new GridLine(this._normalizeXCoords(data, timeFromEpoch), vb.y, this._normalizeXCoords(data, timeFromEpoch), vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showX) {
-          pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
+          pushTickLabel('x', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksX, axisSettings.x.format)
         }
       })
     } else if (data.xDataType === DataTypeEnum.numeric) {
@@ -155,7 +154,7 @@ class AxisUtils {
           const xCoordOfYAxisOrigin = this._normalizeXCoords(data, 0)
           const yAxisOrigin = new GridLine(xCoordOfYAxisOrigin, vb.y, xCoordOfYAxisOrigin, vb.y + vb.height)
           if (axisSettings.showX && data.minX <= 0 && data.maxX >= 0) {
-            pushTickLabel(AxisTypeEnum.X, yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
+            pushTickLabel('x', yAxisOrigin.x1, yAxisOrigin.y1, yAxisOrigin.x2, yAxisOrigin.y2, 0, ticksX, axisSettings.x.format)
           }
           if (data.minX < 0 && data.maxX > 0) {
             originAxis.push(yAxisOrigin.getData())
@@ -164,7 +163,7 @@ class AxisUtils {
           const gridLine = new GridLine(this._normalizeXCoords(data, val), vb.y, this._normalizeXCoords(data, val), vb.y + vb.height)
           gridLineStack.push(gridLine.getData())
           if (axisSettings.showX) {
-            pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
+            pushTickLabel('x', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksX, axisSettings.x.format)
           }
         }
       })
@@ -176,7 +175,7 @@ class AxisUtils {
         const gridLine = new GridLine(gridX, vb.y, gridX, vb.y + vb.height)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showX) {
-          pushTickLabel(AxisTypeEnum.X, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, x, ticksX, axisSettings.x.format)
+          pushTickLabel('x', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, x, ticksX, axisSettings.x.format)
         }
       })
     }
@@ -189,7 +188,7 @@ class AxisUtils {
         const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, date), vb.x + vb.width, this._normalizeYCoords(data, date))
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {
-          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
+          pushTickLabel('y', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, timeFromEpoch, ticksY, axisSettings.y.format)
         }
       })
     } else if (data.yDataType === DataTypeEnum.numeric) {
@@ -199,7 +198,7 @@ class AxisUtils {
           const yCoordOfXAxisOrigin = this._normalizeYCoords(data, 0)
           const xAxisOrigin = new GridLine(vb.x, yCoordOfXAxisOrigin, vb.x + vb.width, yCoordOfXAxisOrigin)
           if (axisSettings.showY && data.minY <= 0 && data.maxY >= 0) {
-            pushTickLabel(AxisTypeEnum.Y, xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
+            pushTickLabel('y', xAxisOrigin.x1, xAxisOrigin.y1, xAxisOrigin.x2, xAxisOrigin.y2, 0, ticksY, axisSettings.y.format)
           }
           if (data.minY < 0 && data.maxY > 0) {
             originAxis.push(xAxisOrigin.getData())
@@ -208,7 +207,7 @@ class AxisUtils {
           const gridLine = new GridLine(vb.x, this._normalizeYCoords(data, val), vb.x + vb.width, this._normalizeYCoords(data, val))
           gridLineStack.push(gridLine.getData())
           if (axisSettings.showY) {
-            pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, axisSettings.y.format)
+            pushTickLabel('y', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, val, ticksY, axisSettings.y.format)
           }
         }
       })
@@ -220,7 +219,7 @@ class AxisUtils {
         const gridLine = new GridLine(vb.x, gridY, vb.x + vb.width, gridY)
         gridLineStack.push(gridLine.getData())
         if (axisSettings.showY) {
-          pushTickLabel(AxisTypeEnum.Y, gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, y, ticksY, axisSettings.x.format) // TODO: TicksY needs to be removed along with ticksX
+          pushTickLabel('y', gridLine.x1, gridLine.y1, gridLine.x2, gridLine.y2, y, ticksY, axisSettings.x.format) // TODO: TicksY needs to be removed along with ticksX
         }
       })
     }
