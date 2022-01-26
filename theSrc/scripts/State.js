@@ -104,6 +104,7 @@ class State {
   resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
+    this.hiddenLabelPts = []
     // this.algoPositionedLabs = []
     this.vb = {}
     this.resetState()
@@ -116,6 +117,7 @@ class State {
   hasStateBeenAlteredByUser () {
     if (this.legendPts.length > 0) return true
     if (this.userPositionedLabs.length > 0) return true
+    if (this.hiddenLabelPts.length > 0) return true
     return false
   }
 
