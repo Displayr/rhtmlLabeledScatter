@@ -69,6 +69,7 @@ class PlotData {
     this.normY = this.Y.slice(0)
     if (Utils.isArrOfNums(this.Z) && (this.Z.length === this.X.length)) { this.normZ = this.Z.slice() }
     this.outsidePlotPtsId = []
+    this.hiddenLabelsId = []
     // this.legendPts = []
     this.outsidePlotCondensedPts = []
     this.legendRequiresRedraw = false
@@ -352,10 +353,11 @@ class PlotData {
           }
 
           let fontColor = (ptColor = this.plotColors.getColor(i))
+          let fontOpacity = _.includes(this.hiddenLabelsId, i) ? 0.0 : 1.0
           if ((this.vb.labelFontColor != null) && !(this.vb.labelFontColor === '')) { fontColor = this.vb.labelFontColor }
           const group = (this.group != null) ? this.group[i] : ''
-          this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity })
-          this.lab.push({ x, y: labelY, color: fontColor, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
+          this.pts.push({ x, y, r, label, labelAlt, labelX: this.origX[i].toString(), labelY: this.origY[i].toString(), labelZ, group, color: ptColor, id: i, fillOpacity, hideLabel: fontOpacity === 0.0 })
+          this.lab.push({ x, y: labelY, color: fontColor, opacity: fontOpacity, id: i, fontSize, fontFamily: this.vb.labelFontFamily, text: label, width, height, url })
         }
         i++
       }
@@ -403,6 +405,23 @@ class PlotData {
         (right > (this.vb.x + this.vb.width)) ||
         (top < this.vb.y) ||
         (bot > (this.vb.y + this.vb.height)))
+  }
+
+  toggleLabelShow (id) {
+    const hidden = _.includes(this.hiddenLabelsId, id)
+    const index = this.lab.findIndex(p => p.id === Number(id))
+    if (hidden) {
+        console.log('Toggle on label for pt ' + id)
+        _.pull(this.hiddenLabelsId, id)
+        this.pts[index].hideLabel = false
+        this.lab[index].opacity = 1.0
+    } else {
+        console.log('Toggle off label for pt ' + id)
+        this.hiddenLabelsId.push(id)
+        this.pts[index].hideLabel = true
+        this.lab[index].opacity = 0.0
+    }
+    return (this.pts[index].hideLabel)
   }
 
   addElemToLegend (id) {

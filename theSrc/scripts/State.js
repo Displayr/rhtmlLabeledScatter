@@ -23,6 +23,7 @@ class State {
     }
 
     this.legendPts = this.retrieveLegendPts()
+    this.hiddenLabelPts = this.retrieveHiddenLabelPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
@@ -36,6 +37,10 @@ class State {
     } else {
       return (this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : [])
     }
+  }
+
+  retrieveHiddenLabelPts () {
+    return (this.isStoredInState('hiddenlabel.pts') ? _.uniq(this.getStored('hiddenlabel.pts')) : [])
   }
 
   isStoredInState (key) {
@@ -59,8 +64,18 @@ class State {
       delete this.stateObj['userPositionedLabs']
       delete this.stateObj['vb']
       delete this.stateObj['legend.pts']
+      delete this.stateObj['hiddenlabel.pts']
       this.stateChangedCallback(this.stateObj)
     }
+  }
+
+  updateHiddenLabelPt (id, hide) {
+    if (hide) {
+        this.hiddenLabelPts.push(id)
+    } else {
+        _.pull(this.hiddenLabelPts, id)
+    }
+    this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
   }
 
   pushLegendPt (id) {

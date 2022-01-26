@@ -30,6 +30,7 @@ class Links {
           y2: newLinkPt[1],
           width: 1,
           color: pt.color,
+          hideLabel: pt.hideLabel,
         })
       }
     }
@@ -215,7 +216,7 @@ class Links {
        .attr('y2', d => d.y2)
        .attr('stroke-width', d => d.width)
        .attr('stroke', d => d.color)
-       .style('stroke-opacity', plotColors.getFillOpacity(transparency))
+       .style('stroke-opacity', d => d.hideLabel ? 0.0 : plotColors.getFillOpacity(transparency))
   }
 }
 
