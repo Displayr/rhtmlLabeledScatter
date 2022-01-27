@@ -16,8 +16,8 @@ class ResetButton {
       .style('cursor', 'pointer')
       .text('Reset')
       .on('click', () => {
-        this.plot.state.resetStateLegendPtsAndPositionedLabs()
-        this.plot.data.resetPtsAndLabs(this.plot.state)
+        state.resetStateLegendPtsAndPositionedLabs()
+        this.plot.data.resetPtsAndLabs(state.initialHiddenLabelPts())
         this.plot.draw()
       })
 

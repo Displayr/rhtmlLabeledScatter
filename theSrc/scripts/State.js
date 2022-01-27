@@ -43,7 +43,9 @@ class State {
 
   initialHiddenLabelPts () {
     var tmp = []
-    for (var i = this.labelsMaxShown; i < this.numPoints; i++) tmp.push(i)
+    if (!(this.labelsMaxShown === null || this.labelsMaxShown < 0)) {
+      for (var i = this.labelsMaxShown; i < this.numPoints; i++) tmp.push(i)
+    }
     return (tmp)
   }
 
@@ -80,6 +82,7 @@ class State {
       delete this.stateObj['legend.pts']
       delete this.stateObj['hiddenlabel.pts']
       this.stateChangedCallback(this.stateObj)
+      console.log('state.resetState: hiddenLabelPts:' + this.hiddenLabelPts)
     }
   }
 
@@ -89,6 +92,7 @@ class State {
     } else {
         _.pull(this.hiddenLabelPts, id)
     }
+    console.log('state.updateHiddenLabelPts:' + this.hiddenLabelPts)
     this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
   }
 
@@ -193,17 +197,17 @@ class State {
     if (_.isEmpty(this.vb)) {
       // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
-      return this.getAllPositionedLabIds()
+      return this.getUserPositionedLabIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
       if (currentvb.height === this.vb.height &&
           currentvb.width === this.vb.width &&
           currentvb.x === this.vb.x &&
           currentvb.y === this.vb.y) {
-        return this.getAllPositionedLabsIds()
+        return this.getUserPositionedLabsIds()
       } else {
         this.updateViewBoxAndSave(currentvb)
-        return this.getAllPositionedLabIds()
+        return this.getUserPositionedLabIds()
       }
     }
   }

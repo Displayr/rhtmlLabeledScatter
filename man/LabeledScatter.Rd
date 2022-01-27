@@ -51,6 +51,7 @@ LabeledScatter(
   labels.font.family = "Arial",
   labels.font.size = 10,
   labels.logo.scale = NULL,
+  labels.max.shown = NULL,
   labels.show = TRUE,
   legend.bubble.font.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.bubble.font.family = "Arial",
@@ -201,6 +202,8 @@ LabeledScatter(
 \item{labels.font.size}{is the font size of the labels}
 
 \item{labels.logo.scale}{is a vector of scaling factors for label logos}
+
+\item{labels.max.shown}{Number of labels to show on chart.}
 
 \item{labels.show}{Toggle for showing labels. Defaults to true if labels array given}
 

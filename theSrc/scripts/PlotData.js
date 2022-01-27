@@ -421,6 +421,7 @@ class PlotData {
         this.pts[index].hideLabel = true
         this.lab[index].opacity = 0.0
     }
+    console.log('data.hiddenLabelsId: ' + this.hiddenLabelsId)
     return (this.pts[index].hideLabel)
   }
 
@@ -449,14 +450,19 @@ class PlotData {
     this.setLegend()
   }
 
-  resetPtsAndLab (state) {
+  syncLabels (labels) {
+    this.hiddenLabelsId = labels
+    this.getPtsAndLabs('PlotData.syncLabels')
+  }
+
+  resetPtsAndLabs (initialLabs) {
     _.forEachRight(this.legend.pts, lp => {
       if (!_.isUndefined(lp)) this.legend.removePt(lp.id)
     })
 
-    this.hiddenLabelsId = state.initalHiddenLabelPts()
+    this.hiddenLabelsId = initialLabs
     this.normalizeData()
-    this.getPtsAndLabs('PlotData.resetPtsAndLab')
+    this.getPtsAndLabs('PlotData.resetPtsAndLabs')
     this.setLegend()
   }
 
