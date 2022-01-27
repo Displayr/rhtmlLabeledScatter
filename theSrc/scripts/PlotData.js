@@ -449,10 +449,15 @@ class PlotData {
     this.setLegend()
   }
 
-  resetLegendPts () {
+  resetPtsAndLab (state) {
     _.forEachRight(this.legend.pts, lp => {
-      if (!_.isUndefined(lp)) this.removeElemFromLegend(lp.id)
+      if (!_.isUndefined(lp)) this.legend.removePt(lp.id)
     })
+
+    this.hiddenLabelsId = state.initalHiddenLabelPts()
+    this.normalizeData()
+    this.getPtsAndLabs('PlotData.resetPtsAndLab')
+    this.setLegend()
   }
 
   getTextLabels () {

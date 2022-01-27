@@ -41,7 +41,7 @@ class LabeledScatter {
       // NB it is (currently) ok to initialise with userState = null, so allow it as we deliberately choose to let this widget fail open (i.e. ignore state and continue rendering)
     }
 
-    this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label)
+    this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label, this.data.labelsMaxShown)
   }
 
   draw () {
