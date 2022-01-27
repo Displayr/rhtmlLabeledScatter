@@ -196,7 +196,7 @@ class State {
     if (_.isEmpty(this.vb)) {
       // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
-      return this.getAllPositionedLabIds()
+      return this.getAllPositionedLabsIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
       if (currentvb.height === this.vb.height &&
@@ -206,7 +206,7 @@ class State {
         return this.getAllPositionedLabsIds()
       } else {
         this.updateViewBoxAndSave(currentvb)
-        return this.getAllPositionedLabIds()
+        return this.getAllPositionedLabsIds()
       }
     }
   }
