@@ -411,17 +411,14 @@ class PlotData {
     const hidden = _.includes(this.hiddenLabelsId, id)
     const index = this.lab.findIndex(p => p.id === Number(id))
     if (hidden) {
-        console.log('Toggle on label for pt ' + id)
         _.pull(this.hiddenLabelsId, id)
         this.pts[index].hideLabel = false
         this.lab[index].opacity = 1.0
     } else {
-        console.log('Toggle off label for pt ' + id)
         this.hiddenLabelsId.push(id)
         this.pts[index].hideLabel = true
         this.lab[index].opacity = 0.0
     }
-    console.log('data.hiddenLabelsId: ' + this.hiddenLabelsId)
     return (this.pts[index].hideLabel)
   }
 
