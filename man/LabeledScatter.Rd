@@ -203,7 +203,9 @@ LabeledScatter(
 
 \item{labels.logo.scale}{is a vector of scaling factors for label logos}
 
-\item{labels.max.shown}{Number of labels to show on chart.}
+\item{labels.max.shown}{Number of labels to show on chart. If the number of labels is greater than this
+this parameter, then the extra labels will be hidden by default but will be shown when the user clicks
+on the marker.}
 
 \item{labels.show}{Toggle for showing labels. Defaults to true if labels array given}
 

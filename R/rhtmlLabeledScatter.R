@@ -36,7 +36,9 @@
 #' @param labels.font.color is the font color of the labels. NOTE: This overrides the color if it is set
 #' @param labels.font.size is the font size of the labels
 #' @param labels.logo.scale is a vector of scaling factors for label logos
-#' @param labels.max.shown Number of labels to show on chart.
+#' @param labels.max.shown Number of labels to show on chart. If the number of labels is greater than this
+#'  this parameter, then the extra labels will be hidden by default but will be shown when the user clicks
+#'  on the marker.
 #' @param legend.show is the toggle to show the legend. Defaults to TRUE
 #' @param legend.bubbles.show toggle to show the bubble sizes in the legend. Defaults to TRUE
 #' @param legend.font.color is the font color of the legend.
