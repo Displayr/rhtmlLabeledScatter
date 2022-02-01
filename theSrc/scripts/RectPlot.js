@@ -344,6 +344,7 @@ class RectPlot {
         error.retry = true
         throw error
       }
+      this.data.syncLabels(this.state.hiddenLabelPts)
     }).then(() => {
       try {
         this.title.drawWith(this.pltUniqueId, this.svg)
@@ -466,6 +467,7 @@ class RectPlot {
 
   drawAnc () {
     return new Promise(function (resolve, reject) {
+      let rect = this
       this.svg.selectAll('.anc').remove()
       const anc = this.svg.selectAll('.anc')
                .data(this.data.pts)
@@ -484,6 +486,13 @@ class RectPlot {
                    return d.r
                  }
                })
+               .style('cursor', 'pointer')
+               .on('click', function (d) {
+                    const hide = rect.data.toggleLabelShow(d.id)
+                    rect.state.updateHiddenLabelPt(d.id, hide)
+                    rect.drawLinks()
+                    rect.drawLabs()
+                })
       TooltipUtils.appendTooltips(anc, this.Z, this.axisSettings, this.tooltipText)
       // Clip paths used to crop bubbles if they expand beyond the plot's borders
       if (Utils.isArrOfNums(this.Z) && this.plotBorder.show) {
@@ -561,8 +570,9 @@ class RectPlot {
                  .text(d => d.text)
                  .attr('text-anchor', 'middle')
                  .attr('fill', d => d.color)
+                 .attr('opacity', d => d.opacity)
                  .attr('font-size', d => d.fontSize)
-                 .style('cursor', 'pointer')
+                 .style('cursor', 'move')
                  .call(drag)
       } else if (this.trendLines.show) {
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)
@@ -589,6 +599,7 @@ class RectPlot {
             .attr('y', d => d.y - d.height)
             .attr('width', d => d.width)
             .attr('height', d => d.height)
+            .style('cursor', 'move')
             .call(drag)
       } else if (this.trendLines.show) {
         drag = DragUtils.getLabelDragAndDrop(this, this.trendLines.show)

@@ -4,7 +4,7 @@ import _ from 'lodash'
 // Careful with alterations here as very old state types need to be defended against
 
 class State {
-  constructor (stateObj, stateChangedCallback, X, Y, label) {
+  constructor (stateObj, stateChangedCallback, X, Y, label, labelsMaxShown) {
     this.stateObj = stateObj
     this.stateChangedCallback = stateChangedCallback
     if (!(_.isObject(this.stateObj))) {
@@ -22,7 +22,10 @@ class State {
       this.saveToState({ 'X': X, 'Y': Y, 'label': label })
     }
 
+    this.numPoints = X.length
+    this.labelsMaxShown = labelsMaxShown
     this.legendPts = this.retrieveLegendPts()
+    this.hiddenLabelPts = this.retrieveHiddenLabelPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
@@ -35,6 +38,24 @@ class State {
       return _.uniq(this.getStored('legendPts'))
     } else {
       return (this.isStoredInState('legend.pts') ? _.uniq(this.getStored('legend.pts')) : [])
+    }
+  }
+
+  initialHiddenLabelPts () {
+    var tmp = []
+    if (!(this.labelsMaxShown === null || this.labelsMaxShown < 0)) {
+      for (var i = this.labelsMaxShown; i < this.numPoints; i++) tmp.push(i)
+    }
+    return (tmp)
+  }
+
+  retrieveHiddenLabelPts () {
+    if (this.isStoredInState('hiddenlabel.pts')) {
+      return (_.uniq(this.getStored('hiddenlabel.pts')))
+    } else if (this.labelsMaxShown === null || this.labelsMaxShown < 0) {
+      return []
+    } else {
+      return (this.initialHiddenLabelPts())
     }
   }
 
@@ -59,8 +80,18 @@ class State {
       delete this.stateObj['userPositionedLabs']
       delete this.stateObj['vb']
       delete this.stateObj['legend.pts']
+      delete this.stateObj['hiddenlabel.pts']
       this.stateChangedCallback(this.stateObj)
     }
+  }
+
+  updateHiddenLabelPt (id, hide) {
+    if (hide) {
+        this.hiddenLabelPts.push(id)
+    } else {
+        _.pull(this.hiddenLabelPts, id)
+    }
+    this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
   }
 
   pushLegendPt (id) {
@@ -89,6 +120,7 @@ class State {
   resetStateLegendPtsAndPositionedLabs () {
     this.legendPts = []
     this.userPositionedLabs = []
+    this.hiddenLabelPts = this.initialHiddenLabelPts()
     // this.algoPositionedLabs = []
     this.vb = {}
     this.resetState()
@@ -101,6 +133,7 @@ class State {
   hasStateBeenAlteredByUser () {
     if (this.legendPts.length > 0) return true
     if (this.userPositionedLabs.length > 0) return true
+    if (this.hiddenLabelPts.length > 0) return true
     return false
   }
 
@@ -154,15 +187,16 @@ class State {
   }
 
   getAllPositionedLabsIds () {
-    const combinedLabs = this.userPositionedLabs // .concat(this.algoPositionedLabs)
-    return _.map(combinedLabs, e => e.id)
+    // Return list of labels which do not need to be automatically positioned
+    const userLabs = _.map(this.userPositionedLabs, e => e.id) // .concat(this.algoPositionedLabs)
+    return _.concat(userLabs, this.initialHiddenLabelPts())
   }
 
   getPositionedLabIds (currentvb) {
     if (_.isEmpty(this.vb)) {
       // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
-      return this.getUserPositionedLabIds()
+      return this.getAllPositionedLabsIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
       if (currentvb.height === this.vb.height &&
@@ -172,7 +206,7 @@ class State {
         return this.getAllPositionedLabsIds()
       } else {
         this.updateViewBoxAndSave(currentvb)
-        return this.getUserPositionedLabIds()
+        return this.getAllPositionedLabsIds()
       }
     }
   }

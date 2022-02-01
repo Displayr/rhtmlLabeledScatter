@@ -326,4 +326,25 @@ describe('state interactions', () => {
 
     await page.close()
   })
+
+  test(`${++testId}: Initialise plot with only some labels shown and toggle labels`, async function () {
+    const { page, scatterPlot } = await loadWidget({
+      browser,
+      configName: 'data.bdd.bubbleplot_maxlabels',
+      width: 600,
+      height: 600,
+    })
+
+    await testSnapshots({ page, testName: 'bubble_maxlabels' })
+
+    await scatterPlot.movePlotLabel({ id: 0, x: 100, y: 100 })
+    await scatterPlot.clickMouseOnAnchor({ id: 0 })
+    await scatterPlot.clickMouseOnAnchor({ id: 5 })
+    await testSnapshots({ page, testName: 'labels_after_toggling' })
+
+    await scatterPlot.clickResetButton()
+    await testSnapshots({ page, testName: 'labels_after_reset' })
+
+    await page.close()
+  })
 })

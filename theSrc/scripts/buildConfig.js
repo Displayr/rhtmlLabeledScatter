@@ -39,6 +39,7 @@ const defaultConfig = {
   labelsFontFamily: 'Arial',
   labelsFontSize: 10,
   labelsLogoScale: [],
+  labelsMaxShown: null,
   legendBubbleFontColor: '#2C2C2C',
   legendBubbleFontFamily: 'Arial',
   legendBubbleFontSize: 10,

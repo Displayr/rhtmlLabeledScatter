@@ -18,8 +18,9 @@ describe('VIS-576', function () {
       }
     }
 
-    const state = new State({}, stateChangedCallback, X, Y, label)
+    const state = new State({}, stateChangedCallback, X, Y, label, 2)
     state.pushUserPositionedLabel(2, 600, 400, viewBox)
+    state.updateHiddenLabelPt(0, true)
     isCallbackFromReset = true
     state.resetState()
   })
