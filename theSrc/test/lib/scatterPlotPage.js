@@ -79,6 +79,10 @@ class ScatterPlotPage {
     return this.page.click(`#anc-${id}`)
   }
 
+  async clickResetButton () {
+    return this.page.click('.plot-reset-button')
+  }
+
   async plotLabel ({ id }) {
     return this.page.$(`[id="${id}"]`)
   }

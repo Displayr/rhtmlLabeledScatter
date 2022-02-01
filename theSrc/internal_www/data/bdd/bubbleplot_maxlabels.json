@@ -65,6 +65,6 @@
     "#5B9BD5",
     "#ED7D31"
   ],
-  "showResetButton": false,
+  "showResetButton": true,
   "pointRadius": 2
 }
