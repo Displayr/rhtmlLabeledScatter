@@ -189,14 +189,15 @@ class State {
   getAllPositionedLabsIds () {
     // Return list of labels which do not need to be automatically positioned
     const userLabs = _.map(this.userPositionedLabs, e => e.id) // .concat(this.algoPositionedLabs)
-    return _.concat(userLabs, this.initialHiddenLabelPts())
+    // return _.concat(userLabs, this.initialHiddenLabelPts())
+    return (userLabs)
   }
 
   getPositionedLabIds (currentvb) {
     if (_.isEmpty(this.vb)) {
       // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
-      return this.getAllPositionedLabsIds()
+      return this.getUserPositionedLabIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
       if (currentvb.height === this.vb.height &&
@@ -206,7 +207,7 @@ class State {
         return this.getAllPositionedLabsIds()
       } else {
         this.updateViewBoxAndSave(currentvb)
-        return this.getAllPositionedLabsIds()
+        return this.getUserPositionedLabIds()
       }
     }
   }
