@@ -344,7 +344,7 @@ class RectPlot {
         error.retry = true
         throw error
       }
-      this.data.syncLabels(this.state.hiddenLabelPts)
+      this.data.syncHiddenLabels(this.state.hiddenLabelPts)
     }).then(() => {
       try {
         this.title.drawWith(this.pltUniqueId, this.svg)

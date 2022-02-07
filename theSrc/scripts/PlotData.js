@@ -447,9 +447,8 @@ class PlotData {
     this.setLegend()
   }
 
-  syncLabels (labels) {
-    this.hiddenLabelsId = labels
-    this.getPtsAndLabs('PlotData.syncLabels')
+  syncHiddenLabels (labels) {
+    _.map(labels, ii => this.toggleLabelShow(ii))
   }
 
   resetPtsAndLabs (initialLabs) {
