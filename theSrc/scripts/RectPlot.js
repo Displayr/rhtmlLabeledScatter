@@ -359,10 +359,10 @@ class RectPlot {
 
         // Draw in the following order so that label images (logos) are under
         // anchor markers, which in turn are under text labels
-        this.drawLabelImages()
         this.drawAnc().then(() => {
           this.drawLabs()
           this.placeLabels()
+          this.drawLabelImages()
         }).then(() => {
           if (this.trendLines.show) {
             this.drawTrendLines()
