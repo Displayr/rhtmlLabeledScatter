@@ -361,8 +361,8 @@ class RectPlot {
         // anchor markers, which in turn are under text labels
         // this.drawLabelImages()
         this.drawAnc().then(() => {
-          this.drawLabs()
           this.drawLabelImages()
+          this.drawLabs()
           this.placeLabels()
         }).then(() => {
           if (this.trendLines.show) {
