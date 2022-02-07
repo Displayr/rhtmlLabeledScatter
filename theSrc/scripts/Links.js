@@ -123,15 +123,15 @@ class Links {
     }
 
     const padding = 5
-    const centered = (ancR > labelXleft) && (ancL < labelXright)
-    const abovePadded = ancB < (labelYtop - padding)
-    const above = ancB < labelYtop
-    const belowPadded = ancT > (labelYbot + padding)
-    const below = ancT > labelYbot
-    const left = ancR < labelXleft
-    const right = ancL > labelXright
-    const leftPadded = ancR < (labelXleft - padding)
-    const rightPadded = ancL > (labelXright + padding)
+    const centered = (anchor.x > labelXleft) && (ancL < labelXright)
+    const abovePadded = ancB < (labelYtop - padding) // anchor above label and padding
+    const above = ancB < labelYtop // anchor above label
+    const belowPadded = ancT > (labelYbot + padding) // anchor below label and padding
+    const below = ancT > labelYbot // anchor below label
+    const left = anchor.x < labelXleft // anchor to the left of label
+    const right = anchor.x > labelXright // anchor to the right of label
+    const leftPadded = ancR < (labelXleft - padding) // anchor to the left of label and padding
+    const rightPadded = ancL > (labelXright + padding) // anchor to the right of label and padding
 
     if (centered && abovePadded) {
       return labelBorder.topC
@@ -151,11 +151,13 @@ class Links {
       return labelBorder.midR
     } else {
       // Draw the link if there are any anc nearby
-      const ambiguityFactor = 10
-      const padL = labelBorder.topL[0] - ambiguityFactor
-      const padR = labelBorder.topR[0] + ambiguityFactor
-      const padT = labelBorder.topL[1] - ambiguityFactor
-      const padB = labelBorder.botR[1] + ambiguityFactor
+      const anchorDistanceX = left ? labelXleft - anchor.x : right ? anchor.x - labelXright : 0
+      const anchorDistanceY = above ? labelYtop - anchor.y : below ? anchor.y - labelYbot : 0
+      const anchorDistance = Math.sqrt(anchorDistanceX * anchorDistanceX + anchorDistanceY * anchorDistanceY)
+      const padL = labelBorder.topL[0] - anchorDistance
+      const padR = labelBorder.topR[0] + anchorDistance
+      const padT = labelBorder.topL[1] - anchorDistance
+      const padB = labelBorder.botR[1] + anchorDistance
       let ancNearby = 0
       // TODO could use collision tree here
       _(anchorArray).each((a) => {
@@ -163,7 +165,7 @@ class Links {
           ancNearby++
         }
       })
-      if (ancNearby > 1) {
+      if (ancNearby > 0) {
         if (!left && !right && !above && !below) {
           return labelBorder.botC
         } else if (centered && above) {
