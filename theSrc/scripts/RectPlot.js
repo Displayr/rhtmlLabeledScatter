@@ -321,7 +321,6 @@ class RectPlot {
 
   drawLabsAndPlot () {
     this.data.normalizeData()
-
     return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
       const titlesX = this.vb.x + (this.vb.width / 2)
       this.title.setX(titlesX)
@@ -359,7 +358,6 @@ class RectPlot {
 
         // Draw in the following order so that label images (logos) are under
         // anchor markers, which in turn are under text labels
-        // this.drawLabelImages()
         this.drawAnc().then(() => {
           this.drawLabelImages()
           this.drawLabs()

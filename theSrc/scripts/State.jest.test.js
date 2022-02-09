@@ -14,7 +14,7 @@ describe('VIS-576', function () {
     let isCallbackFromReset = false
     const stateChangedCallback = obj => {
       if (isCallbackFromReset) {
-        expect(obj).toEqual({ X: X, Y: Y, label: label })
+        expect(obj).toEqual({ X: X, Y: Y, label: label, 'hiddenlabel.pts': [2] })
       }
     }
 

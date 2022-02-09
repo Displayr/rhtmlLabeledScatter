@@ -434,26 +434,30 @@ class PlotData {
     this.legendRequiresRedraw = true
   }
 
-  removeElemFromLegend (id) {
-    const legendPt = this.legend.removePt(id)
+  removeLegendPtFromData (id) {
+   const legendPt = this.legend.removePt(id)
     this.pts.push(legendPt.pt)
     this.lab.push(legendPt.lab)
 
     _.remove(this.outsidePlotPtsId, i => i === id)
     _.remove(this.outsidePlotCondensedPts, i => i.dataId === id)
+  }
 
+  removeElemFromLegend (id) {
+    this.removeLegendPtFromData(id)
     this.normalizeData()
     this.getPtsAndLabs('PlotData.removeElemFromLegend')
     this.setLegend()
   }
 
   syncHiddenLabels (labels) {
+    this.hiddenLabelsId = []
     _.map(labels, ii => this.toggleLabelShow(ii))
   }
 
   resetPtsAndLabs (initialLabs) {
     _.forEachRight(this.legend.pts, lp => {
-      if (!_.isUndefined(lp)) this.legend.removePt(lp.id)
+      if (!_.isUndefined(lp)) this.removeLegendPtFromData(lp.id)
     })
 
     this.hiddenLabelsId = initialLabs
