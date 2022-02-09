@@ -26,6 +26,7 @@ class State {
     this.labelsMaxShown = labelsMaxShown
     this.legendPts = this.retrieveLegendPts()
     this.hiddenLabelPts = this.retrieveHiddenLabelPts()
+    this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
