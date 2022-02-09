@@ -20,12 +20,7 @@
     "x": 40.84375,
     "y": 70
   },
-  "userPositionedLabs": [
-    {
-      "id": 0,
-      "x": 0.26838486762691643,
-      "y": 0.6692699168478661
-    }
-  ],
-  "hiddenlabel.pts": []
+  "hiddenlabel.pts": [
+    0
+  ]
 }

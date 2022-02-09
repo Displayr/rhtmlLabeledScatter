@@ -26,6 +26,7 @@ class State {
     this.labelsMaxShown = labelsMaxShown
     this.legendPts = this.retrieveLegendPts()
     this.hiddenLabelPts = this.retrieveHiddenLabelPts()
+    this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
@@ -80,7 +81,7 @@ class State {
       delete this.stateObj['userPositionedLabs']
       delete this.stateObj['vb']
       delete this.stateObj['legend.pts']
-      delete this.stateObj['hiddenlabel.pts']
+      this.stateObj['hiddenlabel.pts'] = this.initialHiddenLabelPts()
       this.stateChangedCallback(this.stateObj)
     }
   }
@@ -133,7 +134,7 @@ class State {
   hasStateBeenAlteredByUser () {
     if (this.legendPts.length > 0) return true
     if (this.userPositionedLabs.length > 0) return true
-    if (this.hiddenLabelPts.length > 0) return true
+    if (!_.isEqual(this.hiddenLabelPts, this.initialHiddenLabelPts())) return true
     return false
   }
 
@@ -196,7 +197,7 @@ class State {
     if (_.isEmpty(this.vb)) {
       // console.log(this.getUserPositionedLabIds())
       // Since vb is null, that means it is the first run of the algorithm
-      return this.getAllPositionedLabsIds()
+      return this.getUserPositionedLabIds()
     } else {
       // Compare size of viewbox with prev and run algo if different
       if (currentvb.height === this.vb.height &&
@@ -206,7 +207,7 @@ class State {
         return this.getAllPositionedLabsIds()
       } else {
         this.updateViewBoxAndSave(currentvb)
-        return this.getAllPositionedLabsIds()
+        return this.getUserPositionedLabIds()
       }
     }
   }

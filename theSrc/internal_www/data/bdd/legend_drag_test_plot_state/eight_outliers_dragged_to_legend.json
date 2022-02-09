@@ -3,5 +3,6 @@
   "Y": [0, 2, 2, 3, 3, 4, 4, 6, 1, 1, 5, 5],
   "label": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"],
   "legend.pts": [0, 3, 4, 7, 8, 9, 10, 11],
+  "hiddenlabel.pts": [],
   "userPositionedLabs": []
 }

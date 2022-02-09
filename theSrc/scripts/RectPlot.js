@@ -271,6 +271,7 @@ class RectPlot {
     return this.drawDimensionMarkers()
       .then(() => this.drawLegend())
       .then(() => this.drawLabsAndPlot())
+      .then(() => this.drawLinks())
       .then(() => {
         // if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if (this.data.legendRequiresRedraw) {
@@ -321,7 +322,6 @@ class RectPlot {
 
   drawLabsAndPlot () {
     this.data.normalizeData()
-
     return this.data.getPtsAndLabs('RectPlot.drawLabsAndPlot').then(() => {
       const titlesX = this.vb.x + (this.vb.width / 2)
       this.title.setX(titlesX)
@@ -344,7 +344,7 @@ class RectPlot {
         error.retry = true
         throw error
       }
-      this.data.syncLabels(this.state.hiddenLabelPts)
+      this.data.syncHiddenLabels(this.state.hiddenLabelPts)
     }).then(() => {
       try {
         this.title.drawWith(this.pltUniqueId, this.svg)
@@ -359,8 +359,8 @@ class RectPlot {
 
         // Draw in the following order so that label images (logos) are under
         // anchor markers, which in turn are under text labels
-        this.drawLabelImages()
         this.drawAnc().then(() => {
+          this.drawLabelImages()
           this.drawLabs()
           this.placeLabels()
         }).then(() => {

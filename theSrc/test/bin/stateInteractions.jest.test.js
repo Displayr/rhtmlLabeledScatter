@@ -347,4 +347,15 @@ describe('state interactions', () => {
 
     await page.close()
   })
+
+  test(`${++testId}: Load saved state and see a user hidden label`, async function () {
+    const { page } = await loadWidget({
+      browser,
+      stateName: 'data.bdd.three_point_brand_state.label1_hidden',
+    })
+
+    await testSnapshots({ page, testName: 'after_label1_hidden' })
+
+    await page.close()
+  })
 })
