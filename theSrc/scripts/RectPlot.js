@@ -271,7 +271,6 @@ class RectPlot {
     return this.drawDimensionMarkers()
       .then(() => this.drawLegend())
       .then(() => this.drawLabsAndPlot())
-      .then(() => this.drawLinks())
       .then(() => {
         // if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if (this.data.legendRequiresRedraw) {
@@ -366,6 +365,8 @@ class RectPlot {
         }).then(() => {
           if (this.trendLines.show) {
             this.drawTrendLines()
+          } else {
+            this.drawLinks()
           }
           this.drawDraggedMarkers()
         })
