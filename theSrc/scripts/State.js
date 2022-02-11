@@ -188,9 +188,8 @@ class State {
   }
 
   getAllPositionedLabsIds () {
-    // Return list of labels which do not need to be automatically positioned
-    const userLabs = _.map(this.userPositionedLabs, e => e.id) // .concat(this.algoPositionedLabs)
-    return _.concat(userLabs, this.initialHiddenLabelPts())
+    const combinedLabs = this.userPositionedLabs // .concat(this.algoPositionedLabs)
+    return _.map(combinedLabs, e => e.id)
   }
 
   getPositionedLabIds (currentvb) {

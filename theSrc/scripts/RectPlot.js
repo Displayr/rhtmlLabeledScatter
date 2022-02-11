@@ -186,7 +186,7 @@ class RectPlot {
     }
 
     const numNonEmptyLabels = (_.filter(this.label, (l) => l !== '')).length
-    const labelPlacementAlgoOnToggle = numNonEmptyLabels < 100
+    const labelPlacementAlgoOnToggle = (numNonEmptyLabels < 100 || config.labelsMaxShown < 100)
 
     this.tooltipText = config.tooltipText
 

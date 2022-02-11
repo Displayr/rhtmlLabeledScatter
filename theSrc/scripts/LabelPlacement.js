@@ -71,7 +71,7 @@ class LabelPlacement {
     const labelsImgSvg = this.svg.selectAll(`.plt-${this.pltId}-lab-img`)
     SvgUtils.setMatchingSvgBBoxWidthAndHeight(labels, labelsSvg)
     this.computeAdjustedLabelHeight(labels)
-    const labsToBePlaced = _.filter(labels, l => l.text !== '' || (l.text === '' && l.url !== ''))
+    const labsToBePlaced = _.filter(labels, l => (l.text !== '' && l.opacity > 0) || (l.text === '' && l.url !== ''))
 
     this.place(vb, anchors, labsToBePlaced, state.getPositionedLabIds(vb), false, resolve)
 
