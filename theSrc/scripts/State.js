@@ -19,14 +19,23 @@ class State {
            !_.isEqual(storedY, Y) ||
            !_.isEqual(storedLabel, label)) {
       this.stateObj = {}
-      this.saveToState({ 'X': X, 'Y': Y, 'label': label })
+      this.saveToState({ 'X': X, 'Y': Y, 'label': label, 'labelsMaxShown': labelsMaxShown })
+    } else {
+        // If X, Y or labels have changed whole saved state is discarded
+        // but changing labelsMaxShown will only change the labels shown
+        const storedLabelsMaxShown = this.isStoredInState('labelsMaxShown') ? this.getStored('labelsMaxShown') : null
+        if (storedLabelsMaxShown !== labelsMaxShown) {
+            delete this.stateObj['labelsMaxShown']
+            delete this.stateObj['hiddenlabel.pts']
+            this.saveToState({ 'labelsMaxShown': labelsMaxShown })
+        }
     }
 
     this.numPoints = X.length
     this.labelsMaxShown = labelsMaxShown
-    this.legendPts = this.retrieveLegendPts()
     this.hiddenLabelPts = this.retrieveHiddenLabelPts()
     this.saveToState({ 'hiddenlabel.pts': this.hiddenLabelPts })
+    this.legendPts = this.retrieveLegendPts()
     this.userPositionedLabs = this.isStoredInState('userPositionedLabs') ? this.getStored('userPositionedLabs') : []
     // this.algoPositionedLabs = this.isStoredInState('algoPositionedLabs') ? this.getStored('algoPositionedLabs') : []
     this.vb = this.isStoredInState('vb') ? this.getStored('vb') : {}
