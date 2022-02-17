@@ -18,3 +18,4 @@ configs:
   - config: data.displayr_regression.set9.vardata_size_data_labeled
   - config: data.displayr_regression.set9.vardata_size_numeric_labeled
   - config: data.displayr_regression.set9.vardata_size_numeric_labeled_filtered
+  - config: data.displayr_regression.set9.components_plot_many
