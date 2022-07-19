@@ -1,0 +1,9 @@
+type: multi_widget_single_page
+title: "many points"
+width: 600
+height: 600
+rowSize: 1
+widgets:
+  - config: data.functionalTest.many_points
+    width: 300
+    height: 300

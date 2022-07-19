@@ -1,0 +1,6 @@
+RectPlot.draw: 7800
+RectPlot.drawLabsAndPlot: 7000
+RectPlot.drawLabs: 51
+RectPlot.placelabs: 6331
+labelPlacement.placeLabels: 5869
+placementPromise.then: 487
