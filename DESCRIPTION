@@ -1,7 +1,7 @@
 Package: rhtmlLabeledScatter
 Type: Package
 Title: An HTML widget that creates a labeled scatter plot
-Version: 1.2.1
+Version: 1.2.2
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: An HTML widget that creates a labeled scatter plot.

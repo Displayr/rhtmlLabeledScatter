@@ -5,16 +5,17 @@ class Links {
   constructor (pts, lab) {
     const _labIsText = labelData => labelData.url === ''
     const _labIsEmpty = labelData => labelData.text === '' && labelData.url === ''
+    const _labIsInvisible = labelData => labelData.opacity === 0
     this.topBorderOffset = 3 // extra space between text label and link point
 
     this.links = []
     for (let i = 0; i < pts.length; i++) {
       const pt = pts[i]
       let newLinkPt = null
-      if (!this._labIsInsideBubblePt(lab[i], pt)) {
-        if (_labIsEmpty(lab[i])) {
-          newLinkPt = null
-        } else if (_labIsText(lab[i])) {
+      if (_labIsEmpty(lab[i]) || _labIsInvisible(lab[i])) {
+        newLinkPt = null
+      } else if (!this._labIsInsideBubblePt(lab[i], pt)) {
+        if (_labIsText(lab[i])) {
           newLinkPt = this._getNewPtOnTxtLabelBorder(lab[i], pt, pts)
         } else {
           newLinkPt = this._getNewPtOnLogoLabelBorder(lab[i], pt, pts)

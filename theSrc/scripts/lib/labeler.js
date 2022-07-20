@@ -768,8 +768,6 @@ const labeler = function () {
       point.observations = {
         // static observations are made once at beginning of simulation
         static: {
-          anchorCollidesWithOtherAnchors: false, // TODO no longer used
-          anchorOverlapProportion: 0, // TODO no longer used
           labelFitsInsideBubble: false,
           labelPlacedInsideBubble: false,
           noInitialCollisionsAndNoNearbyNeighbors: false
@@ -824,29 +822,6 @@ const labeler = function () {
           })
         }
       }
-
-      const potentiallyCollidingAnchors = collisionTree.search(anchor)
-        .filter(isAnchor)
-        .filter(notSameId(id))
-
-      const collidingAnchorsWithOverlap = potentiallyCollidingAnchors
-        .map(potentiallyCollidingAnchor => {
-          const overlap = circleIntersection(anchor, potentiallyCollidingAnchor)
-          return { anchor: potentiallyCollidingAnchor, overlap }
-        })
-        .filter(({ anchor, overlap }) => overlap > 0)
-
-
-      if (collidingAnchorsWithOverlap.length > 0) {
-        // NB anchorOverlapProportion is inaccurate in that we double count overlap proportion
-        point.observations.static.anchorOverlapProportion = _(collidingAnchorsWithOverlap)
-          .map('overlap')
-          .sum() / anchor.area
-      }
-
-      point.observations.static.anchorCollidesWithOtherAnchors = (collidingAnchorsWithOverlap.length > 0)
-
-      if (INITIALISATION_LOGGING) { console.log(`anchor ${anchor.label}(${anchor.id}) potentiallyCollidingAnchorsCount: ${potentiallyCollidingAnchors.length} ollidingAnchorsWithOverlapCount: ${collidingAnchorsWithOverlap.length} anchorOverlapProportion: ${point.observations.static.anchorOverlapProportion}`) }
     })
 
     // NB now tie break all the labelPlacedInsideBubble based on Z magnitude
@@ -897,7 +872,6 @@ const labeler = function () {
       const stats = _.transform(points, (result, { label, anchor, observations }) => {
         if (anchor) { result.anchors++ }
         if (label) { result.labels++ }
-        if (observations.static.anchorCollidesWithOtherAnchors) { result.anchorCollidesWithOtherAnchors++ }
         if (observations.static.labelFitsInsideBubble) { result.labelFitsInsideBubble++ }
         if (observations.static.labelPlacedInsideBubble) { result.labelPlacedInsideBubble++ }
         if (observations.static.noInitialCollisionsAndNoNearbyNeighbors) { result.noInitialCollisionsAndNoNearbyNeighbors++ }
@@ -905,7 +879,6 @@ const labeler = function () {
         isBubble,
         anchors: 0,
         labels: 0,
-        anchorCollidesWithOtherAnchors: 0,
         labelFitsInsideBubble: 0,
         labelPlacedInsideBubble: 0,
         noInitialCollisionsAndNoNearbyNeighbors: 0
