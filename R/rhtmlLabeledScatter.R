@@ -237,7 +237,7 @@ LabeledScatter <- function(
     # Check inputs
     if (is.null(X) || !is.atomic(X) || (is.array(X) && length(dim(X)) > 1L))
         stop("Input X needs to be a vector")
-    if (is.null(Y) || !is.atomic(Y) || (is.array(Y) && length(dim(X)) > 1L))
+    if (is.null(Y) || !is.atomic(Y) || (is.array(Y) && length(dim(Y)) > 1L))
         stop("Input Y needs to be a vector")
     if (!is.null(Z) && (!is.numeric(Z) || any(Z < 0)))
         stop("Input Z needs to be a vector of non-negative numbers")
