@@ -3,6 +3,7 @@ import d3 from 'd3'
 import _ from 'lodash'
 import { buildConfig } from './buildConfig'
 import DisplayError from './DisplayError'
+import Plotly from 'plotly.js-dist-min'
 import RectPlot from './RectPlot'
 import State from './State'
 import 'babel-polyfill'
@@ -44,17 +45,48 @@ class LabeledScatter {
     this.stateObj = new State(userState, this.stateChangedCallback, this.data.X, this.data.Y, this.data.label, this.data.labelsMaxShown)
   }
 
-  draw () {
+  async draw () {
     $(this.rootElement).find('*').remove()
-
-    const svg = d3.select(this.rootElement)
-      .append('svg')
+    const plot_data = [];
+    plot_data.push({x: [0, 1], y: [0, 1], text: ['a', 'b'], name: 'Dog',
+      type: 'scatter', mode: 'markers+text', textposition: 'top'})
+    plot_data.push({x: [0.5], y: [0.75], name: 'Cat'})
+    const plot_layout = { title: 'Title', showLegend: true}
+    const plot_config = {
+      editable: true
+    }
+    //const plotlyChart = Plotly.react(this.rootElement, plot_data, plot_layout)
+    
+    const container = d3.select(this.rootElement)
+      .append('div')
       .attr('width', this.width)
       .attr('height', this.height)
       .attr('class', 'plot-container rhtmlwidget-outer-svg')
+    const plotlyChart = await Plotly.react(this.rootElement, plot_data, plot_layout, plot_config)
+    plotlyChart.on('plotly_afterplot', () => {
+      console.log('afterplot!')
+      console.log(JSON.stringify(Object.keys(plotlyChart._fullLayout)))
+      console.log(JSON.stringify(plotlyChart._fullLayout.title))
+      console.log(JSON.stringify(plotlyChart._fullLayout.legend))
+  });
 
-    // console.log('rhtmlLabeledScatter data')
-    // console.log(JSON.stringify(this.data))
+
+    const plot_area = this.rootElement.querySelector('.cartesianlayer .plot');
+    //plot_area.append('text')
+    //  .text('abc')
+
+    const text_pt = this.rootElement.querySelector('.textpoint text');
+    text_pt.append('rect')
+    
+    
+    
+    //console.log(JSON.stringify(text_pt));
+    //text_pt.setAttribute('text-decoration', 'underline')
+    const svg = container 
+      .append('svg')
+      .attr('width', this.width)
+      .attr('height', this.height)
+      //.attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // Error checking
     DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')
