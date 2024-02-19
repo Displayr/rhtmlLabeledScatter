@@ -47,46 +47,11 @@ class LabeledScatter {
 
   async draw () {
     $(this.rootElement).find('*').remove()
-    const plot_data = [];
-    plot_data.push({x: [0, 1], y: [0, 1], text: ['a', 'b'], name: 'Dog',
-      type: 'scatter', mode: 'markers+text', textposition: 'top'})
-    plot_data.push({x: [0.5], y: [0.75], name: 'Cat'})
-    const plot_layout = { title: 'Title', showLegend: true}
-    const plot_config = {
-      editable: true
-    }
-    //const plotlyChart = Plotly.react(this.rootElement, plot_data, plot_layout)
-    
     const container = d3.select(this.rootElement)
       .append('div')
       .attr('width', this.width)
       .attr('height', this.height)
       .attr('class', 'plot-container rhtmlwidget-outer-svg')
-    const plotlyChart = await Plotly.react(this.rootElement, plot_data, plot_layout, plot_config)
-    plotlyChart.on('plotly_afterplot', () => {
-      console.log('afterplot!')
-      console.log(JSON.stringify(Object.keys(plotlyChart._fullLayout)))
-      console.log(JSON.stringify(plotlyChart._fullLayout.title))
-      console.log(JSON.stringify(plotlyChart._fullLayout.legend))
-  });
-
-
-    const plot_area = this.rootElement.querySelector('.cartesianlayer .plot');
-    //plot_area.append('text')
-    //  .text('abc')
-
-    const text_pt = this.rootElement.querySelector('.textpoint text');
-    text_pt.append('rect')
-    
-    
-    
-    //console.log(JSON.stringify(text_pt));
-    //text_pt.setAttribute('text-decoration', 'underline')
-    const svg = container 
-      .append('svg')
-      .attr('width', this.width)
-      .attr('height', this.height)
-      //.attr('class', 'plot-container rhtmlwidget-outer-svg')
 
     // Error checking
     DisplayError.isAxisValid(this.data.X, this.rootElement, 'Given X values is neither array of nums, dates, or strings!')
@@ -99,19 +64,68 @@ class LabeledScatter {
 
     const config = buildConfig(this.data, this.width, this.height)
     try {
-      this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
-      this.plot.draw()
-    } catch (err) {
-      if (
-        err.type === InsufficientHeightError.type ||
-        err.type === InsufficientWidthError.type
-      ) {
-        console.log(`caught expected error '${err.type}' and aborted rendering`)
+      const plot_data = [];
+      plot_data.push({
+        x: this.data.X, 
+        y: this.data.Y, 
+        type: 'scatter', 
+        mode: 'markers',
+        cliponaxis: 'false'
+      })
+      const plot_layout = { title: 'Title', showLegend: true,
+        xaxis: { color: '#0000FF'},
+        yaxis: { color: '#0000FF'}}
+      const plot_config = { displayModeBar: false, editable: true}
+
+    const plotlyChart = await Plotly.react(this.rootElement, plot_data, plot_layout, plot_config)
+    this.drawScatterLabelLayer(plotlyChart._fullLayout, config)
+    plotlyChart.on('plotly_afterplot', () => {
+      console.log('afterplot!')
+      this.drawScatterLabelLayer(plotlyChart._fullLayout, config)
+    })
+
+} catch (err) {
+if (
+  err.type === InsufficientHeightError.type ||
+  err.type === InsufficientWidthError.type
+    ) {
+      console.log(`caught expected error '${err.type}' and aborted rendering`)
         DisplayError.displayEmptyErrorContainer(this.rootElement)
       } else {
         throw err
       }
     }
+  }
+
+  async drawScatterLabelLayer(plotly_chart_layout, config) {
+    await d3.select('.mysvg').selectAll("*").remove();
+    const plot_area = d3.select(this.rootElement).select('.draglayer')
+    const plot_bbox = plot_area.node().getBBox()
+    const svg = plot_area
+        .append('svg')
+        .attr('class', 'mysvg')
+        .style('position', 'absolute')
+        .attr('x', plot_bbox.x)
+        .attr('y', plot_bbox.y)
+        .attr('width', plot_bbox.width)
+        .attr('height', plot_bbox.height)
+    config.yAxisFontColor = '#FF0000'
+    config.xAxisFontColor = '#FF0000'
+    config.axisFontColor = '#FF0000'
+    config.labelsFontColor = '#FF0000'
+    config.plotBorderColor = '#FF0000'
+    config.showXAxis = false
+    config.showYAxis = false
+    config.colors[0] = '#FF0000'
+    config.yBoundsMinimum = plotly_chart_layout.yaxis.range[0]
+    config.yBoundsMaximum = plotly_chart_layout.yaxis.range[1]
+    config.xBoundsMinimum = plotly_chart_layout.xaxis.range[0]
+    config.xBoundsMaximum = plotly_chart_layout.xaxis.range[1]
+    config.width = plot_bbox.width
+    config.height = plot_bbox.height
+    this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
+    this.plot.draw()
+
   }
 
   resize (el, width, height) {

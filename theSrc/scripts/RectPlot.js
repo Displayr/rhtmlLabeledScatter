@@ -2,6 +2,7 @@
 import _ from 'lodash'
 import d3 from 'd3'
 import 'babel-polyfill'
+import Plotly from 'plotly.js-dist-min'
 import md5 from 'md5'
 import autoBind from 'es6-autobind'
 import Links from './Links'
@@ -269,14 +270,14 @@ class RectPlot {
     this.svg.node().parentNode.setAttribute('rhtmlwidget-status', 'loading')
 
     return this.drawDimensionMarkers()
-      .then(() => this.drawLegend())
+      //.then(() => this.drawLegend())
       .then(() => this.drawLabsAndPlot())
-      .then(() => {
+      /*.then(() => {
         // if you remove this then the life expectancy bubble plot will not have the legendLabels in the legend. It will only have the groups
         if (this.data.legendRequiresRedraw) {
           return this.drawLegend()
         }
-      })
+      })*/
       .then(() => {
         const debugMsg = new DebugMessage(this.svg, this.vb, this.debugMode)
         debugMsg.draw(this.data.lab)
