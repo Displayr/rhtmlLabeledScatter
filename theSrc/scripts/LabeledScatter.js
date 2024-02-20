@@ -66,9 +66,10 @@ class LabeledScatter {
     try {
       const plot_data = [];
       plot_data.push({
-        x: this.data.X, 
-        y: this.data.Y, 
-        type: 'scatter', 
+        x: this.data.X,
+        y: this.data.Y,
+        text: this.data.label,
+        type: 'scatter',
         mode: 'markers',
         cliponaxis: 'false'
       })
@@ -80,7 +81,6 @@ class LabeledScatter {
     const plotlyChart = await Plotly.react(this.rootElement, plot_data, plot_layout, plot_config)
     this.drawScatterLabelLayer(plotlyChart._fullLayout, config)
     plotlyChart.on('plotly_afterplot', () => {
-      console.log('afterplot!')
       this.drawScatterLabelLayer(plotlyChart._fullLayout, config)
     })
 
@@ -97,13 +97,13 @@ if (
     }
   }
 
-  async drawScatterLabelLayer(plotly_chart_layout, config) {
-    await d3.select('.mysvg').selectAll("*").remove();
+  drawScatterLabelLayer(plotly_chart_layout, config) {
+    d3.select('.scatterlabellayer').remove()
     const plot_area = d3.select(this.rootElement).select('.draglayer')
     const plot_bbox = plot_area.node().getBBox()
     const svg = plot_area
         .append('svg')
-        .attr('class', 'mysvg')
+        .attr('class', 'scatterlabellayer')
         .style('position', 'absolute')
         .attr('x', plot_bbox.x)
         .attr('y', plot_bbox.y)
@@ -116,6 +116,11 @@ if (
     config.plotBorderColor = '#FF0000'
     config.showXAxis = false
     config.showYAxis = false
+    config.title = ''
+    config.xTitle = ''
+    config.yTitle = ''
+    config.subtitle = ''
+    config.footer = ''
     config.colors[0] = '#FF0000'
     config.yBoundsMinimum = plotly_chart_layout.yaxis.range[0]
     config.yBoundsMaximum = plotly_chart_layout.yaxis.range[1]
