@@ -74,8 +74,9 @@ class LabeledScatter {
         cliponaxis: 'false'
       })
       const plot_layout = { title: 'Title', showLegend: true,
+        //plot_bgcolor: '#0000FF40',
         xaxis: { color: '#0000FF'},
-        yaxis: { color: '#0000FF'}}
+        yaxis: { color: '#0000FF', ticklen: 0}}
       const plot_config = { displayModeBar: false, editable: true}
 
     const plotlyChart = await Plotly.react(this.rootElement, plot_data, plot_layout, plot_config)
@@ -101,14 +102,19 @@ if (
     d3.select('.scatterlabellayer').remove()
     const plot_area = d3.select(this.rootElement).select('.draglayer')
     const plot_bbox = plot_area.node().getBBox()
+
+    // Remove some space from the drag layer to make up for
+    // the axis labels which the scatterlabellayer doesn't have
+    const plot_width = plot_bbox.width - 5
+    const plot_height = plot_bbox.height - 20
     const svg = plot_area
         .append('svg')
         .attr('class', 'scatterlabellayer')
         .style('position', 'absolute')
-        .attr('x', plot_bbox.x)
-        .attr('y', plot_bbox.y)
-        .attr('width', plot_bbox.width)
-        .attr('height', plot_bbox.height)
+        .attr('x', plot_bbox.x - 5)
+        .attr('y', plot_bbox.y + 9)
+        .attr('width', plot_width)
+        .attr('height', plot_height)
     config.yAxisFontColor = '#FF0000'
     config.xAxisFontColor = '#FF0000'
     config.axisFontColor = '#FF0000'
@@ -126,8 +132,8 @@ if (
     config.yBoundsMaximum = plotly_chart_layout.yaxis.range[1]
     config.xBoundsMinimum = plotly_chart_layout.xaxis.range[0]
     config.xBoundsMaximum = plotly_chart_layout.xaxis.range[1]
-    config.width = plot_bbox.width
-    config.height = plot_bbox.height
+    config.width = plot_width
+    config.height = plot_height
     this.plot = new RectPlot({ config, stateObj: this.stateObj, svg })
     this.plot.draw()
 
