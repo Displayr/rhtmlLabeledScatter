@@ -6,7 +6,7 @@ pkgs.rPackages.buildRPackage {
   src = ./.;
   description = ''An HTML widget that creates a labeled scatter plot.'';
   propagatedBuildInputs = with pkgs.rPackages; [ 
-    jsonlite
     htmlwidgets
+    jsonlite
   ];
 }
