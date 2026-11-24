@@ -15,3 +15,5 @@ notes.md
 package-lock.json
 package.json
 theSrc
+^AGENTS\.md$
+^CLAUDE\.md$
